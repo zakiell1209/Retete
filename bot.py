@@ -6,7 +6,7 @@ from flask import Flask, request
 
 API_TOKEN = os.getenv("TELEGRAM_TOKEN")
 REPLICATE_TOKEN = os.getenv("REPLICATE_API_TOKEN")
-WEBHOOK_URL = os.getenv("WEBHOOK_URL", "https://zak-y7ia.onrender.com")
+WEBHOOK_URL = os.getenv("WEBHOOK_URL", "https://retete.onrender.com")
 
 bot = telebot.TeleBot(API_TOKEN)
 app = Flask(__name__)
