@@ -11,6 +11,9 @@ WEBHOOK_URL = os.getenv("WEBHOOK_URL", "https://retete.onrender.com")
 bot = telebot.TeleBot(API_TOKEN)
 app = Flask(__name__)
 
+# Версия модели Flux NSFW (актуальную лучше проверить на replicate.com)
+MODEL_VERSION = "a2c7a12413262db9d4f827b0c7b9f7a545f4073a9bc541d50333e15c3c6f7df9"
+
 def generate_image(prompt):
     url = "https://api.replicate.com/v1/predictions"
     headers = {
@@ -18,7 +21,7 @@ def generate_image(prompt):
         "Content-Type": "application/json"
     }
     data = {
-        "version": "ac732df83cea7fff18b8472768c88ad041fa750ff7682a21affe81863cbe77e4",  # Твоя версия модели
+        "version": MODEL_VERSION,
         "input": {"prompt": prompt}
     }
     response = requests.post(url, headers=headers, json=data)
@@ -30,22 +33,23 @@ def generate_image(prompt):
 
 @bot.message_handler(commands=['start'])
 def start(message):
-    bot.send_message(message.chat.id, "Привет! Напиши описание изображения для генерации.")
+    bot.send_message(message.chat.id, "Привет! Напиши описание изображения для генерации (NSFW).")
 
 @bot.message_handler(func=lambda m: True)
 def handle_prompt(message):
     prompt = message.text
     bot.send_message(message.chat.id, "Генерирую изображение, подожди...")
     status_url = generate_image(prompt)
-
-    if status_url.startswith("Ошибка генерации"):
+    
+    # Если вернулась ошибка как строка, отправим её пользователю
+    if isinstance(status_url, str) and status_url.startswith("Ошибка генерации"):
         bot.send_message(message.chat.id, status_url)
         return
 
     for _ in range(20):
         res = requests.get(status_url, headers={"Authorization": f"Token {REPLICATE_TOKEN}"})
         if res.status_code != 200:
-            bot.send_message(message.chat.id, f"Ошибка получения статуса: {res.status_code} {res.text}")
+            bot.send_message(message.chat.id, f"Ошибка получения статуса: {res.status_code}")
             return
         status = res.json()
         if status.get("status") == "succeeded":
@@ -71,6 +75,7 @@ def index():
     return 'Bot is running'
 
 if __name__ == '__main__':
+    # Автоматическая установка вебхука
     bot.remove_webhook()
     bot.set_webhook(WEBHOOK_URL)
     app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)))
