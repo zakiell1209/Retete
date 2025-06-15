@@ -45,7 +45,7 @@ def handle_prompt(message):
         bot.send_message(message.chat.id, status_url_or_error)
         return
 
-    for _ in range(20):
+    for i in range(20):
         res = requests.get(status_url_or_error, headers={"Authorization": f"Token {REPLICATE_TOKEN}"})
         if res.status_code != 200:
             err = f"Ошибка получения статуса: {res.status_code} {res.text}"
@@ -53,6 +53,7 @@ def handle_prompt(message):
             bot.send_message(message.chat.id, err)
             break
         status = res.json()
+        bot.send_message(message.chat.id, f"Статус генерации [{i+1}/20]: {status.get('status')}")
         if status.get("status") == "succeeded":
             image_url = status["output"][0]
             bot.send_photo(message.chat.id, image_url)
