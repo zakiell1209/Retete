@@ -26,7 +26,7 @@ def generate_image(prompt):
         prediction = response.json()
         return prediction["urls"]["get"]
     else:
-        print(f"Ошибка генерации: {response.status_code} {response.text}")
+        print(f"Ошибка генерации: {response.status_code} {response.text}")  # Полный вывод ошибки
         return None
 
 @bot.message_handler(commands=['start'])
@@ -45,23 +45,17 @@ def handle_prompt(message):
     for _ in range(20):
         res = requests.get(status_url, headers={"Authorization": f"Token {REPLICATE_TOKEN}"})
         if res.status_code != 200:
-            error_text = f"Ошибка получения статуса: {res.status_code} {res.text}"
-            print(error_text)
-            bot.send_message(message.chat.id, error_text)
+            print(f"Ошибка получения статуса: {res.status_code} {res.text}")
             break
         status = res.json()
-        print("Ответ Replicate:", status)
-
         if status.get("status") == "succeeded":
             image_url = status["output"][0]
             bot.send_photo(message.chat.id, image_url)
             return
         elif status.get("status") == "failed":
-            error_msg = status.get("error", "Неизвестная ошибка генерации.")
-            print("Ошибка генерации:", error_msg)
-            bot.send_message(message.chat.id, f"Ошибка генерации: {error_msg}")
+            print(f"Генерация не удалась: {status}")
             break
-        time.sleep(2)
+        time.sleep(2)  # Подождать 2 секунды перед повтором
 
     bot.send_message(message.chat.id, "Не удалось сгенерировать изображение.")
 
@@ -77,7 +71,7 @@ def index():
     return 'Bot is running'
 
 if __name__ == '__main__':
-    # bot.remove_webhook()
-    # bot.set_webhook(WEBHOOK_URL)
-    # print(f"Webhook установлен на {WEBHOOK_URL}")
+    bot.remove_webhook()
+    set_webhook_result = bot.set_webhook(WEBHOOK_URL)
+    print(f"Webhook set result: {set_webhook_result}")
     app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)))
