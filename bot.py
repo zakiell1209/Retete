@@ -18,7 +18,7 @@ def generate_image(prompt):
         "Content-Type": "application/json"
     }
     data = {
-        "version": "8625175575af3df665d665d2108a9e4e06cacf5c98295297502b52cc9c820b1c",  # пример версии модели
+        "version": "8625175575af3df665d665d2108a9e4e06cacf5c98295297502b52cc9c820b1c",  # версия модели
         "input": {"prompt": prompt}
     }
     response = requests.post(url, headers=headers, json=data)
@@ -26,7 +26,8 @@ def generate_image(prompt):
         prediction = response.json()
         return prediction["urls"]["get"], None
     else:
-        return None, f"Ошибка генерации: {response.status_code} {response.text}"
+        error_text = f"Ошибка генерации: {response.status_code}\nОтвет API:\n{response.text}"
+        return None, error_text
 
 @bot.message_handler(commands=['start'])
 def start(message):
@@ -38,13 +39,13 @@ def handle_prompt(message):
     bot.send_message(message.chat.id, "Генерирую изображение, подожди...")
     status_url, error = generate_image(prompt)
     if error:
-        bot.send_message(message.chat.id, error)
+        bot.send_message(message.chat.id, f"Ошибка при генерации:\n{error}")
         return
 
     for _ in range(20):
         res = requests.get(status_url, headers={"Authorization": f"Token {REPLICATE_TOKEN}"})
         if res.status_code != 200:
-            bot.send_message(message.chat.id, f"Ошибка получения статуса: {res.status_code} {res.text}")
+            bot.send_message(message.chat.id, f"Ошибка получения статуса: {res.status_code}\nОтвет API:\n{res.text}")
             break
         status = res.json()
         if status.get("status") == "succeeded":
@@ -70,7 +71,6 @@ def index():
     return 'Bot is running'
 
 if __name__ == '__main__':
-    # Автоматическая установка webhook
     bot.remove_webhook()
     bot.set_webhook(WEBHOOK_URL)
     app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)))
