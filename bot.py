@@ -18,16 +18,15 @@ def generate_image(prompt):
         "Content-Type": "application/json"
     }
     data = {
-        "version": "cf3cd3846a15a05d29b94fa0bcb9e858c84c212b1234063f8c756c137cd3f9b2",
+        "version": "ac732df83cea7fff18b8472768c88ad041fa750ff7682a21affe81863cbe77e4",  # Твоя версия модели
         "input": {"prompt": prompt}
     }
     response = requests.post(url, headers=headers, json=data)
     if response.status_code == 201:
         prediction = response.json()
-        return prediction["urls"]["get"], None
+        return prediction["urls"]["get"]
     else:
-        error_text = f"Ошибка генерации: {response.status_code} {response.text}"
-        return None, error_text
+        return f"Ошибка генерации: {response.status_code} {response.text}"
 
 @bot.message_handler(commands=['start'])
 def start(message):
@@ -37,10 +36,10 @@ def start(message):
 def handle_prompt(message):
     prompt = message.text
     bot.send_message(message.chat.id, "Генерирую изображение, подожди...")
+    status_url = generate_image(prompt)
 
-    status_url, error = generate_image(prompt)
-    if error:
-        bot.send_message(message.chat.id, f"Ошибка при генерации:\n{error}")
+    if status_url.startswith("Ошибка генерации"):
+        bot.send_message(message.chat.id, status_url)
         return
 
     for _ in range(20):
@@ -56,9 +55,9 @@ def handle_prompt(message):
         elif status.get("status") == "failed":
             bot.send_message(message.chat.id, "Генерация не удалась.")
             return
-        time.sleep(2)  # Подождать 2 секунды
+        time.sleep(2)
 
-    bot.send_message(message.chat.id, "Не удалось сгенерировать изображение.")
+    bot.send_message(message.chat.id, "Не удалось сгенерировать изображение за отведённое время.")
 
 @app.route('/', methods=['POST'])
 def webhook():
