@@ -1,5 +1,5 @@
 services:
-  - type: web
+  - type: worker
     name: zak-nsfw-gen-bot
     env: python
     plan: free
