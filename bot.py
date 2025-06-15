@@ -1,87 +1,51 @@
 import os
-import telebot
-import requests
-import time
-from flask import Flask, request
+import asyncio
+from aiogram import Bot, Dispatcher, types, F
+from aiogram.types import Message
+from aiogram.fsm.storage.memory import MemoryStorage
+from fastapi import FastAPI, Request
+import uvicorn
 
-API_TOKEN = os.getenv("TELEGRAM_TOKEN") or "ВСТАВЬ_ТВОЙ_ТГ_ТОКЕН"
-REPLICATE_TOKEN = os.getenv("REPLICATE_API_TOKEN") or "ВСТАВЬ_ТВОЙ_REPLICATE_ТОКЕН"
-WEBHOOK_URL = os.getenv("WEBHOOK_URL", "https://retete.onrender.com")
+# Настройки из переменных окружения
+BOT_TOKEN = os.getenv("TELEGRAM_TOKEN")
+WEBHOOK_SECRET = os.getenv("WEBHOOK_SECRET", "supersecret")  # просто строка
+WEBHOOK_URL = os.getenv("RENDER_EXTERNAL_URL", "https://your-url.onrender.com") + f"/webhook/{WEBHOOK_SECRET}"
 
-bot = telebot.TeleBot(API_TOKEN)
-app = Flask(__name__)
+# Создание бота и диспетчера
+bot = Bot(token=BOT_TOKEN)
+dp = Dispatcher(storage=MemoryStorage())
+app = FastAPI()
 
-# NSFW Flux модель
-REPLICATE_MODEL_VERSION = "fb4f086702d6a301ca32c170d926239324a7b7b2f0afc3d232a9c4be382dc3fa"
+# Обработка команды /start
+@dp.message(F.text == "/start")
+async def start_cmd(message: Message):
+    await message.answer("Привет! Я бот с поддержкой webhook.")
 
-def generate_image(prompt):
-    url = "https://api.replicate.com/v1/predictions"
-    headers = {
-        "Authorization": f"Token {REPLICATE_TOKEN}",
-        "Content-Type": "application/json"
-    }
-    data = {
-        "version": REPLICATE_MODEL_VERSION,
-        "input": {
-            "prompt": prompt,
-            "negative_prompt": "ugly, blurry, watermark",
-            "num_inference_steps": 30,
-            "guidance_scale": 7
-        }
-    }
-    response = requests.post(url, headers=headers, json=data)
-    if response.status_code == 201:
-        prediction = response.json()
-        return prediction["urls"]["get"]
-    else:
-        print(f"❌ Ошибка генерации: {response.status_code} {response.text}")
-        return None
+# Добавь здесь генерацию через Replicate, если хочешь
+# @dp.message(F.text.startswith("сгенерируй "))
+# async def generate_image(message: Message):
+#     prompt = message.text[10:]
+#     await message.answer(f"Генерирую по описанию: {prompt} (реализация не вставлена)")
 
-@bot.message_handler(commands=['start'])
-def start(message):
-    bot.send_message(message.chat.id, "👋 Привет! Напиши описание изображения, которое хочешь сгенерировать.")
+# Webhook обработчик
+@app.post(f"/webhook/{WEBHOOK_SECRET}")
+async def telegram_webhook(req: Request):
+    body = await req.body()
+    await bot.feed_webhook_update(body, req.headers)
+    return "ok"
 
-@bot.message_handler(func=lambda m: True)
-def handle_prompt(message):
-    prompt = message.text
-    bot.send_message(message.chat.id, "🎨 Генерирую изображение, подожди...")
-    status_url = generate_image(prompt)
+# Установка webhook при запуске
+@app.on_event("startup")
+async def on_startup():
+    await bot.set_webhook(WEBHOOK_URL)
+    print(f"Webhook установлен на {WEBHOOK_URL}")
 
-    if not status_url:
-        bot.send_message(message.chat.id, "❌ Не удалось сгенерировать изображение. Проверь логи.")
-        return
+# Удаление webhook при выключении
+@app.on_event("shutdown")
+async def on_shutdown():
+    await bot.delete_webhook()
+    await bot.session.close()
 
-    for _ in range(30):
-        res = requests.get(status_url, headers={"Authorization": f"Token {REPLICATE_TOKEN}"})
-        if res.status_code != 200:
-            print(f"Ошибка получения статуса: {res.status_code} {res.text}")
-            break
-        status = res.json()
-        if status.get("status") == "succeeded":
-            output = status.get("output")
-            if output and isinstance(output, list):
-                bot.send_photo(message.chat.id, output[0])
-            else:
-                bot.send_message(message.chat.id, "⚠️ Модель не вернула изображение.")
-            return
-        elif status.get("status") == "failed":
-            bot.send_message(message.chat.id, "❌ Ошибка генерации изображения.")
-            return
-        time.sleep(2)
-
-    bot.send_message(message.chat.id, "⏱ Не удалось сгенерировать изображение за отведённое время.")
-
-@app.route('/', methods=['POST'])
-def webhook():
-    json_string = request.get_data().decode('utf-8')
-    update = telebot.types.Update.de_json(json_string)
-    bot.process_new_updates([update])
-    return '', 200
-
-@app.route('/', methods=['GET'])
-def index():
-    return '✅ Бот запущен.'
-
-if __name__ == '__main__':
-    print("🚀 Бот запущен. Ожидание сообщений...")
-    bot.polling(none_stop=True)
+# Запуск локального сервера (не нужен в Render)
+if __name__ == "__main__":
+    uvicorn.run(app, host="0.0.0.0", port=int(os.environ.get("PORT", 10000)))
