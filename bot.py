@@ -11,8 +11,6 @@ WEBHOOK_URL = os.getenv("WEBHOOK_URL", "https://retete.onrender.com")
 bot = telebot.TeleBot(API_TOKEN)
 app = Flask(__name__)
 
-MODEL_VERSION = "8625175575af3df665d665d2108a9e4e06cacf5c98295297502b52cc9c820b1c"
-
 def generate_image(prompt):
     url = "https://api.replicate.com/v1/predictions"
     headers = {
@@ -20,17 +18,15 @@ def generate_image(prompt):
         "Content-Type": "application/json"
     }
     data = {
-        "version": MODEL_VERSION,
+        "version": "8625175575af3df665d665d2108a9e4e06cacf5c98295297502b52cc9c820b1c",  # пример версии модели
         "input": {"prompt": prompt}
     }
     response = requests.post(url, headers=headers, json=data)
     if response.status_code == 201:
         prediction = response.json()
-        return prediction["urls"]["get"]
+        return prediction["urls"]["get"], None
     else:
-        error_text = f"Ошибка генерации: {response.status_code} {response.text}"
-        print(error_text)
-        return error_text
+        return None, f"Ошибка генерации: {response.status_code} {response.text}"
 
 @bot.message_handler(commands=['start'])
 def start(message):
@@ -40,29 +36,24 @@ def start(message):
 def handle_prompt(message):
     prompt = message.text
     bot.send_message(message.chat.id, "Генерирую изображение, подожди...")
-    status_url_or_error = generate_image(prompt)
-    if status_url_or_error.startswith("Ошибка генерации:"):
-        bot.send_message(message.chat.id, status_url_or_error)
+    status_url, error = generate_image(prompt)
+    if error:
+        bot.send_message(message.chat.id, error)
         return
 
-    for i in range(20):
-        res = requests.get(status_url_or_error, headers={"Authorization": f"Token {REPLICATE_TOKEN}"})
+    for _ in range(20):
+        res = requests.get(status_url, headers={"Authorization": f"Token {REPLICATE_TOKEN}"})
         if res.status_code != 200:
-            err = f"Ошибка получения статуса: {res.status_code} {res.text}"
-            print(err)
-            bot.send_message(message.chat.id, err)
+            bot.send_message(message.chat.id, f"Ошибка получения статуса: {res.status_code} {res.text}")
             break
         status = res.json()
-        bot.send_message(message.chat.id, f"Статус генерации [{i+1}/20]: {status.get('status')}")
         if status.get("status") == "succeeded":
             image_url = status["output"][0]
             bot.send_photo(message.chat.id, image_url)
             return
         elif status.get("status") == "failed":
-            err = "Генерация не удалась."
-            print(err)
-            bot.send_message(message.chat.id, err)
-            break
+            bot.send_message(message.chat.id, "Генерация не удалась.")
+            return
         time.sleep(2)
 
     bot.send_message(message.chat.id, "Не удалось сгенерировать изображение.")
@@ -79,6 +70,7 @@ def index():
     return 'Bot is running'
 
 if __name__ == '__main__':
+    # Автоматическая установка webhook
     bot.remove_webhook()
     bot.set_webhook(WEBHOOK_URL)
     app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)))
