@@ -33,18 +33,6 @@ def generate_image(prompt):
 def start(message):
     bot.send_message(message.chat.id, "Привет! Напиши описание изображения для генерации.")
 
-@bot.message_handler(commands=['checktoken'])
-def check_token(message):
-    headers = {
-        "Authorization": f"Token {REPLICATE_TOKEN}",
-    }
-    response = requests.get("https://api.replicate.com/v1/models", headers=headers)
-
-    if response.status_code == 200:
-        bot.send_message(message.chat.id, "Токен Replicate валидный ✅")
-    else:
-        bot.send_message(message.chat.id, f"Ошибка проверки токена: {response.status_code}\n{response.text}")
-
 @bot.message_handler(func=lambda m: True)
 def handle_prompt(message):
     prompt = message.text
