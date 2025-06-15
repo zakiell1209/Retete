@@ -1,82 +1,68 @@
 import os
-from aiogram import Bot, Dispatcher, types
-from aiogram.filters import Text
-from aiogram.types import ReplyKeyboardMarkup, KeyboardButton
-from aiogram.utils.keyboard import InlineKeyboardBuilder
-from aiogram.utils import executor
-from dotenv import load_dotenv
-import replicate
-import asyncio
+import telebot
+import requests
+from flask import Flask, request
 
-load_dotenv()
+API_TOKEN = os.getenv("TELEGRAM_TOKEN")
+REPLICATE_TOKEN = os.getenv("REPLICATE_API_TOKEN")
+WEBHOOK_URL = os.getenv("WEBHOOK_URL", "https://zak-y7ia.onrender.com")
 
-BOT_TOKEN = os.getenv("BOT_TOKEN")
-REPLICATE_TOKEN = os.getenv("REPLICATE_TOKEN")
+bot = telebot.TeleBot(API_TOKEN)
+app = Flask(__name__)
 
-bot = Bot(token=BOT_TOKEN)
-dp = Dispatcher()
+def generate_image(prompt):
+    url = "https://api.replicate.com/v1/predictions"
+    headers = {
+        "Authorization": f"Token {REPLICATE_TOKEN}",
+        "Content-Type": "application/json"
+    }
+    data = {
+        "version": "cf3cd3846a15a05d29b94fa0bcb9e858c84c212b1234063f8c756c137cd3f9b2",
+        "input": {"prompt": prompt}
+    }
+    response = requests.post(url, headers=headers, json=data)
+    if response.status_code == 201:
+        prediction = response.json()
+        return prediction["urls"]["get"]
+    else:
+        return None
 
-# Кнопки выбора стиля
-style_kb = InlineKeyboardBuilder()
-style_kb.button(text="Аниме", callback_data="style_anime")
-style_kb.button(text="Реализм", callback_data="style_realism")
-style_kb.button(text="Фэнтези", callback_data="style_fantasy")
-style_kb.button(text="Видео (демо)", callback_data="generate_video")
-style_kb.adjust(2)
+@bot.message_handler(commands=['start'])
+def start(message):
+    bot.send_message(message.chat.id, "Привет! Напиши описание изображения для генерации.")
 
-# Переменная для хранения текущего стиля
-user_style = {}
+@bot.message_handler(func=lambda m: True)
+def handle_prompt(message):
+    prompt = message.text
+    bot.send_message(message.chat.id, "Генерирую изображение, подожди...")
+    status_url = generate_image(prompt)
+    if not status_url:
+        bot.send_message(message.chat.id, "Ошибка при генерации.")
+        return
 
-def generate_prompt(text: str, style: str) -> str:
-    base_prompt = f"Генерировать {style} изображение с описанием: {text}"
-    # Здесь можно улучшить парсер и промты, пока простой шаблон
-    return base_prompt
+    for _ in range(20):
+        res = requests.get(status_url, headers={"Authorization": f"Token {REPLICATE_TOKEN}"})
+        status = res.json()
+        if status["status"] == "succeeded":
+            image_url = status["output"][0]
+            bot.send_photo(message.chat.id, image_url)
+            return
+        elif status["status"] == "failed":
+            break
 
-@dp.message(commands=["start", "help"])
-async def cmd_start(message: types.Message):
-    await message.answer(
-        "Привет! Я бот для генерации NSFW изображений.\n"
-        "Напиши описание, а я сгенерирую картинку.\n"
-        "Выбери стиль:",
-        reply_markup=style_kb.as_markup()
-    )
+    bot.send_message(message.chat.id, "Не удалось сгенерировать изображение.")
 
-@dp.callback_query()
-async def cb_handler(callback: types.CallbackQuery):
-    data = callback.data
-    user_id = callback.from_user.id
+@app.route('/', methods=['POST'])
+def webhook():
+    update = telebot.types.Update.de_json(request.stream.read().decode("utf-8"))
+    bot.process_new_updates([update])
+    return '', 200
 
-    if data.startswith("style_"):
-        style = data.split("_")[1]
-        user_style[user_id] = style
-        await callback.message.answer(f"Выбран стиль: {style.capitalize()}. Теперь отправь описание для генерации.")
-        await callback.answer()
-    elif data == "generate_video":
-        await callback.message.answer("Функция генерации видео пока в разработке.")
-        await callback.answer()
+@app.route('/', methods=['GET'])
+def index():
+    return 'Bot is running'
 
-@dp.message()
-async def handle_message(message: types.Message):
-    user_id = message.from_user.id
-    style = user_style.get(user_id, "реализм")
-
-    prompt = generate_prompt(message.text, style)
-
-    await message.answer("Генерирую изображение, подождите...")
-
-    try:
-        output = replicate.run(
-            "aitechtree/nsfw-novel-generation",
-            input={"prompt": prompt},
-            api_token=REPLICATE_TOKEN
-        )
-        if isinstance(output, list):
-            image_url = output[0]
-        else:
-            image_url = output
-        await message.answer_photo(photo=image_url)
-    except Exception as e:
-        await message.answer(f"Ошибка генерации: {e}")
-
-if __name__ == "__main__":
-    executor.start_polling(dp)
+if __name__ == '__main__':
+    bot.remove_webhook()
+    bot.set_webhook(WEBHOOK_URL)
+    app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)))
