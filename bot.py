@@ -18,7 +18,7 @@ def generate_image(prompt):
         "Content-Type": "application/json"
     }
     data = {
-        "version": "8625175575af3df665d665d2108a9e4e06cacf5c98295297502b52cc9c820b1c",  # версия модели
+        "version": "8625175575af3df665d665d2108a9e4e06cacf5c98295297502b52cc9c820b1c",
         "input": {"prompt": prompt}
     }
     response = requests.post(url, headers=headers, json=data)
@@ -26,8 +26,7 @@ def generate_image(prompt):
         prediction = response.json()
         return prediction["urls"]["get"], None
     else:
-        error_text = f"Ошибка генерации: {response.status_code}\nОтвет API:\n{response.text}"
-        return None, error_text
+        return None, f"Ошибка генерации: {response.status_code} {response.text}"
 
 @bot.message_handler(commands=['start'])
 def start(message):
@@ -39,25 +38,34 @@ def handle_prompt(message):
     bot.send_message(message.chat.id, "Генерирую изображение, подожди...")
     status_url, error = generate_image(prompt)
     if error:
-        bot.send_message(message.chat.id, f"Ошибка при генерации:\n{error}")
+        bot.send_message(message.chat.id, f"❌ Ошибка при запуске генерации:\n{error}")
         return
 
-    for _ in range(20):
+    for i in range(20):
         res = requests.get(status_url, headers={"Authorization": f"Token {REPLICATE_TOKEN}"})
         if res.status_code != 200:
-            bot.send_message(message.chat.id, f"Ошибка получения статуса: {res.status_code}\nОтвет API:\n{res.text}")
-            break
-        status = res.json()
-        if status.get("status") == "succeeded":
-            image_url = status["output"][0]
-            bot.send_photo(message.chat.id, image_url)
+            bot.send_message(message.chat.id, f"❌ Ошибка запроса статуса ({res.status_code}):\n{res.text}")
             return
-        elif status.get("status") == "failed":
-            bot.send_message(message.chat.id, "Генерация не удалась.")
+
+        status_data = res.json()
+        current_status = status_data.get("status", "неизвестно")
+        bot.send_message(message.chat.id, f"🔄 Попытка {i+1}/20\nСтатус генерации: *{current_status}*", parse_mode="Markdown")
+
+        if current_status == "succeeded":
+            output = status_data.get("output")
+            if output and isinstance(output, list):
+                bot.send_photo(message.chat.id, output[0])
+            else:
+                bot.send_message(message.chat.id, "⚠️ Ошибка: генерация завершилась, но изображение не получено.")
             return
+
+        elif current_status == "failed":
+            bot.send_message(message.chat.id, "❌ Генерация не удалась.")
+            return
+
         time.sleep(2)
 
-    bot.send_message(message.chat.id, "Не удалось сгенерировать изображение.")
+    bot.send_message(message.chat.id, "❌ Не удалось сгенерировать изображение за отведённое время.")
 
 @app.route('/', methods=['POST'])
 def webhook():
