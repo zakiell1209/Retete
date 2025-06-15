@@ -2,7 +2,6 @@ services:
   - type: web
     name: zak-nsfw-gen-bot
     env: python
-    pythonVersion: 3.11
     plan: free
     buildCommand: pip install -r requirements.txt
     startCommand: python3 bot.py
