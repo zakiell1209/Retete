@@ -6,65 +6,81 @@ from flask import Flask, request
 
 API_TOKEN = os.getenv("TELEGRAM_TOKEN")
 REPLICATE_TOKEN = os.getenv("REPLICATE_API_TOKEN")
-WEBHOOK_URL = os.getenv("WEBHOOK_URL")  # должен быть задан заранее
+WEBHOOK_URL = os.getenv("WEBHOOK_URL", "https://retete.onrender.com")
 
 bot = telebot.TeleBot(API_TOKEN)
 app = Flask(__name__)
 
-MODEL = "wglint/2_sdv2-1"
+# ID нужной модели Replicate (UnfilteredAI / NSFW Gen V2)
+REPLICATE_MODEL_VERSION = "8625175575af3df665d665d2108a9e4e06cacf5c98295297502b52cc9c820b1c"
 
 def generate_image(prompt):
-    resp = requests.post(
-        "https://api.replicate.com/v1/predictions",
-        headers={
-            "Authorization": f"Token {REPLICATE_TOKEN}",
-            "Content-Type": "application/json"
-        },
-        json={
-            "model": MODEL,
-            "inputs": {"prompt": prompt}
-        }
-    )
-    if resp.status_code != 201:
-        return None, f"{resp.status_code} {resp.text}"
-    data = resp.json()
-    status_url = data["urls"]["get"]
-    # Опрашиваем статус
-    for _ in range(30):
-        st = requests.get(status_url, headers={"Authorization": f"Token {REPLICATE_TOKEN}"})
-        js = st.json()
-        if js.get("status") == "succeeded":
-            return js["output"][0], None
-        if js.get("status") == "failed":
-            return None, "generation failed"
-        time.sleep(2)
-    return None, "timeout"
+    url = "https://api.replicate.com/v1/predictions"
+    headers = {
+        "Authorization": f"Token {REPLICATE_TOKEN}",
+        "Content-Type": "application/json"
+    }
+    data = {
+        "version": REPLICATE_MODEL_VERSION,
+        "input": {"prompt": prompt}
+    }
+    response = requests.post(url, headers=headers, json=data)
+
+    if response.status_code == 201:
+        prediction = response.json()
+        return prediction["urls"]["get"]
+    else:
+        print("Ошибка генерации:", response.status_code, response.text)
+        return None
 
 @bot.message_handler(commands=["start"])
-def cmd_start(m):
-    bot.send_message(m.chat.id, "Привет! Пиши описание — я сгенерирую картинку.")
+def start(message):
+    bot.send_message(message.chat.id, "Привет! Напиши описание изображения, и я его сгенерирую.")
 
 @bot.message_handler(func=lambda m: True)
-def handle_all(m):
-    bot.send_message(m.chat.id, "Генерирую…")
-    url, err = generate_image(m.text)
-    if err:
-        bot.send_message(m.chat.id, f"Ошибка: {err}")
-    else:
-        bot.send_photo(m.chat.id, url)
+def handle_prompt(message):
+    prompt = message.text
+    bot.send_message(message.chat.id, "Генерирую изображение, подожди...")
+
+    status_url = generate_image(prompt)
+    if not status_url:
+        bot.send_message(message.chat.id, "❌ Ошибка при генерации. Проверь логи.")
+        return
+
+    for _ in range(20):
+        res = requests.get(status_url, headers={"Authorization": f"Token {REPLICATE_TOKEN}"})
+        if res.status_code != 200:
+            print("Ошибка статуса:", res.status_code, res.text)
+            break
+        status = res.json()
+        if status.get("status") == "succeeded":
+            image_url = status["output"][0]
+            bot.send_photo(message.chat.id, image_url)
+            return
+        elif status.get("status") == "failed":
+            print("Ошибка модели:", status)
+            break
+        time.sleep(1.5)  # чуть быстрее, чем раньше
+
+    bot.send_message(message.chat.id, "❌ Не удалось сгенерировать изображение.")
 
 @app.route("/", methods=["POST"])
 def webhook():
-    bot.process_new_updates([telebot.types.Update.de_json(request.stream.read().decode())])
+    json_string = request.get_data().decode("utf-8")
+    update = telebot.types.Update.de_json(json_string)
+    bot.process_new_updates([update])
     return "", 200
 
 @app.route("/", methods=["GET"])
 def index():
-    return "OK"
+    return "🤖 Бот работает!"
 
 if __name__ == "__main__":
-    # Установка вебхука
-    telebot.apihelper.send(  # напрямую вызываем API setWebhook
-        f"https://api.telegram.org/bot{API_TOKEN}/setWebhook?url={WEBHOOK_URL}"
+    # Устанавливаем вебхук вручную
+    r = requests.get(
+        f"https://api.telegram.org/bot{API_TOKEN}/setWebhook",
+        params={"url": WEBHOOK_URL}
     )
+    print("Webhook response:", r.text)
+
     app.run(host="0.0.0.0", port=int(os.getenv("PORT", 5000)))
