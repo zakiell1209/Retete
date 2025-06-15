@@ -39,22 +39,29 @@ def handle_prompt(message):
     bot.send_message(message.chat.id, "Генерирую изображение, подожди...")
     status_url = generate_image(prompt)
     if not status_url:
-        bot.send_message(message.chat.id, "Ошибка при генерации.")
+        bot.send_message(message.chat.id, "Ошибка при генерации. Проверь логи.")
         return
 
     for _ in range(20):
         res = requests.get(status_url, headers={"Authorization": f"Token {REPLICATE_TOKEN}"})
         if res.status_code != 200:
-            print(f"Ошибка получения статуса: {res.status_code} {res.text}")
+            error_text = f"Ошибка получения статуса: {res.status_code} {res.text}"
+            print(error_text)
+            bot.send_message(message.chat.id, error_text)
             break
         status = res.json()
+        print("Ответ Replicate:", status)
+
         if status.get("status") == "succeeded":
             image_url = status["output"][0]
             bot.send_photo(message.chat.id, image_url)
             return
         elif status.get("status") == "failed":
+            error_msg = status.get("error", "Неизвестная ошибка генерации.")
+            print("Ошибка генерации:", error_msg)
+            bot.send_message(message.chat.id, f"Ошибка генерации: {error_msg}")
             break
-        time.sleep(2)  # Подождать 2 секунды перед повтором
+        time.sleep(2)
 
     bot.send_message(message.chat.id, "Не удалось сгенерировать изображение.")
 
@@ -70,6 +77,7 @@ def index():
     return 'Bot is running'
 
 if __name__ == '__main__':
-    bot.remove_webhook()
-    bot.set_webhook(WEBHOOK_URL)
+    # bot.remove_webhook()
+    # bot.set_webhook(WEBHOOK_URL)
+    # print(f"Webhook установлен на {WEBHOOK_URL}")
     app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)))
