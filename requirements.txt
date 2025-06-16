@@ -1,4 +1,4 @@
 pyTelegramBotAPI==4.15.3
 flask
 requests>=2.28
-replicate==0.16.4
+replicate>=0.30.0
