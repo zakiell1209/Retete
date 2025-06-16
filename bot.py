@@ -18,84 +18,63 @@ REPLICATE_MODELS = {
 
 bot = telebot.TeleBot(API_TOKEN)
 app = Flask(__name__)
+
+# Структура user_settings теперь:
+# {
+#   cid: {
+#     "drafts": [  # список драфтов (промтов)
+#        {"base": str, "tags": list, "model": str}
+#     ],
+#     "current_draft": int,  # индекс активного драфта
+#     "waiting_for_prompt": bool,
+#     "waiting_for_edit_prompt": bool,
+#     "waiting_for_edit_tags": bool,
+#     "waiting_for_edit_model": bool,
+#     "history": [ { "prompt": str, "image_url": str } ] # для истории
+#   }
+# }
+
 user_settings = {}
 
-TAGS = {
-    "holes": ["vagina", "anal", "both"],
-    "toys": ["dildo", "anal_beads", "anal_plug", "gag", "piercing"],
-    "poses": [
-        "doggy", "standing", "splits", "squat", "lying",
-        "split_horizontal", "split_vertical", "side_leg_up",
-        "front_facing", "back_facing", "laying_spread_knees"
-    ],
-    "clothes": ["stockings", "bikini", "mask", "heels", "shibari", "cow_costume", "bikini_tan_lines"],
-    "body": [
-        "big_breasts", "small_breasts", "skin_white", "skin_black",
-        "chubby", "slim", "fit", "muscular", "short", "tall",
-        "loli", "milf", "middle_age"
-    ],
-    "ethnos": ["femboy", "futanari", "ethnicity_asian", "ethnicity_european"],
-    "furry": ["furry_cow", "furry_cat", "furry_dog", "furry_dragon", "furry_sylveon"]
-}
+# === Теги и клавиатуры (без изменений) ===
+# ... здесь вставь твои словари TAGS, CATEGORY_NAMES_EMOJI, CLOTHES_NAMES_EMOJI, TAG_NAMES_EMOJI, как у тебя сейчас ...
 
-CATEGORY_NAMES_EMOJI = {
-    "holes": "Отверстия 🕳️",
-    "toys": "Игрушки 🧸",
-    "poses": "Позиции 🤸‍♀️",
-    "clothes": "Одежда 👗",
-    "body": "Тело 🧍‍♀️",
-    "ethnos": "Этнос 🌍",
-    "furry": "Фури 🐾"
-}
+# Добавим флаг выбора для тегов (галочки)
+def tags_keyboard_with_selection(category, selected_tags):
+    markup = types.InlineKeyboardMarkup(row_width=2)
+    for tag in TAGS.get(category, []):
+        if category == "clothes":
+            name = CLOTHES_NAMES_EMOJI.get(tag, tag)
+        else:
+            name = TAG_NAMES_EMOJI.get(category, {}).get(tag, tag)
+        # Добавляем галочку если выбран
+        if tag in selected_tags:
+            name = "✅ " + name
+        markup.add(types.InlineKeyboardButton(name, callback_data=f"tag_{tag}"))
+    markup.add(types.InlineKeyboardButton("⬅ Назад", callback_data="tags_back"))
+    return markup
 
-CLOTHES_NAMES_EMOJI = {
-    "stockings": "Чулки 🧦", "bikini": "Бикини 👙", "mask": "Маска 😷", "heels": "Туфли 👠",
-    "shibari": "Шибари ⛓️", "cow_costume": "Костюм коровы 🐄", "bikini_tan_lines": "Загар от бикини ☀️"
-}
-
-TAG_NAMES_EMOJI = {
-    "holes": {"vagina": "Вагина ♀️", "anal": "Анал 🍑", "both": "Оба 🔥"},
-    "toys": {"dildo": "Дилдо 🍆", "anal_beads": "Анальные бусы 🔴", "anal_plug": "Пробка 🔵", "gag": "Кляп 😶", "piercing": "Пирсинг 💎"},
-    "poses": {
-        "doggy": "Догги 🐕", "standing": "Стоя 🧍", "splits": "Шпагат 🤸", "squat": "Присед 🧎", "lying": "Лежа 🛌",
-        "split_horizontal": "Горизонтальный шпагат ↔️", "split_vertical": "Вертикальный шпагат ↕️",
-        "side_leg_up": "На боку с ногой вверх 🦵", "front_facing": "Лицом к зрителю 👁", "back_facing": "Спиной к зрителю 🔙",
-        "laying_spread_knees": "На спине, ноги врозь ⛓️"
-    },
-    "body": {
-        "big_breasts": "Большая грудь 🍒", "small_breasts": "Маленькая грудь 🥥",
-        "skin_white": "Белая кожа ⚪", "skin_black": "Чёрная кожа ⚫",
-        "chubby": "Пышное тело 🍑", "slim": "Худое тело 🧘", "fit": "Подтянутое тело 💃",
-        "muscular": "Накачанное тело 💪", "short": "Низкий рост 📏", "tall": "Высокий рост 📐",
-        "loli": "Лоли 👧", "milf": "Милфа 👩", "middle_age": "Средний возраст 👩‍🦳"
-    },
-    "ethnos": {
-        "femboy": "Фембой ⚧", "futanari": "Футанари 🔞",
-        "ethnicity_asian": "Азиатка 🈶", "ethnicity_european": "Европейка 🇪🇺"
-    },
-    "furry": {
-        "furry_cow": "Фури-корова 🐄", "furry_cat": "Фури-кошка 🐱", "furry_dog": "Фури-собака 🐶",
-        "furry_dragon": "Фури-дракон 🐉", "furry_sylveon": "Фури-сильвеон 🎀"
-    }
-}
-
+# === Основное меню ===
 def main_keyboard():
     markup = types.InlineKeyboardMarkup(row_width=2)
     markup.add(
         types.InlineKeyboardButton("🎨 Выбрать модель", callback_data="model"),
         types.InlineKeyboardButton("🧩 Выбрать теги", callback_data="tags"),
-        types.InlineKeyboardButton("✅ Генерировать", callback_data="generate")
+        types.InlineKeyboardButton("📝 Редактировать описание", callback_data="edit_base"),
+        types.InlineKeyboardButton("✅ Генерировать", callback_data="generate"),
+        types.InlineKeyboardButton("🗂 Управление драфтами", callback_data="manage_drafts"),
+        types.InlineKeyboardButton("📜 История генераций", callback_data="history")
     )
     return markup
 
-def model_keyboard():
-    markup = types.InlineKeyboardMarkup()
-    markup.add(
-        types.InlineKeyboardButton("🖌 Аниме", callback_data="model_anime"),
-        types.InlineKeyboardButton("📷 Реализм", callback_data="model_realism"),
-        types.InlineKeyboardButton("🧱 3D", callback_data="model_3d"),
-        types.InlineKeyboardButton("⬅ Назад", callback_data="main_menu")
-    )
+def model_keyboard(selected_model=None):
+    markup = types.InlineKeyboardMarkup(row_width=2)
+    for key, name in [("anime", "🖌 Аниме"), ("realism", "📷 Реализм"), ("3d", "🧱 3D")]:
+        display_name = name
+        if selected_model == key:
+            display_name = "✅ " + name
+        markup.add(types.InlineKeyboardButton(display_name, callback_data=f"model_{key}"))
+    markup.add(types.InlineKeyboardButton("⬅ Назад", callback_data="main_menu"))
     return markup
 
 def category_keyboard():
@@ -105,127 +84,279 @@ def category_keyboard():
     markup.add(types.InlineKeyboardButton("✅ Готово", callback_data="tags_done"))
     return markup
 
-def tags_keyboard(category):
-    markup = types.InlineKeyboardMarkup(row_width=2)
-    for tag in TAGS.get(category, []):
-        name = CLOTHES_NAMES_EMOJI.get(tag, TAG_NAMES_EMOJI.get(category, {}).get(tag, tag))
-        markup.add(types.InlineKeyboardButton(name, callback_data=f"tag_{tag}"))
-    markup.add(types.InlineKeyboardButton("⬅ Назад", callback_data="tags_back"))
+def tags_keyboard(category, selected_tags):
+    # Используем обновленную функцию с галочками
+    return tags_keyboard_with_selection(category, selected_tags)
+
+def drafts_keyboard(drafts, current_index):
+    markup = types.InlineKeyboardMarkup(row_width=1)
+    for i, draft in enumerate(drafts):
+        base_short = draft["base"][:20] + ("..." if len(draft["base"]) > 20 else "")
+        name = f"#{i+1} {'(активный)' if i == current_index else ''} - {base_short}"
+        markup.add(types.InlineKeyboardButton(name, callback_data=f"draft_select_{i}"))
+    markup.add(types.InlineKeyboardButton("➕ Создать новый драфт", callback_data="draft_new"))
+    markup.add(types.InlineKeyboardButton("⬅ Назад", callback_data="main_menu"))
     return markup
+
+def draft_actions_keyboard(draft_index):
+    markup = types.InlineKeyboardMarkup(row_width=2)
+    markup.add(
+        types.InlineKeyboardButton("✏️ Редактировать описание", callback_data=f"draft_edit_base_{draft_index}"),
+        types.InlineKeyboardButton("🧩 Редактировать теги", callback_data=f"draft_edit_tags_{draft_index}"),
+        types.InlineKeyboardButton("🎨 Выбрать модель", callback_data=f"draft_edit_model_{draft_index}"),
+        types.InlineKeyboardButton("🗑 Удалить драфт", callback_data=f"draft_delete_{draft_index}"),
+        types.InlineKeyboardButton("⬅ Назад", callback_data="manage_drafts")
+    )
+    return markup
+
+def history_keyboard(history):
+    markup = types.InlineKeyboardMarkup(row_width=1)
+    for i, item in enumerate(history[-10:][::-1]):  # последние 10
+        base_short = item["prompt"][:30] + ("..." if len(item["prompt"]) > 30 else "")
+        markup.add(types.InlineKeyboardButton(f"#{len(history)-i} {base_short}", callback_data=f"history_{len(history)-1 - i}"))
+    markup.add(types.InlineKeyboardButton("⬅ Назад", callback_data="main_menu"))
+    return markup
+
+# ==== Обработка команд ====
 
 @bot.message_handler(commands=["start"])
 def start(message):
     cid = message.chat.id
-    user_settings[cid] = {"features": [], "model": "anime", "waiting_for_prompt": False}
+    if cid not in user_settings:
+        user_settings[cid] = {
+            "drafts": [{"base": "", "tags": [], "model": "anime"}],
+            "current_draft": 0,
+            "waiting_for_prompt": False,
+            "waiting_for_edit_prompt": False,
+            "waiting_for_edit_tags": False,
+            "waiting_for_edit_model": False,
+            "history": []
+        }
     bot.send_message(cid, "Привет! Выбери действие:", reply_markup=main_keyboard())
 
 @bot.callback_query_handler(func=lambda call: True)
 def handle_callback(call):
     cid = call.message.chat.id
     data = call.data
-    if cid not in user_settings:
-        user_settings[cid] = {"features": [], "model": "anime", "waiting_for_prompt": False}
+    user = user_settings.setdefault(cid, {
+        "drafts": [{"base": "", "tags": [], "model": "anime"}],
+        "current_draft": 0,
+        "waiting_for_prompt": False,
+        "waiting_for_edit_prompt": False,
+        "waiting_for_edit_tags": False,
+        "waiting_for_edit_model": False,
+        "history": []
+    })
 
-    if data == "model":
-        bot.edit_message_text("Выбери модель:", cid, call.message.message_id, reply_markup=model_keyboard())
+    def current_draft():
+        return user["drafts"][user["current_draft"]]
+
+    if data == "main_menu":
+        bot.edit_message_text("Главное меню:", cid, call.message.message_id, reply_markup=main_keyboard())
+        reset_waiting_flags(user)
+
+    elif data == "model":
+        bot.edit_message_text("Выбери модель:", cid, call.message.message_id, reply_markup=model_keyboard(current_draft()["model"]))
+
     elif data.startswith("model_"):
         model = data.split("_")[1]
-        user_settings[cid]["model"] = model
+        current_draft()["model"] = model
         bot.edit_message_text(f"Модель установлена: {model}", cid, call.message.message_id, reply_markup=main_keyboard())
+        reset_waiting_flags(user)
+
     elif data == "tags":
         bot.edit_message_text("Выбери категорию:", cid, call.message.message_id, reply_markup=category_keyboard())
+
     elif data.startswith("cat_"):
         cat = data.split("_")[1]
-        bot.edit_message_text(f"Выбери теги категории {CATEGORY_NAMES_EMOJI[cat]}:", cid, call.message.message_id, reply_markup=tags_keyboard(cat))
+        bot.edit_message_text(f"Выбери теги категории {CATEGORY_NAMES_EMOJI[cat]}:", cid, call.message.message_id,
+                              reply_markup=tags_keyboard(cat, current_draft()["tags"]))
+
     elif data.startswith("tag_"):
         tag = data.split("_")[1]
-        tags = user_settings[cid]["features"]
+        tags = current_draft()["tags"]
         if tag in tags:
             tags.remove(tag)
+            bot.answer_callback_query(call.id, f"Тег '{tag}' удалён")
         else:
             tags.append(tag)
-        user_settings[cid]["features"] = tags
-        bot.answer_callback_query(call.id, f"{tag} выбрано")
+            bot.answer_callback_query(call.id, f"Тег '{tag}' добавлен")
+        # Обновляем клавиатуру с выделением
+        cat = find_category_of_tag(tag)
+        bot.edit_message_reply_markup(call.message.chat.id, call.message.message_id,
+                                      reply_markup=tags_keyboard(cat, tags))
+
     elif data == "tags_done":
         bot.edit_message_text("Теги сохранены.", cid, call.message.message_id, reply_markup=main_keyboard())
+        reset_waiting_flags(user)
+
     elif data == "tags_back":
         bot.edit_message_text("Выбери категорию:", cid, call.message.message_id, reply_markup=category_keyboard())
+
+    elif data == "edit_base":
+        user["waiting_for_edit_prompt"] = True
+        bot.send_message(cid, "Введи новое описание:")
+
     elif data == "generate":
-        user_settings[cid]["waiting_for_prompt"] = True
-        bot.send_message(cid, "✏️ Введи описание картинки:")
+        bot.send_message(cid, "Выбери действие:", reply_markup=types.InlineKeyboardMarkup(row_width=1).add(
+            types.InlineKeyboardButton("▶️ Продолжить с текущим промтом", callback_data="gen_continue"),
+            types.InlineKeyboardButton("🔄 Начать заново", callback_data="gen_restart"),
+            types.InlineKeyboardButton("⬅ Отмена", callback_data="main_menu")
+        ))
 
-@bot.message_handler(func=lambda m: user_settings.get(m.chat.id, {}).get("waiting_for_prompt"))
-def handle_prompt(message):
-    cid = message.chat.id
-    user_settings[cid]["waiting_for_prompt"] = False
-    base = message.text
-    features = user_settings[cid]["features"]
-    model_key = user_settings[cid]["model"]
-    model_id = REPLICATE_MODELS.get(model_key, REPLICATE_MODELS["anime"])
-    full_prompt = build_prompt(base, features)
+    elif data == "gen_continue":
+        user["waiting_for_prompt"] = True
+        bot.send_message(cid, f"Текущий промт:\n{current_draft()['base']}\n\n✏️ Введи дополнение к описанию:")
 
-    bot.send_message(cid, "⏳ Генерация изображения...")
-    status_url, err = generate_image(full_prompt, model_id)
-    if err:
-        bot.send_message(cid, err)
-        return
+    elif data == "gen_restart":
+        current_draft()["base"] = ""
+        current_draft()["tags"] = []
+        bot.send_message(cid, "Начни ввод нового описания:")
+        user["waiting_for_prompt"] = True
 
-    image_url = wait_for_image(status_url)
-    if image_url:
-        bot.send_photo(cid, image_url, caption="Вот результат!", reply_markup=main_keyboard())
+    elif data == "manage_drafts":
+        bot.edit_message_text("Выбери драфт:", cid, call.message.message_id,
+                              reply_markup=drafts_keyboard(user["drafts"], user["current_draft"]))
+
+    elif data.startswith("draft_select_"):
+        idx = int(data.split("_")[2])
+        user["current_draft"] = idx
+        bot.edit_message_text(f"Активный драфт #{idx + 1}", cid, call.message.message_id,
+                              reply_markup=draft_actions_keyboard(idx))
+
+    elif data == "draft_new":
+        user["drafts"].append({"base": "", "tags": [], "model": "anime"})
+        user["current_draft"] = len(user["drafts"]) - 1
+        bot.edit_message_text(f"Создан новый драфт #{user['current_draft'] + 1}", cid, call.message.message_id,
+                              reply_markup=draft_actions_keyboard(user["current_draft"]))
+
+    elif data.startswith("draft_edit_base_"):
+        idx = int(data.split("_")[3])
+        if idx == user["current_draft"]:
+            user["waiting_for_edit_prompt"] = True
+            bot.send_message(cid, "Введи новое описание:")
+        else:
+            bot.answer_callback_query(call.id, "Можно редактировать только активный драфт")
+
+    elif data.startswith("draft_edit_tags_"):
+        idx = int(data.split("_")[3])
+        if idx == user["current_draft"]:
+            user["waiting_for_edit_tags"] = True
+            bot.send_message(cid, "Выбери категорию:", reply_markup=category_keyboard())
+        else:
+            bot.answer_callback_query(call.id, "Можно редактировать только активный драфт")
+
+    elif data.startswith("draft_edit_model_"):
+        idx = int(data.split("_")[3])
+        if idx == user["current_draft"]:
+            bot.edit_message_text("Выбери модель:", cid, call.message.message_id,
+                                  reply_markup=model_keyboard(current_draft()["model"]))
+            user["waiting_for_edit_model"] = True
+        else:
+            bot.answer_callback_query(call.id, "Можно редактировать только активный драфт")
+
+    elif data.startswith("draft_delete_"):
+        idx = int(data.split("_")[2])
+        if len(user["drafts"]) == 1:
+            bot.answer_callback_query(call.id, "Нельзя удалить последний драфт")
+            return
+        user["drafts"].pop(idx)
+        if user["current_draft"] >= len(user["drafts"]):
+            user["current_draft"] = len(user["drafts"]) - 1
+        bot.edit_message_text("Драфт удалён.", cid, call.message.message_id,
+                              reply_markup=drafts_keyboard(user["drafts"], user["current_draft"]))
+
+    elif data == "history":
+        if not user["history"]:
+            bot.edit_message_text("История пуста.", cid, call.message.message_id,
+                                  reply_markup=main_keyboard())
+        else:
+            bot.edit_message_text("История последних генераций:", cid, call.message.message_id,
+                                  reply_markup=history_keyboard(user["history"]))
+
+    elif data.startswith("history_"):
+        idx = int(data.split("_")[1])
+        if idx >= 0 and idx < len(user["history"]):
+            hist = user["history"][idx]
+            bot.send_photo(cid, hist["image_url"], caption=f"Промт:\n{hist['prompt']}", reply_markup=main_keyboard())
+        else:
+            bot.answer_callback_query(call.id, "Неверный индекс истории")
+
     else:
-        bot.send_message(cid, "❌ Ошибка генерации изображения.")
+        bot.answer_callback_query(call.id, "Неизвестная команда")
 
-def build_prompt(base, tags):
-    map_tag = {
-        "vagina": "vaginal penetration", "anal": "anal penetration", "both": "double penetration",
-        "dildo": "dildo", "anal_beads": "anal beads", "anal_plug": "anal plug", "gag": "gag", "piercing": "body piercing",
-        "doggy": "doggy style", "standing": "standing pose", "splits": "splits", "squat": "squatting", "lying": "laying",
-        "split_horizontal": "horizontal split", "split_vertical": "vertical split", "side_leg_up": "laying on side with one leg up",
-        "front_facing": "facing viewer", "back_facing": "back facing viewer", "laying_spread_knees": "laying on back, knees bent and spread",
-        "stockings": "stockings", "bikini": "bikini", "mask": "mask", "heels": "high heels", "shibari": "shibari",
-        "cow_costume": "cow costume", "bikini_tan_lines": "bikini tan lines",
-        "big_breasts": "large breasts", "small_breasts": "small breasts", "skin_white": "white skin", "skin_black": "black skin",
-        "femboy": "femboy", "futanari": "futanari", "ethnicity_asian": "asian girl", "ethnicity_european": "european girl",
-        "chubby": "chubby body", "slim": "slim body", "fit": "fit body", "muscular": "muscular body",
-        "short": "short girl", "tall": "tall girl", "loli": "young girl", "milf": "mature woman", "middle_age": "middle-aged woman",
-        "furry_cow": "furry cow", "furry_cat": "furry cat", "furry_dog": "furry dog", "furry_dragon": "furry dragon", "furry_sylveon": "furry sylveon"
-    }
-    details = [map_tag.get(t, t) for t in tags]
-    return base + ", " + ", ".join(details + ["nsfw, masterpiece, ultra detailed"])
+def reset_waiting_flags(user):
+    user["waiting_for_prompt"] = False
+    user["waiting_for_edit_prompt"] = False
+    user["waiting_for_edit_tags"] = False
+    user["waiting_for_edit_model"] = False
 
-def generate_image(prompt, model_version):
-    url = "https://api.replicate.com/v1/predictions"
-    headers = {"Authorization": f"Token {REPLICATE_TOKEN}", "Content-Type": "application/json"}
-    data = {"version": model_version, "input": {"prompt": prompt}}
-    res = requests.post(url, headers=headers, json=data)
-    if res.status_code == 201:
-        return res.json()["urls"]["get"], None
-    return None, "Ошибка генерации"
-
-def wait_for_image(status_url):
-    headers = {"Authorization": f"Token {REPLICATE_TOKEN}"}
-    for _ in range(40):
-        time.sleep(2)
-        res = requests.get(status_url, headers=headers)
-        if res.status_code == 200:
-            data = res.json()
-            if data["status"] == "succeeded":
-                return data["output"][0] if isinstance(data["output"], list) else data["output"]
-            elif data["status"] == "failed":
-                return None
+def find_category_of_tag(tag):
+    for cat, tags in TAGS.items():
+        if tag in tags:
+            return cat
     return None
 
-@app.route("/", methods=["POST"])
-def webhook():
-    bot.process_new_updates([telebot.types.Update.de_json(request.stream.read().decode("utf-8"))])
-    return "OK", 200
+@bot.message_handler(func=lambda m: True)
+def handle_messages(message):
+    cid = message.chat.id
+    if cid not in user_settings:
+        bot.send_message(cid, "Напиши /start для начала работы.")
+        return
 
-@app.route("/", methods=["GET"])
-def index():
-    return "Бот работает", 200
+    user = user_settings[cid]
 
-if __name__ == "__main__":
-    bot.remove_webhook()
-    bot.set_webhook(url=WEBHOOK_URL)
-    app.run(host="0.0.0.0", port=PORT)
+    if user.get("waiting_for_edit_prompt"):
+        # Редактируем описание драфта
+        current = user["drafts"][user["current_draft"]]
+        current["base"] = message.text.strip()
+        user["waiting_for_edit_prompt"] = False
+        bot.send_message(cid, "Описание сохранено.", reply_markup=main_keyboard())
+
+    elif user.get("waiting_for_prompt"):
+        # Генерация, добавляем или дополняем описание
+        current = user["drafts"][user["current_draft"]]
+        if current["base"]:
+            # Дополняем описание, если продолжение
+            current["base"] += ", " + message.text.strip()
+        else:
+            current["base"] = message.text.strip()
+        user["waiting_for_prompt"] = False
+
+        bot.send_message(cid, "⏳ Генерация изображения...")
+        model_id = REPLICATE_MODELS.get(current["model"], REPLICATE_MODELS["anime"])
+        full_prompt = build_prompt(current["base"], current["tags"])
+        status_url, err = generate_image(full_prompt, model_id)
+        if err:
+            bot.send_message(cid, err)
+            return
+
+        image_url = wait_for_image(status_url)
+        if image_url:
+            bot.send_photo(cid, image_url, caption="Вот результат!", reply_markup=main_keyboard())
+            # Сохраняем в историю
+            user["history"].append({"prompt": full_prompt, "image_url": image_url})
+        else:
+            bot.send_message(cid, "❌ Ошибка генерации изображения.")
+
+    elif user.get("waiting_for_edit_tags"):
+        # Во время редактирования тегов ждем выбор категорий и тегов, но обработка тут не нужна
+        bot.send_message(cid, "Пожалуйста, выбери теги через кнопки.")
+
+    elif user.get("waiting_for_edit_model"):
+        bot.send_message(cid, "Пожалуйста, выбери модель через кнопки.")
+
+    else:
+        bot.send_message(cid, "Неверная команда. Используй меню.", reply_markup=main_keyboard())
+
+# === Промт сборка и генерация ===
+
+def build_prompt(base, tags):
+    additions = []
+    map_tag = {
+        "vagina": "vaginal penetration", "anal": "anal penetration", "both": "double penetration",
+        "dildo": "dildo", "anal_beads": "anal beads", "anal_plug": "anal plug", "gag": "gag",
+        "doggy": "doggy style", "standing": "standing pose", "splits": "splits", "squat": "squatting", "lying": "laying",
+        "stockings": "stockings", "bikini": "bikini", "mask": "mask", "heels": "high heels", "shibari": "shibari",
+        "cow_costume": "cow costume", "bikini_tan_lines": "bikini tan lines",
+        "big_breasts": "large breasts", "small_breasts": "small breasts", "
