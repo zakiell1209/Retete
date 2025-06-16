@@ -1,223 +1,177 @@
 import os
-import time
-import requests
+import replicate
 from flask import Flask, request
 import telebot
-from telebot import types
+from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton
 
-API_TOKEN = os.getenv("TELEGRAM_TOKEN")
-REPLICATE_TOKEN = os.getenv("REPLICATE_API_TOKEN")
-WEBHOOK_URL = os.getenv("WEBHOOK_URL")
-PORT = int(os.environ.get("PORT", 5000))
-
-REPLICATE_MODELS = {
-    "anime": "c1d5b02687df6081c7953c74bcc527858702e8c153c9382012ccc3906752d3ec",
-    "realism": "stability-ai/stable-diffusion:ac732df8",
-    "3d": "stability-ai/stable-diffusion-3-medium"
-}
-
-bot = telebot.TeleBot(API_TOKEN)
+# ⛓️ Токены и параметры
+TELEGRAM_TOKEN = os.getenv("TELEGRAM_TOKEN")
+REPLICATE_API_TOKEN = os.getenv("REPLICATE_API_TOKEN")
+bot = telebot.TeleBot(TELEGRAM_TOKEN)
 app = Flask(__name__)
-user_settings = {}
+replicate_client = replicate.Client(api_token=REPLICATE_API_TOKEN)
 
-# Теги по категориям
+# 🏷️ Теги и настройки
+TAGS_PER_PAGE = 8
+
 TAGS = {
-    "poses": ["doggy", "standing", "splits", "squat", "lying", "vert_sp", "horiz_sp", "legs_apart", "side_leg", "face", "back", "bridge", "rope"],
-    "holes": ["vagina", "anal", "both"],
-    "toys": ["dildo", "beads", "plug", "gag", "piercing"],
-    "clothes": ["stockings", "bikini", "mask", "heels", "shibari", "cow_costume", "tan_lines"],
-    "body": ["loli", "milf", "age21", "thin", "muscular", "curvy", "normal", "big_breasts", "small_breasts", "black_skin", "white_skin"],
-    "ethnicity": ["femboy", "asian", "european"],
-    "furry": ["cow", "cat", "dog", "dragon", "silveon"]
+    "тело": {
+        "Лоли": "loli",
+        "Милфа": "milf",
+        "21 год": "age 21",
+        "Худая": "skinny",
+        "Накачаная": "muscular",
+        "Пышная": "curvy",
+        "Норм. тело": "normal body"
+    },
+    "игрушки": {
+        "Анальные бусы": "anal beads",
+        "Фаллоимитатор": "dildo",
+        "Пирсинг": "piercing"
+    },
+    "этнос": {
+        "Фембой": "femboy",
+        "Азиатка": "asian girl",
+        "Европейка": "european girl",
+        "Футанари": "futanari"
+    },
+    "фури": {
+        "Фури-королева": "furry queen",
+        "Фури-кошка": "furry cat",
+        "Фури-собака": "furry dog",
+        "Фури-дракон": "furry dragon",
+        "Сильвеон": "furry_silveon"
+    },
+    "одежда": {
+        "Загар от бикини": "bikini_tan_lines",
+        "Костюм коровы": "cow_costume"
+    },
+    "позы": {
+        "Горизонт. шпагат": "horizontal split",
+        "Вертик. шпагат": "vertical split",
+        "На боку нога вверх": "side pose one leg up",
+        "Лицом к нам": "facing viewer",
+        "Спиной к нам": "back to viewer",
+        "Лёжа раздвинутые": "lying with spread legs",
+        "Мостик": "bridging pose",
+        "Подвешена": "suspended ropes"
+    }
 }
 
-CATEGORY_NAMES = {
-    "poses": "Позиции",
-    "holes": "Отверстия",
-    "toys": "Игрушки",
-    "clothes": "Одежда",
-    "body": "Тело",
-    "ethnicity": "Этнос",
-    "furry": "Фури"
-}
+user_state = {}
 
-# Названия тегов
-TAG_RN = {
-    "doggy": "Догги",
-    "standing": "Стоя",
-    "splits": "Шпагат",
-    "squat": "Присед",
-    "lying": "Лежа",
-    "vert_sp": "Вертик.",
-    "horiz_sp": "Горизонт.",
-    "legs_apart": "Ноги в стороны",
-    "side_leg": "На боку",
-    "face": "К зрителю",
-    "back": "Спиной",
-    "bridge": "Мост",
-    "rope": "На верёвках",
-    "vagina": "Вагина",
-    "anal": "Анал",
-    "both": "Обоє",
-    "dildo": "Дилдо",
-    "beads": "Бусы",
-    "plug": "Пробка",
-    "gag": "Кляп",
-    "piercing": "Пирсинг",
-    "stockings": "Чулки",
-    "bikini": "Бикини",
-    "mask": "Маска",
-    "heels": "Туфли",
-    "shibari": "Шибари",
-    "cow_costume": "Коровий костюм",
-    "tan_lines": "Загар",
-    "loli": "Лоли",
-    "milf": "Милфа",
-    "age21": "21 год",
-    "thin": "Худая",
-    "muscular": "Мускулы",
-    "curvy": "Пышная",
-    "normal": "Норма",
-    "big_breasts": "Большие груди",
-    "small_breasts": "Маленькие",
-    "black_skin": "Чёрная кожа",
-    "white_skin": "Белая кожа",
-    "femboy": "Фембой",
-    "asian": "Азиатка",
-    "european": "Европейка",
-    "cow": "Фури‑корова",
-    "cat": "Фури‑кошка",
-    "dog": "Фури‑собака",
-    "dragon": "Фури‑дракон",
-    "silveon": "Сильвеон"
-}
+# 🔘 Кнопки
+def get_tags_keyboard(category, page, selected_tags):
+    tags = list(TAGS[category].items())
+    start = page * TAGS_PER_PAGE
+    end = start + TAGS_PER_PAGE
+    page_tags = tags[start:end]
+    markup = InlineKeyboardMarkup(row_width=2)
+    for name, prompt in page_tags:
+        checked = "✅ " if prompt in selected_tags else ""
+        markup.add(InlineKeyboardButton(f"{checked}{name}", callback_data=f"tag|{category}|{prompt}"))
+    nav_buttons = []
+    if start > 0:
+        nav_buttons.append(InlineKeyboardButton("⬅️", callback_data=f"nav|{category}|{page-1}"))
+    if end < len(tags):
+        nav_buttons.append(InlineKeyboardButton("➡️", callback_data=f"nav|{category}|{page+1}"))
+    markup.row(*nav_buttons)
+    markup.row(InlineKeyboardButton("Готово", callback_data="tags_done"))
+    return markup
 
-def chunk_list(lst, n):
-    for i in range(0, len(lst), n):
-        yield lst[i:i+n]
+def get_categories_keyboard():
+    markup = InlineKeyboardMarkup(row_width=2)
+    for cat in TAGS.keys():
+        markup.add(InlineKeyboardButton(cat, callback_data=f"category|{cat}"))
+    return markup
 
-def main_menu():
-    kb = types.InlineKeyboardMarkup()
-    kb.add(types.InlineKeyboardButton("🧩 Теги", callback_data="choose_cat"))
-    kb.add(types.InlineKeyboardButton("✏ Опис", callback_data="enter_desc"))
-    return kb
+def get_generate_keyboard():
+    markup = InlineKeyboardMarkup()
+    markup.add(InlineKeyboardButton("Начать заново", callback_data="start_over"))
+    markup.add(InlineKeyboardButton("Редактировать теги", callback_data="edit_tags"))
+    return markup
 
-def category_kb():
-    kb = types.InlineKeyboardMarkup(row_width=2)
-    for k, n in CATEGORY_NAMES.items():
-        kb.add(types.InlineKeyboardButton(n, callback_data=f"cat_{k}"))
-    kb.add(types.InlineKeyboardButton("✅ Готово", callback_data="tags_done"))
-    return kb
-
-def tag_page_kb(cat, page, sel):
-    tags = TAGS[cat]
-    pages = list(chunk_list(tags, 6))
-    page = max(0, min(page, len(pages)-1))
-    items = pages[page]
-    kb = types.InlineKeyboardMarkup(row_width=2)
-    for t in items:
-        mark = "✅" if t in sel else ""
-        kb.add(types.InlineKeyboardButton(f"{mark} {TAG_RN[t]}", callback_data=f"tag_{t}_{cat}_{page}"))
-    nav = []
-    if page>0: nav.append(types.InlineKeyboardButton("⬅", callback_data=f"page_{cat}_{page-1}"))
-    if page< len(pages)-1: nav.append(types.InlineKeyboardButton("➡", callback_data=f"page_{cat}_{page+1}"))
-    if nav: kb.add(*nav)
-    kb.add(types.InlineKeyboardButton("⬅ Назад", callback_data="choose_cat"))
-    return kb
-
-# Генерация через Replicate
-def replicate_generate(prompt, model_id):
-    resp = requests.post("https://api.replicate.com/v1/predictions",
-                         json={"version": model_id, "input":{"prompt":prompt}},
-                         headers={"Authorization":f"Token {REPLICATE_TOKEN}"})
-    if resp.status_code==201:
-        return resp.json()["urls"]["get"]
-    return None
-
-def replicate_wait(status_url):
-    for _ in range(40):
-        time.sleep(2)
-        r = requests.get(status_url, headers={"Authorization":f"Token {REPLICATE_TOKEN}"})
-        j = r.json()
-        if j.get("status")=="succeeded":
-            out = j["output"]
-            return out[0] if isinstance(out, list) else out
-        if j.get("status")=="failed": break
-    return None
-
+# 🧠 Обработчики
 @bot.message_handler(commands=["start"])
-def start(m):
-    cid = m.chat.id
-    user_settings[cid] = {"sel": [], "last": [], "wait": False}
-    bot.send_message(cid, "Привет! Что сделать:", reply_markup=main_menu())
+def start(message):
+    user_state[message.chat.id] = {"selected": [], "last_category": None, "page": 0}
+    bot.send_message(message.chat.id, "Выбери категорию тегов:", reply_markup=get_categories_keyboard())
 
-@bot.callback_query_handler(lambda c: True)
-def cb(c):
-    cid = c.message.chat.id
-    data = c.data
-    u = user_settings.setdefault(cid,{"sel":[],"last":[],"wait":False})
+@bot.callback_query_handler(func=lambda call: True)
+def callback(call):
+    chat_id = call.message.chat.id
+    data = call.data
 
-    if data=="choose_cat":
-        bot.edit_message_text("Выберите категорию:", cid, c.message.message_id, reply_markup=category_kb())
-    elif data.startswith("cat_"):
-        cat=data.split("_",1)[1]
-        bot.edit_message_text(f"{CATEGORY_NAMES[cat]}:", cid, c.message.message_id, reply_markup=tag_page_kb(cat,0,u["sel"]))
-    elif data.startswith("page_"):
-        _,cat,p = data.split("_"); p=int(p)
-        bot.edit_message_text(f"{CATEGORY_NAMES[cat]}:", cid, c.message.chat.id, call_id:=c.message.message_id, reply_markup=tag_page_kb(cat,p,u["sel"]))
-    elif data.startswith("tag_"):
-        _,t,cat,p = c.data.split("_")
-        p=int(p)
-        if t in u["sel"]: u["sel"].remove(t)
-        else: u["sel"].append(t)
-        bot.edit_message_reply_markup(cid, c.message.message_id, reply_markup=tag_page_kb(cat,p,u["sel"]))
-    elif data=="tags_done":
-        u["last"]=u["sel"][:]
-        bot.edit_message_text("Теги сохранены. Теперь введите описание.", cid, c.message.chat.id, reply_markup=main_menu())
-    elif data=="enter_desc":
-        u["wait"]=True
-        bot.send_message(cid, "Введите описание:")
-    elif data=="continue_gen":
-        u["wait"]=True
-        bot.send_message(cid, "Допишите описание:")
-    elif data=="edit_tags":
-        u["sel"]=u["last"][:]
-        bot.send_message(cid, "Редактируйте теги:", reply_markup=category_kb())
-    elif data=="main_menu":
-        bot.edit_message_text("Что сделать:", cid, c.message.message_id, reply_markup=main_menu())
+    if chat_id not in user_state:
+        user_state[chat_id] = {"selected": [], "last_category": None, "page": 0}
 
-@bot.message_handler(lambda m: user_settings.get(m.chat.id,{}).get("wait"))
-def desc(m):
-    cid=m.chat.id; u=user_settings[cid]
-    u["wait"]=False
-    desc_text=m.text.strip()
-    full = desc_text + ", " + ", ".join(u["sel"])
-    bot.send_message(cid, f"Генерация: `{full}`", parse_mode="Markdown")
-    status=replicate_generate(full, REPLICATE_MODELS["anime"])
-    if not status:
-        bot.send_message(cid, "Ошибка генерации.")
-        return
-    img_url=replicate_wait(status)
-    if img_url:
-        u["last"]=u["sel"][:]
-        kb = types.InlineKeyboardMarkup()
-        kb.add(types.InlineKeyboardButton("▶ Продолжить", callback_data="continue_gen"))
-        kb.add(types.InlineKeyboardButton("🧩 Теги", callback_data="edit_tags"))
-        kb.add(types.InlineKeyboardButton("🏠 Меню", callback_data="main_menu"))
-        bot.send_photo(cid, img_url, caption="Результат:", reply_markup=kb)
-    else:
-        bot.send_message(cid,"Ошибка генерации изображения.")
+    state = user_state[chat_id]
 
-@app.route("/", methods=["POST"])
-def wh():
+    if data.startswith("category|"):
+        _, cat = data.split("|")
+        state["last_category"] = cat
+        state["page"] = 0
+        bot.edit_message_text(chat_id=chat_id, message_id=call.message.message_id,
+                              text=f"Выбери теги ({cat}):", reply_markup=get_tags_keyboard(cat, 0, state["selected"]))
+
+    elif data.startswith("tag|"):
+        _, cat, prompt = data.split("|")
+        if prompt in state["selected"]:
+            state["selected"].remove(prompt)
+        else:
+            state["selected"].append(prompt)
+        bot.edit_message_reply_markup(chat_id=chat_id, message_id=call.message.message_id,
+                                      reply_markup=get_tags_keyboard(cat, state["page"], state["selected"]))
+
+    elif data.startswith("nav|"):
+        _, cat, page = data.split("|")
+        page = int(page)
+        state["page"] = page
+        bot.edit_message_reply_markup(chat_id=chat_id, message_id=call.message.message_id,
+                                      reply_markup=get_tags_keyboard(cat, page, state["selected"]))
+
+    elif data == "tags_done":
+        if not state["selected"]:
+            bot.answer_callback_query(call.id, "Вы не выбрали ни одного тега!")
+        else:
+            bot.edit_message_text(chat_id=chat_id, message_id=call.message.message_id,
+                                  text="Генерирую изображение...")
+            generate_and_send(chat_id, state["selected"])
+
+    elif data == "start_over":
+        start(call.message)
+
+    elif data == "edit_tags":
+        cat = state.get("last_category", list(TAGS.keys())[0])
+        page = 0
+        state["page"] = page
+        bot.send_message(chat_id, f"Редактируй теги ({cat}):", reply_markup=get_tags_keyboard(cat, page, state["selected"]))
+
+def generate_and_send(chat_id, tags):
+    prompt = ", ".join(tags)
+    try:
+        output_url = replicate_client.run(
+            "aitechtree/nsfw-novel-generation:3f313108c30f05798c1ae6f44d8ecf939591c98c58315f358db5b9e0c184d168",
+            input={"prompt": prompt}
+        )
+        bot.send_photo(chat_id, output_url, reply_markup=get_generate_keyboard())
+    except Exception as e:
+        bot.send_message(chat_id, f"Ошибка генерации: {e}")
+
+# 🌍 Вебхук
+@app.route(f"/{TELEGRAM_TOKEN}", methods=["POST"])
+def webhook():
     bot.process_new_updates([telebot.types.Update.de_json(request.stream.read().decode("utf-8"))])
-    return "ok",200
+    return "ok", 200
 
 @app.route("/", methods=["GET"])
 def index():
-    return "OK",200
+    return "Бот работает", 200
 
-if __name__=="__main__":
+if __name__ == "__main__":
+    import sys
+    import logging
+    logging.basicConfig(stream=sys.stderr, level=logging.DEBUG)
     bot.remove_webhook()
-    bot.set_webhook(url=WEBHOOK_URL)
-    app.run(host="0.0.0.0", port=PORT)
+    bot.set_webhook(url=f"https://your_render_url.onrender.com/{TELEGRAM_TOKEN}")
+    app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)))
