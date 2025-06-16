@@ -12,34 +12,58 @@ WEBHOOK_URL = os.getenv("WEBHOOK_URL", "https://retete.onrender.com")
 bot = telebot.TeleBot(API_TOKEN)
 app = Flask(__name__)
 
-# Усилители промтов
-def enhance_nsfw_female(p): return p + ", nude, erotic, sensual, solo, young female, seductive, large breasts, soft skin, masterpiece, ultra detailed, NSFW"
-def enhance_futanari(p): return p + ", futanari, shemale, dickgirl, big breasts, penis, dildo, dildo anal, anal, nude, erotic pose, solo, highly detailed, NSFW"
-def enhance_femboy(p): return p + ", femboy, cute male, feminine face, soft skin, lingerie, erotic, slim waist, NSFW, solo"
-def enhance_shibari(p): return p + ", shibari, rope bondage, tied up, detailed knots, erotic ropes, submissive pose, NSFW, cinematic"
+# Для хранения выбора пользователя (можно заменить на redis/db для мультипользователей)
+user_choices = {}
 
-# Словарь с синонимами и заменами для распознавания
-PROMPT_SYNONYMS = {
-    "анал": ["anal", "анальный", "задница", "анус", "задний проход"],
-    "дилдо": ["dildo", "большой дилдо", "конский дилдо", "анальный дилдо", "игрушка"],
-    "поза": ["раком", "вертикальный шпагат", "на корточках", "поза"],
-    "киска": ["видно киску", "писи видно", "писька", "вульва", "киска", "вагина"],
-    "размер груди": ["большая грудь", "маленькая грудь", "средняя грудь", "огромные сиськи", "маленькие сиськи"],
-    "пирсинг": ["пирсинг", "прокалывание", "кольцо", "сережка"],
-    "чулки": ["чулки", "чулочек", "сетка", "сетчатые чулки", "чулочки"]
+# Промты для каждой опции
+PROMPT_PARTS = {
+    "anal": "anal sex, anus, detailed anal penetration",
+    "dildo": "dildo, large dildo, realistic dildo, inserted dildo",
+    "poses": {
+        "doggy": "doggy style position, bent over",
+        "vertical_splits": "vertical splits pose, flexible legs",
+        "squatting": "squatting pose, low stance",
+        "missionary": "missionary position, face-to-face",
+    },
+    "sex_scene": "erotic sex scene, explicit, intimate interaction, realistic anatomy",
+    "femboy": (
+        "femboy, slender body, feminine face, soft skin, slight makeup, "
+        "androgynous features, lingerie, slim waist, cute expression"
+    )
 }
 
-def expand_prompt_synonyms(prompt: str) -> str:
-    prompt_lower = prompt.lower()
-    expansions = []
-    for key, synonyms in PROMPT_SYNONYMS.items():
-        for syn in synonyms:
-            if syn in prompt_lower:
-                expansions.append(key)
-                break
-    return ", ".join(expansions)
+# Функция сборки итогового промта из выбранных опций
+def build_prompt(base_text, selections):
+    prompt = base_text.strip() if base_text else ""
+    # Добавляем выбранные опции
+    if "anal" in selections:
+        prompt += ", " + PROMPT_PARTS["anal"]
+    if "dildo" in selections:
+        prompt += ", " + PROMPT_PARTS["dildo"]
+    if "sex_scene" in selections:
+        prompt += ", " + PROMPT_PARTS["sex_scene"]
+    if "femboy" in selections:
+        prompt += ", " + PROMPT_PARTS["femboy"]
 
-# Генерация картинки через Replicate
+    # Позиции — их может быть несколько
+    poses_selected = [p for p in selections if p.startswith("pose_")]
+    for pose_key in poses_selected:
+        pose_name = pose_key.replace("pose_", "")
+        pose_prompt = PROMPT_PARTS["poses"].get(pose_name)
+        if pose_prompt:
+            prompt += ", " + pose_prompt
+
+    # Базовые усилители NSFW (можно менять под запрос)
+    prompt += ", masterpiece, ultra detailed, 4k, realistic, NSFW"
+    return prompt.strip()
+
+# Усилители (на всякий случай оставил)
+def enhance_nsfw_female(p): return p + ", nude, erotic, sensual, solo, young female, seductive, large breasts, soft skin"
+def enhance_futanari(p): return p + ", futanari, shemale, dickgirl, big breasts, penis, dildo, dildo anal, anal, nude, erotic pose, solo, highly detailed"
+def enhance_femboy(p): return p + ", " + PROMPT_PARTS["femboy"]
+def enhance_shibari(p): return p + ", shibari, rope bondage, tied up, detailed knots, erotic ropes, submissive pose, cinematic"
+
+# Генерация через Replicate
 def generate_image(prompt):
     url = "https://api.replicate.com/v1/predictions"
     headers = {
@@ -56,30 +80,73 @@ def generate_image(prompt):
         return prediction["urls"]["get"], None
     return None, f"❌ Ошибка генерации: {response.status_code} {response.text}"
 
-def send_enhancement_buttons(chat_id):
-    markup = types.InlineKeyboardMarkup()
-    markup.row(
-        types.InlineKeyboardButton("🎀 NSFW для женщин", callback_data="nsfw_female"),
-        types.InlineKeyboardButton("⚧️ Футанари", callback_data="futanari")
-    )
-    markup.row(
-        types.InlineKeyboardButton("🧑‍🎤 Фембой", callback_data="femboy"),
-        types.InlineKeyboardButton("🪢 Шибари", callback_data="shibari")
-    )
-    bot.send_message(chat_id, "Выбери режим генерации:", reply_markup=markup)
+# Кнопки выбора — кнопки-комбинации
+def build_selection_keyboard(user_id):
+    selections = user_choices.get(user_id, set())
 
-# Отправка запроса на генерацию с улучшенным ожиданием
-def generate_custom_image(message, enhancer):
-    base_prompt = message.text.strip()
-    expansions = expand_prompt_synonyms(base_prompt)
-    final_prompt = base_prompt
-    if expansions:
-        final_prompt += ", " + expansions
-    final_prompt = enhancer(final_prompt)
+    def button_text(name, key):
+        return ("✅ " if key in selections else "☑️ ") + name
+
+    markup = types.InlineKeyboardMarkup(row_width=2)
+
+    # Анал и Дилдо
+    markup.add(
+        types.InlineKeyboardButton(button_text("Анал", "anal"), callback_data="toggle_anal"),
+        types.InlineKeyboardButton(button_text("Дилдо", "dildo"), callback_data="toggle_dildo")
+    )
+    # Позиции (по 2 на ряд)
+    markup.add(
+        types.InlineKeyboardButton(button_text("Поза: Раком", "pose_doggy"), callback_data="toggle_pose_doggy"),
+        types.InlineKeyboardButton(button_text("Поза: Вертикальный шпагат", "pose_vertical_splits"), callback_data="toggle_pose_vertical_splits")
+    )
+    markup.add(
+        types.InlineKeyboardButton(button_text("Поза: На корточках", "pose_squatting"), callback_data="toggle_pose_squatting"),
+        types.InlineKeyboardButton(button_text("Поза: Миссионерская", "pose_missionary"), callback_data="toggle_pose_missionary")
+    )
+    # Остальные опции
+    markup.add(
+        types.InlineKeyboardButton(button_text("Сцена секса", "sex_scene"), callback_data="toggle_sex_scene"),
+        types.InlineKeyboardButton(button_text("Фембой", "femboy"), callback_data="toggle_femboy")
+    )
+    # Кнопка генерации
+    markup.add(types.InlineKeyboardButton("🚀 Генерировать", callback_data="generate"))
+
+    return markup
+
+# Обработка callback - переключение опций
+@bot.callback_query_handler(func=lambda call: call.data.startswith("toggle_") or call.data == "generate")
+def callback_handler(call):
+    user_id = call.from_user.id
+    if user_id not in user_choices:
+        user_choices[user_id] = set()
+
+    if call.data.startswith("toggle_"):
+        key = call.data[len("toggle_"):]
+        if key in user_choices[user_id]:
+            user_choices[user_id].remove(key)
+        else:
+            user_choices[user_id].add(key)
+        # Обновляем клавиатуру с новым состоянием
+        bot.edit_message_reply_markup(chat_id=call.message.chat.id, message_id=call.message.message_id,
+                                      reply_markup=build_selection_keyboard(user_id))
+        bot.answer_callback_query(call.id, text=f"{key} {'выбрано' if key in user_choices[user_id] else 'снято'}")
+    elif call.data == "generate":
+        # Запрашиваем у пользователя базовое описание
+        msg = bot.send_message(call.message.chat.id, "📝 Введи описание (например, 'голая девушка, видны губы, светлая кожа'):")
+        # Сохраняем текущее состояние выбора для этого пользователя
+        user_choices[user_id] = user_choices[user_id]  # просто чтобы быть уверенным
+        bot.register_next_step_handler(msg, generate_with_selection, user_id)
+        bot.answer_callback_query(call.id)
+
+def generate_with_selection(message, user_id):
+    selections = user_choices.get(user_id, set())
+    base_text = message.text
+
+    prompt = build_prompt(base_text, selections)
 
     msg_wait = bot.send_message(message.chat.id, "🔞 Генерирую изображение, подожди...")
 
-    status_url, error = generate_image(final_prompt)
+    status_url, error = generate_image(prompt)
     if error:
         bot.edit_message_text(error, chat_id=message.chat.id, message_id=msg_wait.message_id)
         return
@@ -98,7 +165,9 @@ def generate_custom_image(message, enhancer):
             img = status["output"][0]
             bot.delete_message(message.chat.id, msg_wait.message_id)
             bot.send_photo(message.chat.id, img)
-            send_enhancement_buttons(message.chat.id)
+            # После генерации сбрасываем выбор
+            user_choices[user_id] = set()
+            bot.send_message(message.chat.id, "✅ Генерация завершена! Выбери режимы заново или напиши новое описание.", reply_markup=build_selection_keyboard(user_id))
             return
         elif status.get("status") == "failed":
             bot.edit_message_text("❌ Генерация не удалась.",
@@ -112,37 +181,15 @@ def generate_custom_image(message, enhancer):
     bot.edit_message_text("❌ Не удалось сгенерировать изображение за отведённое время.",
                           chat_id=message.chat.id, message_id=msg_wait.message_id)
 
-# Обработка кнопок
-@bot.callback_query_handler(func=lambda call: True)
-def callback_handler(call):
-    mode = call.data
-    prompt_msg = {
-        "nsfw_female": "📝 Опиши девушку:",
-        "futanari": "📝 Опиши футанари-сцену:",
-        "femboy": "📝 Опиши фембоя:",
-        "shibari": "📝 Опиши сцену с шибари:"
-    }.get(mode, "📝 Введите описание:")
-
-    enhancers = {
-        "nsfw_female": enhance_nsfw_female,
-        "futanari": enhance_futanari,
-        "femboy": enhance_femboy,
-        "shibari": enhance_shibari
-    }
-
-    msg = bot.send_message(call.message.chat.id, prompt_msg)
-    bot.register_next_step_handler(msg, lambda m: generate_custom_image(m, enhancers[mode]))
-
-# Команда /start
 @bot.message_handler(commands=['start'])
 def start(message):
-    send_enhancement_buttons(message.chat.id)
+    user_choices[message.from_user.id] = set()
+    bot.send_message(message.chat.id, "Выбери нужные параметры (можно комбинировать):", reply_markup=build_selection_keyboard(message.from_user.id))
 
-# Обработка любого текста
 @bot.message_handler(func=lambda m: True)
-def handle_prompt(message):
-    bot.send_message(message.chat.id, "🔁 Генерирую обычное изображение без усиления...")
-    generate_custom_image(message, lambda p: p)
+def handle_any_message(message):
+    user_choices[message.from_user.id] = set()
+    bot.send_message(message.chat.id, "Пожалуйста, начни с команды /start, чтобы выбрать параметры и сгенерировать изображение.")
 
 # Flask Webhook
 @app.route('/', methods=['POST'])
