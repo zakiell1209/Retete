@@ -1,156 +1,30 @@
-# -- bot.py --
-
 import os
-import time
+import json
 import requests
 from flask import Flask, request
 import telebot
-from telebot import types
+from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton
 
-API_TOKEN = os.getenv("TELEGRAM_TOKEN")
+# 🔐 токены и ключи
+TELEGRAM_TOKEN = os.getenv("BOT_TOKEN")
 REPLICATE_TOKEN = os.getenv("REPLICATE_API_TOKEN")
-WEBHOOK_URL = os.getenv("WEBHOOK_URL")
-PORT = int(os.environ.get("PORT", 5000))
 
-REPLICATE_MODELS = {
-    "anime": "c1d5b02687df6081c7953c74bcc527858702e8c153c9382012ccc3906752d3ec"
-}
-
-bot = telebot.TeleBot(API_TOKEN)
+bot = telebot.TeleBot(TELEGRAM_TOKEN)
 app = Flask(__name__)
+
 user_settings = {}
 
+# 👇 Категории и теги
 TAGS = {
-    "holes": ["vagina", "anal", "both"],
-    "toys": ["dildo", "huge_dildo", "horse_dildo", "anal_beads", "anal_plug", "anal_expander", "gag", "piercing"],
-    "poses": ["doggy", "standing", "splits", "squat", "lying", "hor_split", "ver_split", "side_up_leg", "front_facing", "back_facing", "lying_knees_up"],
-    "clothes": ["stockings", "bikini_tan_lines", "mask", "heels", "shibari", "cow_costume"],
-    "body": [
-        "big_breasts", "small_breasts", "skin_white", "skin_black",
-        "body_fat", "body_thin", "body_normal", "body_fit", "body_muscular",
-        "height_tall", "height_short",
-        "age_loli", "age_milf", "age_middle", "age_21",
-        "cum", "belly_bloat", "long_dildo_path", "succubus_tattoo"
-    ],
-    "ethnos": ["futanari", "femboy", "ethnicity_asian", "ethnicity_european"],
-    "furry": ["furry_cow", "furry_cat", "furry_dog", "furry_dragon", "furry_sylveon"]
+    "отверстия": ["vagina", "anal", "both"],
+    "игрушки": ["dildo", "huge_dildo", "horse_dildo", "long_dildo_path", "anal_beads", "anal_plug", "anal_expander", "gag", "piercing"],
+    "поза": ["doggy", "standing", "splits", "squat", "lying", "hor_split", "ver_split", "side_up_leg", "front_facing", "back_facing", "lying_knees_up"],
+    "одежда": ["stockings", "bikini_tan_lines", "mask", "heels", "shibari", "cow_costume"],
+    "тело": ["big_breasts", "small_breasts", "skin_white", "skin_black", "body_fat", "body_thin", "body_normal", "body_fit", "body_muscular", "height_tall", "height_short", "age_loli", "age_milf", "age_middle", "age_21"],
+    "дополнительно": ["cum", "belly_bloat", "succubus_tattoo"],
+    "этнос": ["futanari", "femboy", "ethnicity_asian", "ethnicity_european"],
+    "фури": ["furry_cow", "furry_cat", "furry_dog", "furry_dragon", "furry_sylveon"]
 }
-
-CATEGORY_NAMES_EMOJI = {
-    "holes": "Отверстия 🕳️", "toys": "Игрушки 🧸", "poses": "Позиции 🤸‍♀️",
-    "clothes": "Одежда 👗", "body": "Тело 🧍", "ethnos": "Этнос 🌍", "furry": "Фури 🐾"
-}
-
-TAG_NAMES_EMOJI = {
-    "body": {
-        "big_breasts": "Большая грудь 🍒", "small_breasts": "Маленькая грудь 🥥",
-        "skin_white": "Белая кожа ⚪", "skin_black": "Чёрная кожа ⚫",
-        "body_fat": "Пышное 🍰", "body_thin": "Худое 🪶", "body_normal": "Обычное 🧍",
-        "body_fit": "Подтянутое 🏃", "body_muscular": "Мускулистое 💪",
-        "height_tall": "Высокая 📏", "height_short": "Низкая 📐",
-        "age_loli": "Лоли 👧", "age_milf": "Милфа 💋", "age_middle": "Средний возраст 👩", "age_21": "21 год 🎂",
-        "cum": "Сперма 💦", "belly_bloat": "Вздутие 💨",
-        "long_dildo_path": "Дилдо через тело 🔄", "succubus_tattoo": "Тату сукуба ❤️"
-    },
-    "holes": {"vagina": "Вагина ♀️", "anal": "Анал 🍑", "both": "Оба 🔥"},
-    "toys": {
-        "dildo": "Дилдо 🍆", "huge_dildo": "Огромное 🍆🔥", "horse_dildo": "Конское 🐎🍆",
-        "anal_beads": "Анальные бусы 🔴", "anal_plug": "Пробка 🔵",
-        "anal_expander": "Расширитель ⚙️", "gag": "Кляп 😶", "piercing": "Пирсинг 💎"
-    },
-    "poses": {
-        "doggy": "Догги 🐕", "standing": "Стоя 🧍", "splits": "Шпагат 🤸",
-        "squat": "Присед 🧎", "lying": "Лежа 🛌", "hor_split": "Гор. шпагат ↔️",
-        "ver_split": "Вер. шпагат ↕️", "side_up_leg": "Бок + нога 🔝",
-        "front_facing": "Лицом 👁", "back_facing": "Спиной 🍑", "lying_knees_up": "Лёжа, колени вверх 🧷"
-    },
-    "clothes": {
-        "stockings": "Чулки 🧦", "bikini_tan_lines": "Загар от бикини ☀️", "mask": "Маска 😷",
-        "heels": "Туфли 👠", "shibari": "Шибари ⛓️", "cow_costume": "Костюм коровы 🐄"
-    },
-    "ethnos": {
-        "futanari": "Футанари 🍆", "femboy": "Фембой ⚧",
-        "ethnicity_asian": "Азиатка 🈶", "ethnicity_european": "Европейка 🇪🇺"
-    },
-    "furry": {
-        "furry_cow": "Фури-Коровка 🐄", "furry_cat": "Фури-Кошка 🐱",
-        "furry_dog": "Фури-Собака 🐶", "furry_dragon": "Фури-Дракон 🐉", "furry_sylveon": "Сильвеон 🎀"
-    }
-}
-
-def main_keyboard():
-    markup = types.InlineKeyboardMarkup(row_width=2)
-    markup.add(types.InlineKeyboardButton("🧩 Выбрать теги", callback_data="tags"))
-    markup.add(types.InlineKeyboardButton("✅ Генерировать", callback_data="generate"))
-    return markup
-
-def category_keyboard():
-    markup = types.InlineKeyboardMarkup(row_width=2)
-    for cat in CATEGORY_NAMES_EMOJI:
-        markup.add(types.InlineKeyboardButton(CATEGORY_NAMES_EMOJI[cat], callback_data=f"cat_{cat}"))
-    markup.add(types.InlineKeyboardButton("✅ Готово", callback_data="tags_done"))
-    return markup
-
-def tags_keyboard(category, cid=None):
-    markup = types.InlineKeyboardMarkup(row_width=2)
-    selected = user_settings.get(cid, {}).get("features", []) if cid else []
-    for tag in TAGS.get(category, []):
-        name = TAG_NAMES_EMOJI.get(category, {}).get(tag, tag)
-        if tag in selected:
-            name = f"✅ {name}"
-        markup.add(types.InlineKeyboardButton(name, callback_data=f"tag_{category}_{tag}"))
-    markup.add(types.InlineKeyboardButton("⬅ Назад", callback_data="tags_back"))
-    return markup
-
-@bot.message_handler(commands=["start"])
-def start(message):
-    cid = message.chat.id
-    user_settings[cid] = {"features": [], "waiting_for_prompt": False}
-    bot.send_message(cid, "Привет! Выбери действие:", reply_markup=main_keyboard())
-
-@bot.callback_query_handler(func=lambda call: True)
-def handle_callback(call):
-    cid = call.message.chat.id
-    data = call.data
-    if cid not in user_settings:
-        user_settings[cid] = {"features": [], "waiting_for_prompt": False}
-
-    if data == "tags":
-        bot.edit_message_text("Выбери категорию:", cid, call.message.message_id, reply_markup=category_keyboard())
-    elif data.startswith("cat_"):
-        cat = data.split("_")[1]
-        user_settings[cid]["last_category"] = cat
-        bot.edit_message_text(f"Выбери теги из категории {CATEGORY_NAMES_EMOJI[cat]}:", cid, call.message.message_id, reply_markup=tags_keyboard(cat, cid))
-    elif data.startswith("tag_"):
-        _, cat, tag = data.split("_", 2)
-        tags = user_settings[cid]["features"]
-        if tag in tags:
-            tags.remove(tag)
-        else:
-            tags.append(tag)
-        user_settings[cid]["features"] = tags
-        bot.answer_callback_query(call.id, f"{'Добавлено' if tag in tags else 'Удалено'}")
-        bot.edit_message_reply_markup(cid, call.message.message_id, reply_markup=tags_keyboard(cat, cid))
-    elif data == "tags_done":
-        bot.edit_message_text("Теги сохранены.", cid, call.message.message_id, reply_markup=main_keyboard())
-    elif data == "tags_back":
-        bot.edit_message_text("Выбери категорию:", cid, call.message.message_id, reply_markup=category_keyboard())
-    elif data == "generate":
-        features = user_settings[cid].get("features", [])
-        if not features:
-            bot.send_message(cid, "⚠️ Сначала выбери теги для генерации.")
-            return
-        bot.send_message(cid, "⏳ Генерация изображения...")
-        prompt = build_prompt(features)
-        status_url, err = generate_image(prompt, REPLICATE_MODELS["anime"])
-        if err:
-            bot.send_message(cid, err)
-            return
-        image_url = wait_for_image(status_url)
-        if image_url:
-            bot.send_photo(cid, image_url, caption="Вот результат!", reply_markup=main_keyboard())
-        else:
-            bot.send_message(cid, "❌ Ошибка генерации изображения.")
 
 def build_prompt(tags):
     base = "nsfw, masterpiece, ultra detailed, anime style, best quality"
@@ -163,15 +37,16 @@ def build_prompt(tags):
         "lying": "lying", "hor_split": "horizontal splits", "ver_split": "vertical splits",
         "side_up_leg": "lying on side, one leg up", "front_facing": "facing viewer",
         "back_facing": "back facing", "lying_knees_up": "lying, knees up and apart",
-        "stockings": "stockings", "bikini_tan_lines": "dark tanned skin with white bikini tan lines, no bikini, visible vagina and nipples",
+        "stockings": "stockings", "bikini_tan_lines": "dark skin with clear white tan lines from bikini, completely nude, no bikini, no clothes",
         "mask": "mask", "heels": "high heels", "shibari": "shibari",
         "cow_costume": "girl wearing cow pattern stockings, horns, tail, no underwear, no cow body, sexy",
         "big_breasts": "large breasts", "small_breasts": "small breasts", "skin_white": "white skin", "skin_black": "black skin",
         "body_fat": "curvy body", "body_thin": "thin body", "body_normal": "average body",
         "body_fit": "fit body", "body_muscular": "muscular body", "height_tall": "tall height", "height_short": "short height",
         "age_loli": "loli", "age_milf": "milf", "age_middle": "mature woman", "age_21": "21 years old",
-        "cum": "cum", "belly_bloat": "bloated belly", "long_dildo_path": "dildo through anus to mouth, visible bulge",
-        "succubus_tattoo": "succubus tattoo on skin in shape of black heart above uterus",
+        "cum": "cum", "belly_bloat": "bloated belly",
+        "long_dildo_path": "one long dildo penetrating from anus through digestive tract and exiting mouth, visible bulge in belly and throat",
+        "succubus_tattoo": "black heart tattoo above pubic area, no wings, no horns, no tail, not succubus",
         "futanari": "futanari", "femboy": "femboy", "ethnicity_asian": "asian girl", "ethnicity_european": "european girl",
         "furry_cow": "furry cow", "furry_cat": "furry cat", "furry_dog": "furry dog",
         "furry_dragon": "furry dragon", "furry_sylveon": "anthro sylveon, pink and white fur, ribbons, large breasts, sexy"
@@ -179,38 +54,87 @@ def build_prompt(tags):
     additions = [map_tag.get(tag, tag) for tag in tags]
     return base + ", " + ", ".join(additions)
 
-def generate_image(prompt, model_version):
-    url = "https://api.replicate.com/v1/predictions"
-    headers = {"Authorization": f"Token {REPLICATE_TOKEN}", "Content-Type": "application/json"}
-    data = {"version": model_version, "input": {"prompt": prompt}}
-    res = requests.post(url, headers=headers, json=data)
-    if res.status_code == 201:
-        return res.json()["urls"]["get"], None
-    return None, "Ошибка запуска генерации"
+def category_keyboard():
+    kb = InlineKeyboardMarkup(row_width=2)
+    for cat in TAGS:
+        kb.add(InlineKeyboardButton(cat, callback_data=f"cat_{cat}"))
+    return kb
 
-def wait_for_image(status_url):
+def tags_keyboard(category, cid):
+    kb = InlineKeyboardMarkup(row_width=2)
+    selected = user_settings[cid].get("tags", [])
+    for tag in TAGS[category]:
+        check = "✅" if tag in selected else ""
+        kb.add(InlineKeyboardButton(f"{check} {tag}", callback_data=f"tag_{tag}"))
+    kb.add(InlineKeyboardButton("🔙 Назад", callback_data="back_to_cats"))
+    return kb
+
+@bot.message_handler(commands=["start"])
+def start(message):
+    cid = message.chat.id
+    user_settings[cid] = {"tags": [], "last_category": None}
+    bot.send_message(cid, "Выберите категории тегов:", reply_markup=category_keyboard())
+
+@bot.callback_query_handler(func=lambda call: True)
+def handle_callback(call):
+    cid = call.message.chat.id
+    data = call.data
+
+    if data.startswith("cat_"):
+        cat = data[4:]
+        user_settings[cid]["last_category"] = cat
+        bot.edit_message_reply_markup(cid, call.message.message_id, reply_markup=tags_keyboard(cat, cid))
+
+    elif data.startswith("tag_"):
+        tag = data[4:]
+        tags = user_settings[cid]["tags"]
+        if tag in tags:
+            tags.remove(tag)
+        else:
+            tags.append(tag)
+        cat = user_settings[cid].get("last_category")
+        user_settings[cid]["last_category"] = cat
+        bot.edit_message_reply_markup(cid, call.message.message_id, reply_markup=tags_keyboard(cat, cid))
+
+    elif data == "back_to_cats":
+        bot.edit_message_reply_markup(cid, call.message.message_id, reply_markup=category_keyboard())
+
+@bot.message_handler(func=lambda m: m.text.lower() == "сгенерировать")
+def generate_image(message):
+    cid = message.chat.id
+    tags = user_settings.get(cid, {}).get("tags", [])
+    prompt = build_prompt(tags)
+
     headers = {"Authorization": f"Token {REPLICATE_TOKEN}"}
-    for _ in range(40):
-        time.sleep(2)
-        res = requests.get(status_url, headers=headers)
-        if res.status_code == 200:
-            data = res.json()
-            if data["status"] == "succeeded":
-                return data["output"][0] if isinstance(data["output"], list) else data["output"]
-            elif data["status"] == "failed":
-                return None
-    return None
+    json_data = {
+        "version": "aitechtree/nsfw-novel-generation:latest",
+        "input": {"prompt": prompt}
+    }
+    r = requests.post("https://api.replicate.com/v1/predictions", headers=headers, json=json_data)
+    prediction = r.json()
+    image_url = prediction["urls"]["get"]
 
-@app.route("/", methods=["POST"])
-def webhook():
+    import time
+    for _ in range(20):
+        time.sleep(3)
+        res = requests.get(image_url, headers=headers).json()
+        if res["status"] == "succeeded":
+            bot.send_photo(cid, res["output"][0], caption="✅ Готово")
+            break
+        elif res["status"] == "failed":
+            bot.send_message(cid, "❌ Ошибка генерации.")
+            break
+
+# 🌐 Webhook (Render)
+@app.route(f"/{TELEGRAM_TOKEN}", methods=["POST"])
+def telegram_webhook():
     bot.process_new_updates([telebot.types.Update.de_json(request.stream.read().decode("utf-8"))])
-    return "OK", 200
+    return "!", 200
 
-@app.route("/", methods=["GET"])
+@app.route("/")
 def index():
-    return "Бот работает", 200
+    return "Бот работает."
 
+# 🚀 Запуск Flask
 if __name__ == "__main__":
-    bot.remove_webhook()
-    bot.set_webhook(url=WEBHOOK_URL)
-    app.run(host="0.0.0.0", port=PORT)
+    app.run(debug=False, host="0.0.0.0", port=int(os.environ.get("PORT", 5000)))
