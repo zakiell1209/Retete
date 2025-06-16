@@ -1,161 +1,290 @@
 import os
-import asyncio
-from aiogram import Bot, Dispatcher, types
-from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup
-from aiogram.utils import executor
+import time
+import requests
+from flask import Flask, request
+import telebot
+from telebot import types
 
 API_TOKEN = os.getenv("TELEGRAM_TOKEN")
 REPLICATE_TOKEN = os.getenv("REPLICATE_API_TOKEN")
+WEBHOOK_URL = os.getenv("WEBHOOK_URL")  # Например: https://your-app.onrender.com
+PORT = int(os.environ.get("PORT", 5000))
 
-bot = Bot(token=API_TOKEN)
-dp = Dispatcher(bot)
+REPLICATE_MODELS = {
+    "anime": "c1d5b02687df6081c7953c74bcc527858702e8c153c9382012ccc3906752d3ec",  # твоя модель аниме
+    "realism": "stability-ai/stable-diffusion:ac732df8",
+    "3d": "stability-ai/stable-diffusion-3-medium"
+}
 
-# Модель аниме (твоя версия)
-REPLICATE_MODEL_VERSION = "c1d5b02687df6081c7953c74bcc527858702e8c153c9382012ccc3906752d3ec"
+bot = telebot.TeleBot(API_TOKEN)
+app = Flask(__name__)
 
-# Секции и их кнопки с промтами
-SECTIONS = {
+# Храним настройки пользователей (чат_id -> dict)
+user_settings = {}
+
+# ===== Промты и синонимы для тегов =====
+TAG_CATEGORIES = {
     "holes": {
-        "label": "Отверстие",
-        "options": {
-            "vagina": "vagina, visible vulva, detailed vagina",
-            "anal": "anal, detailed anal penetration",
-            "both": "vagina and anal, dual penetration"
-        }
+        "vagina": ["vagina", "vaginal", "pussy", "vaginal penetration"],
+        "anal": ["anal", "anus", "anal penetration", "asshole"],
+        "both": ["vagina and anal", "both holes", "double penetration"]
     },
     "toys": {
-        "label": "Игрушки",
-        "options": {
-            "dildo": "large dildo, realistic dildo, inserted dildo",
-            "anal_beads": "anal beads, detailed beads",
-            "anal_plug": "anal plug, silicone plug",
-            "gag": "gag, ball gag, bondage gag"
-        }
+        "dildo": ["dildo", "large dildo", "horse dildo", "inserted dildo"],
+        "anal_beads": ["anal beads", "anals balls"],
+        "anal_plug": ["anal plug", "butt plug"],
+        "gag": ["gag", "mouth gag", "klyap"]
     },
     "poses": {
-        "label": "Поза",
-        "options": {
-            "doggy": "doggy style, on all fours, from behind",
-            "standing": "standing pose",
-            "splits": "splits, horizontal splits, flexible legs",
-            "vertical_splits": "vertical splits, upright splits",
-            "lying": "lying down pose, relaxed"
-        }
+        "doggy": ["doggy style", "from behind", "on all fours", "raком"],
+        "standing": ["standing", "vertical pose"],
+        "splits": ["split", "vertical split", "shpagat"],
+        "squat": ["squatting", "on squat", "на корточках"],
+        "lying": ["lying", "laying down", "лежа"]
     },
-    "clothing": {
-        "label": "Одежда",
-        "options": {
-            "stockings": "lace stockings, thigh-high stockings",
-            "bikini": "bikini, revealing swimsuit",
-            "mask": "mask, face mask, mysterious",
-            "high_heels": "high heels, stilettos, sexy shoes"
-        }
+    "clothes": {
+        "stockings": ["stockings", "thigh highs", " чулки"],
+        "bikini": ["bikini", "swimwear"],
+        "mask": ["mask", "face mask"],
+        "heels": ["high heels", "туфли с каблуком"]
     }
 }
 
-# Хранение выбора пользователя (chat_id -> dict)
-user_choices = {}
+# Упрощенный словарь тегов для кнопок (callback_data)
+TAGS = {
+    "holes": ["vagina", "anal", "both"],
+    "toys": ["dildo", "anal_beads", "anal_plug", "gag"],
+    "poses": ["doggy", "standing", "splits", "squat", "lying"],
+    "clothes": ["stockings", "bikini", "mask", "heels"],
+    # Дополнительные теги
+    "extras": ["big_breasts", "small_breasts", "piercing", "femboy", "ethnicity_asian", "ethnicity_european", "skin_white", "skin_black"]
+}
 
-# Клавиатура главного меню
-def main_menu_kb():
-    kb = InlineKeyboardMarkup(row_width=2)
-    for key, section in SECTIONS.items():
-        kb.insert(InlineKeyboardButton(section["label"], callback_data=f"section:{key}"))
-    return kb
-
-# Клавиатура с опциями секции + кнопка "Готово"
-def section_options_kb(section_key, selected_options):
-    kb = InlineKeyboardMarkup(row_width=2)
-    options = SECTIONS[section_key]["options"]
-    for opt_key, opt_text in options.items():
-        prefix = "✅ " if opt_key in selected_options else ""
-        kb.insert(InlineKeyboardButton(f"{prefix}{opt_text.split(',')[0]}", callback_data=f"toggle:{section_key}:{opt_key}"))
-    kb.add(InlineKeyboardButton("✅ Готово", callback_data="done"))
-    return kb
-
-# Формируем итоговый промт из всех выбранных опций
-def build_final_prompt(choices: dict):
-    prompt_parts = []
-    for section_key, selected_opts in choices.items():
-        opts = SECTIONS[section_key]["options"]
-        for opt_key in selected_opts:
-            if opt_key in opts:
-                prompt_parts.append(opts[opt_key])
-    # Добавим базовые усилители
-    prompt_parts.append("anime style, detailed, high quality, NSFW")
-    return ", ".join(prompt_parts)
-
-@dp.message_handler(commands=["start"])
-async def cmd_start(message: types.Message):
-    user_choices[message.chat.id] = {k: set() for k in SECTIONS.keys()}
-    await message.answer(
-        "Выберите категорию для настройки генерации изображения:",
-        reply_markup=main_menu_kb()
+# Кнопки категорий для выбора тегов
+def category_keyboard():
+    markup = types.InlineKeyboardMarkup(row_width=2)
+    markup.add(
+        types.InlineKeyboardButton("Отверстия", callback_data="cat_holes"),
+        types.InlineKeyboardButton("Игрушки", callback_data="cat_toys"),
+        types.InlineKeyboardButton("Пози", callback_data="cat_poses"),
+        types.InlineKeyboardButton("Одежда", callback_data="cat_clothes"),
+        types.InlineKeyboardButton("Дополнительно", callback_data="cat_extras"),
+        types.InlineKeyboardButton("✅ Готово", callback_data="tags_done")
     )
+    return markup
 
-@dp.callback_query_handler(lambda c: c.data.startswith("section:"))
-async def process_section(callback_query: types.CallbackQuery):
-    section_key = callback_query.data.split(":")[1]
-    selected = user_choices.get(callback_query.from_user.id, {}).get(section_key, set())
-    await bot.edit_message_text(
-        chat_id=callback_query.message.chat.id,
-        message_id=callback_query.message.message_id,
-        text=f"Выберите опции для раздела «{SECTIONS[section_key]['label']}»:",
-        reply_markup=section_options_kb(section_key, selected)
+# Создаем клавиатуру с кнопками для выбранной категории
+def tags_keyboard(category):
+    markup = types.InlineKeyboardMarkup(row_width=2)
+    for tag in TAGS.get(category, []):
+        name = tag.replace("_", " ").capitalize()
+        markup.add(types.InlineKeyboardButton(name, callback_data=f"tag_{tag}"))
+    markup.add(types.InlineKeyboardButton("⬅ Назад", callback_data="tags_back"))
+    return markup
+
+# ===== Строим промт =====
+def build_prompt(base, features):
+    additions = []
+
+    # Отверстия
+    if "vagina" in features: additions.append("vagina, pussy, vaginal penetration")
+    if "anal" in features: additions.append("anal sex, anal penetration, anus focus")
+    if "both" in features: additions.append("vagina and anal penetration, double penetration")
+
+    # Игрушки
+    if "dildo" in features: additions.append("dildo, large dildo, inserted dildo, detailed dildo")
+    if "anal_beads" in features: additions.append("anal beads")
+    if "anal_plug" in features: additions.append("anal plug, butt plug")
+    if "gag" in features: additions.append("mouth gag, klyap")
+
+    # Пози
+    if "doggy" in features: additions.append("doggy style, from behind")
+    if "standing" in features: additions.append("standing pose")
+    if "splits" in features: additions.append("vertical split, flexibility, splits")
+    if "squat" in features: additions.append("squatting, legs open, sitting on heels")
+    if "lying" in features: additions.append("lying down, relaxed pose")
+
+    # Одежда
+    if "stockings" in features: additions.append("thigh high stockings, sexy lingerie")
+    if "bikini" in features: additions.append("bikini swimsuit")
+    if "mask" in features: additions.append("face mask")
+    if "heels" in features: additions.append("high heels shoes")
+
+    # Дополнительные
+    if "big_breasts" in features: additions.append("large breasts, full chest")
+    if "small_breasts" in features: additions.append("small breasts")
+    if "piercing" in features: additions.append("nipple piercing, body piercing")
+    if "femboy" in features: additions.append("femboy, feminine male, smooth skin, slim waist, erotic pose")
+    if "ethnicity_asian" in features: additions.append("asian girl, asian features")
+    if "ethnicity_european" in features: additions.append("european girl, european face")
+    if "skin_white" in features: additions.append("pale skin, light skin tone")
+    if "skin_black" in features: additions.append("dark skin, black skin tone")
+
+    additions.append("nsfw, masterpiece, ultra-detailed, high resolution")
+
+    prompt = base
+    if additions:
+        prompt += ", " + ", ".join(additions)
+    return prompt
+
+# ===== Генерация изображения =====
+def generate_image(prompt, model_version):
+    url = "https://api.replicate.com/v1/predictions"
+    headers = {
+        "Authorization": f"Token {REPLICATE_TOKEN}",
+        "Content-Type": "application/json"
+    }
+    data = {
+        "version": model_version,
+        "input": {"prompt": prompt}
+    }
+    response = requests.post(url, headers=headers, json=data)
+    if response.status_code == 201:
+        return response.json()["urls"]["get"], None
+    return None, f"❌ Ошибка генерации: {response.status_code} {response.text}"
+
+def wait_for_image(status_url):
+    for _ in range(40):  # Ждем до ~80 сек (40*2)
+        time.sleep(2)
+        res = requests.get(status_url, headers={"Authorization": f"Token {REPLICATE_TOKEN}"})
+        if res.status_code != 200:
+            return None
+        data = res.json()
+        if data.get("status") == "succeeded":
+            output = data.get("output")
+            if isinstance(output, list):
+                return output[0]
+            return output
+        if data.get("status") == "failed":
+            return None
+    return None
+
+# ===== Обработчики команд =====
+@bot.message_handler(commands=["start"])
+def start(message):
+    cid = message.chat.id
+    user_settings[cid] = {"features": [], "model": "anime", "waiting_for_prompt": False}
+    markup = types.InlineKeyboardMarkup(row_width=2)
+    markup.add(
+        types.InlineKeyboardButton("🎨 Выбрать модель", callback_data="model"),
+        types.InlineKeyboardButton("🧩 Выбрать теги", callback_data="tags"),
+        types.InlineKeyboardButton("✅ Генерировать", callback_data="generate")
     )
-    await callback_query.answer()
+    bot.send_message(cid, "Привет! Выбери действие:", reply_markup=markup)
 
-@dp.callback_query_handler(lambda c: c.data.startswith("toggle:"))
-async def toggle_option(callback_query: types.CallbackQuery):
-    _, section_key, option_key = callback_query.data.split(":")
-    user_id = callback_query.from_user.id
-    if user_id not in user_choices:
-        user_choices[user_id] = {k: set() for k in SECTIONS.keys()}
-    selected = user_choices[user_id][section_key]
-    if option_key in selected:
-        selected.remove(option_key)
-    else:
-        selected.add(option_key)
-    await bot.edit_message_reply_markup(
-        chat_id=callback_query.message.chat.id,
-        message_id=callback_query.message.message_id,
-        reply_markup=section_options_kb(section_key, selected)
-    )
-    await callback_query.answer()
+# ===== Обработчик callback =====
+@bot.callback_query_handler(func=lambda call: True)
+def callback_handler(call):
+    cid = call.message.chat.id
+    data = call.data
 
-@dp.callback_query_handler(lambda c: c.data == "done")
-async def done_selection(callback_query: types.CallbackQuery):
-    user_id = callback_query.from_user.id
-    if user_id not in user_choices:
-        user_choices[user_id] = {k: set() for k in SECTIONS.keys()}
-    await bot.edit_message_text(
-        chat_id=callback_query.message.chat.id,
-        message_id=callback_query.message.message_id,
-        text="Вы вернулись в главное меню. Выберите категорию:",
-        reply_markup=main_menu_kb()
-    )
-    await callback_query.answer()
+    if cid not in user_settings:
+        user_settings[cid] = {"features": [], "model": "anime", "waiting_for_prompt": False}
 
-@dp.message_handler(commands=["generate"])
-async def generate_handler(message: types.Message):
-    choices = user_choices.get(message.chat.id)
-    if not choices:
-        await message.answer("Сначала выберите параметры в меню через /start.")
+    if data == "model":
+        bot.edit_message_text("Выбери модель:", cid, call.message.message_id, reply_markup=model_keyboard())
+
+    elif data.startswith("model_"):
+        model = data.split("_")[1]
+        user_settings[cid]["model"] = model
+        bot.answer_callback_query(call.id, f"Модель установлена: {model}")
+        bot.edit_message_text(f"Модель установлена: {model}", cid, call.message.message_id, reply_markup=main_keyboard())
+
+    elif data == "tags":
+        user_settings[cid]["waiting_for_prompt"] = False
+        bot.edit_message_text("Выбери категорию тегов:", cid, call.message.message_id, reply_markup=category_keyboard())
+
+    elif data.startswith("cat_"):
+        category = data[4:]
+        bot.edit_message_text(f"Выбери теги категории {category}:", cid, call.message.message_id, reply_markup=tags_keyboard(category))
+
+    elif data.startswith("tag_"):
+        tag = data[4:]
+        features = user_settings[cid].get("features", [])
+        if tag in features:
+            features.remove(tag)
+        else:
+            features.append(tag)
+        user_settings[cid]["features"] = features
+        bot.answer_callback_query(call.id, f"{tag.replace('_',' ').capitalize()} {'убран' if tag not in features else 'добавлен'}")
+
+    elif data == "tags_done":
+        tags = user_settings[cid].get("features", [])
+        bot.edit_message_text(f"Выбраны теги: {', '.join(tags) if tags else 'нет'}", cid, call.message.message_id, reply_markup=main_keyboard())
+
+    elif data == "tags_back":
+        bot.edit_message_text("Выбери категорию тегов:", cid, call.message.message_id, reply_markup=category_keyboard())
+
+    elif data == "generate":
+        user_settings[cid]["waiting_for_prompt"] = True
+        bot.send_message(cid, "📝 Напиши описание картинки (например: 'nude woman, sexy pose'):")
+
+# ===== Приём текста после генерации =====
+@bot.message_handler(func=lambda m: user_settings.get(m.chat.id, {}).get("waiting_for_prompt", False))
+def handle_prompt(message):
+    cid = message.chat.id
+    base_prompt = message.text
+    user_settings[cid]["waiting_for_prompt"] = False
+    features = user_settings[cid].get("features", [])
+    model_id = user_settings[cid].get("model", "anime")
+    model_version = REPLICATE_MODELS.get(model_id, REPLICATE_MODELS["anime"])
+
+    prompt = build_prompt(base_prompt, features)
+    bot.send_message(cid, f"🎨 Модель: {model_id}\n📸 Генерация изображения...")
+
+    status_url, error = generate_image(prompt, model_version)
+    if error:
+        bot.send_message(cid, error)
         return
-    prompt = build_final_prompt(choices)
-    await message.answer(f"Генерирую изображение с промтом:\n\n{prompt}")
-    # Тут вставь вызов генерации через Replicate по API с prompt
-    # и отправку фото пользователю.
-    # Для примера:
-    # url, error = generate_image_via_replicate(prompt)
-    # if url:
-    #   await bot.send_photo(message.chat.id, url)
-    # else:
-    #   await message.answer(f"Ошибка генерации: {error}")
 
-@dp.message_handler()
-async def fallback(message: types.Message):
-    await message.answer("Используйте /start для начала и /generate для генерации.")
+    image_url = wait_for_image(status_url)
+    if image_url:
+        bot.send_photo(cid, image_url)
+        # После генерации отправим выбор усилителей (тегов)
+        markup = types.InlineKeyboardMarkup(row_width=2)
+        markup.add(
+            types.InlineKeyboardButton("🧩 Выбрать теги", callback_data="tags"),
+            types.InlineKeyboardButton("🎨 Выбрать модель", callback_data="model"),
+            types.InlineKeyboardButton("✅ Новая генерация", callback_data="generate")
+        )
+        bot.send_message(cid, "Выбери дальнейшее действие:", reply_markup=markup)
+    else:
+        bot.send_message(cid, "❌ Ошибка генерации изображения.")
 
+# ===== Вспомогательные клавиатуры =====
+def model_keyboard():
+    markup = types.InlineKeyboardMarkup(row_width=1)
+    markup.add(
+        types.InlineKeyboardButton("🖌 Аниме", callback_data="model_anime"),
+        types.InlineKeyboardButton("📷 Реализм", callback_data="model_realism"),
+        types.InlineKeyboardButton("🧱 3D", callback_data="model_3d"),
+        types.InlineKeyboardButton("⬅ Назад", callback_data="main_menu")
+    )
+    return markup
+
+def main_keyboard():
+    markup = types.InlineKeyboardMarkup(row_width=2)
+    markup.add(
+        types.InlineKeyboardButton("🎨 Выбрать модель", callback_data="model"),
+        types.InlineKeyboardButton("🧩 Выбрать теги", callback_data="tags"),
+        types.InlineKeyboardButton("✅ Генерировать", callback_data="generate")
+    )
+    return markup
+
+# ===== Старт / индекс для Flask =====
+@app.route("/", methods=["POST"])
+def webhook():
+    json_str = request.get_data().decode("utf-8")
+    update = telebot.types.Update.de_json(json_str)
+    bot.process_new_updates([update])
+    return "", 200
+
+@app.route("/", methods=["GET"])
+def index():
+    return "🤖 Бот работает."
+
+# ===== Запуск =====
 if __name__ == "__main__":
-    executor.start_polling(dp, skip_updates=True)
+    bot.remove_webhook()
+    bot.set_webhook(WEBHOOK_URL)
+    app.run(host="0.0.0.0", port=PORT)
