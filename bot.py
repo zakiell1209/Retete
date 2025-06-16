@@ -12,11 +12,83 @@ WEBHOOK_URL = os.getenv("WEBHOOK_URL", "https://retete.onrender.com")
 bot = telebot.TeleBot(API_TOKEN)
 app = Flask(__name__)
 
+# Функция для расширения промта с синонимами и ключевыми словами
+def expand_prompt_synonyms(text):
+    text = text.lower()
+    additions = []
+
+    # Анал
+    anal_synonyms = ["анал", "анус", "анальный"]
+    if any(word in text for word in anal_synonyms):
+        additions.append("anal, anal sex, detailed anus, erotic")
+
+    # Дилдо
+    dildo_synonyms = ["дилдо", "большой дилдо", "конский дилдо", "огромный дилдо", "гигантский дилдо"]
+    if any(word in text for word in dildo_synonyms):
+        additions.append("large dildo, realistic dildo, dildo penetration, detailed dildo")
+
+    # Поза
+    pose_synonyms = {
+        "раком": "doggy style, rear view",
+        "вертикальный шпагат": "vertical splits, flexible pose",
+        "на корточках": "crouching pose, bent knees",
+        "миссионерская": "missionary position",
+        "69": "69 position"
+    }
+    for key, phrase in pose_synonyms.items():
+        if key in text:
+            additions.append(phrase)
+
+    # Видно киску
+    pussy_synonyms = ["видно киску", "киска видна", "обнажённая киска", "видна вагина"]
+    if any(word in text for word in pussy_synonyms):
+        additions.append("exposed pussy, pussy visible, detailed vulva")
+
+    # Изменения размера груди
+    breast_synonyms = {
+        "большая грудь": "large breasts, big boobs, voluptuous",
+        "маленькая грудь": "small breasts, petite boobs",
+        "огромная грудь": "huge breasts, massive boobs",
+        "средняя грудь": "medium breasts"
+    }
+    for key, phrase in breast_synonyms.items():
+        if key in text:
+            additions.append(phrase)
+
+    # Пирсинг
+    piercing_synonyms = ["пирсинг", "пирсинг на груди", "пирсинг на сосках", "пирсинг на пупке"]
+    if any(word in text for word in piercing_synonyms):
+        additions.append("piercing, nipple piercing, belly button piercing")
+
+    # Чулки
+    stockings_synonyms = ["чулки", "с чулками", "сетчатые чулки", "кружевные чулки"]
+    if any(word in text for word in stockings_synonyms):
+        additions.append("stockings, lace stockings, fishnet stockings")
+
+    return ", ".join(additions)
+
 # Усилители промтов
-def enhance_nsfw_female(p): return p + ", nude, erotic, sensual, solo, young female, seductive, large breasts, soft skin, masterpiece, ultra detailed, NSFW"
-def enhance_futanari(p): return p + ", futanari, shemale, dickgirl, big breasts, penis, nude, erotic pose, solo, highly detailed, NSFW"
-def enhance_femboy(p): return p + ", femboy, cute male, feminine face, soft skin, lingerie, erotic, slim waist, NSFW, solo"
-def enhance_shibari(p): return p + ", shibari, rope bondage, tied up, detailed knots, erotic ropes, submissive pose, NSFW, cinematic"
+def enhance_prompt(base_prompt, mode):
+    base_prompt = base_prompt.strip()
+    base_prompt = base_prompt.capitalize()
+
+    enhancers = {
+        "nsfw_female": "nude, erotic, sensual, solo, young female, seductive, large breasts, soft skin, masterpiece, ultra detailed, NSFW",
+        "futanari": "futanari, shemale, dickgirl, big breasts, penis, nude, erotic pose, solo, highly detailed, NSFW",
+        "femboy": "femboy, cute male, feminine face, soft skin, lingerie, erotic, slim waist, NSFW, solo",
+        "shibari": "shibari, rope bondage, tied up, detailed knots, erotic ropes, submissive pose, NSFW, cinematic",
+        "default": ""
+    }
+
+    enhancer = enhancers.get(mode, enhancers["default"])
+    extra = expand_prompt_synonyms(base_prompt)
+    prompt = f"{base_prompt}"
+    if enhancer:
+        prompt += f", {enhancer}"
+    if extra:
+        prompt += f", {extra}"
+    prompt += ", masterpiece, high quality, 4k, detailed, realistic"
+    return prompt
 
 # Генерация картинки через Replicate
 def generate_image(prompt):
@@ -36,8 +108,8 @@ def generate_image(prompt):
     return None, f"❌ Ошибка генерации: {response.status_code} {response.text}"
 
 # Отправка запроса на генерацию
-def generate_custom_image(message, enhancer):
-    prompt = enhancer(message.text)
+def generate_custom_image(message, mode):
+    prompt = enhance_prompt(message.text, mode)
     bot.send_message(message.chat.id, "🔞 Генерирую изображение, подожди...")
 
     status_url, error = generate_image(prompt)
@@ -72,15 +144,8 @@ def callback_handler(call):
         "shibari": "📝 Опиши сцену с шибари:"
     }.get(mode, "📝 Введите описание:")
 
-    enhancers = {
-        "nsfw_female": enhance_nsfw_female,
-        "futanari": enhance_futanari,
-        "femboy": enhance_femboy,
-        "shibari": enhance_shibari
-    }
-
     msg = bot.send_message(call.message.chat.id, prompt_msg)
-    bot.register_next_step_handler(msg, lambda m: generate_custom_image(m, enhancers[mode]))
+    bot.register_next_step_handler(msg, lambda m: generate_custom_image(m, mode))
 
 # Команда /start
 @bot.message_handler(commands=['start'])
@@ -96,11 +161,11 @@ def start(message):
     )
     bot.send_message(message.chat.id, "Выбери режим генерации:", reply_markup=markup)
 
-# Также можно писать обычный текст
+# Если пишут просто текст без выбора режима, сгенерируем без усиления (default)
 @bot.message_handler(func=lambda m: True)
 def handle_prompt(message):
     bot.send_message(message.chat.id, "🔁 Генерирую обычное изображение без усиления...")
-    generate_custom_image(message, lambda p: p)
+    generate_custom_image(message, "default")
 
 # Flask Webhook
 @app.route('/', methods=['POST'])
