@@ -23,20 +23,19 @@ user_settings = {}
 TAGS = {
     "holes": ["vagina", "anal", "both"],
     "toys": ["dildo", "anal_beads", "anal_plug", "gag", "piercing"],
-    "poses": ["doggy", "standing", "splits", "squat", "lying"],
+    "poses": [
+        "doggy", "standing", "splits", "squat", "lying",
+        "split_horizontal", "split_vertical", "side_leg_up",
+        "front_facing", "back_facing", "laying_spread_knees"
+    ],
     "clothes": ["stockings", "bikini", "mask", "heels", "shibari", "cow_costume", "bikini_tan_lines"],
     "body": [
         "big_breasts", "small_breasts", "skin_white", "skin_black",
-        "chubby_body", "skinny_body", "fit_body", "muscular_body",
-        "short_height", "tall_height",
-        "age_loli", "age_milf", "age_mid"
+        "chubby", "slim", "fit", "muscular", "short", "tall",
+        "loli", "milf", "middle_age"
     ],
-    "ethnos": [
-        "femboy", "futanari", "ethnicity_asian", "ethnicity_european"
-    ],
-    "furry": [
-        "furry_cow", "furry_cat", "furry_dog", "furry_dragon", "furry_sylveon"
-    ]
+    "ethnos": ["femboy", "futanari", "ethnicity_asian", "ethnicity_european"],
+    "furry": ["furry_cow", "furry_cat", "furry_dog", "furry_dragon", "furry_sylveon"]
 }
 
 CATEGORY_NAMES_EMOJI = {
@@ -45,42 +44,38 @@ CATEGORY_NAMES_EMOJI = {
     "poses": "Позиции 🤸‍♀️",
     "clothes": "Одежда 👗",
     "body": "Тело 🧍‍♀️",
-    "ethnos": "Этнос 🧬",
+    "ethnos": "Этнос 🌍",
     "furry": "Фури 🐾"
 }
 
 CLOTHES_NAMES_EMOJI = {
-    "stockings": "Чулки 🧦", "bikini": "Бикини 👙", "mask": "Маска 😷",
-    "heels": "Туфли 👠", "shibari": "Шибари ⛓️", "cow_costume": "Костюм коровы 🐄",
-    "bikini_tan_lines": "Загар от бикини ☀️"
+    "stockings": "Чулки 🧦", "bikini": "Бикини 👙", "mask": "Маска 😷", "heels": "Туфли 👠",
+    "shibari": "Шибари ⛓️", "cow_costume": "Костюм коровы 🐄", "bikini_tan_lines": "Загар от бикини ☀️"
 }
 
 TAG_NAMES_EMOJI = {
     "holes": {"vagina": "Вагина ♀️", "anal": "Анал 🍑", "both": "Оба 🔥"},
-    "toys": {
-        "dildo": "Дилдо 🍆", "anal_beads": "Анальные бусы 🔴",
-        "anal_plug": "Пробка 🔵", "gag": "Кляп 😶", "piercing": "Пирсинг 💎"
-    },
+    "toys": {"dildo": "Дилдо 🍆", "anal_beads": "Анальные бусы 🔴", "anal_plug": "Пробка 🔵", "gag": "Кляп 😶", "piercing": "Пирсинг 💎"},
     "poses": {
-        "doggy": "Догги 🐕", "standing": "Стоя 🧍", "splits": "Шпагат 🤸",
-        "squat": "Присед 🧎", "lying": "Лежа 🛌"
+        "doggy": "Догги 🐕", "standing": "Стоя 🧍", "splits": "Шпагат 🤸", "squat": "Присед 🧎", "lying": "Лежа 🛌",
+        "split_horizontal": "Горизонтальный шпагат ↔️", "split_vertical": "Вертикальный шпагат ↕️",
+        "side_leg_up": "На боку с ногой вверх 🦵", "front_facing": "Лицом к зрителю 👁", "back_facing": "Спиной к зрителю 🔙",
+        "laying_spread_knees": "На спине, ноги врозь ⛓️"
     },
     "body": {
         "big_breasts": "Большая грудь 🍒", "small_breasts": "Маленькая грудь 🥥",
         "skin_white": "Белая кожа ⚪", "skin_black": "Чёрная кожа ⚫",
-        "chubby_body": "Пышное тело 🍰", "skinny_body": "Худое тело 🪶",
-        "fit_body": "Подтянутое тело 🏃", "muscular_body": "Мускулистое тело 💪",
-        "short_height": "Низкий рост 📏", "tall_height": "Высокий рост 📐",
-        "age_loli": "Лоли 👧", "age_milf": "Милфа 👩", "age_mid": "Средний возраст 🧑"
+        "chubby": "Пышное тело 🍑", "slim": "Худое тело 🧘", "fit": "Подтянутое тело 💃",
+        "muscular": "Накачанное тело 💪", "short": "Низкий рост 📏", "tall": "Высокий рост 📐",
+        "loli": "Лоли 👧", "milf": "Милфа 👩", "middle_age": "Средний возраст 👩‍🦳"
     },
     "ethnos": {
-        "femboy": "Фембой ⚧", "futanari": "Футанари 🚺➕🍆",
+        "femboy": "Фембой ⚧", "futanari": "Футанари 🔞",
         "ethnicity_asian": "Азиатка 🈶", "ethnicity_european": "Европейка 🇪🇺"
     },
     "furry": {
-        "furry_cow": "Фури-корова 🐄", "furry_cat": "Фури-кошка 🐱",
-        "furry_dog": "Фури-собака 🐶", "furry_dragon": "Фури-дракон 🐉",
-        "furry_sylveon": "Фури-сильвеон 🌸"
+        "furry_cow": "Фури-корова 🐄", "furry_cat": "Фури-кошка 🐱", "furry_dog": "Фури-собака 🐶",
+        "furry_dragon": "Фури-дракон 🐉", "furry_sylveon": "Фури-сильвеон 🎀"
     }
 }
 
@@ -113,10 +108,7 @@ def category_keyboard():
 def tags_keyboard(category):
     markup = types.InlineKeyboardMarkup(row_width=2)
     for tag in TAGS.get(category, []):
-        if category == "clothes":
-            name = CLOTHES_NAMES_EMOJI.get(tag, tag)
-        else:
-            name = TAG_NAMES_EMOJI.get(category, {}).get(tag, tag)
+        name = CLOTHES_NAMES_EMOJI.get(tag, TAG_NAMES_EMOJI.get(category, {}).get(tag, tag))
         markup.add(types.InlineKeyboardButton(name, callback_data=f"tag_{tag}"))
     markup.add(types.InlineKeyboardButton("⬅ Назад", callback_data="tags_back"))
     return markup
@@ -153,8 +145,7 @@ def handle_callback(call):
         else:
             tags.append(tag)
         user_settings[cid]["features"] = tags
-        status = "добавлен" if tag in tags else "удалён"
-        bot.answer_callback_query(call.id, f"{tag} {status}")
+        bot.answer_callback_query(call.id, f"{tag} выбрано")
     elif data == "tags_done":
         bot.edit_message_text("Теги сохранены.", cid, call.message.message_id, reply_markup=main_keyboard())
     elif data == "tags_back":
@@ -188,30 +179,29 @@ def handle_prompt(message):
 def build_prompt(base, tags):
     map_tag = {
         "vagina": "vaginal penetration", "anal": "anal penetration", "both": "double penetration",
-        "dildo": "dildo", "anal_beads": "anal beads", "anal_plug": "anal plug", "gag": "gag", "piercing": "piercing",
+        "dildo": "dildo", "anal_beads": "anal beads", "anal_plug": "anal plug", "gag": "gag", "piercing": "body piercing",
         "doggy": "doggy style", "standing": "standing pose", "splits": "splits", "squat": "squatting", "lying": "laying",
+        "split_horizontal": "horizontal split", "split_vertical": "vertical split", "side_leg_up": "laying on side with one leg up",
+        "front_facing": "facing viewer", "back_facing": "back facing viewer", "laying_spread_knees": "laying on back, knees bent and spread",
         "stockings": "stockings", "bikini": "bikini", "mask": "mask", "heels": "high heels", "shibari": "shibari",
         "cow_costume": "cow costume", "bikini_tan_lines": "bikini tan lines",
-        "big_breasts": "large breasts", "small_breasts": "small breasts",
-        "skin_white": "white skin", "skin_black": "black skin",
-        "chubby_body": "chubby body", "skinny_body": "skinny body", "fit_body": "fit body", "muscular_body": "muscular body",
-        "short_height": "short girl", "tall_height": "tall girl",
-        "age_loli": "loli", "age_milf": "milf", "age_mid": "adult woman",
+        "big_breasts": "large breasts", "small_breasts": "small breasts", "skin_white": "white skin", "skin_black": "black skin",
         "femboy": "femboy", "futanari": "futanari", "ethnicity_asian": "asian girl", "ethnicity_european": "european girl",
-        "furry_cow": "furry cow", "furry_cat": "furry catgirl", "furry_dog": "furry doggirl", "furry_dragon": "furry dragon", "furry_sylveon": "furry sylveon"
+        "chubby": "chubby body", "slim": "slim body", "fit": "fit body", "muscular": "muscular body",
+        "short": "short girl", "tall": "tall girl", "loli": "young girl", "milf": "mature woman", "middle_age": "middle-aged woman",
+        "furry_cow": "furry cow", "furry_cat": "furry cat", "furry_dog": "furry dog", "furry_dragon": "furry dragon", "furry_sylveon": "furry sylveon"
     }
-    prompt = base + ", " + ", ".join(map_tag.get(tag, tag) for tag in tags)
-    prompt += ", nsfw, masterpiece, ultra detailed"
-    return prompt
+    details = [map_tag.get(t, t) for t in tags]
+    return base + ", " + ", ".join(details + ["nsfw, masterpiece, ultra detailed"])
 
 def generate_image(prompt, model_version):
     url = "https://api.replicate.com/v1/predictions"
     headers = {"Authorization": f"Token {REPLICATE_TOKEN}", "Content-Type": "application/json"}
     data = {"version": model_version, "input": {"prompt": prompt}}
-    response = requests.post(url, headers=headers, json=data)
-    if response.status_code == 201:
-        return response.json()["urls"]["get"], None
-    return None, "Ошибка запуска генерации"
+    res = requests.post(url, headers=headers, json=data)
+    if res.status_code == 201:
+        return res.json()["urls"]["get"], None
+    return None, "Ошибка генерации"
 
 def wait_for_image(status_url):
     headers = {"Authorization": f"Token {REPLICATE_TOKEN}"}
