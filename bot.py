@@ -1,50 +1,52 @@
 import os
 import time
 import requests
+from flask import Flask, request
 import telebot
 from telebot import types
-from flask import Flask, request
 
 API_TOKEN = os.getenv("TELEGRAM_TOKEN")
 REPLICATE_TOKEN = os.getenv("REPLICATE_API_TOKEN")
-WEBHOOK_URL = os.getenv("WEBHOOK_URL")
+WEBHOOK_URL = os.getenv("WEBHOOK_URL")  # например: https://your-app.onrender.com
+PORT = int(os.environ.get("PORT", 5000))
+
+REPLICATE_MODELS = {
+    "anime": "cjwbw/eimis_anime_diffusion:a409b076",
+    "realism": "stability-ai/stable-diffusion:ac732df8",
+    "3d": "stability-ai/stable-diffusion-3-medium"
+}
 
 bot = telebot.TeleBot(API_TOKEN)
 app = Flask(__name__)
 
+# Переменные генерации
 user_settings = {}
 
-REPLICATE_MODELS = {
-    "anime": "fb4f086702d6a301ca32c170d926239324a7b7b2f0afc3d232a9c4be382dc3fa",
-    "realism": "f219c7eb13e17887e1acb1be8b12e841be3db640c82fb956c0f5d52c4cc9b6ec",
-    "3d": "b8b4012675e6e84bd38bb3770e5faaf6cb943030a14e435f1ec61d116d30b370"
-}
+# ===== Усилители =====
+def build_prompt(base, features):
+    additions = []
 
-PRESETS = {
-    "anal": "anal sex, anus penetration, ass visible",
-    "dildo": "huge dildo, inserted, sex toy",
-    "pose_doggy": "doggy style pose, from behind",
-    "pose_squat": "squatting pose, open legs",
-    "pose_splits": "vertical splits pose, flexible",
-    "pussy_visible": "pussy visible, spread legs",
-    "small_boobs": "small breasts",
-    "big_boobs": "large breasts",
-    "piercing": "body piercing, nipple piercing",
-    "stockings": "wearing stockings",
-    "sex_scene": "realistic sex scene, penetration, cum",
-    "femboy": "femboy, feminine male, slim waist, soft skin, long hair, flat chest, NSFW",
-    "black_skin": "black skin",
-    "white_skin": "pale white skin",
-    "asian": "asian female",
-    "european": "european face"
-}
+    # Темы
+    if 'anal' in features: additions.append("anal sex, anal penetration, anus focus")
+    if 'dildo' in features: additions.append("dildo, large dildo, inserted dildo")
+    if 'pose_doggy' in features: additions.append("doggy style, from behind")
+    if 'pose_squat' in features: additions.append("squatting, legs open")
+    if 'pose_vertical' in features: additions.append("vertical split, flexibility")
+    if 'visible_pussy' in features: additions.append("pussy, open legs, visible vagina")
+    if 'big_breasts' in features: additions.append("large breasts")
+    if 'small_breasts' in features: additions.append("small breasts")
+    if 'piercing' in features: additions.append("nipple piercing, navel piercing")
+    if 'stockings' in features: additions.append("thigh high stockings, sexy lingerie")
+    if 'femboy' in features:
+        additions.append("femboy, cute feminine male, smooth skin, slim waist, erotic pose")
+    if 'ethnicity_asian' in features: additions.append("asian girl")
+    if 'ethnicity_european' in features: additions.append("european face")
+    if 'skin_white' in features: additions.append("pale skin")
+    if 'skin_black' in features: additions.append("dark skin")
 
-def generate_prompt(user_id, user_input):
-    tags = user_settings.get(user_id, {}).get("tags", set())
-    model = user_settings.get(user_id, {}).get("model", "realism")
-    prompt = user_input + ", " + ", ".join(PRESETS[t] for t in tags if t in PRESETS)
-    return prompt.strip(), REPLICATE_MODELS[model]
+    return base + ", " + ", ".join(additions) + ", nsfw, masterpiece, high detail"
 
+# ===== Генерация =====
 def generate_image(prompt, model_version):
     url = "https://api.replicate.com/v1/predictions"
     headers = {
@@ -58,93 +60,117 @@ def generate_image(prompt, model_version):
     response = requests.post(url, headers=headers, json=data)
     if response.status_code == 201:
         return response.json()["urls"]["get"], None
-    return None, f"❌ Ошибка генерации: {response.status_code} {response.text}"
+    return None, f"❌ Ошибка: {response.status_code} {response.text}"
 
-def poll_image(message, status_url):
-    for _ in range(40):
-        res = requests.get(status_url, headers={"Authorization": f"Token {REPLICATE_TOKEN}"})
-        if res.status_code != 200:
-            bot.send_message(message.chat.id, f"❌ Статус ошибка: {res.status_code}")
-            return
-        status = res.json()
-        if status.get("status") == "succeeded":
-            bot.send_photo(message.chat.id, status["output"][0])
-            return
-        elif status.get("status") == "failed":
-            bot.send_message(message.chat.id, "❌ Генерация провалилась.")
-            return
+def wait_for_image(url):
+    for _ in range(35):
         time.sleep(2)
-    bot.send_message(message.chat.id, "❌ Время ожидания истекло.")
+        res = requests.get(url, headers={"Authorization": f"Token {REPLICATE_TOKEN}"})
+        if res.status_code != 200:
+            return None
+        data = res.json()
+        if data["status"] == "succeeded":
+            return data["output"][0]
+        if data["status"] == "failed":
+            return None
+    return None
 
+# ===== Команды =====
 @bot.message_handler(commands=['start'])
 def start(message):
-    user_settings[message.chat.id] = {"tags": set(), "model": "realism"}
-    markup = types.InlineKeyboardMarkup(row_width=3)
-    markup.add(
-        types.InlineKeyboardButton("Анал", callback_data="anal"),
-        types.InlineKeyboardButton("Дилдо", callback_data="dildo"),
-        types.InlineKeyboardButton("Фембой", callback_data="femboy")
+    user_settings[message.chat.id] = {"features": [], "model": "realism"}
+    markup = types.InlineKeyboardMarkup()
+    markup.row(
+        types.InlineKeyboardButton("✅ Генерация", callback_data="generate"),
+        types.InlineKeyboardButton("🎨 Выбрать модель", callback_data="model")
     )
-    markup.add(
-        types.InlineKeyboardButton("Раком", callback_data="pose_doggy"),
-        types.InlineKeyboardButton("Шпагат", callback_data="pose_splits"),
-        types.InlineKeyboardButton("На корточках", callback_data="pose_squat")
-    )
-    markup.add(
-        types.InlineKeyboardButton("Большая грудь", callback_data="big_boobs"),
-        types.InlineKeyboardButton("Маленькая грудь", callback_data="small_boobs"),
-        types.InlineKeyboardButton("Киска видна", callback_data="pussy_visible")
-    )
-    markup.add(
-        types.InlineKeyboardButton("Пирсинг", callback_data="piercing"),
-        types.InlineKeyboardButton("Чулки", callback_data="stockings"),
-        types.InlineKeyboardButton("Сцена секса", callback_data="sex_scene")
-    )
-    markup.add(
-        types.InlineKeyboardButton("Чёрная кожа", callback_data="black_skin"),
-        types.InlineKeyboardButton("Белая кожа", callback_data="white_skin")
-    )
-    markup.add(
-        types.InlineKeyboardButton("Азиатка", callback_data="asian"),
-        types.InlineKeyboardButton("Европейка", callback_data="european")
-    )
-    markup.add(
-        types.InlineKeyboardButton("Модель: Аниме", callback_data="model_anime"),
-        types.InlineKeyboardButton("Модель: Реализм", callback_data="model_realism"),
-        types.InlineKeyboardButton("Модель: 3D", callback_data="model_3d")
-    )
-    bot.send_message(message.chat.id, "Выберите параметры генерации:", reply_markup=markup)
+    markup.add(types.InlineKeyboardButton("🧩 Выбрать теги", callback_data="tags"))
+    bot.send_message(message.chat.id, "Привет! Выбери действия:", reply_markup=markup)
 
+# ===== Выбор модели =====
+def model_keyboard():
+    markup = types.InlineKeyboardMarkup()
+    markup.add(types.InlineKeyboardButton("🖌 Аниме", callback_data="model_anime"))
+    markup.add(types.InlineKeyboardButton("📷 Реализм", callback_data="model_realism"))
+    markup.add(types.InlineKeyboardButton("🧱 3D", callback_data="model_3d"))
+    return markup
+
+# ===== Выбор тегов =====
+def tag_keyboard():
+    tags = [
+        ("🍑 Анал", "anal"), ("🍆 Дилдо", "dildo"),
+        ("🤸‍♀️ Раком", "pose_doggy"), ("🧘‍♀️ Шпагат", "pose_vertical"),
+        ("🧍‍♀️ На корточках", "pose_squat"), ("👀 Видно киску", "visible_pussy"),
+        ("🔺 Большая грудь", "big_breasts"), ("🔻 Маленькая грудь", "small_breasts"),
+        ("💎 Пирсинг", "piercing"), ("🧦 Чулки", "stockings"),
+        ("👦‍ Фембой", "femboy"), ("🧑‍🦱 Азиатка", "ethnicity_asian"),
+        ("👩‍🦰 Европейка", "ethnicity_european"), ("⚪ Белая кожа", "skin_white"),
+        ("⚫ Чёрная кожа", "skin_black")
+    ]
+    markup = types.InlineKeyboardMarkup(row_width=2)
+    for name, tag in tags:
+        markup.add(types.InlineKeyboardButton(name, callback_data=f"tag_{tag}"))
+    markup.add(types.InlineKeyboardButton("✅ Готово", callback_data="tags_done"))
+    return markup
+
+# ===== Callback =====
 @bot.callback_query_handler(func=lambda call: True)
-def handle_buttons(call):
-    uid = call.message.chat.id
+def callback(call):
+    cid = call.message.chat.id
     data = call.data
 
-    if data.startswith("model_"):
+    if cid not in user_settings:
+        user_settings[cid] = {"features": [], "model": "realism"}
+
+    if data == "generate":
+        bot.send_message(cid, "📝 Напиши описание:")
+        bot.register_next_step_handler_by_chat_id(cid, handle_prompt)
+
+    elif data.startswith("model_"):
         model = data.split("_")[1]
-        user_settings.setdefault(uid, {}).update({"model": model})
-        bot.answer_callback_query(call.id, f"✅ Модель установлена: {model}")
-        return
+        user_settings[cid]["model"] = model
+        bot.send_message(cid, f"🎨 Модель установлена: {model.upper()}")
 
-    tags = user_settings.setdefault(uid, {}).setdefault("tags", set())
-    if data in tags:
-        tags.remove(data)
-        bot.answer_callback_query(call.id, f"❌ Убрано: {data}")
-    else:
-        tags.add(data)
-        bot.answer_callback_query(call.id, f"✅ Добавлено: {data}")
+    elif data == "model":
+        bot.send_message(cid, "Выбери модель:", reply_markup=model_keyboard())
 
-@bot.message_handler(func=lambda m: True)
+    elif data == "tags":
+        user_settings[cid]["features"] = []
+        bot.send_message(cid, "Выбери теги:", reply_markup=tag_keyboard())
+
+    elif data.startswith("tag_"):
+        tag = data.split("_")[1]
+        if tag in user_settings[cid]["features"]:
+            user_settings[cid]["features"].remove(tag)
+        else:
+            user_settings[cid]["features"].append(tag)
+
+    elif data == "tags_done":
+        bot.send_message(cid, f"Выбрано: {', '.join(user_settings[cid]['features'])}")
+
+# ===== Описание =====
 def handle_prompt(message):
-    prompt, version = generate_prompt(message.chat.id, message.text)
-    bot.send_message(message.chat.id, "🎨 Генерация...")
+    cid = message.chat.id
+    base_prompt = message.text
+    features = user_settings[cid].get("features", [])
+    model_id = user_settings[cid].get("model", "realism")
+    model_version = REPLICATE_MODELS.get(model_id, REPLICATE_MODELS["realism"])
 
-    status_url, error = generate_image(prompt, version)
+    prompt = build_prompt(base_prompt, features)
+    bot.send_message(cid, f"🎨 Модель: {model_id}\n📸 Генерация...")
+
+    status_url, error = generate_image(prompt, model_version)
     if error:
-        bot.send_message(message.chat.id, error)
+        bot.send_message(cid, error)
         return
-    poll_image(message, status_url)
 
+    image_url = wait_for_image(status_url)
+    if image_url:
+        bot.send_photo(cid, image_url)
+    else:
+        bot.send_message(cid, "❌ Ошибка генерации изображения.")
+
+# ===== Flask Webhook =====
 @app.route('/', methods=['POST'])
 def webhook():
     update = telebot.types.Update.de_json(request.data.decode("utf-8"))
@@ -152,10 +178,10 @@ def webhook():
     return '', 200
 
 @app.route('/', methods=['GET'])
-def root():
-    return "🤖 Бот активен."
+def index():
+    return "🤖 Бот работает."
 
 if __name__ == "__main__":
     bot.remove_webhook()
     bot.set_webhook(WEBHOOK_URL)
-    app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)))
+    app.run(host="0.0.0.0", port=PORT)
