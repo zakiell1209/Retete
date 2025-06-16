@@ -40,11 +40,6 @@ CATEGORY_NAMES_EMOJI = {
     "furry": "Фури 🐾"
 }
 
-CLOTHES_NAMES_EMOJI = {
-    "stockings": "Чулки 🧦", "bikini": "Бикини 👙", "mask": "Маска 😷", "heels": "Туфли 👠",
-    "shibari": "Шибари ⛓️", "cow_costume": "Костюм коровы 🐄", "bikini_tan_lines": "Загар от бикини ☀️"
-}
-
 TAG_NAMES_EMOJI = {
     "holes": {"vagina": "Вагина ♀️", "anal": "Анал 🍑", "both": "Оба 🔥"},
     "toys": {"dildo": "Дилдо 🍆", "anal_beads": "Анальные бусы 🔴", "anal_plug": "Пробка 🔵", "gag": "Кляп 😶", "piercing": "Пирсинг 💎"},
@@ -55,7 +50,10 @@ TAG_NAMES_EMOJI = {
         "furry_cow": "Фури корова 🐄", "furry_cat": "Фури кошка 🐱", "furry_dog": "Фури собака 🐶",
         "furry_dragon": "Фури дракон 🐉", "furry_silveon": "Фури сильвеон 🦄"
     },
-    "clothes": CLOTHES_NAMES_EMOJI
+    "clothes": {
+        "stockings": "Чулки 🧦", "bikini": "Бикини 👙", "mask": "Маска 😷", "heels": "Туфли 👠",
+        "shibari": "Шибари ⛓️", "cow_costume": "Костюм коровы 🐄", "bikini_tan_lines": "Загар от бикини ☀️"
+    }
 }
 
 def main_keyboard():
@@ -89,9 +87,18 @@ def tags_keyboard(category, selected_tags):
     for tag in TAGS.get(category, []):
         name = TAG_NAMES_EMOJI.get(category, {}).get(tag, tag)
         if tag in selected_tags:
-            name = f"✅ {name}"
+            name = "✅ " + name
         markup.add(types.InlineKeyboardButton(name, callback_data=f"tag_{tag}"))
     markup.add(types.InlineKeyboardButton("⬅ Назад", callback_data="tags_back"))
+    return markup
+
+def post_generation_keyboard():
+    markup = types.InlineKeyboardMarkup()
+    markup.add(
+        types.InlineKeyboardButton("✅ Ещё раз с теми же тегами", callback_data="generate_again"),
+        types.InlineKeyboardButton("🛠 Редактировать теги", callback_data="edit_tags"),
+        types.InlineKeyboardButton("🔄 Начать заново", callback_data="reset_tags")
+    )
     return markup
 
 @bot.message_handler(commands=["start"])
@@ -107,22 +114,25 @@ def handle_callback(call):
     if cid not in user_settings:
         user_settings[cid] = {"features": [], "model": "anime", "waiting_for_prompt": False}
 
-    if data == "model":
+    if data == "main_menu":
+        bot.edit_message_text("Меню:", cid, call.message.message_id, reply_markup=main_keyboard())
+
+    elif data == "model":
         bot.edit_message_text("Выбери модель:", cid, call.message.message_id, reply_markup=model_keyboard())
+
     elif data.startswith("model_"):
         model = data.split("_")[1]
         user_settings[cid]["model"] = model
         bot.edit_message_text(f"Модель установлена: {model}", cid, call.message.message_id, reply_markup=main_keyboard())
+
     elif data == "tags":
         bot.edit_message_text("Выбери категорию:", cid, call.message.message_id, reply_markup=category_keyboard())
+
     elif data.startswith("cat_"):
         cat = data.split("_")[1]
-        tags = user_settings[cid]["features"]
-        bot.edit_message_text(
-            f"Выбери теги категории {CATEGORY_NAMES_EMOJI[cat]}:",
-            cid, call.message.message_id,
-            reply_markup=tags_keyboard(cat, tags)
-        )
+        selected = user_settings[cid]["features"]
+        bot.edit_message_text(f"Выбери теги: {CATEGORY_NAMES_EMOJI[cat]}", cid, call.message.message_id, reply_markup=tags_keyboard(cat, selected))
+
     elif data.startswith("tag_"):
         tag = data.split("_")[1]
         tags = user_settings[cid]["features"]
@@ -131,25 +141,42 @@ def handle_callback(call):
         else:
             tags.append(tag)
         user_settings[cid]["features"] = tags
+        category = next((cat for cat in TAGS if tag in TAGS[cat]), "clothes")
+        bot.edit_message_reply_markup(cid, call.message.message_id, reply_markup=tags_keyboard(category, tags))
 
-        # Обновить то же самое сообщение
-        for cat, tag_list in TAGS.items():
-            if tag in tag_list:
-                bot.edit_message_reply_markup(cid, call.message.message_id, reply_markup=tags_keyboard(cat, tags))
-                break
     elif data == "tags_done":
         bot.edit_message_text("Теги сохранены.", cid, call.message.message_id, reply_markup=main_keyboard())
+
     elif data == "tags_back":
         bot.edit_message_text("Выбери категорию:", cid, call.message.message_id, reply_markup=category_keyboard())
+
     elif data == "generate":
         user_settings[cid]["waiting_for_prompt"] = True
         bot.send_message(cid, "✏️ Введи описание картинки:")
+
+    elif data == "generate_again":
+        if "last_prompt" in user_settings[cid]:
+            send_generation(cid)
+        else:
+            bot.send_message(cid, "Сначала введи описание.")
+            user_settings[cid]["waiting_for_prompt"] = True
+
+    elif data == "edit_tags":
+        bot.send_message(cid, "Выбери категорию:", reply_markup=category_keyboard())
+
+    elif data == "reset_tags":
+        user_settings[cid]["features"] = []
+        bot.send_message(cid, "Теги сброшены. Выбери категорию:", reply_markup=category_keyboard())
 
 @bot.message_handler(func=lambda m: user_settings.get(m.chat.id, {}).get("waiting_for_prompt"))
 def handle_prompt(message):
     cid = message.chat.id
     user_settings[cid]["waiting_for_prompt"] = False
-    base = message.text
+    user_settings[cid]["last_prompt"] = message.text
+    send_generation(cid)
+
+def send_generation(cid):
+    base = user_settings[cid].get("last_prompt", "")
     features = user_settings[cid]["features"]
     model_key = user_settings[cid]["model"]
     model_id = REPLICATE_MODELS.get(model_key, REPLICATE_MODELS["anime"])
@@ -163,23 +190,21 @@ def handle_prompt(message):
 
     image_url = wait_for_image(status_url)
     if image_url:
-        bot.send_photo(cid, image_url, caption="Вот результат!", reply_markup=main_keyboard())
+        bot.send_photo(cid, image_url, caption="Вот результат!", reply_markup=post_generation_keyboard())
     else:
         bot.send_message(cid, "❌ Ошибка генерации изображения.")
 
 def build_prompt(base, tags):
     map_tag = {
         "vagina": "vaginal penetration", "anal": "anal penetration", "both": "double penetration",
-        "dildo": "dildo", "anal_beads": "anal beads", "anal_plug": "anal plug",
-        "gag": "gag", "piercing": "body piercing",
+        "dildo": "dildo", "anal_beads": "anal beads", "anal_plug": "anal plug", "gag": "gag", "piercing": "body piercing",
         "doggy": "doggy style", "standing": "standing pose", "splits": "splits", "squat": "squatting", "lying": "laying",
-        "stockings": "stockings", "bikini": "bikini", "mask": "mask", "heels": "high heels",
-        "shibari": "shibari", "cow_costume": "cow costume", "bikini_tan_lines": "bikini tan lines",
+        "stockings": "stockings", "bikini": "bikini", "mask": "mask", "heels": "high heels", "shibari": "shibari",
+        "cow_costume": "cow costume", "bikini_tan_lines": "bikini tan lines",
         "big_breasts": "large breasts", "small_breasts": "small breasts",
+        "skin_white": "white skin", "skin_black": "black skin",
         "femboy": "femboy", "ethnicity_asian": "asian girl", "ethnicity_european": "european girl",
-        "furry_cow": "furry cow", "furry_cat": "furry cat", "furry_dog": "furry dog",
-        "furry_dragon": "furry dragon", "furry_silveon": "furry silveon",
-        "skin_white": "white skin", "skin_black": "black skin"
+        "furry_cow": "furry cow", "furry_cat": "furry cat", "furry_dog": "furry dog", "furry_dragon": "furry dragon", "furry_silveon": "furry silveon"
     }
     additions = [map_tag.get(tag, tag) for tag in tags]
     additions.append("nsfw, masterpiece, ultra detailed")
