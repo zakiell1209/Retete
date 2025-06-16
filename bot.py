@@ -126,7 +126,7 @@ def tags_keyboard(category, selected_tags):
         if tag in selected_tags:
             name = "✅ " + name
         markup.add(types.InlineKeyboardButton(name, callback_data=f"tag_{tag}_{category}"))
-    markup.add(types.InlineKeyboardButton("⬅ Назад", callback_data=f"cat_{category}"))
+    markup.add(types.InlineKeyboardButton("⬅ Назад", callback_data="tags_back"))
     return markup
 
 # ==== ОБРАБОТКА ====
@@ -155,15 +155,14 @@ def handle_callback(call):
         bot.edit_message_text("Выбери категорию:", cid, call.message.message_id, reply_markup=category_keyboard())
 
     elif data.startswith("cat_"):
-        cat = data.split("_")[1]
+        cat = data.split("_", 1)[1]
         bot.edit_message_text(f"Выбери теги категории {CATEGORY_NAMES_EMOJI[cat]}:", cid, call.message.message_id,
                               reply_markup=tags_keyboard(cat, user_settings[cid]["features"]))
 
     elif data.startswith("tag_"):
-        # Формат: tag_<tag>_<category>
         parts = data.split("_")
         tag = parts[1]
-        category = "_".join(parts[2:])  # на случай, если в категории _ есть (маловероятно)
+        category = "_".join(parts[2:])
         tags = user_settings[cid]["features"]
         if tag in tags:
             tags.remove(tag)
@@ -172,8 +171,6 @@ def handle_callback(call):
             tags.append(tag)
             status = "добавлен"
         user_settings[cid]["features"] = tags
-        # Обновляем клавиатуру текущей категории с учётом выбранных тегов
-        # Вместо удаления клавиатуры и сокращения, всегда показываем полную клавиатуру
         bot.edit_message_text(f"Выбери теги категории {CATEGORY_NAMES_EMOJI[category]}:", cid, call.message.message_id,
                               reply_markup=tags_keyboard(category, tags))
         bot.answer_callback_query(call.id, f"{TAG_NAMES_EMOJI.get(category, {}).get(tag, tag)} {status}")
@@ -231,7 +228,6 @@ def handle_prompt(message):
     else:
         bot.send_message(cid, "❌ Ошибка генерации изображения.")
 
-# ==== ПРОМТЫ ====
 def build_prompt(base, tags):
     additions = []
     map_tag = {
@@ -290,7 +286,6 @@ def build_prompt(base, tags):
     additions.append("nsfw, masterpiece, ultra detailed")
     return base + ", " + ", ".join(additions)
 
-# ==== ГЕНЕРАЦИЯ ====
 def generate_image(prompt, model_version):
     url = "https://api.replicate.com/v1/predictions"
     headers = {"Authorization": f"Token {REPLICATE_TOKEN}", "Content-Type": "application/json"}
@@ -313,7 +308,6 @@ def wait_for_image(status_url):
                 return None
     return None
 
-# ==== ВЕБХУК ====
 @app.route("/", methods=["POST"])
 def webhook():
     bot.process_new_updates([telebot.types.Update.de_json(request.stream.read().decode("utf-8"))])
