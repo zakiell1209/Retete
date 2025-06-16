@@ -23,10 +23,12 @@ user_settings = {}
 # ==== ВСЕ ТЕГИ ====
 TAGS = {
     "holes": ["vagina", "anal", "both"],
-    "toys": ["dildo", "anal_beads", "anal_plug", "gag"],
+    "toys": ["dildo", "anal_beads", "anal_plug", "gag", "piercing"],  # пирсинг сюда перенёс
     "poses": ["doggy", "standing", "splits", "squat", "lying"],
     "clothes": ["stockings", "bikini", "mask", "heels", "shibari", "cow_costume", "bikini_tan_lines"],
-    "extras": ["big_breasts", "small_breasts", "piercing", "femboy", "ethnicity_asian", "ethnicity_european", "ethnicity_furry", "skin_white", "skin_black"]
+    "body": ["big_breasts", "small_breasts", "skin_black", "skin_white"],  # отдельная категория тело
+    "ethnicity": ["femboy", "ethnicity_asian", "ethnicity_european"],  # отдельная категория этнос
+    "furry": ["furry_cow", "furry_cat", "furry_dog", "furry_dragon", "furry_silveon"]  # отдельная категория фури
 }
 
 CATEGORY_NAMES_EMOJI = {
@@ -34,7 +36,9 @@ CATEGORY_NAMES_EMOJI = {
     "toys": "Игрушки 🧸",
     "poses": "Позиции 🤸‍♀️",
     "clothes": "Одежда 👗",
-    "extras": "Дополнительно ✨"
+    "body": "Тело 💪",
+    "ethnicity": "Этнос 🌍",
+    "furry": "Фури 🐾"
 }
 
 CLOTHES_NAMES_EMOJI = {
@@ -44,13 +48,18 @@ CLOTHES_NAMES_EMOJI = {
 
 TAG_NAMES_EMOJI = {
     "holes": {"vagina": "Вагина ♀️", "anal": "Анал 🍑", "both": "Оба 🔥"},
-    "toys": {"dildo": "Дилдо 🍆", "anal_beads": "Анальные бусы 🔴", "anal_plug": "Пробка 🔵", "gag": "Кляп 😶"},
+    "toys": {"dildo": "Дилдо 🍆", "anal_beads": "Анальные бусы 🔴", "anal_plug": "Пробка 🔵", "gag": "Кляп 😶", "piercing": "Пирсинг 💎"},
     "poses": {"doggy": "Догги 🐕", "standing": "Стоя 🧍", "splits": "Шпагат 🤸", "squat": "Присед 🧎", "lying": "Лежа 🛌"},
-    "extras": {
-        "big_breasts": "Большая грудь 🍒", "small_breasts": "Маленькая грудь 🥥", "piercing": "Пирсинг 💎",
-        "femboy": "Фембой ⚧", "ethnicity_asian": "Азиатка 🈶", "ethnicity_european": "Европейка 🇪🇺",
-        "ethnicity_furry": "Фури 🐾", "skin_white": "Белая кожа ⚪", "skin_black": "Чёрная кожа ⚫"
-    }
+    "body": {"big_breasts": "Большая грудь 🍒", "small_breasts": "Маленькая грудь 🥥", "skin_black": "Чёрная кожа ⚫", "skin_white": "Белая кожа ⚪"},
+    "ethnicity": {"femboy": "Фембой ⚧", "ethnicity_asian": "Азиатка 🈶", "ethnicity_european": "Европейка 🇪🇺"},
+    "furry": {
+        "furry_cow": "Фури корова 🐄",
+        "furry_cat": "Фури кошка 🐱",
+        "furry_dog": "Фури собака 🐶",
+        "furry_dragon": "Фури дракон 🐉",
+        "furry_silveon": "Фури сильвеон 🦄"
+    },
+    "clothes": CLOTHES_NAMES_EMOJI
 }
 
 # ==== КЛАВИАТУРЫ ====
@@ -83,10 +92,7 @@ def category_keyboard():
 def tags_keyboard(category):
     markup = types.InlineKeyboardMarkup(row_width=2)
     for tag in TAGS.get(category, []):
-        if category == "clothes":
-            name = CLOTHES_NAMES_EMOJI.get(tag, tag)
-        else:
-            name = TAG_NAMES_EMOJI.get(category, {}).get(tag, tag)
+        name = TAG_NAMES_EMOJI.get(category, {}).get(tag, tag)
         markup.add(types.InlineKeyboardButton(name, callback_data=f"tag_{tag}"))
     markup.add(types.InlineKeyboardButton("⬅ Назад", callback_data="tags_back"))
     return markup
@@ -121,11 +127,12 @@ def handle_callback(call):
         tags = user_settings[cid]["features"]
         if tag in tags:
             tags.remove(tag)
+            status = "удалён"
         else:
             tags.append(tag)
+            status = "добавлен"
         user_settings[cid]["features"] = tags
-        status = "добавлен" if tag in tags else "удалён"
-        bot.answer_callback_query(call.id, f"{tag} {status}")
+        bot.answer_callback_query(call.id, f"{TAG_NAMES_EMOJI.get('holes', {}).get(tag, tag)} {status}")
     elif data == "tags_done":
         bot.edit_message_text("Теги сохранены.", cid, call.message.message_id, reply_markup=main_keyboard())
     elif data == "tags_back":
@@ -160,14 +167,39 @@ def handle_prompt(message):
 def build_prompt(base, tags):
     additions = []
     map_tag = {
-        "vagina": "vaginal penetration", "anal": "anal penetration", "both": "double penetration",
-        "dildo": "dildo", "anal_beads": "anal beads", "anal_plug": "anal plug", "gag": "gag",
-        "doggy": "doggy style", "standing": "standing pose", "splits": "splits", "squat": "squatting", "lying": "laying",
-        "stockings": "stockings", "bikini": "bikini", "mask": "mask", "heels": "high heels", "shibari": "shibari",
-        "cow_costume": "cow costume", "bikini_tan_lines": "bikini tan lines",
-        "big_breasts": "large breasts", "small_breasts": "small breasts", "piercing": "body piercing",
-        "femboy": "femboy", "ethnicity_asian": "asian girl", "ethnicity_european": "european girl",
-        "ethnicity_furry": "furry", "skin_white": "white skin", "skin_black": "black skin"
+        "vagina": "vaginal penetration",
+        "anal": "anal penetration",
+        "both": "double penetration",
+        "dildo": "dildo",
+        "anal_beads": "anal beads",
+        "anal_plug": "anal plug",
+        "gag": "gag",
+        "piercing": "body piercing",
+        "doggy": "doggy style",
+        "standing": "standing pose",
+        "splits": "splits",
+        "squat": "squatting",
+        "lying": "laying",
+        "stockings": "stockings",
+        "bikini": "bikini",
+        "mask": "mask",
+        "heels": "high heels",
+        "shibari": "shibari",
+        "cow_costume": "cow costume",
+        "bikini_tan_lines": "bikini tan lines",
+        "big_breasts": "large breasts",
+        "small_breasts": "small breasts",
+        "piercing": "body piercing",
+        "femboy": "femboy",
+        "ethnicity_asian": "asian girl",
+        "ethnicity_european": "european girl",
+        "furry_cow": "furry cow",
+        "furry_cat": "furry cat",
+        "furry_dog": "furry dog",
+        "furry_dragon": "furry dragon",
+        "furry_silveon": "furry silveon",
+        "skin_white": "white skin",
+        "skin_black": "black skin"
     }
     for tag in tags:
         additions.append(map_tag.get(tag, tag))
