@@ -137,17 +137,21 @@ def handle_callback(call):
 
     if data == "model":
         bot.edit_message_text("Выбери модель:", cid, call.message.message_id, reply_markup=model_keyboard())
+
     elif data.startswith("model_"):
-        model = data.split("_")[1]
+        model = data[len("model_"):]
         user_settings[cid]["model"] = model
         bot.edit_message_text(f"Модель установлена: {model}", cid, call.message.message_id, reply_markup=main_keyboard())
+
     elif data == "tags":
         bot.edit_message_text("Выбери категорию:", cid, call.message.message_id, reply_markup=category_keyboard())
+
     elif data.startswith("cat_"):
-        cat = data.split("_")[1]
-        bot.edit_message_text(f"Выбери теги категории {CATEGORY_NAMES_EMOJI[cat]}:", cid, call.message.message_id, reply_markup=tags_keyboard(cat, cid))
+        cat = data[len("cat_"):]
+        bot.edit_message_text(f"Выбери теги категории {CATEGORY_NAMES_EMOJI.get(cat, cat)}:", cid, call.message.message_id, reply_markup=tags_keyboard(cat, cid))
+
     elif data.startswith("tag_"):
-        tag = data.split("_")[1]
+        tag = data[len("tag_"):]
         tags = user_settings[cid]["features"]
         if tag in tags:
             tags.remove(tag)
@@ -155,15 +159,18 @@ def handle_callback(call):
             tags.append(tag)
         user_settings[cid]["features"] = tags
         bot.answer_callback_query(call.id, f"{'Добавлено' if tag in tags else 'Удалено'}")
-        # Обновим текущее меню
+        # Обновим текущее меню с правильной категорией
         for cat, tag_list in TAGS.items():
             if tag in tag_list:
                 bot.edit_message_reply_markup(cid, call.message.message_id, reply_markup=tags_keyboard(cat, cid))
                 break
+
     elif data == "tags_done":
         bot.edit_message_text("Теги сохранены.", cid, call.message.message_id, reply_markup=main_keyboard())
+
     elif data == "tags_back":
         bot.edit_message_text("Выбери категорию:", cid, call.message.message_id, reply_markup=category_keyboard())
+
     elif data == "generate":
         user_settings[cid]["waiting_for_prompt"] = True
         bot.send_message(cid, "✏️ Введи описание картинки:")
