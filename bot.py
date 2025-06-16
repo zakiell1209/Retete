@@ -1,130 +1,162 @@
 import os
-import replicate
+import json
 import telebot
 import requests
 from flask import Flask, request
 
-TOKEN = os.getenv("TELEGRAM_TOKEN")
-REPLICATE_TOKEN = os.getenv("REPLICATE_API_TOKEN")
-REPLICATE_MODEL = "aitechtree/nsfw-novel-generation:9a2d249fbf4e8e22faaf9a7b430fd8ba69a6875e470066a3ecdbb39dd0221b38"
-WEBHOOK_URL = os.getenv("WEBHOOK_URL")  # пример: https://название-проекта.onrender.com
+BOT_TOKEN = os.getenv("BOT_TOKEN")
+REPLICATE_API_TOKEN = os.getenv("REPLICATE_API_TOKEN")
+REPLICATE_MODEL = "aitechtree/nsfw-novel-generation"
 
-bot = telebot.TeleBot(TOKEN)
+bot = telebot.TeleBot(BOT_TOKEN)
 app = Flask(__name__)
-replicate_client = replicate.Client(api_token=REPLICATE_TOKEN)
 
-# Категории тегов и русские названия (сокращённые)
 TAGS = {
-    "поза": ["Шпагат ✅", "Мостик", "На боку", "Сбоку"],
-    "отверстия": ["Анал ✅", "Рот", "Влагалище"],
-    "игрушки": ["Дилдо", "Анальные бусы"],
-    "тело": ["Белая кожа", "Чёрная кожа", "Маленькая грудь", "Пышная"],
-    "этнос": ["Европейка", "Азиатка", "Фембой"],
-    "фури": ["Фури-кошка", "Фури-сильвеон", "Фури-дракон"]
+    "позы": ["Шпагат", "Сбоку", "Мост", "На спине", "Сзади", "Верёвки"],
+    "отверстия": ["Вагина", "Анус", "Рот"],
+    "игрушки": ["Дилдо", "Анальные бусы", "Пробка"],
+    "одежда": ["Голая", "Купальник", "Костюм коровы", "Без трусов"],
+    "тело": ["Большая грудь", "Лоли", "Милфа", "Смуглая", "Пышная"],
+    "этнос": ["Фембой", "Азиатка", "Футанари", "Европейка"],
+    "фури": ["Сильвеон", "Кошка", "Собака", "Дракон"]
 }
 
-# Временное хранилище
-user_data = {}
+PROMPTS = {
+    "Шпагат": "full split pose", "Сбоку": "side view", "Мост": "bridge pose", "На спине": "lying on back, spread legs",
+    "Сзади": "from behind", "Верёвки": "shibari rope suspension", "Вагина": "vaginal penetration", "Анус": "anal penetration",
+    "Рот": "oral sex", "Дилдо": "dildo", "Анальные бусы": "anal beads", "Пробка": "buttplug", "Голая": "naked",
+    "Купальник": "bikini", "Костюм коровы": "cow pattern stockings, horns, tail, no panties",
+    "Без трусов": "no panties", "Большая грудь": "large breasts", "Лоли": "petite, young", "Милфа": "mature woman",
+    "Смуглая": "dark skin, bikini tan lines", "Пышная": "curvy body", "Фембой": "femboy", "Азиатка": "asian girl",
+    "Футанари": "futanari", "Европейка": "european girl", "Сильвеон": "female anthro sylveon", "Кошка": "cat girl",
+    "Собака": "dog girl", "Дракон": "dragon girl"
+}
 
-# Главная команда
-@bot.message_handler(commands=["start"])
-def handle_start(message):
-    user_data[message.chat.id] = {"tags": [], "page": 0}
-    bot.send_message(message.chat.id, "Привет! Выбери категории тегов для генерации.", reply_markup=category_keyboard())
+user_tags = {}
+PAGE_SIZE = 6
+user_pages = {}
 
-# Клавиатура категорий
-def category_keyboard():
-    keyboard = telebot.types.ReplyKeyboardMarkup(resize_keyboard=True)
-    for cat in TAGS:
-        keyboard.add(cat.capitalize())
-    keyboard.add("Готово", "Редактировать теги")
-    return keyboard
-
-# Клавиатура тегов с пагинацией
-def tag_keyboard(category, selected, page=0, per_page=6):
-    markup = telebot.types.ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True)
+# Генерация кнопок
+def make_keyboard(uid, category):
+    page = user_pages.get(uid, {}).get(category, 0)
     tags = TAGS[category]
-    total_pages = (len(tags) - 1) // per_page + 1
-    start = page * per_page
-    end = start + per_page
-    for tag in tags[start:end]:
-        label = f"✅ {tag}" if tag in selected else tag
-        markup.add(label)
+    start = page * PAGE_SIZE
+    end = start + PAGE_SIZE
     buttons = []
-    if page > 0:
-        buttons.append("⬅️ Назад")
+
+    for tag in tags[start:end]:
+        check = "✅" if tag in user_tags.get(uid, []) else ""
+        buttons.append(telebot.types.InlineKeyboardButton(f"{check}{tag}", callback_data=f"tag|{tag}|{category}"))
+
+    nav = []
+    if start > 0:
+        nav.append(telebot.types.InlineKeyboardButton("⬅️", callback_data=f"nav|prev|{category}"))
     if end < len(tags):
-        buttons.append("➡️ Далее")
-    markup.add(*buttons)
-    markup.add("🔙 В меню")
+        nav.append(telebot.types.InlineKeyboardButton("➡️", callback_data=f"nav|next|{category}"))
+
+    markup = telebot.types.InlineKeyboardMarkup(row_width=2)
+    for i in range(0, len(buttons), 2):
+        markup.add(*buttons[i:i+2])
+    if nav:
+        markup.add(*nav)
+
+    markup.add(
+        telebot.types.InlineKeyboardButton("Готово", callback_data="done"),
+        telebot.types.InlineKeyboardButton("Назад", callback_data="back")
+    )
     return markup
 
-# Обработка сообщений
-@bot.message_handler(func=lambda m: True)
-def handle_text(message):
-    chat_id = message.chat.id
-    text = message.text
+@bot.message_handler(commands=["start"])
+def start(m):
+    user_tags[m.chat.id] = []
+    bot.send_message(m.chat.id, "Выбери категорию:", reply_markup=category_keyboard())
 
-    if chat_id not in user_data:
-        user_data[chat_id] = {"tags": [], "page": 0}
+def category_keyboard():
+    markup = telebot.types.InlineKeyboardMarkup(row_width=2)
+    for cat in TAGS:
+        markup.add(telebot.types.InlineKeyboardButton(cat.capitalize(), callback_data=f"cat|{cat}"))
+    return markup
 
-    data = user_data[chat_id]
-    if text == "Готово":
-        generate_image(chat_id)
-    elif text == "Редактировать теги":
-        bot.send_message(chat_id, "Выбранные теги:\n" + ", ".join(data["tags"]))
-    elif text in TAGS:
-        data["category"] = text
-        data["page"] = 0
-        bot.send_message(chat_id, f"Выбери теги: {text}", reply_markup=tag_keyboard(text, data["tags"], 0))
-    elif text == "➡️ Далее":
-        data["page"] += 1
-        bot.send_message(chat_id, "Далее:", reply_markup=tag_keyboard(data["category"], data["tags"], data["page"]))
-    elif text == "⬅️ Назад":
-        data["page"] -= 1
-        bot.send_message(chat_id, "Назад:", reply_markup=tag_keyboard(data["category"], data["tags"], data["page"]))
-    elif text == "🔙 В меню":
-        bot.send_message(chat_id, "Выбери категорию:", reply_markup=category_keyboard())
+@bot.callback_query_handler(func=lambda c: c.data.startswith("cat|"))
+def category_select(call):
+    _, category = call.data.split("|")
+    uid = call.message.chat.id
+    if uid not in user_pages:
+        user_pages[uid] = {}
+    user_pages[uid][category] = 0
+    bot.edit_message_text(f"Выбери теги ({category}):", chat_id=uid, message_id=call.message.message_id,
+                          reply_markup=make_keyboard(uid, category))
+
+@bot.callback_query_handler(func=lambda c: c.data.startswith("tag|"))
+def tag_toggle(call):
+    _, tag, category = call.data.split("|")
+    uid = call.message.chat.id
+    tags = user_tags.setdefault(uid, [])
+    if tag in tags:
+        tags.remove(tag)
     else:
-        category = data.get("category")
-        if category and text.replace("✅ ", "") in TAGS[category]:
-            tag = text.replace("✅ ", "")
-            if tag in data["tags"]:
-                data["tags"].remove(tag)
-            else:
-                data["tags"].append(tag)
-            bot.send_message(chat_id, f"Тег обновлён: {tag}", reply_markup=tag_keyboard(category, data["tags"], data["page"]))
+        tags.append(tag)
+    bot.edit_message_reply_markup(uid, call.message.message_id, reply_markup=make_keyboard(uid, category))
 
-# Генерация изображения
-def generate_image(chat_id):
-    tags = user_data[chat_id]["tags"]
-    prompt = ", ".join(tags) + ", nsfw, detailed, anime style"
-    msg = bot.send_message(chat_id, "Генерирую изображение, подожди...")
+@bot.callback_query_handler(func=lambda c: c.data.startswith("nav|"))
+def navigate(call):
+    _, direction, category = call.data.split("|")
+    uid = call.message.chat.id
+    current = user_pages.get(uid, {}).get(category, 0)
+    if direction == "next":
+        user_pages[uid][category] = current + 1
+    elif direction == "prev":
+        user_pages[uid][category] = max(0, current - 1)
+    bot.edit_message_reply_markup(uid, call.message.message_id, reply_markup=make_keyboard(uid, category))
 
-    try:
-        output = replicate_client.run(
-            REPLICATE_MODEL,
-            input={"prompt": prompt, "width": 512, "height": 768, "guidance_scale": 7.5, "num_inference_steps": 30}
-        )
-        bot.send_photo(chat_id, output[0], caption="Сгенерировано!")
-    except Exception as e:
-        bot.send_message(chat_id, f"Ошибка при генерации: {e}")
-    finally:
-        bot.send_message(chat_id, "Выбери следующий шаг:", reply_markup=category_keyboard())
+@bot.callback_query_handler(func=lambda c: c.data == "done")
+def generate(call):
+    uid = call.message.chat.id
+    prompts = [PROMPTS[t] for t in user_tags.get(uid, []) if t in PROMPTS]
+    full_prompt = ", ".join(prompts)
 
-# Flask endpoints
-@app.route("/")
-def index():
-    bot.remove_webhook()
-    bot.set_webhook(url=f"{WEBHOOK_URL}/{TOKEN}")
-    return "Webhook установлен!", 200
+    bot.edit_message_text("Генерация изображения...", uid, call.message.message_id)
+    image_url = generate_image(full_prompt)
+    markup = telebot.types.InlineKeyboardMarkup()
+    markup.add(
+        telebot.types.InlineKeyboardButton("🎨 Ещё", callback_data="back"),
+        telebot.types.InlineKeyboardButton("✏️ Редактировать", callback_data="edit")
+    )
+    bot.send_photo(uid, image_url, caption="Вот твоё изображение", reply_markup=markup)
 
-@app.route(f"/{TOKEN}", methods=["POST"])
+@bot.callback_query_handler(func=lambda c: c.data == "edit")
+def edit_tags(call):
+    bot.send_message(call.message.chat.id, "Выбери категорию для редактирования:", reply_markup=category_keyboard())
+
+@bot.callback_query_handler(func=lambda c: c.data == "back")
+def back(call):
+    bot.edit_message_text("Выбери категорию:", call.message.chat.id, call.message.message_id,
+                          reply_markup=category_keyboard())
+
+def generate_image(prompt):
+    response = requests.post(
+        "https://api.replicate.com/v1/predictions",
+        headers={
+            "Authorization": f"Token {REPLICATE_API_TOKEN}",
+            "Content-Type": "application/json"
+        },
+        json={
+            "version": "f924bcb8971a45f575a8ba5c13d6f74d53f38b00a09259fa2599c5f4b2e6d25d",
+            "input": {"prompt": prompt}
+        }
+    )
+    prediction = response.json()
+    return prediction["output"][-1] if "output" in prediction else "https://placehold.co/512x512"
+
+# Flask Webhook
+@app.route("/", methods=["GET", "POST"])
 def webhook():
-    update = telebot.types.Update.de_json(request.stream.read().decode("utf-8"))
-    bot.process_new_updates([update])
-    return "", 200
+    if request.method == "POST":
+        bot.process_new_updates([telebot.types.Update.de_json(request.stream.read().decode("utf-8"))])
+        return "", 200
+    return "Bot is running!"
 
-# Запуск
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)))
+    bot.remove_webhook()
+    bot.set_webhook(url=os.getenv("RENDER_EXTERNAL_URL"))
+    app.run(host="0.0.0.0", port=10000)
