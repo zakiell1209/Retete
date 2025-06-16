@@ -20,12 +20,17 @@ bot = telebot.TeleBot(API_TOKEN)
 app = Flask(__name__)
 user_settings = {}
 
+# ==== ВСЕ ТЕГИ ====
 TAGS = {
     "holes": ["vagina", "anal", "both"],
     "toys": ["dildo", "anal_beads", "anal_plug", "gag", "piercing"],
-    "poses": ["doggy", "standing", "splits", "squat", "lying"],
+    "poses": [
+        "doggy", "standing", "splits", "squat", "lying",
+        "vertical_splits", "horizontal_splits", "lying_legs_apart",
+        "side_one_leg_up", "facing_viewer", "back_viewer", "bridge", "suspended_rope"
+    ],
     "clothes": ["stockings", "bikini", "mask", "heels", "shibari", "cow_costume", "bikini_tan_lines"],
-    "body": ["big_breasts", "small_breasts", "skin_black", "skin_white"],
+    "body": ["loli", "milf", "age_21", "thin", "muscular", "curvy", "normal", "big_breasts", "small_breasts", "skin_black", "skin_white"],
     "ethnicity": ["femboy", "ethnicity_asian", "ethnicity_european"],
     "furry": ["furry_cow", "furry_cat", "furry_dog", "furry_dragon", "furry_silveon"]
 }
@@ -48,8 +53,34 @@ CLOTHES_NAMES_EMOJI = {
 TAG_NAMES_EMOJI = {
     "holes": {"vagina": "Вагина ♀️", "anal": "Анал 🍑", "both": "Оба 🔥"},
     "toys": {"dildo": "Дилдо 🍆", "anal_beads": "Анальные бусы 🔴", "anal_plug": "Пробка 🔵", "gag": "Кляп 😶", "piercing": "Пирсинг 💎"},
-    "poses": {"doggy": "Догги 🐕", "standing": "Стоя 🧍", "splits": "Шпагат 🤸", "squat": "Присед 🧎", "lying": "Лежа 🛌"},
-    "body": {"big_breasts": "Большая грудь 🍒", "small_breasts": "Маленькая грудь 🥥", "skin_black": "Чёрная кожа ⚫", "skin_white": "Белая кожа ⚪"},
+    "poses": {
+        "doggy": "Догги 🐕",
+        "standing": "Стоя 🧍",
+        "splits": "Шпагат 🤸",
+        "squat": "Присед 🧎",
+        "lying": "Лежа 🛌",
+        "vertical_splits": "Шпагат вертикальный 🤸‍♂️",
+        "horizontal_splits": "Шпагат горизонтальный 🤸‍♀️",
+        "lying_legs_apart": "Лёжа ноги в стороны 🛏️",
+        "side_one_leg_up": "На боку с поднятой одной ногой 🦵",
+        "facing_viewer": "Лицом к зрителю 👀",
+        "back_viewer": "Спиной к зрителю 🚪",
+        "bridge": "Мост 🌉",
+        "suspended_rope": "Подвешенная на верёвках ⛓️"
+    },
+    "body": {
+        "loli": "Лоли 👧",
+        "milf": "Милфа 👩",
+        "age_21": "Возраст 21 год 🎂",
+        "thin": "Худое 🦴",
+        "muscular": "Накачаное 💪",
+        "curvy": "Пышное 🍑",
+        "normal": "Нормальное 🙂",
+        "big_breasts": "Большая грудь 🍒",
+        "small_breasts": "Маленькая грудь 🥥",
+        "skin_black": "Чёрная кожа ⚫",
+        "skin_white": "Белая кожа ⚪"
+    },
     "ethnicity": {"femboy": "Фембой ⚧", "ethnicity_asian": "Азиатка 🈶", "ethnicity_european": "Европейка 🇪🇺"},
     "furry": {
         "furry_cow": "Фури корова 🐄",
@@ -61,6 +92,7 @@ TAG_NAMES_EMOJI = {
     "clothes": CLOTHES_NAMES_EMOJI
 }
 
+# ==== КЛАВИАТУРЫ ====
 def main_keyboard():
     markup = types.InlineKeyboardMarkup(row_width=2)
     markup.add(
@@ -91,15 +123,17 @@ def tags_keyboard(category, selected_tags):
     markup = types.InlineKeyboardMarkup(row_width=2)
     for tag in TAGS.get(category, []):
         name = TAG_NAMES_EMOJI.get(category, {}).get(tag, tag)
-        check = "✅ " if tag in selected_tags else ""
-        markup.add(types.InlineKeyboardButton(f"{check}{name}", callback_data=f"tag_{category}_{tag}"))
+        if tag in selected_tags:
+            name = "✅ " + name
+        markup.add(types.InlineKeyboardButton(name, callback_data=f"tag_{tag}_{category}"))
     markup.add(types.InlineKeyboardButton("⬅ Назад", callback_data="tags_back"))
     return markup
 
+# ==== ОБРАБОТКА ====
 @bot.message_handler(commands=["start"])
 def start(message):
     cid = message.chat.id
-    user_settings[cid] = {"features": [], "model": "anime", "waiting_for_prompt": False, "current_category": None}
+    user_settings[cid] = {"features": [], "model": "anime", "waiting_for_prompt": False}
     bot.send_message(cid, "Привет! Выбери действие:", reply_markup=main_keyboard())
 
 @bot.callback_query_handler(func=lambda call: True)
@@ -107,42 +141,67 @@ def handle_callback(call):
     cid = call.message.chat.id
     data = call.data
     if cid not in user_settings:
-        user_settings[cid] = {"features": [], "model": "anime", "waiting_for_prompt": False, "current_category": None}
+        user_settings[cid] = {"features": [], "model": "anime", "waiting_for_prompt": False}
 
     if data == "model":
         bot.edit_message_text("Выбери модель:", cid, call.message.message_id, reply_markup=model_keyboard())
+
     elif data.startswith("model_"):
         model = data.split("_")[1]
         user_settings[cid]["model"] = model
         bot.edit_message_text(f"Модель установлена: {model}", cid, call.message.message_id, reply_markup=main_keyboard())
+
     elif data == "tags":
         bot.edit_message_text("Выбери категорию:", cid, call.message.message_id, reply_markup=category_keyboard())
+
     elif data.startswith("cat_"):
         cat = data.split("_")[1]
-        user_settings[cid]["current_category"] = cat
-        bot.edit_message_text(f"Выбери теги категории {CATEGORY_NAMES_EMOJI[cat]}:", cid, call.message.message_id, reply_markup=tags_keyboard(cat, user_settings[cid]["features"]))
+        bot.edit_message_text(f"Выбери теги категории {CATEGORY_NAMES_EMOJI[cat]}:", cid, call.message.message_id,
+                              reply_markup=tags_keyboard(cat, user_settings[cid]["features"]))
+
     elif data.startswith("tag_"):
-        _, category, tag = data.split("_", 2)
+        # Формат: tag_<tag>_<category>
+        parts = data.split("_")
+        tag = parts[1]
+        category = "_".join(parts[2:])  # на случай, если в категории _ есть (маловероятно)
         tags = user_settings[cid]["features"]
         if tag in tags:
             tags.remove(tag)
+            status = "удалён"
         else:
             tags.append(tag)
+            status = "добавлен"
         user_settings[cid]["features"] = tags
+        # Обновляем клавиатуру текущей категории с учётом выбранных тегов
         bot.edit_message_reply_markup(cid, call.message.message_id, reply_markup=tags_keyboard(category, tags))
+        bot.answer_callback_query(call.id, f"{TAG_NAMES_EMOJI.get(category, {}).get(tag, tag)} {status}")
+
     elif data == "tags_done":
         bot.edit_message_text("Теги сохранены.", cid, call.message.message_id, reply_markup=main_keyboard())
+
     elif data == "tags_back":
         bot.edit_message_text("Выбери категорию:", cid, call.message.message_id, reply_markup=category_keyboard())
+
     elif data == "generate":
         user_settings[cid]["waiting_for_prompt"] = True
         bot.send_message(cid, "✏️ Введи описание картинки:")
+
+    elif data == "continue_generation":
+        bot.send_message(cid, "✏️ Введи описание картинки:")
+        user_settings[cid]["waiting_for_prompt"] = True
+
+    elif data == "edit_tags":
+        bot.edit_message_text("Выбери категорию:", cid, call.message.message_id, reply_markup=category_keyboard())
+
+    elif data == "reset_tags":
+        user_settings[cid]["features"] = []
+        bot.edit_message_text("Теги сброшены. Выбери категорию:", cid, call.message.message_id, reply_markup=category_keyboard())
 
 @bot.message_handler(func=lambda m: user_settings.get(m.chat.id, {}).get("waiting_for_prompt"))
 def handle_prompt(message):
     cid = message.chat.id
     user_settings[cid]["waiting_for_prompt"] = False
-    base = message.text
+    base = message.text.strip()
     features = user_settings[cid]["features"]
     model_key = user_settings[cid]["model"]
     model_id = REPLICATE_MODELS.get(model_key, REPLICATE_MODELS["anime"])
@@ -156,11 +215,20 @@ def handle_prompt(message):
 
     image_url = wait_for_image(status_url)
     if image_url:
-        bot.send_photo(cid, image_url, caption="Вот результат!", reply_markup=main_keyboard())
+        keyboard = types.InlineKeyboardMarkup(row_width=1)
+        keyboard.add(
+            types.InlineKeyboardButton("▶ Продолжить генерацию", callback_data="continue_generation"),
+            types.InlineKeyboardButton("🧩 Редактировать теги", callback_data="edit_tags"),
+            types.InlineKeyboardButton("🆕 Начать выбор тегов заново", callback_data="reset_tags"),
+            types.InlineKeyboardButton("🏠 Главное меню", callback_data="main_menu")
+        )
+        bot.send_photo(cid, image_url, caption="Вот результат!", reply_markup=keyboard)
     else:
         bot.send_message(cid, "❌ Ошибка генерации изображения.")
 
+# ==== ПРОМТЫ ====
 def build_prompt(base, tags):
+    additions = []
     map_tag = {
         "vagina": "vaginal penetration",
         "anal": "anal penetration",
@@ -175,30 +243,52 @@ def build_prompt(base, tags):
         "splits": "splits",
         "squat": "squatting",
         "lying": "laying",
+        "vertical_splits": "vertical splits",
+        "horizontal_splits": "horizontal splits",
+        "lying_legs_apart": "lying with legs apart",
+        "side_one_leg_up": "side lying with one leg raised",
+        "facing_viewer": "facing the viewer",
+        "back_viewer": "back to viewer",
+        "bridge": "bridge pose",
+        "suspended_rope": "suspended on ropes, bondage",
         "stockings": "stockings",
         "bikini": "bikini",
         "mask": "mask",
         "heels": "high heels",
         "shibari": "shibari",
-        "cow_costume": "girl in cow-patterned stockings, cow horns and tail, no underwear, no cow or bull in frame",
-        "bikini_tan_lines": "tanned body with white bikini tan lines, no bikini, visible nipples and vagina",
+        # Промт костюма коровы без самой коровы/быка:
+        "cow_costume": "girl wearing cow pattern stockings with cow horns and tail, no underwear, no cow body",
+        # Промт загара от бикини: тело смуглое с белыми линиями, без самой одежды
+        "bikini_tan_lines": "tanned skin with white bikini tan lines, no bikini clothing visible",
         "big_breasts": "large breasts",
         "small_breasts": "small breasts",
+        "loli": "loli girl",
+        "milf": "milf woman",
+        "age_21": "age 21",
+        "thin": "thin body",
+        "muscular": "muscular body",
+        "curvy": "curvy body",
+        "normal": "normal body",
         "femboy": "femboy",
         "ethnicity_asian": "asian girl",
         "ethnicity_european": "european girl",
-        "furry_cow": "furry cow",
-        "furry_cat": "furry cat",
-        "furry_dog": "furry dog",
-        "furry_dragon": "furry dragon",
-        "furry_silveon": "anthro sylveon, humanoid female, pastel color palette, big bright blue eyes, long ribbon-like feelers with bows, soft white and pink fur, large animal ears, elegant and graceful body, small nose, anime style, naked, no clothes, detailed anatomy, seductive pose",
+        "furry_cow": "furry cow character",
+        "furry_cat": "furry cat character",
+        "furry_dog": "furry dog character",
+        "furry_dragon": "furry dragon character",
+        # Сильвеон как персонаж из игр/аниме: с голубыми и фиолетовыми тонами, магический стиль, элегантный
+        "furry_silveon": (
+            "silveon character, elegant anthro with blue and purple hues, sparkling fur, fantasy style, detailed anime shading"
+        ),
         "skin_white": "white skin",
         "skin_black": "black skin"
     }
-    additions = [map_tag.get(tag, tag) for tag in tags]
+    for tag in tags:
+        additions.append(map_tag.get(tag, tag))
     additions.append("nsfw, masterpiece, ultra detailed")
     return base + ", " + ", ".join(additions)
 
+# ==== ГЕНЕРАЦИЯ ====
 def generate_image(prompt, model_version):
     url = "https://api.replicate.com/v1/predictions"
     headers = {"Authorization": f"Token {REPLICATE_TOKEN}", "Content-Type": "application/json"}
@@ -221,6 +311,7 @@ def wait_for_image(status_url):
                 return None
     return None
 
+# ==== ВЕБХУК ====
 @app.route("/", methods=["POST"])
 def webhook():
     bot.process_new_updates([telebot.types.Update.de_json(request.stream.read().decode("utf-8"))])
