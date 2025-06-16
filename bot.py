@@ -373,4 +373,4 @@ def model_keyboard():
 def main_keyboard():
     markup = types.InlineKeyboardMarkup(row_width=2)
     markup.add(
-        types.In
+        types.InlineKeyboardButton("
