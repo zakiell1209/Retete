@@ -3,11 +3,14 @@ import telebot
 from telebot import types
 import requests
 import time
+from flask import Flask, request
 
 API_TOKEN = os.getenv("TELEGRAM_TOKEN")
 REPLICATE_TOKEN = os.getenv("REPLICATE_API_TOKEN")
+WEBHOOK_URL = os.getenv("WEBHOOK_URL")  # например https://yourdomain.com
 
 bot = telebot.TeleBot(API_TOKEN)
+app = Flask(__name__)
 
 PROMPT_PARTS = {
     "Типы": {
@@ -33,7 +36,6 @@ PROMPT_PARTS = {
     }
 }
 
-# Храним данные пользователей
 user_data = {}
 
 def init_user(chat_id):
@@ -51,6 +53,8 @@ def build_prompt(chat_id):
     parts.extend(components)
     return ", ".join(parts).strip()
 
+# Хэндлеры бота (без изменений)
+
 @bot.message_handler(commands=['start'])
 def cmd_start(message):
     init_user(message.chat.id)
@@ -63,7 +67,6 @@ def cmd_start(message):
 
 @bot.message_handler(func=lambda m: True)
 def set_base_prompt(message):
-    # Если пользователь пишет любой текст, сохраняем как базовый промт
     init_user(message.chat.id)
     user_data[message.chat.id]["base_prompt"] = message.text
     bot.send_message(message.chat.id, f"Базовый промт установлен:\n{message.text}")
@@ -131,8 +134,6 @@ def show_components_to_delete(message):
         bot.send_message(chat_id, "Список компонентов пуст.")
         return
     markup = types.InlineKeyboardMarkup(row_width=2)
-    # Для удобства показываем сами названия компонентов из PROMPT_PARTS, а не длинные промты
-    # Сделаем обратный словарь для поиска имени
     reverse_map = {}
     for cat in PROMPT_PARTS.values():
         for k, v in cat.items():
@@ -147,7 +148,6 @@ def delete_component(call):
     comp_name = call.data[4:]
     chat_id = call.message.chat.id
     init_user(chat_id)
-    # Найдем полный промт по имени
     full_prompt = None
     for cat in PROMPT_PARTS.values():
         if comp_name in cat:
@@ -156,7 +156,6 @@ def delete_component(call):
     if full_prompt and full_prompt in user_data[chat_id]["components"]:
         user_data[chat_id]["components"].remove(full_prompt)
         bot.answer_callback_query(call.id, f"Удалено: {comp_name}")
-        # Обновим сообщение с кнопками
         comps = user_data[chat_id]["components"]
         if comps:
             markup = types.InlineKeyboardMarkup(row_width=2)
@@ -221,6 +220,23 @@ def generate_image(prompt):
     else:
         return None, f"{response.status_code} {response.text}"
 
-if __name__ == '__main__':
+# Flask webhook route
+@app.route(f"/{API_TOKEN}", methods=['POST'])
+def webhook():
+    json_string = request.get_data().decode('utf-8')
+    update = telebot.types.Update.de_json(json_string)
+    bot.process_new_updates([update])
+    return '', 200
+
+@app.route("/", methods=['GET'])
+def index():
+    return "Bot is running"
+
+if __name__ == "__main__":
     print("Bot started")
-    bot.infinity_polling()
+
+    bot.remove_webhook()
+    bot.set_webhook(url=f"{WEBHOOK_URL}/{API_TOKEN}")
+
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host="0.0.0.0", port=port)
