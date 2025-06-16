@@ -1,7 +1,8 @@
 import os
-import telebot
-import requests
 import time
+import requests
+import telebot
+from telebot import types
 from flask import Flask, request
 
 API_TOKEN = os.getenv("TELEGRAM_TOKEN")
@@ -11,6 +12,13 @@ WEBHOOK_URL = os.getenv("WEBHOOK_URL", "https://retete.onrender.com")
 bot = telebot.TeleBot(API_TOKEN)
 app = Flask(__name__)
 
+# Усилители промтов
+def enhance_nsfw_female(p): return p + ", nude, erotic, sensual, solo, young female, seductive, large breasts, soft skin, masterpiece, ultra detailed, NSFW"
+def enhance_futanari(p): return p + ", futanari, shemale, dickgirl, big breasts, penis, nude, erotic pose, solo, highly detailed, NSFW"
+def enhance_femboy(p): return p + ", femboy, cute male, feminine face, soft skin, lingerie, erotic, slim waist, NSFW, solo"
+def enhance_shibari(p): return p + ", shibari, rope bondage, tied up, detailed knots, erotic ropes, submissive pose, NSFW, cinematic"
+
+# Генерация картинки через Replicate
 def generate_image(prompt):
     url = "https://api.replicate.com/v1/predictions"
     headers = {
@@ -19,72 +27,91 @@ def generate_image(prompt):
     }
     data = {
         "version": "fb4f086702d6a301ca32c170d926239324a7b7b2f0afc3d232a9c4be382dc3fa",
-        "input": {
-            "prompt": prompt,
-            "negative_prompt": "blurry, ugly, distorted, low quality",
-            "num_inference_steps": 30,
-            "guidance_scale": 7.5,
-            "width": 512,
-            "height": 768
-        }
+        "input": {"prompt": prompt}
     }
-
     response = requests.post(url, headers=headers, json=data)
-    
     if response.status_code == 201:
         prediction = response.json()
         return prediction["urls"]["get"], None
-    else:
-        error_text = f"❌ Ошибка генерации:\n{response.status_code}\n{response.text}"
-        return None, error_text
+    return None, f"❌ Ошибка генерации: {response.status_code} {response.text}"
 
-@bot.message_handler(commands=['start'])
-def start(message):
-    bot.send_message(message.chat.id, "👋 Привет! Напиши описание изображения, и я его сгенерирую.")
-
-@bot.message_handler(func=lambda m: True)
-def handle_prompt(message):
-    prompt = message.text.strip()
-    if not prompt:
-        bot.send_message(message.chat.id, "⚠️ Пожалуйста, введите текстовое описание.")
-        return
-
-    bot.send_message(message.chat.id, "🧠 Генерирую изображение, подожди...")
+# Отправка запроса на генерацию
+def generate_custom_image(message, enhancer):
+    prompt = enhancer(message.text)
+    bot.send_message(message.chat.id, "🔞 Генерирую изображение, подожди...")
 
     status_url, error = generate_image(prompt)
     if error:
         bot.send_message(message.chat.id, error)
         return
 
-    for i in range(20):
+    for _ in range(25):
         res = requests.get(status_url, headers={"Authorization": f"Token {REPLICATE_TOKEN}"})
         if res.status_code != 200:
-            bot.send_message(message.chat.id, f"⚠️ Ошибка получения статуса:\n{res.status_code}\n{res.text}")
-            break
-
+            bot.send_message(message.chat.id, f"❌ Ошибка статуса: {res.status_code} {res.text}")
+            return
         status = res.json()
         if status.get("status") == "succeeded":
-            image_url = status["output"][0]
-            bot.send_photo(message.chat.id, image_url)
+            img = status["output"][0]
+            bot.send_photo(message.chat.id, img)
             return
         elif status.get("status") == "failed":
-            bot.send_message(message.chat.id, f"⚠️ Генерация не удалась.\n\n`{res.text}`", parse_mode="Markdown")
+            bot.send_message(message.chat.id, "❌ Генерация не удалась.")
             return
-
         time.sleep(2)
-
     bot.send_message(message.chat.id, "❌ Не удалось сгенерировать изображение за отведённое время.")
 
+# Обработка кнопок
+@bot.callback_query_handler(func=lambda call: True)
+def callback_handler(call):
+    mode = call.data
+    prompt_msg = {
+        "nsfw_female": "📝 Опиши девушку:",
+        "futanari": "📝 Опиши футанари-сцену:",
+        "femboy": "📝 Опиши фембоя:",
+        "shibari": "📝 Опиши сцену с шибари:"
+    }.get(mode, "📝 Введите описание:")
+
+    enhancers = {
+        "nsfw_female": enhance_nsfw_female,
+        "futanari": enhance_futanari,
+        "femboy": enhance_femboy,
+        "shibari": enhance_shibari
+    }
+
+    msg = bot.send_message(call.message.chat.id, prompt_msg)
+    bot.register_next_step_handler(msg, lambda m: generate_custom_image(m, enhancers[mode]))
+
+# Команда /start
+@bot.message_handler(commands=['start'])
+def start(message):
+    markup = types.InlineKeyboardMarkup()
+    markup.row(
+        types.InlineKeyboardButton("🎀 NSFW для женщин", callback_data="nsfw_female"),
+        types.InlineKeyboardButton("⚧️ Футанари", callback_data="futanari")
+    )
+    markup.row(
+        types.InlineKeyboardButton("🧑‍🎤 Фембой", callback_data="femboy"),
+        types.InlineKeyboardButton("🪢 Шибари", callback_data="shibari")
+    )
+    bot.send_message(message.chat.id, "Выбери режим генерации:", reply_markup=markup)
+
+# Также можно писать обычный текст
+@bot.message_handler(func=lambda m: True)
+def handle_prompt(message):
+    bot.send_message(message.chat.id, "🔁 Генерирую обычное изображение без усиления...")
+    generate_custom_image(message, lambda p: p)
+
+# Flask Webhook
 @app.route('/', methods=['POST'])
 def webhook():
-    json_string = request.get_data().decode('utf-8')
-    update = telebot.types.Update.de_json(json_string)
+    update = telebot.types.Update.de_json(request.data.decode("utf-8"))
     bot.process_new_updates([update])
     return '', 200
 
 @app.route('/', methods=['GET'])
 def index():
-    return '✅ Bot is running!'
+    return '🤖 Бот работает'
 
 if __name__ == '__main__':
     bot.remove_webhook()
