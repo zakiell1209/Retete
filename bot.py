@@ -16,40 +16,145 @@ bot = telebot.TeleBot(API_TOKEN)
 app = Flask(__name__)
 user_settings = {}
 
+# Теги по категориям, ключи - внутренние имена, значения - русские названия
 TAGS = {
-    "holes": ["vagina", "anal", "both"],
-    "toys": ["dildo", "huge_dildo", "horse_dildo", "anal_beads", "anal_plug", "anal_expander", "gag", "piercing"],
-    "poses": ["doggy", "standing", "splits", "squat", "lying", "hor_split", "ver_split", "side_up_leg", "front_facing", "back_facing", "lying_knees_up", "bridge", "suspended"],
-    "clothes": ["stockings", "bikini_tan_lines", "mask", "heels", "shibari", "cow_costume"],
-    "body": ["big_breasts", "small_breasts", "skin_white", "skin_black", "body_fat", "body_thin", "body_normal", "body_fit", "body_muscular", "age_loli", "age_milf", "age_21", "cum", "belly_bloat", "long_dildo_path", "succubus_tattoo"],
-    "ethnos": ["futanari", "femboy", "ethnicity_asian", "ethnicity_european"],
-    "furry": ["furry_cow", "furry_cat", "furry_dog", "furry_dragon", "furry_sylveon"],
+    "holes": {
+        "vagina": "Вагина",
+        "anal": "Анус",
+        "both": "Вагина и анус"
+    },
+    "toys": {
+        "dildo": "Дилдо",
+        "huge_dildo": "Большое дилдо",
+        "horse_dildo": "Лошадиное дилдо",
+        "anal_beads": "Анальные бусы",
+        "anal_plug": "Анальная пробка",
+        "anal_expander": "Анальный расширитель",
+        "gag": "Кляп",
+        "piercing": "Пирсинг"
+    },
+    "poses": {
+        "doggy": "Наездница (догги-стайл)",
+        "standing": "Стоя",
+        "splits": "Шпагат",
+        "squat": "Приседание",
+        "lying": "Лежа",
+        "hor_split": "Горизонтальный шпагат",
+        "ver_split": "Вертикальный шпагат",
+        "side_up_leg": "На боку с поднятой ногой",
+        "front_facing": "Лицом к зрителю",
+        "back_facing": "Спиной к зрителю",
+        "lying_knees_up": "Лежа с раздвинутыми согнутыми коленями",
+        "bridge": "Мост",
+        "suspended": "Подвешена на верёвках"
+    },
+    "clothes": {
+        "stockings": "Чулки",
+        "bikini_tan_lines": "Загар от бикини",
+        "mask": "Маска",
+        "heels": "Туфли на каблуках",
+        "shibari": "Шибари",
+        "cow_costume": "Костюм коровы"
+    },
+    "body": {
+        "big_breasts": "Большая грудь",
+        "small_breasts": "Маленькая грудь",
+        "skin_white": "Белая кожа",
+        "skin_black": "Чёрная кожа",
+        "body_fat": "Пышное тело",
+        "body_thin": "Худое тело",
+        "body_normal": "Нормальное телосложение",
+        "body_fit": "Подтянутое тело",
+        "body_muscular": "Мускулистое тело",
+        "age_loli": "Лоли",
+        "age_milf": "Милфа",
+        "age_21": "Возраст 21 год",
+        "cum": "Вся в сперме",
+        "belly_bloat": "Вздутие живота от игрушки",
+        "long_dildo_path": "Дилдо через анус выходит изо рта",
+        "succubus_tattoo": "Тату сердечко на коже в области матки"
+    },
+    "ethnos": {
+        "futanari": "Футанари",
+        "femboy": "Фембой",
+        "ethnicity_asian": "Азиатка",
+        "ethnicity_european": "Европейка"
+    },
+    "furry": {
+        "furry_cow": "Фури корова",
+        "furry_cat": "Фури кошка",
+        "furry_dog": "Фури собака",
+        "furry_dragon": "Фури дракон",
+        "furry_sylveon": "Фури Сильвеон"
+    }
 }
 
 CATEGORY_NAMES = {
-    "holes": "Отверстия", "toys": "Игрушки", "poses": "Позы", "clothes": "Одежда", "body": "Тело", "ethnos": "Этнос", "furry": "Фури"
+    "holes": "Отверстия",
+    "toys": "Игрушки",
+    "poses": "Позы",
+    "clothes": "Одежда",
+    "body": "Тело",
+    "ethnos": "Этнос",
+    "furry": "Фури"
 }
 
 TAG_PROMPTS = {
-    "vagina": "open vagina", "anal": "open anus", "both": "open anus and vagina",
-    "dildo": "dildo inserted", "huge_dildo": "huge dildo", "horse_dildo": "horse dildo",
-    "anal_beads": "anal beads inside", "anal_plug": "anal plug", "anal_expander": "anal expander spreading anus",
-    "gag": "ball gag", "piercing": "nipple and genital piercing",
-    "doggy": "doggy style", "standing": "standing pose", "splits": "doing splits", "squat": "squatting", "lying": "lying on back",
-    "hor_split": "horizontal splits", "ver_split": "vertical splits", "side_up_leg": "side pose with one leg up",
-    "front_facing": "facing viewer", "back_facing": "back turned to viewer", "lying_knees_up": "lying, knees up and spread",
-    "bridge": "body arched like a bridge", "suspended": "body suspended with ropes",
-    "stockings": "stockings only", "bikini_tan_lines": "dark skin with white bikini tan lines, no clothing", "mask": "face mask",
-    "heels": "high heels", "shibari": "shibari ropes", "cow_costume": "girl in cow-print stockings, horns, tail, no underwear",
-    "big_breasts": "large breasts", "small_breasts": "small breasts", "skin_white": "white skin", "skin_black": "black skin",
-    "body_fat": "curvy body", "body_thin": "thin body", "body_normal": "average body", "body_fit": "fit body", "body_muscular": "muscular body",
-    "age_loli": "loli", "age_milf": "milf", "age_21": "21 years old",
-    "cum": "covered in cum", "belly_bloat": "belly inflation from toy", "long_dildo_path": "dildo through anus exiting mouth",
-    "succubus_tattoo": "heart-shaped tattoo above womb",
-    "futanari": "futanari girl with large breasts", "femboy": "femboy with feminine body",
-    "ethnicity_asian": "asian girl", "ethnicity_european": "european girl",
-    "furry_cow": "anthro cow girl", "furry_cat": "anthro cat girl", "furry_dog": "anthro dog girl",
-    "furry_dragon": "anthro dragon girl", "furry_sylveon": "anthro sylveon, pink fur, ribbons, sexy"
+    "vagina": "открытая вагина",
+    "anal": "открытый анус",
+    "both": "открытый анус и вагина",
+    "dildo": "дилдо внутри",
+    "huge_dildo": "огромное дилдо",
+    "horse_dildo": "лошадиное дилдо",
+    "anal_beads": "анальные бусы внутри",
+    "anal_plug": "анальная пробка",
+    "anal_expander": "анальный расширитель, растягивает анус",
+    "gag": "кляп-шар",
+    "piercing": "пирсинг на сосках и гениталиях",
+    "doggy": "поза наездницы (догги-стайл)",
+    "standing": "стоя",
+    "splits": "шпагат",
+    "squat": "приседание",
+    "lying": "лежа на спине",
+    "hor_split": "горизонтальный шпагат",
+    "ver_split": "вертикальный шпагат",
+    "side_up_leg": "на боку с поднятой ногой",
+    "front_facing": "лицом к зрителю",
+    "back_facing": "спиной к зрителю",
+    "lying_knees_up": "лежа с раздвинутыми согнутыми коленями",
+    "bridge": "мост",
+    "suspended": "подвешена на верёвках",
+    "stockings": "только чулки",
+    "bikini_tan_lines": "смуглая кожа с белыми линиями от бикини, без одежды",
+    "mask": "маска на лице",
+    "heels": "туфли на высоком каблуке",
+    "shibari": "шибари верёвки",
+    "cow_costume": "девушка в чулках с узором коровы, с рогами и хвостом, без нижнего белья",
+    "big_breasts": "большая грудь",
+    "small_breasts": "маленькая грудь",
+    "skin_white": "белая кожа",
+    "skin_black": "чёрная кожа",
+    "body_fat": "пышное тело",
+    "body_thin": "худое тело",
+    "body_normal": "нормальное телосложение",
+    "body_fit": "подтянутое тело",
+    "body_muscular": "мускулистое тело",
+    "age_loli": "лоли",
+    "age_milf": "милфа",
+    "age_21": "возраст 21 год",
+    "cum": "вся в сперме",
+    "belly_bloat": "вздутие живота от игрушки",
+    "long_dildo_path": "дилдо через анус выходит изо рта",
+    "succubus_tattoo": "тату сердечко на коже в области матки",
+    "futanari": "футанари девушка с большой грудью",
+    "femboy": "фембой с женственным телом",
+    "ethnicity_asian": "азиатка",
+    "ethnicity_european": "европейка",
+    "furry_cow": "фури корова",
+    "furry_cat": "фури кошка",
+    "furry_dog": "фури собака",
+    "furry_dragon": "фури дракон",
+    "furry_sylveon": "фури сильвеон, розовая шерсть, ленты, сексуальная"
 }
 
 def main_menu():
@@ -67,9 +172,9 @@ def category_menu():
 
 def tag_menu(category, selected_tags):
     kb = types.InlineKeyboardMarkup(row_width=2)
-    for tag in TAGS[category]:
-        label = f"✅ {tag}" if tag in selected_tags else tag
-        kb.add(types.InlineKeyboardButton(label, callback_data=f"tag_{category}_{tag}"))
+    for tag_key, tag_name in TAGS[category].items():
+        label = f"✅ {tag_name}" if tag_key in selected_tags else tag_name
+        kb.add(types.InlineKeyboardButton(label, callback_data=f"tag_{category}_{tag_key}"))
     kb.add(types.InlineKeyboardButton("⬅ Назад", callback_data="back_to_cat"))
     return kb
 
