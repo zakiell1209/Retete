@@ -181,51 +181,82 @@ def handle_callback(call):
 def build_prompt(tags):
     base = "nsfw, masterpiece, ultra detailed, anime style, best quality"
     map_tag = {
-        "vagina": "open vagina", "anal": "open anus", "both": "open anus and vagina",
-        "dildo": "dildo", "huge_dildo": "huge dildo", "horse_dildo": "horse dildo",
-        "anal_beads": "anal beads causing belly bloat", "anal_plug": "anal plug", "anal_expander": "anal expander",
-        "gag": "gag", "piercing": "body piercing",
-        "doggy": "doggy style", "standing": "standing pose", "splits": "splits", "squat": "squatting",
-        "lying": "lying", "hor_split": "horizontal splits", "ver_split": "vertical splits",
-        "side_up_leg": "lying on side, one leg up", "front_facing": "facing viewer",
-        "back_facing": "back facing", "lying_knees_up": "lying, knees up and apart",
+        "vagina": "open vagina",
+        "anal": "open anus",
+        "both": "open anus and vagina",
 
-        # Жёсткие ограничения по запросу пользователя:
-        # "stockings" должен генерировать только чулки, без трусов и прочего,
-        # если не выбран "bikini_tan_lines"
+        # Игрушки — вставленные, а не просто рядом:
+        "dildo": "dildo inserted in vagina or anus, explicit penetration",
+        "huge_dildo": "huge dildo inserted in vagina or anus, explicit penetration",
+        "horse_dildo": "horse dildo inserted in vagina or anus, extreme penetration",
+        "anal_beads": "anal beads causing belly bloat, inserted and visible",
+        "anal_plug": "anal plug inserted and visible",
+        "anal_expander": "anal expander inserted, stretching anus",
+
+        "gag": "gag",
+        "piercing": "body piercing",
+
+        "doggy": "doggy style",
+        "standing": "standing pose",
+        "splits": "splits",
+        "squat": "squatting",
+        "lying": "lying",
+        "hor_split": "horizontal splits",
+        "ver_split": "vertical splits",
+        "side_up_leg": "lying on side, one leg up",
+        "front_facing": "facing viewer",
+        "back_facing": "back facing",
+        "lying_knees_up": "lying, knees up and apart",
+
+        # Одежда и аксессуары:
         "stockings": "stockings only, no panties, no other clothes",
-
-        # "bikini_tan_lines" — загар от бикини без одежды (не должно быть бикини, только загар)
-        "bikini_tan_lines": "dark tanned skin with white bikini tan lines, no bikini, no clothing",
-
-        # Остальная одежда — как было
-        "mask": "mask", "heels": "high heels", "shibari": "shibari",
+        "bikini_tan_lines": "dark tanned skin with white bikini tan lines, no bikini, no clothing, no underwear, no fabric",
+        "mask": "mask",
+        "heels": "high heels",
+        "shibari": "shibari",
         "cow_costume": "girl wearing cow pattern stockings, horns, tail, no underwear, no cow body, sexy",
 
-        "big_breasts": "large breasts", "small_breasts": "small breasts", "skin_white": "white skin", "skin_black": "black skin",
-        "body_fat": "curvy body", "body_thin": "thin body", "body_normal": "average body",
-        "body_fit": "fit body", "body_muscular": "muscular body", "height_tall": "tall height", "height_short": "short height",
-        "age_loli": "loli", "age_milf": "milf", "age_middle": "mature woman", "age_21": "21 years old",
-        "cum": "cum", "belly_bloat": "extremely bloated belly due to anal inflation or toys, exaggerated pressure, visible bulge",
+        # Тело:
+        "big_breasts": "large breasts",
+        "small_breasts": "small breasts",
+        "skin_white": "white skin",
+        "skin_black": "black skin",
+        "body_fat": "curvy body",
+        "body_thin": "thin body",
+        "body_normal": "average body",
+        "body_fit": "fit body",
+        "body_muscular": "muscular body",
+        "height_tall": "tall height",
+        "height_short": "short height",
+        "age_loli": "loli",
+        "age_milf": "milf",
+        "age_middle": "mature woman",
+        "age_21": "21 years old",
+        "cum": "cum",
+        "belly_bloat": "extremely bloated belly due to anal inflation or toys, exaggerated pressure, visible bulge",
 
-        # "long_dildo_path" — должен генерировать дилдо проходящее через тело
-        # Другие теги дилдо не должны его содержать
+        # Дилдо через тело — спецтег:
         "long_dildo_path": "dildo inserted in anus, exiting through mouth, visible bulge through body, extreme penetration",
 
-        # Другие дилдо не должны генерировать дилдо проходящее через тело
-        "dildo": "dildo",
-        "huge_dildo": "huge dildo",
-        "horse_dildo": "horse dildo",
+        # Другие дилдо без "через тело"
+        "dildo": "dildo inserted in vagina or anus, explicit penetration",
+        "huge_dildo": "huge dildo inserted in vagina or anus, explicit penetration",
+        "horse_dildo": "horse dildo inserted in vagina or anus, extreme penetration",
 
         "succubus_tattoo": "black heart tattoo located on lower abdomen, above uterus, clearly visible on skin, erotic",
 
-        # Изменённые промты для футанари и фембой:
+        # Футанари и фембой с поправками:
         "futanari": "futanari with realistic female body, female face, large breasts, no male genitalia visible",
-        "femboy": "androgynous young male with soft facial features, slim body, feminine appearance, anime style",
+        "femboy": "androgynous young male with soft facial features, slim body, feminine appearance, anime style, explicit",
 
-        "ethnicity_asian": "asian girl", "ethnicity_european": "european girl",
-        "furry_cow": "furry cow", "furry_cat": "furry cat", "furry_dog": "furry dog",
-        "furry_dragon": "furry dragon", "furry_sylveon": "anthro sylveon, pink and white fur, ribbons, large breasts, sexy"
+        "ethnicity_asian": "asian girl",
+        "ethnicity_european": "european girl",
+
+        "furry_cow": "furry cow",
+        "furry_cat": "furry cat",
+        "furry_dog": "furry dog",
+        "furry_dragon": "furry dragon",
+        "furry_sylveon": "anthro sylveon, pink and white fur, ribbons, large breasts, sexy"
     }
     additions = [map_tag.get(tag, tag) for tag in tags]
     return base + ", " + ", ".join(additions)
