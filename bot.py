@@ -10,7 +10,9 @@ REPLICATE_TOKEN = os.getenv("REPLICATE_API_TOKEN")
 WEBHOOK_URL = os.getenv("WEBHOOK_URL")
 PORT = int(os.environ.get("PORT", 5000))
 
-REPLICATE_MODEL = "aitechtree/nsfw-novel-generation"
+REPLICATE_MODELS = {
+    "anime": "c1d5b02687df6081c7953c74bcc527858702e8c153c9382012ccc3906752d3ec"
+}
 
 bot = telebot.TeleBot(API_TOKEN)
 app = Flask(__name__)
@@ -250,7 +252,7 @@ def replicate_generate(prompt):
         "Content-Type": "application/json"
     }
     json_data = {
-        "version": REPLICATE_MODEL,
+        "version": REPLICATE_MODELS["anime"],
         "input": {"prompt": prompt}
     }
     r = requests.post(url, headers=headers, json=json_data)
