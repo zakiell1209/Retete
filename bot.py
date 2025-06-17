@@ -10,9 +10,7 @@ REPLICATE_TOKEN = os.getenv("REPLICATE_API_TOKEN")
 WEBHOOK_URL = os.getenv("WEBHOOK_URL")
 PORT = int(os.environ.get("PORT", 5000))
 
-REPLICATE_MODELS = {
-    "anime": "c1d5b02687df6081c7953c74bcc527858702e8c153c9382012ccc3906752d3ec"
-}
+REPLICATE_MODEL = "c1d5b02687df6081c7953c74bcc527858702e8c153c9382012ccc3906752d3ec"
 
 bot = telebot.TeleBot(API_TOKEN)
 app = Flask(__name__)
@@ -87,7 +85,20 @@ TAGS = {
         "furry_cat": "Фури кошка",
         "furry_dog": "Фури собака",
         "furry_dragon": "Фури дракон",
-        "furry_sylveon": "Фури Сильвеон"
+        "furry_sylveon": "Фури Сильвеон",
+        "furry_fox": "Фури лисица",
+        "furry_rabbit": "Фури кролик",
+        "furry_wolf": "Фури волчица"
+    },
+    "characters": {
+        "rias_gremory": "Риас Гремори",
+        "akeno_himejima": "Акено Химедзима"
+    },
+    "head": {
+        "ahegao": "Ахегао",
+        "pain_face": "Лицо скривившееся от боли",
+        "ecstasy_face": "Лицо в экстазе",
+        "gold_lipstick": "Золотая помада для губ"
     }
 }
 
@@ -98,21 +109,26 @@ CATEGORY_NAMES = {
     "clothes": "Одежда",
     "body": "Тело",
     "ethnos": "Этнос",
-    "furry": "Фури"
+    "furry": "Фури",
+    "characters": "Персонажи",
+    "head": "Голова"
 }
 
 TAG_PROMPTS = {
+    # отверстия
     "vagina": "открытая вагина",
     "anal": "открытый анус",
     "both": "открытый анус и вагина",
-    "dildo": "дилдо внутри",
-    "huge_dildo": "огромное дилдо",
-    "horse_dildo": "лошадиное дилдо",
-    "anal_beads": "анальные бусы внутри",
+    # игрушки
+    "dildo": "дилдо внутри вагины и ануса",
+    "huge_dildo": "огромное дилдо в обоих отверстиях",
+    "horse_dildo": "лошадиное дилдо в вагине и анусе",
+    "anal_beads": "анальные бусы внутри ануса",
     "anal_plug": "анальная пробка",
     "anal_expander": "анальный расширитель, растягивает анус",
     "gag": "кляп-шар",
     "piercing": "пирсинг на сосках и гениталиях",
+    # позы
     "doggy": "поза наездницы (догги-стайл)",
     "standing": "стоя",
     "splits": "шпагат",
@@ -126,12 +142,14 @@ TAG_PROMPTS = {
     "lying_knees_up": "лежа с раздвинутыми согнутыми коленями",
     "bridge": "мост",
     "suspended": "подвешена на верёвках",
+    # одежда
     "stockings": "только чулки",
     "bikini_tan_lines": "смуглая кожа с белыми линиями от бикини, без одежды",
     "mask": "маска на лице",
     "heels": "туфли на высоком каблуке",
     "shibari": "шибари верёвки",
     "cow_costume": "девушка в чулках с узором коровы, с рогами и хвостом, без нижнего белья",
+    # тело
     "big_breasts": "большая грудь",
     "small_breasts": "маленькая грудь",
     "skin_white": "белая кожа",
@@ -148,15 +166,36 @@ TAG_PROMPTS = {
     "belly_bloat": "вздутие живота от игрушки",
     "long_dildo_path": "дилдо через анус выходит изо рта",
     "succubus_tattoo": "тату сердечко на коже в области матки",
+    # этнос
     "futanari": "футанари девушка с большой грудью",
     "femboy": "фембой с женственным телом",
     "ethnicity_asian": "азиатка",
     "ethnicity_european": "европейка",
-    "furry_cow": "фури корова",
-    "furry_cat": "фури кошка",
-    "furry_dog": "фури собака",
-    "furry_dragon": "фури дракон",
-    "furry_sylveon": "фури сильвеон, розовая шерсть, ленты, сексуальная"
+    # фури
+    "furry_cow": "фури корова с рогами и хвостом",
+    "furry_cat": "фури кошка с ушами и хвостом",
+    "furry_dog": "фури собака с ушами и хвостом",
+    "furry_dragon": "фури дракон с чешуёй и крыльями",
+    "furry_sylveon": "фури сильвеон, розовая шерсть, ленты, сексуальная",
+    "furry_fox": "фури лисица с оранжевой шерстью, пушистый хвост и уши",
+    "furry_rabbit": "фури кролик с белым мехом, длинные уши и хвостик",
+    "furry_wolf": "фури волчица с серой шерстью, острые уши и хвост",
+    # персонажи
+    "rias_gremory": "Риас Гремори из High School DxD, длинные красные волосы, большая грудь, уверенное выражение лица",
+    "akeno_himejima": "Акено Химедзима из High School DxD, длинные фиолетовые волосы, собраны в хвост, чувственное лицо",
+    # голова
+    "ahegao": "лицо в ахегао, высунутый язык, закатанные глаза",
+    "pain_face": "лицо скривившееся от боли, слезы, страдальное выражение",
+    "ecstasy_face": "лицо в экстазе, глаза полуоткрыты, рот приоткрыт",
+    "gold_lipstick": "золотая помада на губах"
+}
+
+# Конфликты тегов по категориям (теги, которые не могут быть выбраны вместе)
+CONFLICTS = {
+    "holes": ["vagina", "anal", "both"],
+    "body": ["skin_white", "skin_black"],
+    "ethnos": ["futanari", "femboy", "ethnicity_asian", "ethnicity_european"],
+    # т.к. "both" уже включает вагину и анус, при выборе "both" удалять вагину и анус
 }
 
 def main_menu():
@@ -206,10 +245,35 @@ def callback(call):
     elif data.startswith("tag_"):
         _, cat, tag = data.split("_", 2)
         tags = user_settings[cid]["tags"]
+
+        # Обработка конфликтов
+        # Если выбирается тег, убираем конфликтующие из той же категории
         if tag in tags:
+            # Убираем тег
             tags.remove(tag)
         else:
+            # Добавляем тег, при этом удаляем конфликтующие теги из той же категории
+            conflicts_in_cat = CONFLICTS.get(cat, [])
+            if tag in conflicts_in_cat:
+                # Убираем все конфликтующие теги кроме выбранного
+                for conflict_tag in conflicts_in_cat:
+                    if conflict_tag != tag and conflict_tag in tags:
+                        tags.remove(conflict_tag)
+            # Специальная логика для "holes" с тегом "both"
+            if cat == "holes" and tag == "both":
+                # Убираем vagina и anal если есть
+                for hole_tag in ["vagina", "anal"]:
+                    if hole_tag in tags:
+                        tags.remove(hole_tag)
+            elif cat == "holes" and tag in ["vagina", "anal"]:
+                # Если выбран both, убрать его
+                if "both" in tags:
+                    tags.remove("both")
+
             tags.append(tag)
+
+        # Перезаписать выбор
+        user_settings[cid]["tags"] = tags
         bot.edit_message_reply_markup(cid, call.message.message_id, reply_markup=tag_menu(cat, tags))
 
     elif data == "done_tags":
@@ -242,8 +306,46 @@ def callback(call):
 
 def build_prompt(tags):
     base = "nsfw, masterpiece, ultra detailed, anime style, best quality"
-    prompts = [TAG_PROMPTS.get(tag, tag) for tag in tags]
-    return base + ", " + ", ".join(prompts)
+    # Кастомная логика для смешанных отверстий и дилдо
+    prompt_parts = []
+
+    holes_selected = [tag for tag in tags if tag in TAGS["holes"]]
+    toys_selected = [tag for tag in tags if tag in TAGS["toys"]]
+
+    # Если выбран "both" - заменяем на оба отверстия
+    if "both" in holes_selected:
+        holes_selected = ["vagina", "anal"]
+
+    # Генерируем дилдо для обоих отверстий, если выбраны и отверстия и дилдо
+    dildo_tags = {"dildo", "huge_dildo", "horse_dildo"}
+    dildo_selected = [t for t in toys_selected if t in dildo_tags]
+
+    # Убираем дилдо из toys, чтобы потом добавить с правильным описанием
+    toys_wo_dildo = [t for t in toys_selected if t not in dildo_tags]
+
+    # Формируем промты для отверстий
+    for hole in holes_selected:
+        prompt_parts.append(TAG_PROMPTS.get(hole, hole))
+
+    # Для дилдо — добавляем в оба отверстия, если отверстия выбраны
+    for dildo in dildo_selected:
+        for hole in holes_selected:
+            # "дилдо внутри вагины" или "дилдо внутри ануса"
+            if hole == "vagina":
+                prompt_parts.append(f"{TAG_PROMPTS.get(dildo)} внутри вагины")
+            elif hole == "anal":
+                prompt_parts.append(f"{TAG_PROMPTS.get(dildo)} внутри ануса")
+
+    # Остальные игрушки
+    for toy in toys_wo_dildo:
+        prompt_parts.append(TAG_PROMPTS.get(toy, toy))
+
+    # Остальные теги кроме holes и toys
+    for tag in tags:
+        if tag not in holes_selected and tag not in toys_selected:
+            prompt_parts.append(TAG_PROMPTS.get(tag, tag))
+
+    return base + ", " + ", ".join(prompt_parts)
 
 def replicate_generate(prompt):
     url = "https://api.replicate.com/v1/predictions"
@@ -252,7 +354,7 @@ def replicate_generate(prompt):
         "Content-Type": "application/json"
     }
     json_data = {
-        "version": REPLICATE_MODELS["anime"],
+        "version": REPLICATE_MODEL,
         "input": {"prompt": prompt}
     }
     r = requests.post(url, headers=headers, json=json_data)
@@ -267,21 +369,4 @@ def replicate_generate(prompt):
             return None
         data = r.json()
         if data["status"] == "succeeded":
-            return data["output"][0] if isinstance(data["output"], list) else data["output"]
-        elif data["status"] == "failed":
-            return None
-    return None
-
-@app.route("/", methods=["POST"])
-def webhook():
-    bot.process_new_updates([telebot.types.Update.de_json(request.stream.read().decode("utf-8"))])
-    return "ok", 200
-
-@app.route("/", methods=["GET"])
-def home():
-    return "бот работает", 200
-
-if __name__ == "__main__":
-    bot.remove_webhook()
-    bot.set_webhook(url=WEBHOOK_URL)
-    app.run(host="0.0.0.0", port=PORT)
+            return data["output"][0] if isinstance(data["output"],
