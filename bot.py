@@ -116,10 +116,12 @@ def handle_callback(call):
     if data == "tags":
         time.sleep(0.3)
         bot.edit_message_text("Выбери категорию:", cid, call.message.message_id, reply_markup=category_keyboard())
+
     elif data.startswith("cat_"):
         cat = data.split("_", 1)[1]
         user_settings[cid]["last_category"] = cat
         bot.edit_message_text(f"Выбери теги из категории {CATEGORY_NAMES_EMOJI[cat]}:", cid, call.message.message_id, reply_markup=tags_keyboard(cat, cid))
+
     elif data.startswith("tag_"):
         _, cat, tag = data.split("_", 2)
         tags = user_settings[cid]["features"]
@@ -132,10 +134,13 @@ def handle_callback(call):
         user_settings[cid]["features"] = tags
         bot.answer_callback_query(call.id, action)
         bot.edit_message_reply_markup(cid, call.message.message_id, reply_markup=tags_keyboard(cat, cid))
+
     elif data == "tags_done":
         bot.edit_message_text("Теги сохранены.", cid, call.message.message_id, reply_markup=main_keyboard())
+
     elif data == "tags_back":
         bot.edit_message_text("Выбери категорию:", cid, call.message.message_id, reply_markup=category_keyboard())
+
     elif data == "generate":
         features = user_settings[cid].get("features", [])
         if not features:
@@ -149,9 +154,29 @@ def handle_callback(call):
             return
         image_url = wait_for_image(status_url)
         if image_url:
-            bot.send_photo(cid, image_url, caption="Вот результат!", reply_markup=main_keyboard())
+            result_markup = types.InlineKeyboardMarkup()
+            result_markup.add(
+                types.InlineKeyboardButton("🔁 Начать заново", callback_data="start_over"),
+                types.InlineKeyboardButton("🔂 Продолжить генерацию", callback_data="generate")
+            )
+            result_markup.add(
+                types.InlineKeyboardButton("🛠 Редактировать теги", callback_data="edit_tags")
+            )
+            bot.send_photo(cid, image_url, caption="Вот результат!", reply_markup=result_markup)
         else:
             bot.send_message(cid, "❌ Ошибка генерации изображения.")
+
+    elif data == "start_over":
+        user_settings[cid] = {"features": [], "waiting_for_prompt": False}
+        bot.send_message(cid, "Привет! Выбери действие:", reply_markup=main_keyboard())
+
+    elif data == "edit_tags":
+        last_cat = user_settings[cid].get("last_category")
+        if last_cat:
+            bot.send_message(cid, f"Редактируем: {CATEGORY_NAMES_EMOJI[last_cat]}", reply_markup=tags_keyboard(last_cat, cid))
+        else:
+            bot.send_message(cid, "Выбери категорию:", reply_markup=category_keyboard())
+
 
 def build_prompt(tags):
     base = "nsfw, masterpiece, ultra detailed, anime style, best quality"
@@ -164,15 +189,34 @@ def build_prompt(tags):
         "lying": "lying", "hor_split": "horizontal splits", "ver_split": "vertical splits",
         "side_up_leg": "lying on side, one leg up", "front_facing": "facing viewer",
         "back_facing": "back facing", "lying_knees_up": "lying, knees up and apart",
-        "stockings": "stockings", "bikini_tan_lines": "dark tanned skin with white bikini tan lines, no bikini, visible vagina and nipples",
+
+        # Жёсткие ограничения по запросу пользователя:
+        # "stockings" должен генерировать только чулки, без трусов и прочего,
+        # если не выбран "bikini_tan_lines"
+        "stockings": "stockings only, no panties, no other clothes",
+
+        # "bikini_tan_lines" — загар от бикини без одежды (не должно быть бикини, только загар)
+        "bikini_tan_lines": "dark tanned skin with white bikini tan lines, no bikini, no clothing",
+
+        # Остальная одежда — как было
         "mask": "mask", "heels": "high heels", "shibari": "shibari",
         "cow_costume": "girl wearing cow pattern stockings, horns, tail, no underwear, no cow body, sexy",
+
         "big_breasts": "large breasts", "small_breasts": "small breasts", "skin_white": "white skin", "skin_black": "black skin",
         "body_fat": "curvy body", "body_thin": "thin body", "body_normal": "average body",
         "body_fit": "fit body", "body_muscular": "muscular body", "height_tall": "tall height", "height_short": "short height",
         "age_loli": "loli", "age_milf": "milf", "age_middle": "mature woman", "age_21": "21 years old",
         "cum": "cum", "belly_bloat": "extremely bloated belly due to anal inflation or toys, exaggerated pressure, visible bulge",
+
+        # "long_dildo_path" — должен генерировать дилдо проходящее через тело
+        # Другие теги дилдо не должны его содержать
         "long_dildo_path": "dildo inserted in anus, exiting through mouth, visible bulge through body, extreme penetration",
+
+        # Другие дилдо не должны генерировать дилдо проходящее через тело
+        "dildo": "dildo",
+        "huge_dildo": "huge dildo",
+        "horse_dildo": "horse dildo",
+
         "succubus_tattoo": "black heart tattoo located on lower abdomen, above uterus, clearly visible on skin, erotic",
         "futanari": "futanari", "femboy": "femboy", "ethnicity_asian": "asian girl", "ethnicity_european": "european girl",
         "furry_cow": "furry cow", "furry_cat": "furry cat", "furry_dog": "furry dog",
