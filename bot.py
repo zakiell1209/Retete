@@ -10,7 +10,6 @@ REPLICATE_TOKEN = os.getenv("REPLICATE_API_TOKEN")
 WEBHOOK_URL = os.getenv("WEBHOOK_URL")
 PORT = int(os.environ.get("PORT", 5000))
 
-# Версия модели Replicate
 REPLICATE_MODEL = "c1d5b02687df6081c7953c74bcc527858702e8c153c9382012ccc3906752d3ec"
 
 bot = telebot.TeleBot(API_TOKEN)
@@ -119,8 +118,9 @@ TAGS = {
 }
 
 CHARACTER_EXTRA = {
-    "rias": "red long hair, blue eyes, pale skin, large breasts, rias gremory, highschool dxd, cow costume ok, bikini tan ok",
-    "akeno": "long black hair, purple eyes, large breasts, akeno himejima, highschool dxd, cow costume ok, bikini tan ok",
+    # Убраны "cow costume ok", "bikini tan ok"
+    "rias": "red long hair, blue eyes, pale skin, large breasts, rias gremory, highschool dxd",
+    "akeno": "long black hair, purple eyes, large breasts, akeno himejima, highschool dxd",
     "kafka": "purple wavy hair, cold expression, kafka, honkai star rail",
     "eula": "light blue hair, fair skin, eula, genshin impact",
     "fu_xuan": "pink hair, fu xuan, honkai star rail",
@@ -141,13 +141,13 @@ TAG_PROMPTS = {
     "gag": "ball gag",
     "piercing": "nipple and genital piercings",
     "long_dildo_path": (
-        "dildo inserted from anus, passing inside body with visible belly bulge, "
-        "exiting mouth as single continuous piece, consistent size and texture"
+        "dildo inserted into anus, passing through body with visible belly bulge, "
+        "exiting mouth as one continuous dildo, consistent size and texture, anatomically correct"
     ),
     "doggy": "doggy style",
     "standing": "standing pose",
     "splits": "doing a split",
-    "hor_split": "doing horizontal (side) split with legs stretched fully sideways",
+    "hor_split": "doing horizontal side split, legs fully stretched sideways, hips low, clear view of spread legs",
     "ver_split": "vertical split",
     "side_up_leg": "on side with leg raised",
     "front_facing": "facing viewer",
