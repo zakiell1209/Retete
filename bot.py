@@ -42,7 +42,8 @@ TAGS = {
         "anal_plug": "Анальная пробка",
         "anal_expander": "Анальный расширитель",
         "gag": "Кляп",
-        "piercing": "Пирсинг"
+        "piercing": "Пирсинг",
+        "long_dildo_path": "Дилдо из ануса выходит изо рта"
     },
     "poses": {
         "doggy": "Наездница (догги-стайл)",
@@ -82,7 +83,6 @@ TAGS = {
         "age_21": "Возраст 21",
         "cum": "Вся в сперме",
         "belly_bloat": "Вздутие живота",
-        "long_dildo_path": "Дилдо из ануса выходит изо рта",
         "succubus_tattoo": "Тату внизу живота"
     },
     "ethnos": {
@@ -118,8 +118,8 @@ TAGS = {
 }
 
 CHARACTER_EXTRA = {
-    "rias": "red long hair, blue eyes, pale skin, large breasts, rias gremory, highschool dxd",
-    "akeno": "long black hair, purple eyes, akeno himedjima, highschool dxd",
+    "rias": "red long hair, blue eyes, pale skin, large breasts, rias gremory, highschool dxd, cow costume ok, bikini tan ok",
+    "akeno": "long black hair, purple eyes, large breasts, akeno himejima, highschool dxd, cow costume ok, bikini tan ok",
     "kafka": "purple wavy hair, cold expression, kafka, honkai star rail",
     "eula": "light blue hair, fair skin, eula, genshin impact",
     "fu_xuan": "pink hair, fu xuan, honkai star rail",
@@ -139,6 +139,7 @@ TAG_PROMPTS = {
     "anal_expander": "anal expander stretching anus",
     "gag": "ball gag",
     "piercing": "nipple and genital piercings",
+    "long_dildo_path": "dildo inserted from anus to mouth, single piece, consistent size and texture, visible belly bulge snake-like path",
     "doggy": "doggy style",
     "standing": "standing pose",
     "splits": "doing a split",
@@ -172,7 +173,6 @@ TAG_PROMPTS = {
     "age_21": "age 21",
     "cum": "cum covered",
     "belly_bloat": "belly bulge from toy",
-    "long_dildo_path": "dildo through anus and out mouth",
     "succubus_tattoo": "succubus tattoo on lower abdomen",
     "futanari": "futanari girl with large breasts",
     "femboy": "femboy with feminine body",
