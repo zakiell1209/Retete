@@ -139,7 +139,6 @@ TAG_PROMPTS = {
     "anal_expander": "anal expander stretching anus",
     "gag": "ball gag",
     "piercing": "nipple and genital piercings",
-    # Исправленный промпт для дилдо из ануса в рот с выпуклостью живота и проходом внутри тела
     "long_dildo_path": (
         "dildo inserted from anus, passing inside body with visible belly bulge, "
         "exiting mouth as single continuous piece, consistent size and texture"
@@ -147,7 +146,6 @@ TAG_PROMPTS = {
     "doggy": "doggy style",
     "standing": "standing pose",
     "splits": "doing a split",
-    # Исправленный промпт для горизонтального шпагата (поперечный шпагат)
     "hor_split": "doing horizontal (side) split with legs stretched fully sideways",
     "ver_split": "vertical split",
     "side_up_leg": "on side with leg raised",
@@ -157,7 +155,6 @@ TAG_PROMPTS = {
     "bridge": "arched back bridge pose",
     "suspended": "suspended by ropes",
     "stockings": "wearing stockings only",
-    # Убраны костюм коровы и линии загара из базового промпта
     "mask": "mask on face",
     "heels": "high heels",
     "shibari": "shibari ropes",
@@ -279,8 +276,8 @@ def callback(call):
 def build_prompt(tags):
     base = "nsfw, masterpiece, ultra detailed, anime style, best quality"
     prompts = [TAG_PROMPTS.get(tag, tag) for tag in tags]
-    # Убираем костюм коровы и линии загара из базового промта, если вдруг они там оказались
-    prompts = [p for p in prompts if p not in ("stockings with cow pattern, horns, tail", "bikini tan lines, nude")]
+    # Убираем костюм коровы и линии загара из базового промпта, если вдруг они там оказались
+    prompts = [p for p in prompts if p not in ("cow costume", "bikini tan lines")]
     return base + ", " + ", ".join(prompts) if prompts else base
 
 def replicate_generate(prompt):
@@ -312,7 +309,9 @@ def replicate_generate(prompt):
 
 @app.route("/", methods=["POST"])
 def webhook():
-    bot.process_new_updates([telebot.types.Update.de_json(request.stream.read().decode("utf-8"))])
+    json_str = request.stream.read().decode("utf-8")
+    update = telebot.types.Update.de_json(json_str)
+    bot.process_new_updates([update])
     return "ok", 200
 
 @app.route("/", methods=["GET"])
