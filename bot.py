@@ -25,7 +25,8 @@ CATEGORY_NAMES = {
     "ethnos": "Этнос",
     "furry": "Фури",
     "characters": "Персонажи",
-    "head": "Голова"
+    "head": "Голова",
+    "scene": "Сцена"
 }
 
 TAGS = {
@@ -54,18 +55,26 @@ TAGS = {
         "hor_split": "Горизонтальный шпагат",
         "ver_split": "Вертикальный шпагат",
         "side_up_leg": "На боку с поднятой ногой",
-        "front_facing": "Лицом к зрителю",
-        "back_facing": "Спиной к зрителю",
         "lying_knees_up": "Лежа с согнутыми коленями",
         "bridge": "Мост",
         "suspended": "Подвешена"
+    },
+    "scene": {
+        "front_facing": "Лицом к зрителю",
+        "back_facing": "Спиной к зрителю",
+        "view_bottom": "Вид снизу",
+        "view_top": "Вид сверху",
+        "view_side": "Вид сбоку",
+        "view_close": "Ближе",
+        "view_far": "Дальше"
     },
     "clothes": {
         "stockings": "Чулки",
         "bikini_tan_lines": "Загар от бикини",
         "mask": "Маска",
         "heels": "Каблуки",
-        "shibari": "Шибари"
+        "shibari": "Шибари",
+        "cow_costume": "Костюм коровы"
     },
     "body": {
         "big_breasts": "Большая грудь",
@@ -127,6 +136,8 @@ CHARACTER_EXTRA = {
 
 TAG_PROMPTS = {
     **CHARACTER_EXTRA,
+    "futanari": "futanari, with penis and large breasts",
+    "femboy": "femboy with feminine body",
     "vagina": "spread pussy",
     "anal": "spread anus",
     "both": "spread pussy and anus",
@@ -139,48 +150,51 @@ TAG_PROMPTS = {
     "gag": "ball gag",
     "piercing": "nipple and genital piercings",
     "long_dildo_path": (
-        "dildo inserted into anus, visible internal path through body with belly bulge, "
-        "exiting mouth, continuous object, anatomically correct"
+        "dildo inserted into anus, passing through body with visible belly bulge, "
+        "exiting mouth as one continuous dildo, consistent size and texture, anatomically correct"
     ),
     "doggy": "doggy style",
     "standing": "standing pose",
     "splits": "doing a split",
-    "hor_split": "horizontal side split, wide spread legs, hips to ground, fully stretched",
-    "ver_split": "vertical split pose, flexible",
-    "side_up_leg": "lying sideways with one leg raised high",
+    "hor_split": "horizontal side split, hips down, wide legs",
+    "ver_split": "vertical split",
+    "side_up_leg": "on side with leg raised",
+    "lying_knees_up": "legs up, knees bent",
+    "bridge": "arched back bridge pose",
+    "suspended": "suspended by ropes",
     "front_facing": "facing viewer",
-    "back_facing": "back turned to viewer",
-    "lying_knees_up": "lying on back with knees bent up",
-    "bridge": "arched back bridge pose, flexible",
-    "suspended": "tied and suspended in air",
-    "stockings": "stockings only, no panties, no bra",
+    "back_facing": "back to viewer",
+    "view_bottom": "camera below floor level, looking up at body, no visible floor",
+    "view_top": "top-down view from above the girl's head",
+    "view_side": "side view of the girl",
+    "view_close": "camera close to girl, partial body may be outside frame",
+    "view_far": "camera far from girl, entire pose visible",
+    "stockings": "wearing stockings only",
     "mask": "mask on face",
-    "heels": "red bottom high heels",
-    "shibari": "rope bondage, full body",
-    "big_breasts": "big exposed breasts",
-    "small_breasts": "small exposed breasts",
+    "heels": "high heels",
+    "shibari": "shibari ropes",
+    "big_breasts": "big breasts",
+    "small_breasts": "small breasts",
     "skin_white": "white skin",
-    "skin_black": "dark skin",
-    "body_fat": "curvy figure",
-    "body_thin": "slim figure",
-    "body_normal": "average build",
-    "body_fit": "athletic build",
-    "body_muscular": "visible muscles",
-    "age_loli": "petite young girl",
-    "age_milf": "mature woman",
-    "age_21": "adult woman age 21",
-    "cum": "covered in cum",
-    "belly_bloat": "bulging belly from insertion",
-    "succubus_tattoo": "tattoo on lower belly",
-    "futanari": "futanari, big breasts",
-    "femboy": "femboy, flat chest",
+    "skin_black": "black skin",
+    "body_fat": "curvy body",
+    "body_thin": "thin body",
+    "body_normal": "average body",
+    "body_fit": "fit body",
+    "body_muscular": "muscular body",
+    "age_loli": "loli",
+    "age_milf": "milf",
+    "age_21": "age 21",
+    "cum": "cum covered",
+    "belly_bloat": "belly bulge from toy",
+    "succubus_tattoo": "succubus tattoo on lower abdomen",
     "ethnicity_asian": "asian girl",
     "ethnicity_european": "european girl",
     "furry_cow": "furry cow girl",
     "furry_cat": "furry cat girl",
     "furry_dog": "furry dog girl",
-    "furry_dragon": "furry dragoness",
-    "furry_sylveon": "furry sylveon, pink and blue, ribbons",
+    "furry_dragon": "furry dragon girl",
+    "furry_sylveon": "furry sylveon, pink, ribbons, sexy",
     "furry_fox": "furry fox girl",
     "furry_bunny": "furry bunny girl",
     "furry_wolf": "furry wolf girl",
@@ -189,133 +203,3 @@ TAG_PROMPTS = {
     "ecstasy_face": "face in ecstasy",
     "gold_lipstick": "gold lipstick"
 }
-
-def main_menu():
-    kb = types.InlineKeyboardMarkup()
-    kb.add(types.InlineKeyboardButton("🧩 Выбрать теги", callback_data="choose_tags"))
-    kb.add(types.InlineKeyboardButton("🎨 Генерировать", callback_data="generate"))
-    return kb
-
-def category_menu():
-    kb = types.InlineKeyboardMarkup(row_width=2)
-    for key, name in CATEGORY_NAMES.items():
-        kb.add(types.InlineKeyboardButton(name, callback_data=f"cat_{key}"))
-    kb.add(types.InlineKeyboardButton("✅ Готово", callback_data="done_tags"))
-    return kb
-
-def tag_menu(category, selected_tags):
-    kb = types.InlineKeyboardMarkup(row_width=2)
-    for tag_key, tag_name in TAGS[category].items():
-        label = f"✅ {tag_name}" if tag_key in selected_tags else tag_name
-        kb.add(types.InlineKeyboardButton(label, callback_data=f"tag_{category}_{tag_key}"))
-    kb.add(types.InlineKeyboardButton("⬅ Назад", callback_data="back_to_cat"))
-    return kb
-
-@bot.message_handler(commands=["start"])
-def start(msg):
-    cid = msg.chat.id
-    user_settings[cid] = {"tags": [], "last_cat": None}
-    bot.send_message(cid, "Привет! Что делаем?", reply_markup=main_menu())
-
-@bot.callback_query_handler(func=lambda call: True)
-def callback(call):
-    cid = call.message.chat.id
-    if cid not in user_settings:
-        user_settings[cid] = {"tags": [], "last_cat": None}
-
-    data = call.data
-
-    if data == "choose_tags":
-        bot.edit_message_text("Выбери категорию тегов:", cid, call.message.message_id, reply_markup=category_menu())
-
-    elif data.startswith("cat_"):
-        cat = data[4:]
-        user_settings[cid]["last_cat"] = cat
-        selected = user_settings[cid]["tags"]
-        bot.edit_message_text(f"Категория: {CATEGORY_NAMES[cat]}", cid, call.message.message_id, reply_markup=tag_menu(cat, selected))
-
-    elif data.startswith("tag_"):
-        _, cat, tag = data.split("_", 2)
-        tags = user_settings[cid]["tags"]
-        if tag in tags:
-            tags.remove(tag)
-        else:
-            tags.append(tag)
-        bot.edit_message_reply_markup(cid, call.message.message_id, reply_markup=tag_menu(cat, tags))
-
-    elif data == "done_tags":
-        bot.edit_message_text("Теги сохранены.", cid, call.message.message_id, reply_markup=main_menu())
-
-    elif data == "back_to_cat":
-        bot.edit_message_text("Выбери категорию:", cid, call.message.message_id, reply_markup=category_menu())
-
-    elif data == "generate":
-        tags = user_settings[cid]["tags"]
-        if not tags:
-            bot.send_message(cid, "Сначала выбери теги!")
-            return
-        prompt = build_prompt(tags)
-        bot.send_message(cid, "⏳ Генерация изображения...")
-        url = replicate_generate(prompt)
-        if url:
-            kb = types.InlineKeyboardMarkup()
-            kb.add(
-                types.InlineKeyboardButton("🔁 Начать заново", callback_data="start"),
-                types.InlineKeyboardButton("🔧 Изменить теги", callback_data="choose_tags"),
-                types.InlineKeyboardButton("➡ Продолжить с этими", callback_data="generate")
-            )
-            bot.send_photo(cid, url, caption="✅ Готово!", reply_markup=kb)
-        else:
-            bot.send_message(cid, "❌ Ошибка генерации.")
-
-    elif data == "start":
-        user_settings[cid] = {"tags": [], "last_cat": None}
-        bot.send_message(cid, "Сброс настроек.", reply_markup=main_menu())
-
-def build_prompt(tags):
-    base = "nsfw, masterpiece, ultra detailed, anime style, best quality, no bra, no panties, no covering clothes, nipples visible, vagina visible, anus visible"
-    prompts = [TAG_PROMPTS.get(tag, tag) for tag in tags]
-    return base + ", " + ", ".join(prompts) if prompts else base
-
-def replicate_generate(prompt):
-    url = "https://api.replicate.com/v1/predictions"
-    headers = {
-        "Authorization": f"Token {REPLICATE_TOKEN}",
-        "Content-Type": "application/json"
-    }
-    json_data = {
-        "version": REPLICATE_MODEL,
-        "input": {"prompt": prompt}
-    }
-    r = requests.post(url, headers=headers, json=json_data)
-    if r.status_code != 201:
-        return None
-    status_url = r.json()["urls"]["get"]
-
-    for _ in range(60):
-        time.sleep(2)
-        r = requests.get(status_url, headers=headers)
-        if r.status_code != 200:
-            return None
-        data = r.json()
-        if data["status"] == "succeeded":
-            return data["output"][0] if isinstance(data["output"], list) else data["output"]
-        elif data["status"] == "failed":
-            return None
-    return None
-
-@app.route("/", methods=["POST"])
-def webhook():
-    json_str = request.stream.read().decode("utf-8")
-    update = telebot.types.Update.de_json(json_str)
-    bot.process_new_updates([update])
-    return "ok", 200
-
-@app.route("/", methods=["GET"])
-def home():
-    return "бот работает", 200
-
-if __name__ == "__main__":
-    bot.remove_webhook()
-    bot.set_webhook(url=WEBHOOK_URL)
-    app.run(host="0.0.0.0", port=PORT)
