@@ -1,3 +1,4 @@
+# --- bot.py ---
 import os
 import time
 import requests
@@ -65,8 +66,7 @@ TAGS = {
         "bikini_tan_lines": "Загар от бикини",
         "mask": "Маска",
         "heels": "Каблуки",
-        "shibari": "Шибари",
-        "cow_costume": "Костюм коровы"
+        "shibari": "Шибари"
     },
     "body": {
         "big_breasts": "Большая грудь",
@@ -118,7 +118,6 @@ TAGS = {
 }
 
 CHARACTER_EXTRA = {
-    # Убраны "cow costume ok", "bikini tan ok"
     "rias": "red long hair, blue eyes, pale skin, large breasts, rias gremory, highschool dxd",
     "akeno": "long black hair, purple eyes, large breasts, akeno himejima, highschool dxd",
     "kafka": "purple wavy hair, cold expression, kafka, honkai star rail",
@@ -141,13 +140,16 @@ TAG_PROMPTS = {
     "gag": "ball gag",
     "piercing": "nipple and genital piercings",
     "long_dildo_path": (
-        "dildo inserted into anus, passing through body with visible belly bulge, "
-        "exiting mouth as one continuous dildo, consistent size and texture, anatomically correct"
+        "dildo inserted into anus, pushing visibly through intestines with clear belly bulge, "
+        "exiting from mouth, seamless and continuous dildo, consistent texture, realistic rubber"
     ),
     "doggy": "doggy style",
     "standing": "standing pose",
     "splits": "doing a split",
-    "hor_split": "doing horizontal side split, legs fully stretched sideways, hips low, clear view of spread legs",
+    "hor_split": (
+        "horizontal split, legs stretched fully to sides, pelvis on floor, thighs spread open, "
+        "inner thighs visible, high detail"
+    ),
     "ver_split": "vertical split",
     "side_up_leg": "on side with leg raised",
     "front_facing": "facing viewer",
@@ -157,7 +159,7 @@ TAG_PROMPTS = {
     "suspended": "suspended by ropes",
     "stockings": "wearing stockings only",
     "mask": "mask on face",
-    "heels": "high heels",
+    "heels": "high heels with red soles",
     "shibari": "shibari ropes",
     "big_breasts": "big breasts",
     "small_breasts": "small breasts",
@@ -257,28 +259,34 @@ def callback(call):
             bot.send_message(cid, "Сначала выбери теги!")
             return
         prompt = build_prompt(tags)
+        user_settings[cid]["last_prompt"] = tags.copy()
         bot.send_message(cid, "⏳ Генерация изображения...")
         url = replicate_generate(prompt)
         if url:
             kb = types.InlineKeyboardMarkup()
             kb.add(
                 types.InlineKeyboardButton("🔁 Начать заново", callback_data="start"),
-                types.InlineKeyboardButton("🔧 Изменить теги", callback_data="choose_tags"),
+                types.InlineKeyboardButton("🔧 Изменить теги", callback_data="edit_tags"),
                 types.InlineKeyboardButton("➡ Продолжить с этими", callback_data="generate")
             )
             bot.send_photo(cid, url, caption="✅ Готово!", reply_markup=kb)
         else:
             bot.send_message(cid, "❌ Ошибка генерации.")
 
+    elif data == "edit_tags":
+        if "last_prompt" in user_settings[cid]:
+            user_settings[cid]["tags"] = user_settings[cid]["last_prompt"]
+            bot.send_message(cid, "Изменяем теги:", reply_markup=category_menu())
+        else:
+            bot.send_message(cid, "Нет сохранённых тегов. Сначала сделай генерацию.")
+
     elif data == "start":
         user_settings[cid] = {"tags": [], "last_cat": None}
         bot.send_message(cid, "Сброс настроек.", reply_markup=main_menu())
 
 def build_prompt(tags):
-    base = "nsfw, masterpiece, ultra detailed, anime style, best quality"
+    base = "nsfw, masterpiece, ultra detailed, anime style, best quality, fully nude, no clothing covering chest or genitals"
     prompts = [TAG_PROMPTS.get(tag, tag) for tag in tags]
-    # Убираем костюм коровы и линии загара из базового промпта, если вдруг они там оказались
-    prompts = [p for p in prompts if p not in ("cow costume", "bikini tan lines")]
     return base + ", " + ", ".join(prompts) if prompts else base
 
 def replicate_generate(prompt):
