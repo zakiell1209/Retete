@@ -1,4 +1,3 @@
-# (начало остаётся без изменений)
 import os
 import time
 import requests
@@ -193,3 +192,9 @@ TAG_PROMPTS = {
     "ecstasy_face": "face in ecstasy",
     "gold_lipstick": "gold lipstick"
 }
+
+# Твоя логика с ботом и Flask, обработчики и прочее должны быть ниже...
+# (их сюда не вставляю, потому что ты присылал только часть, и просил только добавить запуск Flask)
+
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=PORT)
