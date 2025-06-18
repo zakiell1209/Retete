@@ -1,3 +1,4 @@
+# (начало остаётся без изменений)
 import os
 import time
 import requests
@@ -28,6 +29,7 @@ CATEGORY_NAMES = {
     "head": "Голова"
 }
 
+# Перенос дилдо-анус-рот в "toys"
 TAGS = {
     "holes": {
         "vagina": "Вагина",
@@ -41,9 +43,9 @@ TAGS = {
         "anal_beads": "Анальные бусы",
         "anal_plug": "Анальная пробка",
         "anal_expander": "Анальный расширитель",
+        "long_dildo_path": "Дилдо из ануса выходит изо рта",
         "gag": "Кляп",
-        "piercing": "Пирсинг",
-        "long_dildo_path": "Дилдо из ануса выходит изо рта"
+        "piercing": "Пирсинг"
     },
     "poses": {
         "doggy": "Наездница (догги-стайл)",
@@ -118,8 +120,8 @@ TAGS = {
 }
 
 CHARACTER_EXTRA = {
-    "rias": "red long hair, blue eyes, pale skin, large breasts, rias gremory, highschool dxd, cow costume ok, bikini tan ok",
-    "akeno": "long black hair, purple eyes, large breasts, akeno himejima, highschool dxd, cow costume ok, bikini tan ok",
+    "rias": "red long hair, blue eyes, pale skin, large breasts, rias gremory, highschool dxd",
+    "akeno": "long black hair, purple eyes, big breasts, confident smile, akeno himejima, highschool dxd",
     "kafka": "purple wavy hair, cold expression, kafka, honkai star rail",
     "eula": "light blue hair, fair skin, eula, genshin impact",
     "fu_xuan": "pink hair, fu xuan, honkai star rail",
@@ -137,16 +139,16 @@ TAG_PROMPTS = {
     "anal_beads": "anal beads inserted",
     "anal_plug": "anal plug",
     "anal_expander": "anal expander stretching anus",
+    "long_dildo_path": "dildo entering anus, bulging through stomach in snake shape, exiting mouth",
     "gag": "ball gag",
     "piercing": "nipple and genital piercings",
-    "long_dildo_path": "dildo inserted from anus to mouth, single piece, consistent size and texture, visible belly bulge snake-like path",
     "doggy": "doggy style",
     "standing": "standing pose",
     "splits": "doing a split",
     "squat": "squatting",
     "lying": "lying on back",
-    "hor_split": "horizontal split",
-    "ver_split": "vertical split",
+    "hor_split": "horizontal split, wide open legs, lying or sitting, front view",
+    "ver_split": "vertical split, one leg up",
     "side_up_leg": "on side with leg raised",
     "front_facing": "facing viewer",
     "back_facing": "back to viewer",
@@ -191,131 +193,3 @@ TAG_PROMPTS = {
     "ecstasy_face": "face in ecstasy",
     "gold_lipstick": "gold lipstick"
 }
-
-def main_menu():
-    kb = types.InlineKeyboardMarkup()
-    kb.add(types.InlineKeyboardButton("🧩 Выбрать теги", callback_data="choose_tags"))
-    kb.add(types.InlineKeyboardButton("🎨 Генерировать", callback_data="generate"))
-    return kb
-
-def category_menu():
-    kb = types.InlineKeyboardMarkup(row_width=2)
-    for key, name in CATEGORY_NAMES.items():
-        kb.add(types.InlineKeyboardButton(name, callback_data=f"cat_{key}"))
-    kb.add(types.InlineKeyboardButton("✅ Готово", callback_data="done_tags"))
-    return kb
-
-def tag_menu(category, selected_tags):
-    kb = types.InlineKeyboardMarkup(row_width=2)
-    for tag_key, tag_name in TAGS[category].items():
-        label = f"✅ {tag_name}" if tag_key in selected_tags else tag_name
-        kb.add(types.InlineKeyboardButton(label, callback_data=f"tag_{category}_{tag_key}"))
-    kb.add(types.InlineKeyboardButton("⬅ Назад", callback_data="back_to_cat"))
-    return kb
-
-@bot.message_handler(commands=["start"])
-def start(msg):
-    cid = msg.chat.id
-    user_settings[cid] = {"tags": [], "last_cat": None}
-    bot.send_message(cid, "Привет! Что делаем?", reply_markup=main_menu())
-
-@bot.callback_query_handler(func=lambda call: True)
-def callback(call):
-    cid = call.message.chat.id
-    if cid not in user_settings:
-        user_settings[cid] = {"tags": [], "last_cat": None}
-
-    data = call.data
-
-    if data == "choose_tags":
-        bot.edit_message_text("Выбери категорию тегов:", cid, call.message.message_id, reply_markup=category_menu())
-
-    elif data.startswith("cat_"):
-        cat = data[4:]
-        user_settings[cid]["last_cat"] = cat
-        selected = user_settings[cid]["tags"]
-        bot.edit_message_text(f"Категория: {CATEGORY_NAMES[cat]}", cid, call.message.message_id, reply_markup=tag_menu(cat, selected))
-
-    elif data.startswith("tag_"):
-        _, cat, tag = data.split("_", 2)
-        tags = user_settings[cid]["tags"]
-        if tag in tags:
-            tags.remove(tag)
-        else:
-            tags.append(tag)
-        bot.edit_message_reply_markup(cid, call.message.message_id, reply_markup=tag_menu(cat, tags))
-
-    elif data == "done_tags":
-        bot.edit_message_text("Теги сохранены.", cid, call.message.message_id, reply_markup=main_menu())
-
-    elif data == "back_to_cat":
-        bot.edit_message_text("Выбери категорию:", cid, call.message.message_id, reply_markup=category_menu())
-
-    elif data == "generate":
-        tags = user_settings[cid]["tags"]
-        if not tags:
-            bot.send_message(cid, "Сначала выбери теги!")
-            return
-        prompt = build_prompt(tags)
-        bot.send_message(cid, "⏳ Генерация изображения...")
-        url = replicate_generate(prompt)
-        if url:
-            kb = types.InlineKeyboardMarkup()
-            kb.add(
-                types.InlineKeyboardButton("🔁 Начать заново", callback_data="start"),
-                types.InlineKeyboardButton("🔧 Изменить теги", callback_data="choose_tags"),
-                types.InlineKeyboardButton("➡ Продолжить с этими", callback_data="generate")
-            )
-            bot.send_photo(cid, url, caption="✅ Готово!", reply_markup=kb)
-        else:
-            bot.send_message(cid, "❌ Ошибка генерации.")
-
-    elif data == "start":
-        user_settings[cid] = {"tags": [], "last_cat": None}
-        bot.send_message(cid, "Сброс настроек.", reply_markup=main_menu())
-
-def build_prompt(tags):
-    base = "nsfw, masterpiece, ultra detailed, anime style, best quality"
-    prompts = [TAG_PROMPTS.get(tag, tag) for tag in tags]
-    return base + ", " + ", ".join(prompts)
-
-def replicate_generate(prompt):
-    url = "https://api.replicate.com/v1/predictions"
-    headers = {
-        "Authorization": f"Token {REPLICATE_TOKEN}",
-        "Content-Type": "application/json"
-    }
-    json_data = {
-        "version": REPLICATE_MODEL,
-        "input": {"prompt": prompt}
-    }
-    r = requests.post(url, headers=headers, json=json_data)
-    if r.status_code != 201:
-        return None
-    status_url = r.json()["urls"]["get"]
-
-    for _ in range(60):
-        time.sleep(2)
-        r = requests.get(status_url, headers=headers)
-        if r.status_code != 200:
-            return None
-        data = r.json()
-        if data["status"] == "succeeded":
-            return data["output"][0] if isinstance(data["output"], list) else data["output"]
-        elif data["status"] == "failed":
-            return None
-    return None
-
-@app.route("/", methods=["POST"])
-def webhook():
-    bot.process_new_updates([telebot.types.Update.de_json(request.stream.read().decode("utf-8"))])
-    return "ok", 200
-
-@app.route("/", methods=["GET"])
-def home():
-    return "бот работает", 200
-
-if __name__ == "__main__":
-    bot.remove_webhook()
-    bot.set_webhook(url=WEBHOOK_URL)
-    app.run(host="0.0.0.0", port=PORT)
