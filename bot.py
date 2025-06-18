@@ -1,3 +1,4 @@
+# --- bot.py ---
 import os
 import time
 import requests
@@ -9,7 +10,6 @@ API_TOKEN = os.getenv("TELEGRAM_TOKEN")
 REPLICATE_TOKEN = os.getenv("REPLICATE_API_TOKEN")
 WEBHOOK_URL = os.getenv("WEBHOOK_URL")
 PORT = int(os.environ.get("PORT", 5000))
-
 REPLICATE_MODEL = "c1d5b02687df6081c7953c74bcc527858702e8c153c9382012ccc3906752d3ec"
 
 bot = telebot.TeleBot(API_TOKEN)
@@ -18,102 +18,45 @@ user_settings = {}
 
 # Категории и теги
 CATEGORY_NAMES = {
-    "holes": "Отверстия",
-    "toys": "Игрушки",
-    "poses": "Позы",
-    "clothes": "Одежда",
-    "body": "Тело",
-    "ethnos": "Этнос",
-    "furry": "Фури",
-    "characters": "Персонажи",
-    "head": "Голова"
+    "holes": "Отверстия", "toys": "Игрушки", "poses": "Позы", "clothes": "Одежда",
+    "body": "Тело", "ethnos": "Этнос", "furry": "Фури", "characters": "Персонажи", "head": "Голова"
 }
 
 TAGS = {
-    "holes": {
-        "vagina": "Вагина",
-        "anal": "Анус",
-        "both": "Вагина и анус"
-    },
+    "holes": {"vagina": "Вагина", "anal": "Анус", "both": "Вагина и анус"},
     "toys": {
-        "dildo": "Дилдо",
-        "huge_dildo": "Большое дилдо",
-        "horse_dildo": "Лошадиное дилдо",
-        "anal_beads": "Анальные бусы",
-        "anal_plug": "Анальная пробка",
-        "anal_expander": "Анальный расширитель",
-        "gag": "Кляп",
-        "piercing": "Пирсинг",
-        "long_dildo_path": "Дилдо из ануса выходит изо рта"
+        "dildo": "Дилдо", "huge_dildo": "Большое дилдо", "horse_dildo": "Лошадиное дилдо",
+        "anal_beads": "Анальные бусы", "anal_plug": "Анальная пробка", "anal_expander": "Анальный расширитель",
+        "gag": "Кляп", "piercing": "Пирсинг", "long_dildo_path": "Дилдо из ануса выходит изо рта"
     },
     "poses": {
-        "doggy": "Наездница (догги-стайл)",
-        "standing": "Стоя",
-        "splits": "Шпагат",
-        "squat": "Приседание",
-        "lying": "Лежа",
-        "hor_split": "Горизонтальный шпагат",
-        "ver_split": "Вертикальный шпагат",
-        "side_up_leg": "На боку с поднятой ногой",
-        "front_facing": "Лицом к зрителю",
-        "back_facing": "Спиной к зрителю",
-        "lying_knees_up": "Лежа с согнутыми коленями",
-        "bridge": "Мост",
-        "suspended": "Подвешена"
+        "doggy": "Наездница (догги-стайл)", "standing": "Стоя", "splits": "Шпагат", "squat": "Приседание", "lying": "Лежа",
+        "hor_split": "Горизонтальный шпагат", "ver_split": "Вертикальный шпагат", "side_up_leg": "На боку с поднятой ногой",
+        "front_facing": "Лицом к зрителю", "back_facing": "Спиной к зрителю", "lying_knees_up": "Лежа с согнутыми коленями",
+        "bridge": "Мост", "suspended": "Подвешена"
     },
     "clothes": {
-        "stockings": "Чулки",
-        "bikini_tan_lines": "Загар от бикини",
-        "mask": "Маска",
-        "heels": "Каблуки",
-        "shibari": "Шибари"
+        "stockings": "Чулки", "bikini_tan_lines": "Загар от бикини", "mask": "Маска", "heels": "Каблуки", "shibari": "Шибари"
     },
     "body": {
-        "big_breasts": "Большая грудь",
-        "small_breasts": "Маленькая грудь",
-        "skin_white": "Белая кожа",
-        "skin_black": "Чёрная кожа",
-        "body_fat": "Пышное тело",
-        "body_thin": "Худое тело",
-        "body_normal": "Нормальное тело",
-        "body_fit": "Подтянутое тело",
-        "body_muscular": "Мускулистое тело",
-        "age_loli": "Лоли",
-        "age_milf": "Милфа",
-        "age_21": "Возраст 21",
-        "cum": "Вся в сперме",
-        "belly_bloat": "Вздутие живота",
-        "succubus_tattoo": "Тату внизу живота"
+        "big_breasts": "Большая грудь", "small_breasts": "Маленькая грудь", "skin_white": "Белая кожа", "skin_black": "Чёрная кожа",
+        "body_fat": "Пышное тело", "body_thin": "Худое тело", "body_normal": "Нормальное тело", "body_fit": "Подтянутое тело",
+        "body_muscular": "Мускулистое тело", "age_loli": "Лоли", "age_milf": "Милфа", "age_21": "Возраст 21",
+        "cum": "Вся в сперме", "belly_bloat": "Вздутие живота", "succubus_tattoo": "Тату внизу живота"
     },
     "ethnos": {
-        "futanari": "Футанари",
-        "femboy": "Фембой",
-        "ethnicity_asian": "Азиатка",
-        "ethnicity_european": "Европейка"
+        "futanari": "Футанари", "femboy": "Фембой", "ethnicity_asian": "Азиатка", "ethnicity_european": "Европейка"
     },
     "furry": {
-        "furry_cow": "Фури корова",
-        "furry_cat": "Фури кошка",
-        "furry_dog": "Фури собака",
-        "furry_dragon": "Фури дракон",
-        "furry_sylveon": "Фури сильвеон",
-        "furry_fox": "Фури лисица",
-        "furry_bunny": "Фури кролик",
-        "furry_wolf": "Фури волчица"
+        "furry_cow": "Фури корова", "furry_cat": "Фури кошка", "furry_dog": "Фури собака", "furry_dragon": "Фури дракон",
+        "furry_sylveon": "Фури сильвеон", "furry_fox": "Фури лисица", "furry_bunny": "Фури кролик", "furry_wolf": "Фури волчица"
     },
     "characters": {
-        "rias": "Риас Гремори",
-        "akeno": "Акено Химедзима",
-        "kafka": "Кафка (Хонкай)",
-        "eula": "Еола (Геншин)",
-        "fu_xuan": "Фу Сюань (Хонкай)",
-        "ayase": "Аясе Сейко"
+        "rias": "Риас Гремори", "akeno": "Акено Химедзима", "kafka": "Кафка (Хонкай)",
+        "eula": "Еола (Геншин)", "fu_xuan": "Фу Сюань (Хонкай)", "ayase": "Аясе Сейко"
     },
     "head": {
-        "ahegao": "Ахегао",
-        "pain_face": "Лицо в боли",
-        "ecstasy_face": "Лицо в экстазе",
-        "gold_lipstick": "Золотая помада"
+        "ahegao": "Ахегао", "pain_face": "Лицо в боли", "ecstasy_face": "Лицо в экстазе", "gold_lipstick": "Золотая помада"
     }
 }
 
@@ -128,77 +71,35 @@ CHARACTER_EXTRA = {
 
 TAG_PROMPTS = {
     **CHARACTER_EXTRA,
-    "vagina": "spread pussy",
-    "anal": "spread anus",
-    "both": "spread pussy and anus",
-    "dildo": "dildo inserted",
-    "huge_dildo": "huge dildo",
-    "horse_dildo": "horse dildo",
-    "anal_beads": "anal beads inserted",
-    "anal_plug": "anal plug",
-    "anal_expander": "anal expander stretching anus",
-    "gag": "ball gag",
-    "piercing": "nipple and genital piercings",
-    "long_dildo_path": (
-        "dildo inserted into anus, pushing visibly through intestines with clear belly bulge, "
-        "exiting from mouth, seamless and continuous dildo, consistent texture, realistic rubber"
-    ),
-    "doggy": "doggy style",
-    "standing": "standing pose",
-    "splits": "doing a split",
+    "vagina": "spread pussy", "anal": "spread anus", "both": "spread pussy and anus",
+    "dildo": "dildo inserted", "huge_dildo": "huge dildo", "horse_dildo": "horse dildo",
+    "anal_beads": "anal beads inserted", "anal_plug": "anal plug", "anal_expander": "anal expander stretching anus",
+    "gag": "ball gag", "piercing": "nipple and genital piercings",
+    "long_dildo_path": "dildo inserted into anus, pushing visibly through intestines with clear belly bulge, exiting from mouth, seamless and continuous dildo, consistent texture, realistic rubber",
+    "doggy": "doggy style", "standing": "standing pose", "splits": "doing a split",
     "hor_split": (
-        "horizontal leg split, hips fully flat on floor, legs extended straight to both sides in perfect symmetry, "
-        "inner thighs visible, pelvis touching ground, feet pointed or flat, straight spine, hands supporting or on thighs, "
-        "anatomically correct pose, ultra-detailed"
+        "1girl, full body, doing a perfect horizontal split on the floor, legs stretched straight to both sides, "
+        "inner thighs visible, pelvis flat on ground, hands on thighs or floor, straight back, high detail, centered, no other people"
     ),
     "ver_split": (
-        "vertical leg split, one leg raised vertically straight up, the other extended flat on ground, "
-        "hips aligned, spine straight, high detail, visible balance, anatomically accurate"
+        "1girl, doing a vertical split, one leg extended straight up, other leg down, standing or supported pose, "
+        "balanced, hands may hold raised leg, full body, high detail, realistic anatomy, no other people"
     ),
-    "side_up_leg": "on side with leg raised",
-    "front_facing": "facing viewer",
-    "back_facing": "back to viewer",
-    "lying_knees_up": "legs up, knees bent",
-    "bridge": "arched back bridge pose",
-    "suspended": "suspended by ropes",
-    "stockings": "wearing stockings only",
-    "mask": "mask on face",
-    "heels": "high heels with red soles",
-    "shibari": "shibari ropes",
-    "big_breasts": "big breasts",
-    "small_breasts": "small breasts",
-    "skin_white": "white skin",
-    "skin_black": "black skin",
-    "body_fat": "curvy body",
-    "body_thin": "thin body",
-    "body_normal": "average body",
-    "body_fit": "fit body",
-    "body_muscular": "muscular body",
-    "age_loli": "loli",
-    "age_milf": "milf",
-    "age_21": "age 21",
-    "cum": "cum covered",
-    "belly_bloat": "belly bulge from toy",
-    "succubus_tattoo": "succubus tattoo on lower abdomen",
-    "futanari": "futanari girl with large breasts",
-    "femboy": "femboy with feminine body",
-    "ethnicity_asian": "asian girl",
-    "ethnicity_european": "european girl",
-    "furry_cow": "furry cow girl",
-    "furry_cat": "furry cat girl",
-    "furry_dog": "furry dog girl",
-    "furry_dragon": "furry dragon girl",
-    "furry_sylveon": "furry sylveon, pink, ribbons, sexy",
-    "furry_fox": "furry fox girl",
-    "furry_bunny": "furry bunny girl",
-    "furry_wolf": "furry wolf girl",
-    "ahegao": "ahegao face",
-    "pain_face": "face in pain",
-    "ecstasy_face": "face in ecstasy",
-    "gold_lipstick": "gold lipstick"
+    "side_up_leg": "on side with leg raised", "front_facing": "facing viewer", "back_facing": "back to viewer",
+    "lying_knees_up": "legs up, knees bent", "bridge": "arched back bridge pose", "suspended": "suspended by ropes",
+    "stockings": "wearing stockings only", "mask": "mask on face", "heels": "high heels with red soles", "shibari": "shibari ropes",
+    "big_breasts": "big breasts", "small_breasts": "small breasts", "skin_white": "white skin", "skin_black": "black skin",
+    "body_fat": "curvy body", "body_thin": "thin body", "body_normal": "average body", "body_fit": "fit body", "body_muscular": "muscular body",
+    "age_loli": "loli", "age_milf": "milf", "age_21": "age 21", "cum": "cum covered",
+    "belly_bloat": "belly bulge from toy", "succubus_tattoo": "succubus tattoo on lower abdomen",
+    "futanari": "futanari girl with large breasts", "femboy": "femboy with feminine body",
+    "ethnicity_asian": "asian girl", "ethnicity_european": "european girl",
+    "furry_cow": "furry cow girl", "furry_cat": "furry cat girl", "furry_dog": "furry dog girl",
+    "furry_dragon": "furry dragon girl", "furry_sylveon": "furry sylveon, pink, ribbons, sexy",
+    "furry_fox": "furry fox girl", "furry_bunny": "furry bunny girl", "furry_wolf": "furry wolf girl",
+    "ahegao": "ahegao face", "pain_face": "face in pain", "ecstasy_face": "face in ecstasy", "gold_lipstick": "gold lipstick"
 }
 
-# --- Кнопки и генерация
 def main_menu():
     kb = types.InlineKeyboardMarkup()
     kb.add(types.InlineKeyboardButton("🧩 Выбрать теги", callback_data="choose_tags"))
@@ -231,7 +132,6 @@ def callback(call):
     cid = call.message.chat.id
     if cid not in user_settings:
         user_settings[cid] = {"tags": [], "last_cat": None}
-
     data = call.data
 
     if data == "choose_tags":
@@ -283,7 +183,11 @@ def callback(call):
         bot.send_message(cid, "Сброс настроек.", reply_markup=main_menu())
 
 def build_prompt(tags):
-    base = "nsfw, masterpiece, ultra detailed, anime style, best quality, fully nude, no clothing covering chest or genitals"
+    base = (
+        "nsfw, masterpiece, ultra detailed, anime style, best quality, fully nude, "
+        "no clothing covering breasts or genitals, no hands covering nipples or pussy, "
+        "fully exposed pussy and anus, nipples clearly visible, no censor, no watermarks"
+    )
     prompts = [TAG_PROMPTS.get(tag, tag) for tag in tags]
     return base + ", " + ", ".join(prompts) if prompts else base
 
@@ -293,15 +197,11 @@ def replicate_generate(prompt):
         "Authorization": f"Token {REPLICATE_TOKEN}",
         "Content-Type": "application/json"
     }
-    json_data = {
-        "version": REPLICATE_MODEL,
-        "input": {"prompt": prompt}
-    }
+    json_data = {"version": REPLICATE_MODEL, "input": {"prompt": prompt}}
     r = requests.post(url, headers=headers, json=json_data)
     if r.status_code != 201:
         return None
     status_url = r.json()["urls"]["get"]
-
     for _ in range(60):
         time.sleep(2)
         r = requests.get(status_url, headers=headers)
