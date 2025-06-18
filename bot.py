@@ -1,4 +1,3 @@
-# --- bot.py ---
 import os
 import time
 import requests
@@ -140,51 +139,48 @@ TAG_PROMPTS = {
     "gag": "ball gag",
     "piercing": "nipple and genital piercings",
     "long_dildo_path": (
-        "dildo inserted into anus, pushing visibly through intestines with clear belly bulge, "
-        "exiting from mouth, seamless and continuous dildo, consistent texture, realistic rubber"
+        "dildo inserted into anus, visible internal path through body with belly bulge, "
+        "exiting mouth, continuous object, anatomically correct"
     ),
     "doggy": "doggy style",
     "standing": "standing pose",
     "splits": "doing a split",
-    "hor_split": (
-        "horizontal split, legs stretched fully to sides, pelvis on floor, thighs spread open, "
-        "inner thighs visible, high detail"
-    ),
-    "ver_split": "vertical split",
-    "side_up_leg": "on side with leg raised",
+    "hor_split": "horizontal side split, wide spread legs, hips to ground, fully stretched",
+    "ver_split": "vertical split pose, flexible",
+    "side_up_leg": "lying sideways with one leg raised high",
     "front_facing": "facing viewer",
-    "back_facing": "back to viewer",
-    "lying_knees_up": "legs up, knees bent",
-    "bridge": "arched back bridge pose",
-    "suspended": "suspended by ropes",
-    "stockings": "wearing stockings only",
+    "back_facing": "back turned to viewer",
+    "lying_knees_up": "lying on back with knees bent up",
+    "bridge": "arched back bridge pose, flexible",
+    "suspended": "tied and suspended in air",
+    "stockings": "stockings only, no panties, no bra",
     "mask": "mask on face",
-    "heels": "high heels with red soles",
-    "shibari": "shibari ropes",
-    "big_breasts": "big breasts",
-    "small_breasts": "small breasts",
+    "heels": "red bottom high heels",
+    "shibari": "rope bondage, full body",
+    "big_breasts": "big exposed breasts",
+    "small_breasts": "small exposed breasts",
     "skin_white": "white skin",
-    "skin_black": "black skin",
-    "body_fat": "curvy body",
-    "body_thin": "thin body",
-    "body_normal": "average body",
-    "body_fit": "fit body",
-    "body_muscular": "muscular body",
-    "age_loli": "loli",
-    "age_milf": "milf",
-    "age_21": "age 21",
-    "cum": "cum covered",
-    "belly_bloat": "belly bulge from toy",
-    "succubus_tattoo": "succubus tattoo on lower abdomen",
-    "futanari": "futanari girl with large breasts",
-    "femboy": "femboy with feminine body",
+    "skin_black": "dark skin",
+    "body_fat": "curvy figure",
+    "body_thin": "slim figure",
+    "body_normal": "average build",
+    "body_fit": "athletic build",
+    "body_muscular": "visible muscles",
+    "age_loli": "petite young girl",
+    "age_milf": "mature woman",
+    "age_21": "adult woman age 21",
+    "cum": "covered in cum",
+    "belly_bloat": "bulging belly from insertion",
+    "succubus_tattoo": "tattoo on lower belly",
+    "futanari": "futanari, big breasts",
+    "femboy": "femboy, flat chest",
     "ethnicity_asian": "asian girl",
     "ethnicity_european": "european girl",
     "furry_cow": "furry cow girl",
     "furry_cat": "furry cat girl",
     "furry_dog": "furry dog girl",
-    "furry_dragon": "furry dragon girl",
-    "furry_sylveon": "furry sylveon, pink, ribbons, sexy",
+    "furry_dragon": "furry dragoness",
+    "furry_sylveon": "furry sylveon, pink and blue, ribbons",
     "furry_fox": "furry fox girl",
     "furry_bunny": "furry bunny girl",
     "furry_wolf": "furry wolf girl",
@@ -259,33 +255,25 @@ def callback(call):
             bot.send_message(cid, "Сначала выбери теги!")
             return
         prompt = build_prompt(tags)
-        user_settings[cid]["last_prompt"] = tags.copy()
         bot.send_message(cid, "⏳ Генерация изображения...")
         url = replicate_generate(prompt)
         if url:
             kb = types.InlineKeyboardMarkup()
             kb.add(
                 types.InlineKeyboardButton("🔁 Начать заново", callback_data="start"),
-                types.InlineKeyboardButton("🔧 Изменить теги", callback_data="edit_tags"),
+                types.InlineKeyboardButton("🔧 Изменить теги", callback_data="choose_tags"),
                 types.InlineKeyboardButton("➡ Продолжить с этими", callback_data="generate")
             )
             bot.send_photo(cid, url, caption="✅ Готово!", reply_markup=kb)
         else:
             bot.send_message(cid, "❌ Ошибка генерации.")
 
-    elif data == "edit_tags":
-        if "last_prompt" in user_settings[cid]:
-            user_settings[cid]["tags"] = user_settings[cid]["last_prompt"]
-            bot.send_message(cid, "Изменяем теги:", reply_markup=category_menu())
-        else:
-            bot.send_message(cid, "Нет сохранённых тегов. Сначала сделай генерацию.")
-
     elif data == "start":
         user_settings[cid] = {"tags": [], "last_cat": None}
         bot.send_message(cid, "Сброс настроек.", reply_markup=main_menu())
 
 def build_prompt(tags):
-    base = "nsfw, masterpiece, ultra detailed, anime style, best quality, fully nude, no clothing covering chest or genitals"
+    base = "nsfw, masterpiece, ultra detailed, anime style, best quality, no bra, no panties, no covering clothes, nipples visible, vagina visible, anus visible"
     prompts = [TAG_PROMPTS.get(tag, tag) for tag in tags]
     return base + ", " + ", ".join(prompts) if prompts else base
 
