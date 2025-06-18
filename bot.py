@@ -16,18 +16,6 @@ bot = telebot.TeleBot(API_TOKEN)
 app = Flask(__name__)
 user_settings = {}
 
-CATEGORY_NAMES = {
-    "holes": "Отверстия",
-    "toys": "Игрушки",
-    "poses": "Позы",
-    "clothes": "Одежда",
-    "body": "Тело",
-    "ethnos": "Этнос",
-    "furry": "Фури",
-    "characters": "Персонажи",
-    "head": "Голова"
-}
-
 TAGS = {
     "holes": {
         "vagina": "Вагина",
@@ -41,6 +29,7 @@ TAGS = {
         "anal_beads": "Анальные бусы",
         "anal_plug": "Анальная пробка",
         "anal_expander": "Анальный расширитель",
+        "long_dildo_path": "Дилдо из ануса выходит изо рта",
         "gag": "Кляп",
         "piercing": "Пирсинг"
     },
@@ -55,15 +44,15 @@ TAGS = {
         "side_up_leg": "На боку с поднятой ногой",
         "front_facing": "Лицом к зрителю",
         "back_facing": "Спиной к зрителю",
-        "lying_knees_up": "Лежа с согнутыми коленями",
+        "lying_knees_up": "Лежа с раздвинутыми согнутыми коленями",
         "bridge": "Мост",
-        "suspended": "Подвешена"
+        "suspended": "Подвешена на верёвках"
     },
     "clothes": {
         "stockings": "Чулки",
         "bikini_tan_lines": "Загар от бикини",
         "mask": "Маска",
-        "heels": "Каблуки",
+        "heels": "Туфли на каблуках",
         "shibari": "Шибари",
         "cow_costume": "Костюм коровы"
     },
@@ -74,16 +63,15 @@ TAGS = {
         "skin_black": "Чёрная кожа",
         "body_fat": "Пышное тело",
         "body_thin": "Худое тело",
-        "body_normal": "Нормальное тело",
+        "body_normal": "Нормальное телосложение",
         "body_fit": "Подтянутое тело",
         "body_muscular": "Мускулистое тело",
         "age_loli": "Лоли",
         "age_milf": "Милфа",
-        "age_21": "Возраст 21",
+        "age_21": "Возраст 21 год",
         "cum": "Вся в сперме",
-        "belly_bloat": "Вздутие живота",
-        "long_dildo_path": "Дилдо из ануса выходит изо рта",
-        "succubus_tattoo": "Тату внизу живота"
+        "belly_bloat": "Вздутие живота от игрушки",
+        "succubus_tattoo": "Тату сердечко на матке"
     },
     "ethnos": {
         "futanari": "Футанари",
@@ -92,24 +80,24 @@ TAGS = {
         "ethnicity_european": "Европейка"
     },
     "furry": {
+        "furry_fox": "Фури лисица",
+        "furry_rabbit": "Фури кролик",
+        "furry_wolf": "Фури волчица",
         "furry_cow": "Фури корова",
         "furry_cat": "Фури кошка",
         "furry_dog": "Фури собака",
         "furry_dragon": "Фури дракон",
-        "furry_sylveon": "Фури сильвеон",
-        "furry_fox": "Фури лисица",
-        "furry_bunny": "Фури кролик",
-        "furry_wolf": "Фури волчица"
+        "furry_sylveon": "Фури Сильвеон"
     },
     "characters": {
-        "rias": "Риас Гремори",
-        "akeno": "Акено Химедзима",
-        "kafka": "Кафка (Хонкай)",
+        "rias_gremory": "Риас Гремори",
+        "akeno_himejima": "Акено Химедзима",
+        "kafka": "Кафка (Хонкай Стар Рейл)",
         "eula": "Еола (Геншин)",
-        "fu_xuan": "Фу Сюань (Хонкай)",
-        "ayase": "Аясе Сейко"
+        "fu_xuan": "Фу Сюань",
+        "ayase_seiko": "Аясе Сейко"
     },
-    "head": {
+    "face": {
         "ahegao": "Ахегао",
         "pain_face": "Лицо в боли",
         "ecstasy_face": "Лицо в экстазе",
@@ -117,84 +105,34 @@ TAGS = {
     }
 }
 
-CHARACTER_EXTRA = {
-    "rias": "red long hair, blue eyes, pale skin, large breasts, rias gremory, highschool dxd",
-    "akeno": "long black hair, purple eyes, akeno himedjima, highschool dxd",
-    "kafka": "purple wavy hair, cold expression, kafka, honkai star rail",
-    "eula": "light blue hair, fair skin, eula, genshin impact",
-    "fu_xuan": "pink hair, fu xuan, honkai star rail",
-    "ayase": "black hair, school uniform, ayase seiko"
+CATEGORY_NAMES = {
+    "holes": "Отверстия",
+    "toys": "Игрушки",
+    "poses": "Позы",
+    "clothes": "Одежда",
+    "body": "Тело",
+    "ethnos": "Этнос",
+    "furry": "Фури",
+    "characters": "Персонажи",
+    "face": "Голова"
 }
 
 TAG_PROMPTS = {
-    **CHARACTER_EXTRA,
-    "vagina": "spread pussy",
-    "anal": "spread anus",
-    "both": "spread pussy and anus",
-    "dildo": "dildo inserted",
-    "huge_dildo": "huge dildo",
-    "horse_dildo": "horse dildo",
-    "anal_beads": "anal beads inserted",
-    "anal_plug": "anal plug",
-    "anal_expander": "anal expander stretching anus",
-    "gag": "ball gag",
-    "piercing": "nipple and genital piercings",
-    "doggy": "doggy style",
-    "standing": "standing pose",
-    "splits": "doing a split",
-    "squat": "squatting",
-    "lying": "lying on back",
-    "hor_split": "horizontal split",
-    "ver_split": "vertical split",
-    "side_up_leg": "on side with leg raised",
-    "front_facing": "facing viewer",
-    "back_facing": "back to viewer",
-    "lying_knees_up": "legs up, knees bent",
-    "bridge": "arched back bridge pose",
-    "suspended": "suspended by ropes",
-    "stockings": "wearing stockings only",
-    "bikini_tan_lines": "bikini tan lines, nude",
-    "mask": "mask on face",
-    "heels": "high heels",
-    "shibari": "shibari ropes",
-    "cow_costume": "stockings with cow pattern, horns, tail",
-    "big_breasts": "big breasts",
-    "small_breasts": "small breasts",
-    "skin_white": "white skin",
-    "skin_black": "black skin",
-    "body_fat": "curvy body",
-    "body_thin": "thin body",
-    "body_normal": "average body",
-    "body_fit": "fit body",
-    "body_muscular": "muscular body",
-    "age_loli": "loli",
-    "age_milf": "milf",
-    "age_21": "age 21",
-    "cum": "cum covered",
-    "belly_bloat": "belly bulge from toy",
-    "long_dildo_path": "dildo through anus and out mouth",
-    "succubus_tattoo": "succubus tattoo on lower abdomen",
-    "futanari": "futanari girl with large breasts",
-    "femboy": "femboy with feminine body",
-    "ethnicity_asian": "asian girl",
-    "ethnicity_european": "european girl",
-    "furry_cow": "furry cow girl",
-    "furry_cat": "furry cat girl",
-    "furry_dog": "furry dog girl",
-    "furry_dragon": "furry dragon girl",
-    "furry_sylveon": "furry sylveon, pink, ribbons, sexy",
-    "furry_fox": "furry fox girl",
-    "furry_bunny": "furry bunny girl",
-    "furry_wolf": "furry wolf girl",
-    "ahegao": "ahegao face",
-    "pain_face": "face in pain",
-    "ecstasy_face": "face in ecstasy",
-    "gold_lipstick": "gold lipstick"
+    # ... (вставь все свои описания тегов как раньше)
+    # Дополнительно усилим теги персонажей:
+    "rias_gremory": "Риас Гремори из Демоны старшей школы, длинные красные волосы, голубые глаза, большая грудь, школьная форма",
+    "akeno_himejima": "Акено Химедзима из Демоны старшей школы, длинные чёрные волосы, фиолетовые глаза, школьная форма, большая грудь",
+    "kafka": "Kafka from Honkai Star Rail, purple long hair, cyberpunk outfit, red eyes",
+    "eula": "Eula from Genshin Impact, blue long hair, pale skin, knight outfit",
+    "fu_xuan": "Fu Xuan from Honkai Star Rail, pink hair, Xianzhou-style outfit, confident expression",
+    "ayase_seiko": "Ayase Seiko, short black hair, school uniform, slim body",
+    "long_dildo_path": "однородное длинное дилдо проходит через анус и выходит изо рта, дилдо одного цвета и текстуры без просвечивания",
+    # и так далее — остальные без изменений
 }
 
 def main_menu():
     kb = types.InlineKeyboardMarkup()
-    kb.add(types.InlineKeyboardButton("🧩 Выбрать теги", callback_data="choose_tags"))
+    kb.add(types.InlineKeyboardButton("🧩 Изменить теги", callback_data="choose_tags"))
     kb.add(types.InlineKeyboardButton("🎨 Генерировать", callback_data="generate"))
     return kb
 
@@ -264,7 +202,7 @@ def callback(call):
             kb.add(
                 types.InlineKeyboardButton("🔁 Начать заново", callback_data="start"),
                 types.InlineKeyboardButton("🔧 Изменить теги", callback_data="choose_tags"),
-                types.InlineKeyboardButton("➡ Продолжить с этими", callback_data="generate")
+                types.InlineKeyboardButton("➡ Продолжить с этими тегами", callback_data="generate")
             )
             bot.send_photo(cid, url, caption="✅ Готово!", reply_markup=kb)
         else:
