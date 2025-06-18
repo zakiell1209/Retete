@@ -5,156 +5,165 @@ import requests
 from flask import Flask, request
 from telebot import TeleBot, types
 
-# 🔐 Токены и настройки
+# 🔐 Конфигурация
 API_TOKEN = os.getenv("TELEGRAM_TOKEN")
 REPLICATE_TOKEN = os.getenv("REPLICATE_API_TOKEN")
 WEBHOOK_URL = os.getenv("WEBHOOK_URL")
 PORT = int(os.environ.get("PORT", 5000))
 
-bot = TeleBot(API_TOKEN)
+REPLICATE_MODEL = "c1d5b02687df6081c7953c74bcc527858702e8c153c9382012ccc3906752d3ec"
+
+# 🧠 Telegram Bot
+bot = TeleBot(API_TOKEN, threaded=False)
 app = Flask(__name__)
 logging.basicConfig(level=logging.INFO)
 
-# 📁 Категории и продвинутые теги
-TAG_CATEGORIES = {
-    "тело": ["большая грудь", "маленькая грудь", "чёрная кожа", "белая кожа"],
-    "игрушки": ["анальные шарики", "вибратор", "дилдо", "дилдо из ануса выходит изо рта"],
-    "отверстия": ["анал", "вагина", "рот"],
-    "поза": ["горизонтальный шпагат", "мост", "на спине", "на боку"],
-    "персонажи": ["Риас Гремори", "Акено Химедзима", "Кафка", "Фу Сюань", "Еола", "Аясе Сейко"],
+# 📁 Состояния
+user_tags = {}
+user_stage = {}
+
+# 🏷 Категории и теги
+CATEGORIES = {
+    "тело": ["большая грудь", "маленькая грудь", "чёрная кожа", "белая кожа", "подросток", "взрослая"],
+    "игрушки": ["анальная пробка", "вибратор", "дилдо", "дилдо из ануса выходит изо рта"],
+    "этнос": ["азиатка", "европейка", "фембой", "футанари"],
+    "фури": ["фури-королева", "фури-кошка", "фури-собака", "фури-дракон", "фури-сильвеон", "лисица", "волчица", "кролик"],
+    "персонажи": ["Риас Гремори", "Акено Химэдзима", "Кафка", "Еола", "Фу Сюань", "Аясе Сейко"],
     "голова": ["ахегао", "лицо в боли", "лицо в экстазе", "золотая помада"],
-    "фури": ["лисица", "волчица", "кролик"],
-    "сцена": ["лицом к зрителю", "спиной к зрителю", "вид снизу", "вид сверху", "вид сбоку", "ближе", "дальше"],
+    "позы": ["горизонтальный шпагат", "вертикальный шпагат", "на боку с одной ногой вверх", "лицом к зрителю", "спиной к зрителю", "мост", "лёжа на спине с раздвинутыми ногами", "подвешенная на верёвках"],
+    "сцена": ["вид сверху", "вид снизу", "вид сбоку", "ближе", "дальше"]
 }
 
-# 🔥 Продвинутые промпты
-ADVANCED_PROMPTS = {
-    "горизонтальный шпагат": "performing a horizontal side split on the floor, legs fully extended to both sides, hips low to the floor, arms balancing body, viewed from the front",
-    "дилдо из ануса выходит изо рта": "extremely long dildo, enters through anus, visibly bulging stomach, exits through mouth, single continuous dildo, realistic texture, anatomically plausible, no x-ray view",
-    "лицом к зрителю": "viewed from the front, face visible",
-    "спиной к зрителю": "viewed from behind, back and buttocks visible",
-    "вид снизу": "viewed from below, perspective from beneath the floor, no floor visible",
-    "вид сверху": "viewed from above, top-down perspective",
-    "вид сбоку": "viewed from the side, profile view",
-    "ближе": "close-up view, upper body possibly cropped, high detail",
-    "дальше": "distant view, full body in frame regardless of pose",
-}
+# ✅ Преобразование тега в promt-форму
+def format_tags(tags):
+    if not tags:
+        return "nude female"
+    formatted = ", ".join(tags)
+    # Фильтр блокирующей одежды
+    banned = ["трусы", "лифчик", "нижнее белье", "одежда, закрывающая вагину", "одежда, скрывающая анус", "одежда на груди"]
+    return f"{formatted}, nude, no panties, no bra, no covering clothes, {' '.join(['- ' + b for b in banned])}"
 
-# ❌ Исключение нежелательной одежды
-BLOCK_CLOTHING = ["panties", "bra", "bikini", "underwear", "swimsuit", "clothes covering"]
-
-# ✅ Состояние пользователя
-user_states = {}
-
-# 📥 Обработка старта
-@bot.message_handler(commands=["start"])
-def start_message(message):
-    chat_id = message.chat.id
-    user_states[chat_id] = {"tags": []}
-    bot.send_message(chat_id, "Привет! Выбери теги для генерации.", reply_markup=build_tag_menu())
-
-# 🧩 Клавиатура тегов
-def build_tag_menu():
-    keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True)
-    for category in TAG_CATEGORIES:
-        keyboard.add(category)
-    keyboard.add("Генерировать", "Очистить")
-    return keyboard
-
-# 🏷 Кнопки тегов
-def build_tags_keyboard(category, selected_tags):
-    keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True)
-    for tag in TAG_CATEGORIES[category]:
-        prefix = "✅ " if tag in selected_tags else ""
-        keyboard.add(prefix + tag)
-    keyboard.add("Назад")
-    return keyboard
-
-# 🔁 Логика взаимодействия
-@bot.message_handler(func=lambda m: True)
-def handle_message(message):
-    chat_id = message.chat.id
-    state = user_states.get(chat_id, {"tags": []})
-
-    if message.text == "Генерировать":
-        generate_image(chat_id, state["tags"])
-    elif message.text == "Очистить":
-        user_states[chat_id]["tags"] = []
-        bot.send_message(chat_id, "Теги очищены.")
-    elif message.text == "Назад":
-        bot.send_message(chat_id, "Выбери категорию:", reply_markup=build_tag_menu())
-    elif message.text in TAG_CATEGORIES:
-        bot.send_message(chat_id, f"Выбери теги из категории '{message.text}':", reply_markup=build_tags_keyboard(message.text, state["tags"]))
-    else:
-        text = message.text.replace("✅ ", "")
-        if text in sum(TAG_CATEGORIES.values(), []):
-            tags = user_states[chat_id]["tags"]
-            if text in tags:
-                tags.remove(text)
-            else:
-                tags.append(text)
-            user_states[chat_id]["tags"] = tags
-            for cat, values in TAG_CATEGORIES.items():
-                if text in values:
-                    bot.send_message(chat_id, f"Обновлено:", reply_markup=build_tags_keyboard(cat, tags))
-                    return
-
-# 🖼 Генерация изображения
-def generate_image(chat_id, tags):
-    base_prompt = []
-    for tag in tags:
-        prompt = ADVANCED_PROMPTS.get(tag, tag)
-        base_prompt.append(prompt)
-
-    # Убираем скрывающую одежду
-    negative_prompt = ", ".join(BLOCK_CLOTHING)
-
-    # Добавим модификаторы для персонажей + теги
-    if any("Риас" in t for t in tags):
-        base_prompt.append("Rias Gremory, High School DxD, detailed face, red hair, matching appearance")
-    if any("Акено" in t for t in tags):
-        base_prompt.append("Akeno Himejima, High School DxD, long black hair, mature face, accurate costume")
-
-    prompt = ", ".join(base_prompt)
+# 📸 Генерация изображения
+def generate_image(tags):
+    prompt = format_tags(tags)
     payload = {
-        "version": "latest",
+        "version": REPLICATE_MODEL,
         "input": {
             "prompt": prompt,
-            "negative_prompt": negative_prompt,
             "width": 512,
-            "height": 768,
-            "num_outputs": 1
+            "height": 768
         }
     }
-
     headers = {
         "Authorization": f"Token {REPLICATE_TOKEN}",
         "Content-Type": "application/json"
     }
+    response = requests.post("https://api.replicate.com/v1/predictions", json=payload, headers=headers)
+    if response.status_code != 201:
+        return None
 
-    bot.send_message(chat_id, "Генерация...")
-
-    response = requests.post(f"https://api.replicate.com/v1/predictions", json=payload, headers=headers)
     prediction = response.json()
-    image_url = prediction["output"][0] if "output" in prediction else None
+    status_url = prediction["urls"]["get"]
 
-    if image_url:
-        bot.send_photo(chat_id, image_url, caption="Вот результат!")
-    else:
-        bot.send_message(chat_id, "Произошла ошибка при генерации.")
+    for _ in range(60):
+        result = requests.get(status_url, headers=headers).json()
+        if result["status"] == "succeeded":
+            return result["output"][-1]
+        elif result["status"] == "failed":
+            return None
+        time.sleep(2)
+    return None
 
-# 🌐 Вебхук Flask
-@app.route(f"/{BOT_TOKEN}", methods=["POST"])
+# 📲 Обработка команд
+@bot.message_handler(commands=['start'])
+def start(message):
+    user_tags[message.chat.id] = set()
+    bot.send_message(message.chat.id, "Привет! Выбери категорию:", reply_markup=build_category_keyboard())
+
+# 🧩 Клавиатура категорий
+def build_category_keyboard():
+    keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True)
+    for category in CATEGORIES:
+        keyboard.add(types.KeyboardButton(category))
+    return keyboard
+
+# 🧩 Клавиатура тегов
+def build_tags_keyboard(category, user_id):
+    keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True)
+    for tag in CATEGORIES.get(category, []):
+        label = f"✅ {tag}" if tag in user_tags.get(user_id, set()) else tag
+        keyboard.add(types.KeyboardButton(label))
+    keyboard.add(types.KeyboardButton("🔙 Назад"), types.KeyboardButton("✅ Сгенерировать"))
+    return keyboard
+
+# 📝 Обработка выбора
+@bot.message_handler(func=lambda m: True)
+def handle_message(message):
+    user_id = message.chat.id
+    text = message.text.strip()
+
+    if text == "🔙 Назад":
+        bot.send_message(user_id, "Выбери категорию:", reply_markup=build_category_keyboard())
+        return
+
+    if text == "✅ Сгенерировать":
+        tags = list(user_tags.get(user_id, set()))
+        bot.send_message(user_id, "Генерация изображения, подожди...")
+        image_url = generate_image(tags)
+        if image_url:
+            markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
+            markup.add("🔁 Начать заново", "🛠 Изменить теги", "▶ Продолжить с этими тегами")
+            bot.send_photo(user_id, image_url, reply_markup=markup)
+        else:
+            bot.send_message(user_id, "Ошибка генерации. Попробуй ещё раз.")
+        return
+
+    if text == "🔁 Начать заново":
+        user_tags[user_id] = set()
+        bot.send_message(user_id, "Выбери категорию:", reply_markup=build_category_keyboard())
+        return
+
+    if text == "🛠 Изменить теги":
+        bot.send_message(user_id, "Выбери категорию:", reply_markup=build_category_keyboard())
+        return
+
+    if text == "▶ Продолжить с этими тегами":
+        tags = list(user_tags.get(user_id, set()))
+        bot.send_message(user_id, "Повторная генерация...")
+        image_url = generate_image(tags)
+        if image_url:
+            bot.send_photo(user_id, image_url)
+        else:
+            bot.send_message(user_id, "Ошибка генерации.")
+        return
+
+    if text in CATEGORIES:
+        user_stage[user_id] = text
+        bot.send_message(user_id, f"Выбери теги из категории «{text}»", reply_markup=build_tags_keyboard(text, user_id))
+        return
+
+    if user_id in user_stage:
+        category = user_stage[user_id]
+        clean_text = text.replace("✅ ", "")
+        if clean_text in CATEGORIES.get(category, []):
+            if clean_text in user_tags.get(user_id, set()):
+                user_tags[user_id].remove(clean_text)
+            else:
+                user_tags[user_id].add(clean_text)
+            bot.send_message(user_id, f"Категория: {category}", reply_markup=build_tags_keyboard(category, user_id))
+            return
+
+# 🌐 Вебхук
+@app.route(f"/{API_TOKEN}", methods=["POST"])
 def webhook():
-    bot.process_new_updates([types.Update.de_json(request.stream.read().decode("utf-8"))])
-    return "ok", 200
+    json_string = request.get_data().decode("utf-8")
+    update = types.Update.de_json(json_string)
+    bot.process_new_updates([update])
+    return "!", 200
 
-@app.route("/")
-def index():
-    return "Бот работает", 200
-
+# 🚀 Запуск
 if __name__ == "__main__":
     bot.remove_webhook()
     time.sleep(1)
-    bot.set_webhook(url=f"{WEBHOOK_URL}/{BOT_TOKEN}")
+    bot.set_webhook(url=f"{WEBHOOK_URL}/{API_TOKEN}")
     app.run(host="0.0.0.0", port=PORT)
