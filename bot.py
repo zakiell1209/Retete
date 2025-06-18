@@ -9,7 +9,6 @@ API_TOKEN = os.getenv("TELEGRAM_TOKEN")
 REPLICATE_TOKEN = os.getenv("REPLICATE_API_TOKEN")
 WEBHOOK_URL = os.getenv("WEBHOOK_URL")
 PORT = int(os.environ.get("PORT", 5000))
-
 REPLICATE_MODEL = "c1d5b02687df6081c7953c74bcc527858702e8c153c9382012ccc3906752d3ec"
 
 bot = telebot.TeleBot(API_TOKEN)
@@ -25,7 +24,8 @@ CATEGORY_NAMES = {
     "ethnos": "Этнос",
     "furry": "Фури",
     "characters": "Персонажи",
-    "head": "Голова"
+    "head": "Голова",
+    "view": "Обзор"
 }
 
 TAGS = {
@@ -113,6 +113,13 @@ TAGS = {
         "pain_face": "Лицо в боли",
         "ecstasy_face": "Лицо в экстазе",
         "gold_lipstick": "Золотая помада"
+    },
+    "view": {
+        "view_bottom": "Снизу",
+        "view_top": "Сверху",
+        "view_side": "Сбоку",
+        "view_far": "Дальше",
+        "view_close": "Ближе"
     }
 }
 
@@ -130,7 +137,7 @@ TAG_PROMPTS = {
     "vagina": "spread pussy",
     "anal": "spread anus",
     "both": "spread pussy and anus",
-    "dildo": "dildo inserted",
+    "dildo": "dildo inserted into anus",
     "huge_dildo": "huge dildo",
     "horse_dildo": "horse dildo",
     "anal_beads": "anal beads inserted",
@@ -138,63 +145,58 @@ TAG_PROMPTS = {
     "anal_expander": "anal expander stretching anus",
     "gag": "ball gag",
     "piercing": "nipple and genital piercings",
-    "long_dildo_path": (
-        "dildo inserted into anus, pushing visibly through intestines with clear belly bulge, "
-        "exiting from mouth, seamless and continuous dildo, consistent texture, realistic rubber"
-    ),
+    "long_dildo_path": "dildo from anus to mouth, no visible internals, seamless",
     "doggy": "doggy style",
     "standing": "standing pose",
     "splits": "doing a split",
-    "hor_split": (
-        "perfect horizontal split pose, legs flat on floor in full split, pelvis pressed to ground, "
-        "legs stretched outward, symmetrical thighs, full nudity, genitals fully exposed, "
-        "no hands or objects covering chest or vagina"
-    ),
-    "ver_split": (
-        "perfect vertical split pose, one leg raised straight up, standing or supported, "
-        "body in balance, full nudity, no limbs or objects hiding chest or genitals"
-    ),
-    "side_up_leg": "on side with leg raised",
+    "hor_split": "horizontal split, legs fully on floor, pelvis touching ground, feet flat, thighs on floor",
+    "ver_split": "vertical split, one leg straight up, perfect balance",
+    "side_up_leg": "lying on side with one leg raised",
     "front_facing": "facing viewer",
     "back_facing": "back to viewer",
-    "lying_knees_up": "legs up, knees bent",
-    "bridge": "arched back bridge pose",
-    "suspended": "suspended by ropes",
-    "stockings": "wearing stockings only",
-    "mask": "mask on face",
-    "heels": "high heels with red soles",
-    "shibari": "shibari ropes",
-    "big_breasts": "big breasts",
-    "small_breasts": "small breasts",
-    "skin_white": "white skin",
-    "skin_black": "black skin",
-    "body_fat": "curvy body",
-    "body_thin": "thin body",
-    "body_normal": "average body",
-    "body_fit": "fit body",
-    "body_muscular": "muscular body",
-    "age_loli": "loli",
-    "age_milf": "milf",
-    "age_21": "age 21",
-    "cum": "cum covered",
-    "belly_bloat": "belly bulge from toy",
-    "succubus_tattoo": "succubus tattoo on lower abdomen",
-    "futanari": "futanari girl with large breasts",
-    "femboy": "femboy with feminine body",
+    "lying_knees_up": "on back, knees bent upward",
+    "bridge": "bridge pose with arch",
+    "suspended": "tied and suspended with ropes",
+    "stockings": "wearing only stockings",
+    "mask": "face mask",
+    "heels": "red sole high heels",
+    "shibari": "shibari rope bondage",
+    "big_breasts": "huge breasts, bare chest, uncovered nipples",
+    "small_breasts": "small bare chest, uncovered nipples",
+    "skin_white": "very pale skin",
+    "skin_black": "dark ebony skin",
+    "body_fat": "soft round body",
+    "body_thin": "very thin body",
+    "body_normal": "average proportions",
+    "body_fit": "toned fit body",
+    "body_muscular": "athletic muscle",
+    "age_loli": "young petite girl",
+    "age_milf": "mature woman",
+    "age_21": "21 years old",
+    "cum": "cum dripping on body and face",
+    "belly_bloat": "stretched belly from internal pressure",
+    "succubus_tattoo": "succubus tattoo on pelvis",
+    "futanari": "futanari girl, visible penis and large breasts",
+    "femboy": "feminine boy",
     "ethnicity_asian": "asian girl",
-    "ethnicity_european": "european girl",
+    "ethnicity_european": "white european woman",
     "furry_cow": "furry cow girl",
     "furry_cat": "furry cat girl",
     "furry_dog": "furry dog girl",
     "furry_dragon": "furry dragon girl",
-    "furry_sylveon": "furry sylveon, pink, ribbons, sexy",
+    "furry_sylveon": "furry sylveon",
     "furry_fox": "furry fox girl",
     "furry_bunny": "furry bunny girl",
     "furry_wolf": "furry wolf girl",
-    "ahegao": "ahegao face",
+    "ahegao": "ahegao expression",
     "pain_face": "face in pain",
-    "ecstasy_face": "face in ecstasy",
-    "gold_lipstick": "gold lipstick"
+    "ecstasy_face": "face in orgasm",
+    "gold_lipstick": "gold lipstick",
+    "view_bottom": "low angle from below, under floor perspective, skin pressed to glass effect",
+    "view_top": "top-down camera angle",
+    "view_side": "side angle view",
+    "view_far": "full body in frame",
+    "view_close": "very close-up, cropped parts"
 }
 
 def main_menu():
@@ -288,9 +290,12 @@ def callback(call):
         bot.send_message(cid, "Сброс настроек.", reply_markup=main_menu())
 
 def build_prompt(tags):
-    base = "nsfw, masterpiece, ultra detailed, anime style, best quality, fully nude, solo, no censorship, no hands or arms covering chest or genitals"
+    base = (
+        "nsfw, masterpiece, ultra detailed, anime style, best quality, fully nude, "
+        "bare chest, exposed nipples, no arms or hair covering chest or genitals"
+    )
     prompts = [TAG_PROMPTS.get(tag, tag) for tag in tags]
-    return base + ", " + ", ".join(prompts) if prompts else base
+    return base + ", " + ", ".join(prompts)
 
 def replicate_generate(prompt):
     url = "https://api.replicate.com/v1/predictions"
