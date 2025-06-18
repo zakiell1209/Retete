@@ -6,10 +6,9 @@ from flask import Flask, request
 from telebot import TeleBot, types
 
 # 🔐 Токены и настройки
-BOT_TOKEN = os.getenv("BOT_TOKEN")
-REPLICATE_TOKEN = os.getenv("REPLICATE_TOKEN")
+API_TOKEN = os.getenv("TELEGRAM_TOKEN")
+REPLICATE_TOKEN = os.getenv("REPLICATE_API_TOKEN")
 WEBHOOK_URL = os.getenv("WEBHOOK_URL")
-REPLICATE_MODEL = "aitechtree/nsfw-novel-generation"
 PORT = int(os.environ.get("PORT", 5000))
 
 bot = TeleBot(BOT_TOKEN)
