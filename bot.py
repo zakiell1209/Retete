@@ -1,4 +1,3 @@
-# --- bot.py ---
 import os
 import time
 import requests
@@ -17,82 +16,183 @@ bot = telebot.TeleBot(API_TOKEN)
 app = Flask(__name__)
 user_settings = {}
 
-# ⚙️ Категории и теги — не меняем
-# (загружаются как есть — пропущено в этом коде ради краткости)
+CATEGORY_NAMES = {
+    "holes": "Отверстия",
+    "toys": "Игрушки",
+    "poses": "Позы",
+    "clothes": "Одежда",
+    "body": "Тело",
+    "ethnos": "Этнос",
+    "furry": "Фури",
+    "characters": "Персонажи",
+    "head": "Голова"
+}
 
-# 🎯 Построение промпта
-def build_prompt(tags):
-    character_prompts = []
-    pose_prompts = []
-    rest_prompts = []
-
-    for tag in tags:
-        prompt = TAG_PROMPTS.get(tag, tag)
-        if tag in CHARACTER_EXTRA:
-            character_prompts.append(prompt)
-        elif tag in TAGS["poses"]:
-            pose_prompts.append(prompt)
-        else:
-            rest_prompts.append(prompt)
-
-    base = "nsfw, masterpiece, ultra detailed, anime style, best quality, solo, full body, fully nude, spread legs"
-    full_prompt = ", ".join([base] + character_prompts + pose_prompts + rest_prompts)
-
-    return full_prompt
-
-# ❌ Отрицательный промпт
-NEGATIVE_PROMPT = (
-    "censored, mosaic, blurry, pixelated, low quality, watermark, text, duplicate, multiple girls, "
-    "clothes, hands covering breasts, hair covering genitals, objects covering chest, arms over breasts, "
-    "covered nipples, pubic hair, background clutter"
-)
-
-# 📤 Генерация
-def replicate_generate(prompt):
-    url = "https://api.replicate.com/v1/predictions"
-    headers = {
-        "Authorization": f"Token {REPLICATE_TOKEN}",
-        "Content-Type": "application/json"
+TAGS = {
+    "holes": {
+        "vagina": "Вагина",
+        "anal": "Анус",
+        "both": "Вагина и анус"
+    },
+    "toys": {
+        "dildo": "Дилдо",
+        "huge_dildo": "Большое дилдо",
+        "horse_dildo": "Лошадиное дилдо",
+        "anal_beads": "Анальные бусы",
+        "anal_plug": "Анальная пробка",
+        "anal_expander": "Анальный расширитель",
+        "gag": "Кляп",
+        "piercing": "Пирсинг",
+        "long_dildo_path": "Дилдо из ануса выходит изо рта"
+    },
+    "poses": {
+        "doggy": "Наездница (догги-стайл)",
+        "standing": "Стоя",
+        "splits": "Шпагат",
+        "squat": "Приседание",
+        "lying": "Лежа",
+        "hor_split": "Горизонтальный шпагат",
+        "ver_split": "Вертикальный шпагат",
+        "side_up_leg": "На боку с поднятой ногой",
+        "front_facing": "Лицом к зрителю",
+        "back_facing": "Спиной к зрителю",
+        "lying_knees_up": "Лежа с согнутыми коленями",
+        "bridge": "Мост",
+        "suspended": "Подвешена"
+    },
+    "clothes": {
+        "stockings": "Чулки",
+        "bikini_tan_lines": "Загар от бикини",
+        "mask": "Маска",
+        "heels": "Каблуки",
+        "shibari": "Шибари"
+    },
+    "body": {
+        "big_breasts": "Большая грудь",
+        "small_breasts": "Маленькая грудь",
+        "skin_white": "Белая кожа",
+        "skin_black": "Чёрная кожа",
+        "body_fat": "Пышное тело",
+        "body_thin": "Худое тело",
+        "body_normal": "Нормальное тело",
+        "body_fit": "Подтянутое тело",
+        "body_muscular": "Мускулистое тело",
+        "age_loli": "Лоли",
+        "age_milf": "Милфа",
+        "age_21": "Возраст 21",
+        "cum": "Вся в сперме",
+        "belly_bloat": "Вздутие живота",
+        "succubus_tattoo": "Тату внизу живота"
+    },
+    "ethnos": {
+        "futanari": "Футанари",
+        "femboy": "Фембой",
+        "ethnicity_asian": "Азиатка",
+        "ethnicity_european": "Европейка"
+    },
+    "furry": {
+        "furry_cow": "Фури корова",
+        "furry_cat": "Фури кошка",
+        "furry_dog": "Фури собака",
+        "furry_dragon": "Фури дракон",
+        "furry_sylveon": "Фури сильвеон",
+        "furry_fox": "Фури лисица",
+        "furry_bunny": "Фури кролик",
+        "furry_wolf": "Фури волчица"
+    },
+    "characters": {
+        "rias": "Риас Гремори",
+        "akeno": "Акено Химедзима",
+        "kafka": "Кафка (Хонкай)",
+        "eula": "Еола (Геншин)",
+        "fu_xuan": "Фу Сюань (Хонкай)",
+        "ayase": "Аясе Сейко"
+    },
+    "head": {
+        "ahegao": "Ахегао",
+        "pain_face": "Лицо в боли",
+        "ecstasy_face": "Лицо в экстазе",
+        "gold_lipstick": "Золотая помада"
     }
-    json_data = {
-        "version": REPLICATE_MODEL,
-        "input": {
-            "prompt": prompt,
-            "negative_prompt": NEGATIVE_PROMPT
-        }
-    }
-    r = requests.post(url, headers=headers, json=json_data)
-    if r.status_code != 201:
-        return None
-    status_url = r.json()["urls"]["get"]
+}
 
-    for _ in range(60):
-        time.sleep(2)
-        r = requests.get(status_url, headers=headers)
-        if r.status_code != 200:
-            return None
-        data = r.json()
-        if data["status"] == "succeeded":
-            return data["output"][0] if isinstance(data["output"], list) else data["output"]
-        elif data["status"] == "failed":
-            return None
-    return None
+CHARACTER_EXTRA = {
+    "rias": "red long hair, blue eyes, pale skin, large breasts, rias gremory, highschool dxd",
+    "akeno": "long black hair, purple eyes, large breasts, akeno himejima, highschool dxd",
+    "kafka": "purple wavy hair, cold expression, kafka, honkai star rail",
+    "eula": "light blue hair, fair skin, eula, genshin impact",
+    "fu_xuan": "pink hair, fu xuan, honkai star rail",
+    "ayase": "black hair, school uniform, ayase seiko"
+}
 
-# 💬 Команды и интерфейс (start, выбор тегов, генерация, редактирование) — не меняем
-
-# 📡 Webhook
-@app.route("/", methods=["POST"])
-def webhook():
-    json_str = request.stream.read().decode("utf-8")
-    update = telebot.types.Update.de_json(json_str)
-    bot.process_new_updates([update])
-    return "ok", 200
-
-@app.route("/", methods=["GET"])
-def home():
-    return "бот работает", 200
-
-if __name__ == "__main__":
-    bot.remove_webhook()
-    bot.set_webhook(url=WEBHOOK_URL)
-    app.run(host="0.0.0.0", port=PORT)
+TAG_PROMPTS = {
+    **CHARACTER_EXTRA,
+    "vagina": "spread pussy",
+    "anal": "spread anus",
+    "both": "spread pussy and anus",
+    "dildo": "dildo inserted",
+    "huge_dildo": "huge dildo",
+    "horse_dildo": "horse dildo",
+    "anal_beads": "anal beads inserted",
+    "anal_plug": "anal plug",
+    "anal_expander": "anal expander stretching anus",
+    "gag": "ball gag",
+    "piercing": "nipple and genital piercings",
+    "long_dildo_path": (
+        "dildo inserted into anus, pushing visibly through intestines with clear belly bulge, "
+        "exiting from mouth, seamless and continuous dildo, consistent texture, realistic rubber"
+    ),
+    "doggy": "doggy style",
+    "standing": "standing pose",
+    "splits": "doing a split",
+    "hor_split": (
+        "perfect horizontal split pose, legs flat on floor in full split, pelvis pressed to ground, "
+        "legs stretched outward, symmetrical thighs, full nudity, genitals fully exposed, "
+        "no hands or objects covering chest or vagina"
+    ),
+    "ver_split": (
+        "perfect vertical split pose, one leg raised straight up, standing or supported, "
+        "body in balance, full nudity, no limbs or objects hiding chest or genitals"
+    ),
+    "side_up_leg": "on side with leg raised",
+    "front_facing": "facing viewer",
+    "back_facing": "back to viewer",
+    "lying_knees_up": "legs up, knees bent",
+    "bridge": "arched back bridge pose",
+    "suspended": "suspended by ropes",
+    "stockings": "wearing stockings only",
+    "mask": "mask on face",
+    "heels": "high heels with red soles",
+    "shibari": "shibari ropes",
+    "big_breasts": "big breasts",
+    "small_breasts": "small breasts",
+    "skin_white": "white skin",
+    "skin_black": "black skin",
+    "body_fat": "curvy body",
+    "body_thin": "thin body",
+    "body_normal": "average body",
+    "body_fit": "fit body",
+    "body_muscular": "muscular body",
+    "age_loli": "loli",
+    "age_milf": "milf",
+    "age_21": "age 21",
+    "cum": "cum covered",
+    "belly_bloat": "belly bulge from toy",
+    "succubus_tattoo": "succubus tattoo on lower abdomen",
+    "futanari": "futanari girl with large breasts",
+    "femboy": "femboy with feminine body",
+    "ethnicity_asian": "asian girl",
+    "ethnicity_european": "european girl",
+    "furry_cow": "furry cow girl",
+    "furry_cat": "furry cat girl",
+    "furry_dog": "furry dog girl",
+    "furry_dragon": "furry dragon girl",
+    "furry_sylveon": "furry sylveon, pink, ribbons, sexy",
+    "furry_fox": "furry fox girl",
+    "furry_bunny": "furry bunny girl",
+    "furry_wolf": "furry wolf girl",
+    "ahegao": "ahegao face",
+    "pain_face": "face in pain",
+    "ecstasy_face": "face in ecstasy",
+    "gold_lipstick": "gold lipstick"
+}
