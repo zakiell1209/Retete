@@ -11,7 +11,7 @@ REPLICATE_TOKEN = os.getenv("REPLICATE_API_TOKEN")
 WEBHOOK_URL = os.getenv("WEBHOOK_URL")
 PORT = int(os.environ.get("PORT", 5000))
 
-bot = TeleBot(BOT_TOKEN)
+bot = TeleBot(API_TOKEN)
 app = Flask(__name__)
 logging.basicConfig(level=logging.INFO)
 
