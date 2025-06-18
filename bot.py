@@ -1,4 +1,3 @@
-# --- bot.py ---
 import os
 import time
 import requests
@@ -17,6 +16,7 @@ bot = telebot.TeleBot(API_TOKEN)
 app = Flask(__name__)
 user_settings = {}
 
+# Категории и теги
 CATEGORY_NAMES = {
     "holes": "Отверстия",
     "toys": "Игрушки",
@@ -147,10 +147,14 @@ TAG_PROMPTS = {
     "standing": "standing pose",
     "splits": "doing a split",
     "hor_split": (
-        "horizontal split, legs stretched fully to sides, pelvis on floor, thighs spread open, "
-        "inner thighs visible, high detail"
+        "horizontal leg split, hips fully flat on floor, legs extended straight to both sides in perfect symmetry, "
+        "inner thighs visible, pelvis touching ground, feet pointed or flat, straight spine, hands supporting or on thighs, "
+        "anatomically correct pose, ultra-detailed"
     ),
-    "ver_split": "vertical split",
+    "ver_split": (
+        "vertical leg split, one leg raised vertically straight up, the other extended flat on ground, "
+        "hips aligned, spine straight, high detail, visible balance, anatomically accurate"
+    ),
     "side_up_leg": "on side with leg raised",
     "front_facing": "facing viewer",
     "back_facing": "back to viewer",
@@ -194,6 +198,7 @@ TAG_PROMPTS = {
     "gold_lipstick": "gold lipstick"
 }
 
+# --- Кнопки и генерация
 def main_menu():
     kb = types.InlineKeyboardMarkup()
     kb.add(types.InlineKeyboardButton("🧩 Выбрать теги", callback_data="choose_tags"))
@@ -231,13 +236,11 @@ def callback(call):
 
     if data == "choose_tags":
         bot.edit_message_text("Выбери категорию тегов:", cid, call.message.message_id, reply_markup=category_menu())
-
     elif data.startswith("cat_"):
         cat = data[4:]
         user_settings[cid]["last_cat"] = cat
         selected = user_settings[cid]["tags"]
         bot.edit_message_text(f"Категория: {CATEGORY_NAMES[cat]}", cid, call.message.message_id, reply_markup=tag_menu(cat, selected))
-
     elif data.startswith("tag_"):
         _, cat, tag = data.split("_", 2)
         tags = user_settings[cid]["tags"]
@@ -246,13 +249,10 @@ def callback(call):
         else:
             tags.append(tag)
         bot.edit_message_reply_markup(cid, call.message.message_id, reply_markup=tag_menu(cat, tags))
-
     elif data == "done_tags":
         bot.edit_message_text("Теги сохранены.", cid, call.message.message_id, reply_markup=main_menu())
-
     elif data == "back_to_cat":
         bot.edit_message_text("Выбери категорию:", cid, call.message.message_id, reply_markup=category_menu())
-
     elif data == "generate":
         tags = user_settings[cid]["tags"]
         if not tags:
@@ -272,14 +272,12 @@ def callback(call):
             bot.send_photo(cid, url, caption="✅ Готово!", reply_markup=kb)
         else:
             bot.send_message(cid, "❌ Ошибка генерации.")
-
     elif data == "edit_tags":
         if "last_prompt" in user_settings[cid]:
             user_settings[cid]["tags"] = user_settings[cid]["last_prompt"]
             bot.send_message(cid, "Изменяем теги:", reply_markup=category_menu())
         else:
             bot.send_message(cid, "Нет сохранённых тегов. Сначала сделай генерацию.")
-
     elif data == "start":
         user_settings[cid] = {"tags": [], "last_cat": None}
         bot.send_message(cid, "Сброс настроек.", reply_markup=main_menu())
