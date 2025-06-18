@@ -1,156 +1,158 @@
 import os
-import time
 import logging
 import requests
 from flask import Flask, request
-import telebot
-from telebot import types
+from telebot import TeleBot, types
 
-# Токены и настройки
-BOT_TOKEN = os.getenv("BOT_TOKEN")
-REPLICATE_TOKEN = os.getenv("REPLICATE_TOKEN")
-WEBHOOK_URL = os.getenv("WEBHOOK_URL")
+# ✅ Переменные окружения
+API_TOKEN = os.getenv("TELEGRAM_TOKEN")
+REPLICATE_TOKEN = os.getenv("REPLICATE_API_TOKEN")
+WEBHOOK_URL = "https://retete.onrender.com"
 REPLICATE_MODEL = "aitechtree/nsfw-novel-generation"
 
-bot = telebot.TeleBot(BOT_TOKEN)
+bot = TeleBot(API_TOKEN)
 app = Flask(__name__)
 logging.basicConfig(level=logging.INFO)
 
-user_data = {}
-
-categories = {
-    "Персонажи": [
-        "Риас Гремори", "Акено Химедзима", "Кафка", "Еола", "Фу Сюань", "Аясе Сейко"
-    ],
-    "Поза": [
-        "горизонтальный шпагат", "вертикальный шпагат", "на боку с одной ногой вверх", "лёжа на спине с раздвинутыми ногами, согнутыми в коленях", "мост", "подвешенная на верёвках"
-    ],
-    "Игрушки": [
-        "дилдо из ануса выходит изо рта"
-    ],
-    "Сцена": [
-        "лицом к зрителю", "спиной к зрителю", "вид снизу", "вид сверху", "вид сбоку", "ближе", "дальше"
-    ],
-    "Голова": [
-        "ахегао", "лицо в боли", "лицо в экстазе", "золотая помада"
-    ],
-    "Фури": [
-        "лисица", "кролик", "волчица"
-    ],
-    "Отверстия": [
-        "анал", "вагина", "оральный"
-    ],
-    "Скин": [
-        "загар", "бледная кожа", "обычная кожа"
-    ],
-    "Этнос": [
-        "азиатка", "европейка", "латиноамериканка"
-    ],
-    "Одежда": [
-        "голая", "разорванная одежда"
-    ]
+# ✅ Категории и теги
+CATEGORIES = {
+    "персонажи": ["Риас Гремори", "Акено Химедзима", "Кафка", "Еола", "Фу Сюань", "Аясе Сейко"],
+    "аниме/реализм/3D": ["аниме", "реализм", "3D"],
+    "позы": ["горизонтальный шпагат", "вертикальный шпагат", "на боку с одной ногой вверх", "лёжа на спине с раздвинутыми ногами", "мост", "подвешенная на верёвках"],
+    "отверстия": ["вагина", "анус", "рот"],
+    "игрушки": ["дилдо", "анальный крюк", "дилдо из ануса выходит изо рта"],
+    "одежда": ["голая", "в нижнем белье", "в чулках", "в ошейнике"],
+    "кожа/этнос": ["белая кожа", "загар", "тёмная кожа"],
+    "голова": ["ахегао", "лицо в боли", "лицо в экстазе", "золотая помада"],
+    "фури": ["лисица", "кролик", "волчица"],
+    "сцена": ["лицом к зрителю", "спиной к зрителю", "вид снизу", "вид сверху", "вид сбоку", "ближе", "дальше"]
 }
 
-def build_keyboard(user_id, category):
-    markup = types.InlineKeyboardMarkup(row_width=2)
-    buttons = []
-    selected_tags = user_data.get(user_id, {}).get("selected_tags", [])
+user_tags = {}
 
-    for tag in categories[category]:
-        check = "✅" if tag in selected_tags else ""
-        buttons.append(types.InlineKeyboardButton(f"{check} {tag}", callback_data=f"tag|{tag}"))
+# ✅ Сборка промпта
+def build_prompt(tags):
+    base = []
+    for tag in tags:
+        if tag == "дилдо из ануса выходит изо рта":
+            base.append("dildo from anus through mouth, single piece, no x-ray, full object")
+        elif tag == "горизонтальный шпагат":
+            base.append("full body view, female in horizontal split, legs straight, on floor, realistic anatomy")
+        elif tag == "вертикальный шпагат":
+            base.append("full body view, female in vertical split, one leg up, perfect form")
+        elif tag in CATEGORIES["персонажи"]:
+            if tag == "Риас Гремори":
+                base.append("Rias Gremory from High School DxD, red long hair, blue eyes, anime style")
+            elif tag == "Акено Химедзима":
+                base.append("Akeno Himejima from High School DxD, black long hair, purple eyes, anime style")
+            elif tag == "Кафка":
+                base.append("Kafka from Honkai Star Rail, violet eyes, wavy hair")
+            elif tag == "Еола":
+                base.append("Eula from Genshin Impact, ice blue hair, warrior outfit")
+            elif tag == "Фу Сюань":
+                base.append("Fu Xuan from Honkai Star Rail, pink twin tails, elegant outfit")
+            elif tag == "Аясе Сейко":
+                base.append("Seiko Ayase, straight long black hair, schoolgirl theme")
+        else:
+            base.append(tag)
+    # Строгая фильтрация
+    block = ["clothes", "hands covering", "censored", "blur", "shadows over genitals"]
+    return ", ".join(base + ["nsfw, uncensored, full detail"] + [f"no {b}" for b in block])
 
-    buttons.append(types.InlineKeyboardButton("🔙 Назад", callback_data="back"))
-    markup.add(*buttons)
-    return markup
+# ✅ Генерация изображения
+def generate_image(prompt):
+    response = requests.post(
+        "https://api.replicate.com/v1/predictions",
+        headers={
+            "Authorization": f"Token {REPLICATE_TOKEN}",
+            "Content-Type": "application/json"
+        },
+        json={
+            "version": REPLICATE_MODEL,
+            "input": {"prompt": prompt}
+        }
+    )
+    output = response.json()
+    return output.get("urls", {}).get("get", None)
 
+# ✅ Клавиатура тегов
+def build_keyboard(category, selected):
+    keyboard = types.InlineKeyboardMarkup()
+    for tag in CATEGORIES[category]:
+        mark = "✅" if tag in selected else ""
+        keyboard.add(types.InlineKeyboardButton(f"{mark} {tag}", callback_data=f"tag:{tag}"))
+    keyboard.add(types.InlineKeyboardButton("🔙 Назад", callback_data="back"))
+    return keyboard
+
+# ✅ Клавиатура категорий
+def category_keyboard():
+    keyboard = types.InlineKeyboardMarkup()
+    for category in CATEGORIES:
+        keyboard.add(types.InlineKeyboardButton(category.title(), callback_data=f"cat:{category}"))
+    keyboard.add(types.InlineKeyboardButton("✅ Сгенерировать", callback_data="generate"))
+    return keyboard
+
+# ✅ Обработка команд
 @bot.message_handler(commands=["start"])
-def start_handler(message):
-    user_data[message.chat.id] = {"selected_tags": []}
-    markup = types.InlineKeyboardMarkup()
-    for category in categories:
-        markup.add(types.InlineKeyboardButton(category, callback_data=f"cat|{category}"))
-    bot.send_message(message.chat.id, "Выбери категорию:", reply_markup=markup)
+def handle_start(message):
+    user_tags[message.chat.id] = set()
+    bot.send_message(message.chat.id, "Выбери категорию тегов:", reply_markup=category_keyboard())
 
 @bot.callback_query_handler(func=lambda call: True)
-def callback_handler(call):
-    user_id = call.message.chat.id
+def handle_callback(call):
+    cid = call.message.chat.id
     data = call.data
 
-    if data.startswith("cat|"):
-        category = data.split("|")[1]
-        bot.edit_message_text("Выбери теги:", chat_id=user_id, message_id=call.message.message_id,
-                              reply_markup=build_keyboard(user_id, category))
-
-    elif data.startswith("tag|"):
-        tag = data.split("|")[1]
-        selected_tags = user_data[user_id]["selected_tags"]
-        if tag in selected_tags:
-            selected_tags.remove(tag)
-        else:
-            selected_tags.append(tag)
-        user_data[user_id]["selected_tags"] = selected_tags
-        for category, tags in categories.items():
-            if tag in tags:
-                bot.edit_message_reply_markup(user_id, call.message.message_id, reply_markup=build_keyboard(user_id, category))
-                break
-
-    elif data == "back":
-        markup = types.InlineKeyboardMarkup()
-        for category in categories:
-            markup.add(types.InlineKeyboardButton(category, callback_data=f"cat|{category}"))
-        markup.add(types.InlineKeyboardButton("🎨 Генерировать", callback_data="generate"))
-        bot.edit_message_text("Выбери категорию:", chat_id=user_id, message_id=call.message.message_id, reply_markup=markup)
-
-    elif data == "generate":
-        selected_tags = user_data[user_id]["selected_tags"]
-        prompt = ", ".join(selected_tags)
-        prompt += ", nsfw, nude, highly detailed, best quality, realistic skin, no hands covering, no clothes"
-
-        response = requests.post(
-            "https://api.replicate.com/v1/predictions",
-            headers={
-                "Authorization": f"Token {REPLICATE_TOKEN}",
-                "Content-Type": "application/json",
-            },
-            json={
-                "version": REPLICATE_MODEL,
-                "input": {"prompt": prompt, "width": 512, "height": 768}
-            },
+    if data.startswith("cat:"):
+        category = data.split(":", 1)[1]
+        selected = user_tags.get(cid, set())
+        bot.edit_message_text(
+            f"Выберите теги из категории {category.title()}:",
+            chat_id=cid,
+            message_id=call.message.message_id,
+            reply_markup=build_keyboard(category, selected)
         )
 
-        if response.status_code == 200:
-            prediction = response.json()
-            image_url = prediction["urls"].get("get", "")
-            bot.send_message(user_id, "Изображение генерируется...")
-
-            for _ in range(30):
-                time.sleep(2)
-                r = requests.get(image_url, headers={"Authorization": f"Token {REPLICATE_TOKEN}"})
-                output = r.json()
-                if output["status"] == "succeeded":
-                    bot.send_photo(user_id, output["output"][0],
-                                   reply_markup=build_post_gen_keyboard(user_id))
-                    break
+    elif data.startswith("tag:"):
+        tag = data.split(":", 1)[1]
+        tags = user_tags.setdefault(cid, set())
+        if tag in tags:
+            tags.remove(tag)
         else:
-            bot.send_message(user_id, "Ошибка генерации изображения.")
+            tags.add(tag)
+        category = next((k for k, v in CATEGORIES.items() if tag in v), "категория")
+        bot.edit_message_reply_markup(
+            cid,
+            call.message.message_id,
+            reply_markup=build_keyboard(category, tags)
+        )
 
-def build_post_gen_keyboard(user_id):
-    markup = types.InlineKeyboardMarkup()
-    markup.add(
-        types.InlineKeyboardButton("🔄 Начать заново", callback_data="start_over"),
-        types.InlineKeyboardButton("🎯 Продолжить с этими тегами", callback_data="generate"),
-        types.InlineKeyboardButton("✏️ Изменить теги", callback_data="back"),
-    )
-    return markup
+    elif data == "back":
+        bot.edit_message_text("Выбери категорию тегов:", cid, call.message.message_id, reply_markup=category_keyboard())
 
+    elif data == "generate":
+        tags = user_tags.get(cid, set())
+        prompt = build_prompt(tags)
+        bot.edit_message_text("Генерирую изображение…", cid, call.message.message_id)
+        image_url = generate_image(prompt)
+        if image_url:
+            bot.send_photo(cid, image_url, caption="Вот результат!", reply_markup=types.InlineKeyboardMarkup().add(
+                types.InlineKeyboardButton("🔁 Изменить теги", callback_data="back"),
+                types.InlineKeyboardButton("🎲 Сгенерировать заново", callback_data="generate")
+            ))
+        else:
+            bot.send_message(cid, "Ошибка генерации. Попробуйте снова.")
+
+# ✅ Webhook
 @app.route("/", methods=["POST"])
 def webhook():
-    bot.process_new_updates([telebot.types.Update.de_json(request.stream.read().decode("utf-8"))])
+    bot.process_new_updates([types.Update.de_json(request.stream.read().decode("utf-8"))])
     return "ok", 200
 
+# ✅ Установка webhook
+bot.remove_webhook()
+bot.set_webhook(url=WEBHOOK_URL)
+
+# ✅ Запуск Flask
 if __name__ == "__main__":
-    bot.remove_webhook()
-    time.sleep(1)
-    bot.set_webhook(url=WEBHOOK_URL)
     app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)))
