@@ -4,6 +4,7 @@ import requests
 from flask import Flask, request
 import telebot
 from telebot import types
+import re
 
 API_TOKEN = os.getenv("TELEGRAM_TOKEN")
 REPLICATE_TOKEN = os.getenv("REPLICATE_API_TOKEN")
@@ -133,8 +134,6 @@ CHARACTER_EXTRA = {
     "ayase": "black hair, school uniform, ayase seiko"
 }
 
-# Улучшенные промты, чтобы убрать руки с груди и усилить позы (горизонтальный и вертикальный шпагат)
-
 TAG_PROMPTS = {
     **CHARACTER_EXTRA,
     "vagina": "spread pussy, fully visible, no obstruction",
@@ -214,6 +213,7 @@ def main_menu():
     kb = types.InlineKeyboardMarkup()
     kb.add(types.InlineKeyboardButton("🧩 Выбрать теги", callback_data="choose_tags"))
     kb.add(types.InlineKeyboardButton("🎨 Генерировать", callback_data="generate"))
+    kb.add(types.InlineKeyboardButton("✍️ Ввести теги текстом", callback_data="text_tags"))
     return kb
 
 def category_menu():
@@ -239,22 +239,20 @@ def build_prompt(user_id):
     tags = user_settings.get(user_id, {}).get("tags", [])
     prompt_parts = []
 
-    # Если выбран персонаж — добавляем расширенное описание персонажа
+    # Добавляем расширенное описание персонажей
     for tag in tags:
         if tag in CHARACTER_EXTRA:
             prompt_parts.append(CHARACTER_EXTRA[tag])
-    # Добавляем остальные теги с улучшенными промптами
+    # Остальные промты
     for tag in tags:
         if tag in TAG_PROMPTS and tag not in CHARACTER_EXTRA:
             prompt_parts.append(TAG_PROMPTS[tag])
 
-    # Убираем руки с груди/сосков — всегда
     prompt_parts.append("no hands covering breasts or nipples or genitals")
-
     prompt = ", ".join(prompt_parts)
     return prompt
 
-def generate_image(prompt):
+def generate_image(prompt, n=1):
     headers = {
         "Authorization": f"Token {REPLICATE_TOKEN}",
         "Content-Type": "application/json"
@@ -264,7 +262,8 @@ def generate_image(prompt):
         "input": {
             "prompt": prompt,
             "num_inference_steps": 50,
-            "guidance_scale": 7.5
+            "guidance_scale": 7.5,
+            "num_outputs": n
         }
     }
     response = requests.post("https://api.replicate.com/v1/predictions", headers=headers, json=data)
@@ -273,14 +272,17 @@ def generate_image(prompt):
     prediction = response.json()
     prediction_url = f"https://api.replicate.com/v1/predictions/{prediction['id']}"
 
-    # Ждём результата
     for _ in range(60):
         time.sleep(1)
         r = requests.get(prediction_url, headers=headers)
         rj = r.json()
         if rj.get("status") == "succeeded":
-            image_url = rj["output"][0]
-            return image_url, None
+            outputs = rj.get("output")
+            # Вывод может быть список ссылок, либо строка
+            if isinstance(outputs, list):
+                return outputs, None
+            else:
+                return [outputs], None
         if rj.get("status") == "failed":
             return None, "Ошибка генерации: модель вернула ошибку"
     return None, "Ошибка генерации: время ожидания истекло"
@@ -295,7 +297,6 @@ def send_welcome(message):
 @bot.callback_query_handler(func=lambda call: True)
 def callback_handler(call):
     user_id = call.from_user.id
-
     if call.data == "choose_tags":
         bot.edit_message_text("Выберите категорию тегов:", call.message.chat.id, call.message.message_id, reply_markup=category_menu())
     elif call.data.startswith("cat_"):
@@ -328,18 +329,74 @@ def callback_handler(call):
             return
         bot.edit_message_text("Генерирую изображение, подождите...", call.message.chat.id, call.message.message_id)
         prompt = build_prompt(user_id)
-        image_url, err = generate_image(prompt)
+        images, err = generate_image(prompt, n=1)
         if err:
             bot.send_message(call.message.chat.id, err)
         else:
-            bot.send_photo(call.message.chat.id, image_url, caption=f"Сгенерировано по тегам:\n{prompt}")
+            for img_url in images:
+                bot.send_photo(call.message.chat.id, img_url, caption=f"Сгенерировано по тегам:\n{prompt}")
         bot.send_message(call.message.chat.id, "Выберите действие:", reply_markup=main_menu())
+    elif call.data == "text_tags":
+        bot.send_message(call.message.chat.id, "Отправьте теги через запятую или пробел, например:\nrias, futanari, ver_split, anal")
     elif call.data == "back":
         bot.edit_message_text("Главное меню", call.message.chat.id, call.message.message_id, reply_markup=main_menu())
     elif call.data == "back_to_cat":
         bot.edit_message_text("Выберите категорию тегов:", call.message.chat.id, call.message.message_id, reply_markup=category_menu())
     else:
         bot.answer_callback_query(call.id, "Неизвестная команда")
+
+@bot.message_handler(func=lambda message: True)
+def handle_text_tags(message):
+    user_id = message.from_user.id
+    text = message.text.lower()
+
+    # Проверяем, не команда ли это генерации с числом
+    match = re.match(r"/generate(?:\s+(\d+))?", text)
+    if match:
+        n = 1
+        if match.group(1):
+            n = int(match.group(1))
+            if n < 1: n = 1
+            if n > 10: n = 10
+        tags = user_settings.get(user_id, {}).get("tags", [])
+        if not tags:
+            bot.reply_to(message, "Вы не выбрали теги для генерации. Используйте меню или отправьте теги текстом.")
+            return
+        bot.reply_to(message, f"Генерирую {n} изображений, подождите...")
+        prompt = build_prompt(user_id)
+        images, err = generate_image(prompt, n=n)
+        if err:
+            bot.send_message(message.chat.id, err)
+        else:
+            for img_url in images:
+                bot.send_photo(message.chat.id, img_url, caption=f"Сгенерировано по тегам:\n{prompt}")
+        bot.send_message(message.chat.id, "Выберите действие:", reply_markup=main_menu())
+        return
+
+    # Иначе считаем это вводом тегов
+    # Сплитим по запятым, пробелам, переводам строк
+    raw_tags = re.split(r"[\s,]+", text)
+    raw_tags = [tag.strip() for tag in raw_tags if tag.strip()]
+    valid_tags = []
+    invalid_tags = []
+
+    # Проверяем валидность тегов по ключам TAGS
+    all_tags = set()
+    for cat_tags in TAGS.values():
+        all_tags.update(cat_tags.keys())
+    for tag in raw_tags:
+        if tag in all_tags:
+            valid_tags.append(tag)
+        else:
+            invalid_tags.append(tag)
+
+    if invalid_tags:
+        bot.reply_to(message, f"Некорректные теги: {', '.join(invalid_tags)}\nПожалуйста, используйте корректные теги.")
+        return
+
+    # Сохраняем выбранные теги
+    user_settings[user_id] = {"tags": valid_tags}
+    bot.reply_to(message, f"Теги обновлены: {', '.join(valid_tags)}\nИспользуйте /generate или кнопку Генерировать.")
 
 @app.route('/', methods=['POST'])
 def webhook():
