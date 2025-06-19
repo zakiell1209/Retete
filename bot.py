@@ -147,17 +147,14 @@ TAG_PROMPTS = {
     "ahegao": "ahegao expression",
     "pain_face": "face in pain",
     "ecstasy_face": "face in ecstasy",
-    "gold_lipstick": "gold lipstick covering lips, tongue, nails, sometimes hair",
+    "gold_lipstick": "gold lipstick covering lips",
     "view_bottom": "view from below, under surface",
     "view_top": "view from above",
     "view_side": "side view",
     "view_close": "close-up",
     "view_full": "full body visible",
-    # Обязательно убрать руки на груди — запретить
-    "no_hands_on_chest": "no hands on chest",
-    "no_hands_covering_nipples": "no hands covering nipples",
-    "hands_away_from_breasts": "hands away from breasts",
-    "no_men": "no men, no male presence"
+    "no_men": "no men, no male presence",
+    "no_hands": "no hands"
 }
 
 def main_menu():
@@ -252,12 +249,14 @@ def callback(call):
 def build_prompt(tags):
     base = (
         "nsfw, masterpiece, best quality, fully nude, "
-        "no hands on chest, no hands covering nipples, hands away from breasts, no men, no male presence"
+        "no hands, no men, no male presence"
     )
     prompts = [TAG_PROMPTS.get(tag, tag) for tag in tags]
 
-    if "gold_lipstick" in tags and random.random() < 0.7:
-        prompts.append("gold lipstick covering lips, tongue, nails, sometimes hair")
+    # Золотая помада всегда, только губы
+    if "gold_lipstick" in tags:
+        prompts = [p for p in prompts if "gold lipstick covering" not in p]
+        prompts.append("gold lipstick covering lips")
 
     return base + ", " + ", ".join(prompts)
 
