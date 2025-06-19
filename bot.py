@@ -48,164 +48,87 @@ TAGS = {
         "long_dildo_path": "Дилдо из ануса выходит изо рта"
     },
     "poses": {
-        "doggy": "Наездница (догги-стайл)",
-        "standing": "Стоя",
-        "splits": "Шпагат",
-        "squat": "Приседание",
-        "lying": "Лежа",
         "hor_split": "Горизонтальный шпагат",
-        "ver_split": "Вертикальный шпагат",
-        "side_up_leg": "На боку с поднятой ногой",
-        "front_facing": "Лицом к зрителю",
-        "back_facing": "Спиной к зрителю",
-        "lying_knees_up": "Лежа с согнутыми коленями",
-        "bridge": "Мост",
-        "suspended": "Подвешена"
+        "ver_split": "Вертикальный шпагат"
     },
     "clothes": {
         "stockings": "Чулки",
-        "bikini_tan_lines": "Загар от бикини",
-        "mask": "Маска",
-        "heels": "Каблуки",
         "shibari": "Шибари"
     },
     "body": {
-        "big_breasts": "Большая грудь",
-        "small_breasts": "Маленькая грудь",
-        "skin_white": "Белая кожа",
-        "skin_black": "Чёрная кожа",
-        "body_fat": "Пышное тело",
-        "body_thin": "Худое тело",
-        "body_normal": "Нормальное тело",
-        "body_fit": "Подтянутое тело",
-        "body_muscular": "Мускулистое тело",
-        "age_loli": "Лоли",
-        "age_milf": "Милфа",
-        "age_21": "Возраст 21",
-        "cum": "Вся в сперме",
-        "belly_bloat": "Вздутие живота",
-        "succubus_tattoo": "Тату внизу живота"
+        "big_breasts": "Большая грудь"
     },
     "ethnos": {
-        "futanari": "Футанари",
-        "femboy": "Фембой",
-        "ethnicity_asian": "Азиатка",
-        "ethnicity_european": "Европейка"
+        "futanari": "Футанари"
     },
     "furry": {
-        "furry_cow": "Фури корова",
-        "furry_cat": "Фури кошка",
-        "furry_dog": "Фури собака",
-        "furry_dragon": "Фури дракон",
-        "furry_sylveon": "Фури сильвеон",
-        "furry_fox": "Фури лисица",
-        "furry_bunny": "Фури кролик",
-        "furry_wolf": "Фури волчица"
+        "furry_cat": "Фури кошка"
     },
     "characters": {
-        "rias": "Риас Гремори",
-        "akeno": "Акено Химедзима",
-        "kafka": "Кафка (Хонкай)",
-        "eula": "Еола (Геншин)",
-        "fu_xuan": "Фу Сюань (Хонкай)",
-        "ayase": "Аясе Сейко"
+        "rias": "Риас Гремори"
     },
     "head": {
         "ahegao": "Ахегао",
-        "pain_face": "Лицо в боли",
-        "ecstasy_face": "Лицо в экстазе",
         "gold_lipstick": "Золотая помада"
     },
     "view": {
-        "from_below": "Снизу",
-        "from_above": "Сверху",
-        "from_side": "Сбоку",
+        "bottom_view": "Снизу",
+        "top_view": "Сверху",
+        "side_view": "Сбоку",
         "far_view": "Дальше",
         "close_view": "Ближе"
     }
 }
 
 CHARACTER_EXTRA = {
-    "rias": "red long hair, blue eyes, pale skin, large breasts, rias gremory, highschool dxd",
-    "akeno": "long black hair, purple eyes, large breasts, akeno himejima, highschool dxd",
-    "kafka": "purple wavy hair, cold expression, kafka, honkai star rail",
-    "eula": "light blue hair, fair skin, eula, genshin impact",
-    "fu_xuan": "pink hair, fu xuan, honkai star rail",
-    "ayase": "black hair, school uniform, ayase seiko"
+    "rias": (
+        "1girl, solo, red long hair, blue eyes, pale skin, large breasts, rias gremory, highschool dxd, "
+        "exact face, consistent character, no other girls"
+    )
 }
 
 TAG_PROMPTS = {
     **CHARACTER_EXTRA,
     "vagina": "spread pussy",
-    "anal": "spread anus",
+    "anal": "spread anus, anus focus",
     "both": "spread pussy and anus",
-    "dildo": "dildo inserted into anus or vagina",
-    "huge_dildo": "huge dildo",
-    "horse_dildo": "horse dildo",
-    "anal_beads": "anal beads inserted",
-    "anal_plug": "anal plug",
-    "anal_expander": "anal expander stretching anus",
-    "gag": "ball gag",
-    "piercing": "nipple and genital piercings",
+    "dildo": "dildo inserted in anus, penetration, sex toy interaction",
+    "huge_dildo": "huge dildo inserted, stretching effect",
+    "horse_dildo": "horse dildo, visible penetration",
+    "anal_beads": "anal beads inserted, anus stretching",
+    "anal_plug": "anal plug, visible insertion",
+    "anal_expander": "anal expander in anus",
+    "gag": "ball gag in mouth",
+    "piercing": "nipple and clit piercings",
     "long_dildo_path": (
-        "dildo inserted into anus, exiting mouth, belly bulge, realistic rubber, single solid toy"
+        "very long dildo inserted into anus and exiting mouth, smooth continuous shape, belly bulge visible"
     ),
-    "doggy": "doggy style",
-    "standing": "standing pose",
-    "splits": "doing a split",
     "hor_split": (
-        "1girl, solo, horizontal split, legs fully spread to sides, thighs and calves flat on floor, pelvis touching ground, "
-        "no extra people, no feet in air, no second girl, perfect symmetry, high detail, realistic anatomy, nude"
+        "horizontal split on floor, one girl, pelvis touching ground, legs flat to sides, thighs spread, "
+        "natural pose, high detail, full body visible"
     ),
     "ver_split": (
-        "1girl, solo, vertical split, one leg raised perfectly vertical, hips aligned, no hands blocking view, no feet in air, realistic stretching"
+        "vertical split pose, one girl, leg lifted straight, standing or upright, balance, full body"
     ),
-    "side_up_leg": "on side with leg raised",
-    "front_facing": "facing viewer",
-    "back_facing": "back to viewer",
-    "lying_knees_up": "legs up, knees bent",
-    "bridge": "arched back bridge pose",
-    "suspended": "suspended by ropes",
-    "stockings": "wearing thigh-high stockings",
-    "mask": "face mask",
-    "heels": "high heels",
-    "shibari": "shibari ropes binding body",
-    "big_breasts": "huge breasts, prominently visible",
-    "small_breasts": "small breasts",
-    "skin_white": "white skin",
-    "skin_black": "black skin",
-    "body_fat": "plump body",
-    "body_thin": "thin body",
-    "body_normal": "average build",
-    "body_fit": "fit body",
-    "body_muscular": "muscular body",
-    "age_loli": "young girl",
-    "age_milf": "mature woman",
-    "age_21": "21 years old",
-    "cum": "covered in cum",
-    "belly_bloat": "visible belly bulge",
-    "succubus_tattoo": "succubus tattoo on lower belly",
-    "futanari": "futanari girl with visible penis and vagina",
-    "femboy": "femboy",
-    "ethnicity_asian": "asian girl",
-    "ethnicity_european": "european girl",
-    "furry_cow": "furry cow girl",
-    "furry_cat": "furry cat girl",
-    "furry_dog": "furry dog girl",
-    "furry_dragon": "furry dragon girl",
-    "furry_sylveon": "furry sylveon, ribbons, pink, sexy",
-    "furry_fox": "furry fox girl",
-    "furry_bunny": "furry bunny girl",
-    "furry_wolf": "furry wolf girl",
-    "ahegao": "ahegao face",
-    "pain_face": "expression of pain",
-    "ecstasy_face": "expression of ecstasy",
-    "gold_lipstick": "gold lipstick",
-    "from_below": "low angle view, from beneath the subject",
-    "from_above": "top-down view",
-    "from_side": "side angle",
-    "far_view": "full body in frame",
-    "close_view": "close-up"
+    "stockings": "wearing thigh-high stockings, visible",
+    "shibari": "shibari rope bondage, rope on body",
+    "big_breasts": "very large breasts, visible nipples, chest fully exposed",
+    "futanari": "futanari girl, visible erect penis, solo, breasts visible, feminine body",
+    "furry_cat": "furry cat girl, fur on body, tail, cat ears",
+    "ahegao": "ahegao expression, tongue out, eyes rolled",
+    "gold_lipstick": "gold lipstick on lips",
+    "bottom_view": "low angle view, camera below subject, body pressing down",
+    "top_view": "top view, camera above girl",
+    "side_view": "side view angle",
+    "far_view": "full body in frame, far shot, wide angle",
+    "close_view": "close-up, parts of body outside frame",
 }
 
-# дальше будет продолжение обработки Telegram, генерации и вебхука — если нужно, могу вставить оставшийся код также
+def build_prompt(tags):
+    base = (
+        "nsfw, masterpiece, anime style, best quality, solo, 1girl, fully nude, "
+        "no clothes, no censorship, no hands on chest, no arms covering breasts, "
+        "visible nipples, full body, avoid extra characters"
+    )
+    prompts = [TAG_PROMPTS.get(tag, tag) for tag in tags]
+    return base + ", " + ", ".join(prompts)
