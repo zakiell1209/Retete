@@ -227,6 +227,7 @@ def main_menu():
     kb = types.InlineKeyboardMarkup()
     kb.add(types.InlineKeyboardButton("🧩 Выбрать теги", callback_data="choose_tags"))
     kb.add(types.InlineKeyboardButton("🎨 Генерировать", callback_data="generate"))
+    kb.add(types.InlineKeyboardButton("🔢 Выбрать количество", callback_data="choose_count"))
     return kb
 
 def category_menu():
@@ -244,17 +245,24 @@ def tag_menu(category, selected_tags):
     kb.add(types.InlineKeyboardButton("⬅ Назад", callback_data="back_to_cat"))
     return kb
 
+def count_menu():
+    kb = types.InlineKeyboardMarkup(row_width=3)
+    for n in range(1, 5):
+        kb.add(types.InlineKeyboardButton(str(n), callback_data=f"count_{n}"))
+    kb.add(types.InlineKeyboardButton("⬅ Назад", callback_data="main_menu"))
+    return kb
+
 @bot.message_handler(commands=["start"])
 def start(msg):
     cid = msg.chat.id
-    user_settings[cid] = {"tags": [], "last_cat": None}
+    user_settings[cid] = {"tags": [], "last_cat": None, "last_prompt": None, "count": 1}
     bot.send_message(cid, "Привет! Что делаем?", reply_markup=main_menu())
 
 @bot.callback_query_handler(func=lambda call: True)
 def callback(call):
     cid = call.message.chat.id
     if cid not in user_settings:
-        user_settings[cid] = {"tags": [], "last_cat": None}
+        user_settings[cid] = {"tags": [], "last_cat": None, "last_prompt": None, "count": 1}
 
     data = call.data
 
@@ -290,28 +298,47 @@ def callback(call):
         prompt = build_prompt(tags)
         user_settings[cid]["last_prompt"] = tags.copy()
         bot.send_message(cid, "⏳ Генерация изображения...")
-        url = replicate_generate(prompt)
-        if url:
+        count = user_settings[cid].get("count", 1)
+        urls = []
+        for _ in range(count):
+            url = replicate_generate(prompt)
+            if url:
+                urls.append(url)
+        if urls:
             kb = types.InlineKeyboardMarkup()
             kb.add(
                 types.InlineKeyboardButton("Начать заново", callback_data="reset"),
                 types.InlineKeyboardButton("Редактировать теги", callback_data="choose_tags"),
+                types.InlineKeyboardButton("Сгенерировать ещё", callback_data="generate")
             )
-            bot.send_photo(cid, url, reply_markup=kb)
+            for url in urls:
+                bot.send_photo(cid, url)
+            bot.send_message(cid, "Выберите действие:", reply_markup=kb)
         else:
             bot.send_message(cid, "Ошибка генерации. Попробуйте позже.")
 
     elif data == "reset":
         user_settings[cid]["tags"] = []
+        user_settings[cid]["last_prompt"] = None
         bot.edit_message_text("Начнём заново.", cid, call.message.message_id, reply_markup=main_menu())
+
+    elif data == "choose_count":
+        bot.edit_message_text("Выберите количество изображений для генерации:", cid, call.message.message_id, reply_markup=count_menu())
+
+    elif data.startswith("count_"):
+        n = int(data.split("_")[1])
+        user_settings[cid]["count"] = n
+        bot.edit_message_text(f"Количество изображений установлено: {n}", cid, call.message.message_id, reply_markup=main_menu())
+
+    elif data == "main_menu":
+        bot.edit_message_text("Привет! Что делаем?", cid, call.message.message_id, reply_markup=main_menu())
 
 def build_prompt(tags):
     prompt_parts = []
-    # Персонажи, усиления и т.д.
     for tag in tags:
         if tag in TAG_PROMPTS:
             prompt_parts.append(TAG_PROMPTS[tag])
-    # Всегда убираем руки с груди
+    # Добавим строго убрать руки с груди (даже если просто руки)
     prompt_parts.append("no hands covering breasts or nipples")
     prompt_parts.append("realistic, high quality, detailed")
     return ", ".join(prompt_parts)
@@ -331,7 +358,6 @@ def replicate_generate(prompt):
         prediction = response.json()
         prediction_id = prediction["id"]
 
-        # Ожидание завершения генерации
         status = ""
         while status not in ("succeeded", "failed"):
             time.sleep(1.5)
