@@ -311,8 +311,11 @@ def callback(call):
                 types.InlineKeyboardButton("Редактировать теги", callback_data="choose_tags"),
                 types.InlineKeyboardButton("Сгенерировать ещё", callback_data="generate")
             )
+            media_group = []
             for url in urls:
-                bot.send_photo(cid, url)
+                # Отправляем фото с spoiler (спойлером)
+                media_group.append(types.InputMediaPhoto(media=url, spoiler=True))
+            bot.send_media_group(cid, media_group)
             bot.send_message(cid, "Выберите действие:", reply_markup=kb)
         else:
             bot.send_message(cid, "Ошибка генерации. Попробуйте позже.")
@@ -338,8 +341,9 @@ def build_prompt(tags):
     for tag in tags:
         if tag in TAG_PROMPTS:
             prompt_parts.append(TAG_PROMPTS[tag])
-    # Добавим строго убрать руки с груди (даже если просто руки)
+    # Строго запрещаем руки, закрывающие грудь и интимные места, и добавим negative prompt в replicate_generate
     prompt_parts.append("no hands covering breasts or nipples")
+    prompt_parts.append("no hands on genitalia")
     prompt_parts.append("realistic, high quality, detailed")
     return ", ".join(prompt_parts)
 
@@ -348,9 +352,16 @@ def replicate_generate(prompt):
         "Authorization": f"Token {REPLICATE_TOKEN}",
         "Content-Type": "application/json",
     }
+    # Добавим негативный prompt для еще более строгого контроля
+    negative_prompt = ("hands, finger, arm, hand covering breasts, hand covering genitalia, "
+                       "blurry, low quality, watermark, text, logo")
+
     json_data = {
         "version": REPLICATE_MODEL,
-        "input": {"prompt": prompt},
+        "input": {
+            "prompt": prompt,
+            "negative_prompt": negative_prompt
+        },
     }
     try:
         response = requests.post("https://api.replicate.com/v1/predictions", headers=headers, json=json_data)
