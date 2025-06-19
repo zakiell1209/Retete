@@ -1,415 +1,185 @@
 import os
 import time
+import json
+import logging
 import requests
 from flask import Flask, request
 import telebot
 from telebot import types
-import re
 
 API_TOKEN = os.getenv("TELEGRAM_TOKEN")
 REPLICATE_TOKEN = os.getenv("REPLICATE_API_TOKEN")
 WEBHOOK_URL = os.getenv("WEBHOOK_URL")
 PORT = int(os.environ.get("PORT", 5000))
-
 REPLICATE_MODEL = "c1d5b02687df6081c7953c74bcc527858702e8c153c9382012ccc3906752d3ec"
 
 bot = telebot.TeleBot(API_TOKEN)
 app = Flask(__name__)
+logging.basicConfig(level=logging.INFO)
+
 user_settings = {}
 
-CATEGORY_NAMES = {
-    "holes": "Отверстия",
-    "toys": "Игрушки",
-    "poses": "Позы",
-    "clothes": "Одежда",
-    "body": "Тело",
-    "ethnos": "Этнос",
-    "furry": "Фури",
-    "characters": "Персонажи",
-    "head": "Голова",
-    "view": "Обзор"
+# 💬 Русские теги → англ. ID
+RU_TO_TAG = {
+    "анус": "anal", "вагина": "vagina", "вся в сперме": "cum", "футанари": "futanari",
+    "большая грудь": "big_breasts", "чулки": "stockings", "шибари": "shibari",
+    "ахегао": "ahegao", "золотая помада": "gold_lipstick", "вертикальный шпагат": "ver_split",
+    "горизонтальный шпагат": "hor_split", "подвешена": "suspended", "приседание": "squat",
+    "каблуки": "heels", "сперма": "cum", "маска": "mask", "возраст 21": "age_21",
+    "азиатка": "ethnicity_asian", "европейка": "ethnicity_european",
+    "на боку с поднятой ногой": "side_up_leg", "лицом к зрителю": "front_facing",
+    "спиной к зрителю": "back_facing", "мост": "bridge", "лежит с коленями вверх": "lying_knees_up",
+    "снизу": "view_under", "сверху": "view_above", "сбоку": "view_side",
+    "дальше": "view_far", "ближе": "view_close", "лоли": "age_loli", "милфа": "age_milf",
+    "белая кожа": "skin_white", "черная кожа": "skin_black",
+    "фури кролик": "furry_bunny", "фури кошка": "furry_cat", "фури лисица": "furry_fox",
+    "фури волчица": "furry_wolf", "фури сильвеон": "furry_sylveon", "фури дракон": "furry_dragon",
+    "акено химедзима": "akeno", "риас гремори": "rias", "кафка": "kafka",
+    "фу сюань": "fu_xuan", "еола": "eula", "аясе сейко": "ayase"
 }
 
-TAGS = {
-    "holes": {
-        "vagina": "Вагина",
-        "anal": "Анус",
-        "both": "Вагина и анус"
-    },
-    "toys": {
-        "dildo": "Дилдо",
-        "huge_dildo": "Большое дилдо",
-        "horse_dildo": "Лошадиное дилдо",
-        "anal_beads": "Анальные бусы",
-        "anal_plug": "Анальная пробка",
-        "anal_expander": "Анальный расширитель",
-        "gag": "Кляп",
-        "piercing": "Пирсинг",
-        "long_dildo_path": "Дилдо из ануса выходит изо рта"
-    },
-    "poses": {
-        "doggy": "Наездница (догги-стайл)",
-        "standing": "Стоя",
-        "splits": "Шпагат",
-        "squat": "Приседание",
-        "lying": "Лежа",
-        "hor_split": "Горизонтальный шпагат",
-        "ver_split": "Вертикальный шпагат",
-        "side_up_leg": "На боку с поднятой ногой",
-        "front_facing": "Лицом к зрителю",
-        "back_facing": "Спиной к зрителю",
-        "lying_knees_up": "Лежа с согнутыми коленями",
-        "bridge": "Мост",
-        "suspended": "Подвешена"
-    },
-    "clothes": {
-        "stockings": "Чулки",
-        "bikini_tan_lines": "Загар от бикини",
-        "mask": "Маска",
-        "heels": "Каблуки",
-        "shibari": "Шибари"
-    },
-    "body": {
-        "big_breasts": "Большая грудь",
-        "small_breasts": "Маленькая грудь",
-        "skin_white": "Белая кожа",
-        "skin_black": "Чёрная кожа",
-        "body_fat": "Пышное тело",
-        "body_thin": "Худое тело",
-        "body_normal": "Нормальное тело",
-        "body_fit": "Подтянутое тело",
-        "body_muscular": "Мускулистое тело",
-        "age_loli": "Лоли",
-        "age_milf": "Милфа",
-        "age_21": "Возраст 21",
-        "cum": "Вся в сперме",
-        "belly_bloat": "Вздутие живота",
-        "succubus_tattoo": "Тату внизу живота"
-    },
-    "ethnos": {
-        "futanari": "Футанари",
-        "femboy": "Фембой",
-        "ethnicity_asian": "Азиатка",
-        "ethnicity_european": "Европейка"
-    },
-    "furry": {
-        "furry_cow": "Фури корова",
-        "furry_cat": "Фури кошка",
-        "furry_dog": "Фури собака",
-        "furry_dragon": "Фури дракон",
-        "furry_sylveon": "Фури сильвеон",
-        "furry_fox": "Фури лисица",
-        "furry_bunny": "Фури кролик",
-        "furry_wolf": "Фури волчица"
-    },
-    "characters": {
-        "rias": "Риас Гремори",
-        "akeno": "Акено Химедзима",
-        "kafka": "Кафка (Хонкай)",
-        "eula": "Еола (Геншин)",
-        "fu_xuan": "Фу Сюань (Хонкай)",
-        "ayase": "Аясе Сейко"
-    },
-    "head": {
-        "ahegao": "Ахегао",
-        "pain_face": "Лицо в боли",
-        "ecstasy_face": "Лицо в экстазе",
-        "gold_lipstick": "Золотая помада"
-    },
-    "view": {
-        "view_below": "Снизу",
-        "view_above": "Сверху",
-        "view_side": "Сбоку",
-        "view_far": "Дальше",
-        "view_close": "Ближе"
-    }
-}
-
-CHARACTER_EXTRA = {
-    "rias": "red long hair, blue eyes, pale skin, large breasts, rias gremory, highschool dxd",
-    "akeno": "long black hair, purple eyes, large breasts, akeno himejima, highschool dxd",
-    "kafka": "purple wavy hair, cold expression, kafka, honkai star rail",
-    "eula": "light blue hair, fair skin, eula, genshin impact",
+# 💡 Расширенные промпты
+TAG_PROMPTS = {
+    "futanari": "futanari, penis",
+    "big_breasts": "very large breasts, visible, uncovered",
+    "anal": "visible anus",
+    "dildo": "dildo, inserted",
+    "cum": "covered in cum",
+    "gold_lipstick": "gold lipstick on lips only",
+    "ahegao": "ahegao expression",
+    "ver_split": "vertical split, standing leg up, gymnastics, full body pose",
+    "hor_split": "horizontal split on the floor, full body pose",
+    "view_under": "view from under the body, under the floor",
+    "view_above": "top-down view",
+    "view_side": "side angle",
+    "view_far": "zoomed out, full body visible",
+    "view_close": "close-up, partial body in frame",
+    "rias": "red hair, blue eyes, pale skin, rias gremory, highschool dxd",
+    "akeno": "black hair, purple eyes, akeno himejima, highschool dxd",
+    "kafka": "purple hair, kafka, honkai star rail",
     "fu_xuan": "pink hair, fu xuan, honkai star rail",
+    "eula": "light blue hair, eula, genshin impact",
     "ayase": "black hair, school uniform, ayase seiko"
 }
 
-TAG_PROMPTS = {
-    **CHARACTER_EXTRA,
-    "vagina": "spread pussy, fully visible, no obstruction",
-    "anal": "spread anus, fully visible, no obstruction",
-    "both": "spread pussy and anus, fully visible, no obstruction",
-    "dildo": "dildo inserted, fully visible, no hands or objects covering body parts",
-    "huge_dildo": "huge dildo, fully visible, no obstruction",
-    "horse_dildo": "horse dildo, fully visible",
-    "anal_beads": "anal beads inserted, no obstruction",
-    "anal_plug": "anal plug, fully visible",
-    "anal_expander": "anal expander stretching anus, no hands covering",
-    "gag": "ball gag on mouth",
-    "piercing": "nipple and genital piercings fully visible",
-    "long_dildo_path": (
-        "dildo inserted into anus, pushing visibly through intestines with clear belly bulge, "
-        "exiting from mouth, seamless and continuous dildo, consistent texture, realistic rubber, no hands"
-    ),
-    "doggy": "doggy style pose, no hands covering breasts or genitals",
-    "standing": "standing pose, no hands on chest",
-    "splits": "doing a split, legs fully extended, no obstruction, no hands on chest",
-    "hor_split": (
-        "horizontal split, legs stretched fully to sides, pelvis on floor, thighs spread open, "
-        "inner thighs visible, high detail, legs flat on floor, no legs raised, no hands on chest"
-    ),
-    "ver_split": (
-        "vertical split, legs straight up and down, fully visible, no obstruction, no hands on chest"
-    ),
-    "side_up_leg": "on side with leg raised, no hands on chest",
-    "front_facing": "facing viewer, no hands on chest",
-    "back_facing": "back to viewer, no hands on chest",
-    "lying_knees_up": "legs up, knees bent, no hands on chest",
-    "bridge": "arched back bridge pose, no hands covering body",
-    "suspended": "suspended by ropes, no hands covering chest",
-    "stockings": "wearing stockings only, no obstruction",
-    "mask": "mask on face",
-    "heels": "high heels with red soles",
-    "shibari": "shibari ropes, no hands covering chest",
-    "big_breasts": "very large breasts, fully visible, no hands covering",
-    "small_breasts": "small breasts, fully visible",
-    "skin_white": "white skin",
-    "skin_black": "black skin",
-    "body_fat": "curvy body",
-    "body_thin": "thin body",
-    "body_normal": "average body",
-    "body_fit": "fit body",
-    "body_muscular": "muscular body",
-    "age_loli": "loli girl, fully visible",
-    "age_milf": "milf woman, fully visible",
-    "age_21": "age 21",
-    "cum": "cum covered, visible",
-    "belly_bloat": "belly bulge from toy, visible",
-    "succubus_tattoo": "succubus tattoo on lower abdomen",
-    "futanari": "futanari girl with large breasts, no hands covering body",
-    "femboy": "femboy with feminine body",
-    "ethnicity_asian": "asian girl",
-    "ethnicity_european": "european girl",
-    "furry_cow": "furry cow girl, no hands covering",
-    "furry_cat": "furry cat girl, no hands covering",
-    "furry_dog": "furry dog girl, no hands covering",
-    "furry_dragon": "furry dragon girl, no hands covering",
-    "furry_sylveon": "furry sylveon, pink, ribbons, sexy, no hands covering",
-    "furry_fox": "furry fox girl, no hands covering",
-    "furry_bunny": "furry bunny girl, no hands covering",
-    "furry_wolf": "furry wolf girl, no hands covering",
-    "ahegao": "ahegao face",
-    "pain_face": "face in pain",
-    "ecstasy_face": "face in ecstasy",
-    "gold_lipstick": "gold lipstick on lips only",
-    "view_below": "viewpoint from below, showing body pressed against surface, no obstruction",
-    "view_above": "viewpoint from above, full body visible",
-    "view_side": "side view of full body",
-    "view_far": "full body visible from distance, no clipping",
-    "view_close": "close up view, partial body visible, no obstruction"
-}
+def build_prompt(tags):
+    base = "nsfw, masterpiece, best quality, anime style, full body, ultra detailed, fully nude, no hands on breasts"
+    extra = [TAG_PROMPTS.get(tag, tag.replace("_", " ")) for tag in tags]
+    return f"{base}, {', '.join(extra)}"
+
+def replicate_generate(prompt, count=1):
+    url = "https://api.replicate.com/v1/predictions"
+    headers = {"Authorization": f"Token {REPLICATE_TOKEN}", "Content-Type": "application/json"}
+    urls = []
+
+    for _ in range(count):
+        response = requests.post(url, headers=headers, json={
+            "version": REPLICATE_MODEL,
+            "input": {"prompt": prompt}
+        })
+        if response.status_code != 201:
+            continue
+        status_url = response.json()["urls"]["get"]
+
+        for _ in range(60):
+            time.sleep(2)
+            status = requests.get(status_url, headers=headers)
+            if status.status_code != 200:
+                break
+            data = status.json()
+            if data["status"] == "succeeded":
+                output = data["output"]
+                urls.append(output[0] if isinstance(output, list) else output)
+                break
+            elif data["status"] == "failed":
+                break
+    return urls
+
+# 🚀 Команды
+@bot.message_handler(commands=["start"])
+def start(msg):
+    cid = msg.chat.id
+    user_settings[cid] = {"tags": [], "last_prompt": []}
+    bot.send_message(cid, "Привет! Введите теги через запятую или нажмите кнопку.", reply_markup=main_menu())
 
 def main_menu():
     kb = types.InlineKeyboardMarkup()
     kb.add(types.InlineKeyboardButton("🧩 Выбрать теги", callback_data="choose_tags"))
     kb.add(types.InlineKeyboardButton("🎨 Генерировать", callback_data="generate"))
-    kb.add(types.InlineKeyboardButton("✍️ Ввести теги текстом", callback_data="text_tags"))
     return kb
 
-def category_menu():
-    kb = types.InlineKeyboardMarkup(row_width=2)
-    for key, name in CATEGORY_NAMES.items():
-        kb.add(types.InlineKeyboardButton(name, callback_data=f"cat_{key}"))
-    kb.add(types.InlineKeyboardButton("⬅️ Назад", callback_data="back"))
-    return kb
-
-def tags_menu(category, user_id):
-    kb = types.InlineKeyboardMarkup(row_width=2)
-    selected = user_settings.get(user_id, {}).get("tags", [])
-    for tag, desc in TAGS[category].items():
-        text = f"{desc}"
-        if tag in selected:
-            text = "✅ " + text
-        kb.add(types.InlineKeyboardButton(text, callback_data=f"tag_{tag}"))
-    kb.add(types.InlineKeyboardButton("⬅️ Назад", callback_data="back_to_cat"))
-    kb.add(types.InlineKeyboardButton("Готово", callback_data="done_tags"))
-    return kb
-
-def build_prompt(user_id):
-    tags = user_settings.get(user_id, {}).get("tags", [])
-    prompt_parts = []
-
-    # Добавляем расширенное описание персонажей
-    for tag in tags:
-        if tag in CHARACTER_EXTRA:
-            prompt_parts.append(CHARACTER_EXTRA[tag])
-    # Остальные промты
-    for tag in tags:
-        if tag in TAG_PROMPTS and tag not in CHARACTER_EXTRA:
-            prompt_parts.append(TAG_PROMPTS[tag])
-
-    prompt_parts.append("no hands covering breasts or nipples or genitals")
-    prompt = ", ".join(prompt_parts)
-    return prompt
-
-def generate_image(prompt, n=1):
-    headers = {
-        "Authorization": f"Token {REPLICATE_TOKEN}",
-        "Content-Type": "application/json"
-    }
-    data = {
-        "version": REPLICATE_MODEL,
-        "input": {
-            "prompt": prompt,
-            "num_inference_steps": 50,
-            "guidance_scale": 7.5,
-            "num_outputs": n
-        }
-    }
-    response = requests.post("https://api.replicate.com/v1/predictions", headers=headers, json=data)
-    if response.status_code != 201:
-        return None, f"Ошибка генерации: {response.status_code} {response.text}"
-    prediction = response.json()
-    prediction_url = f"https://api.replicate.com/v1/predictions/{prediction['id']}"
-
-    for _ in range(60):
-        time.sleep(1)
-        r = requests.get(prediction_url, headers=headers)
-        rj = r.json()
-        if rj.get("status") == "succeeded":
-            outputs = rj.get("output")
-            # Вывод может быть список ссылок, либо строка
-            if isinstance(outputs, list):
-                return outputs, None
-            else:
-                return [outputs], None
-        if rj.get("status") == "failed":
-            return None, "Ошибка генерации: модель вернула ошибку"
-    return None, "Ошибка генерации: время ожидания истекло"
-
-@bot.message_handler(commands=['start', 'help'])
-def send_welcome(message):
-    user_id = message.from_user.id
-    if user_id not in user_settings:
-        user_settings[user_id] = {"tags": []}
-    bot.send_message(message.chat.id, "Привет! Используй меню для выбора тегов и генерации.", reply_markup=main_menu())
-
-@bot.callback_query_handler(func=lambda call: True)
-def callback_handler(call):
-    user_id = call.from_user.id
-    if call.data == "choose_tags":
-        bot.edit_message_text("Выберите категорию тегов:", call.message.chat.id, call.message.message_id, reply_markup=category_menu())
-    elif call.data.startswith("cat_"):
-        cat = call.data[4:]
-        if cat in TAGS:
-            bot.edit_message_text(f"Выберите теги в категории {CATEGORY_NAMES[cat]}:", call.message.chat.id, call.message.message_id, reply_markup=tags_menu(cat, user_id))
+# ✏️ Ввод тегов вручную
+@bot.message_handler(func=lambda m: True, content_types=["text"])
+def handle_text(msg):
+    cid = msg.chat.id
+    text = msg.text.strip().lower()
+    count = 1
+    parts = [p.strip() for p in text.split(",")]
+    if parts and parts[-1].isdigit():
+        count = min(10, max(1, int(parts.pop())))
+    tags = []
+    unknown = []
+    for word in parts:
+        tag = RU_TO_TAG.get(word)
+        if tag:
+            tags.append(tag)
         else:
-            bot.answer_callback_query(call.id, "Категория не найдена")
-    elif call.data.startswith("tag_"):
-        tag = call.data[4:]
-        settings = user_settings.setdefault(user_id, {"tags": []})
-        if tag in settings["tags"]:
-            settings["tags"].remove(tag)
-        else:
-            settings["tags"].append(tag)
-        # Обновляем меню тегов в той же категории
-        for cat_key, cat_tags in TAGS.items():
-            if tag in cat_tags:
-                bot.edit_message_reply_markup(call.message.chat.id, call.message.message_id, reply_markup=tags_menu(cat_key, user_id))
-                break
-        bot.answer_callback_query(call.id)
-    elif call.data == "done_tags":
-        tags = user_settings.get(user_id, {}).get("tags", [])
-        tags_list = ", ".join([TAGS[cat].get(tag, tag) for cat in TAGS for tag in tags if tag in TAGS[cat]])
-        bot.edit_message_text(f"Вы выбрали теги:\n{tags_list}", call.message.chat.id, call.message.message_id, reply_markup=main_menu())
-    elif call.data == "generate":
-        tags = user_settings.get(user_id, {}).get("tags", [])
-        if not tags:
-            bot.answer_callback_query(call.id, "Вы не выбрали теги для генерации")
-            return
-        bot.edit_message_text("Генерирую изображение, подождите...", call.message.chat.id, call.message.message_id)
-        prompt = build_prompt(user_id)
-        images, err = generate_image(prompt, n=1)
-        if err:
-            bot.send_message(call.message.chat.id, err)
-        else:
-            for img_url in images:
-                bot.send_photo(call.message.chat.id, img_url, caption=f"Сгенерировано по тегам:\n{prompt}")
-        bot.send_message(call.message.chat.id, "Выберите действие:", reply_markup=main_menu())
-    elif call.data == "text_tags":
-        bot.send_message(call.message.chat.id, "Отправьте теги через запятую или пробел, например:\nrias, futanari, ver_split, anal")
-    elif call.data == "back":
-        bot.edit_message_text("Главное меню", call.message.chat.id, call.message.message_id, reply_markup=main_menu())
-    elif call.data == "back_to_cat":
-        bot.edit_message_text("Выберите категорию тегов:", call.message.chat.id, call.message.message_id, reply_markup=category_menu())
+            unknown.append(word)
+    if unknown:
+        bot.send_message(cid, f"Неизвестные теги: {', '.join(unknown)}")
+        return
+    user_settings[cid] = {"tags": tags, "last_prompt": tags}
+    bot.send_message(cid, f"⏳ Генерация {count} изображений...")
+    prompt = build_prompt(tags)
+    urls = replicate_generate(prompt, count)
+    if urls:
+        for url in urls:
+            bot.send_photo(cid, url, reply_markup=result_menu())
     else:
-        bot.answer_callback_query(call.id, "Неизвестная команда")
+        bot.send_message(cid, "❌ Не удалось сгенерировать изображение.")
 
-@bot.message_handler(func=lambda message: True)
-def handle_text_tags(message):
-    user_id = message.from_user.id
-    text = message.text.lower()
+def result_menu():
+    kb = types.InlineKeyboardMarkup()
+    kb.add(
+        types.InlineKeyboardButton("🔁 Начать заново", callback_data="start"),
+        types.InlineKeyboardButton("🎨 Ещё раз", callback_data="generate")
+    )
+    return kb
 
-    # Проверяем, не команда ли это генерации с числом
-    match = re.match(r"/generate(?:\s+(\d+))?", text)
-    if match:
-        n = 1
-        if match.group(1):
-            n = int(match.group(1))
-            if n < 1: n = 1
-            if n > 10: n = 10
-        tags = user_settings.get(user_id, {}).get("tags", [])
+# 📩 Обработка колбэков
+@bot.callback_query_handler(func=lambda call: True)
+def callback(call):
+    cid = call.message.chat.id
+    if call.data == "start":
+        return start(call.message)
+    elif call.data == "generate":
+        tags = user_settings.get(cid, {}).get("last_prompt", [])
         if not tags:
-            bot.reply_to(message, "Вы не выбрали теги для генерации. Используйте меню или отправьте теги текстом.")
+            bot.send_message(cid, "Сначала выберите теги.")
             return
-        bot.reply_to(message, f"Генерирую {n} изображений, подождите...")
-        prompt = build_prompt(user_id)
-        images, err = generate_image(prompt, n=n)
-        if err:
-            bot.send_message(message.chat.id, err)
+        prompt = build_prompt(tags)
+        urls = replicate_generate(prompt)
+        if urls:
+            for url in urls:
+                bot.send_photo(cid, url, reply_markup=result_menu())
         else:
-            for img_url in images:
-                bot.send_photo(message.chat.id, img_url, caption=f"Сгенерировано по тегам:\n{prompt}")
-        bot.send_message(message.chat.id, "Выберите действие:", reply_markup=main_menu())
-        return
+            bot.send_message(cid, "❌ Ошибка генерации.")
+    elif call.data == "choose_tags":
+        bot.send_message(cid, "Введите теги через запятую. Например: риас гремори, футанари, анус, дилдо")
 
-    # Иначе считаем это вводом тегов
-    # Сплитим по запятым, пробелам, переводам строк
-    raw_tags = re.split(r"[\s,]+", text)
-    raw_tags = [tag.strip() for tag in raw_tags if tag.strip()]
-    valid_tags = []
-    invalid_tags = []
-
-    # Проверяем валидность тегов по ключам TAGS
-    all_tags = set()
-    for cat_tags in TAGS.values():
-        all_tags.update(cat_tags.keys())
-    for tag in raw_tags:
-        if tag in all_tags:
-            valid_tags.append(tag)
-        else:
-            invalid_tags.append(tag)
-
-    if invalid_tags:
-        bot.reply_to(message, f"Некорректные теги: {', '.join(invalid_tags)}\nПожалуйста, используйте корректные теги.")
-        return
-
-    # Сохраняем выбранные теги
-    user_settings[user_id] = {"tags": valid_tags}
-    bot.reply_to(message, f"Теги обновлены: {', '.join(valid_tags)}\nИспользуйте /generate или кнопку Генерировать.")
-
-@app.route('/', methods=['POST'])
+# 🌐 Вебхуки
+@app.route("/", methods=["POST"])
 def webhook():
-    json_str = request.get_data().decode('utf-8')
+    json_str = request.stream.read().decode("utf-8")
     update = telebot.types.Update.de_json(json_str)
     bot.process_new_updates([update])
-    return "OK", 200
+    return "ok", 200
 
-def set_webhook():
+@app.route("/", methods=["GET"])
+def home():
+    return "бот активен", 200
+
+if __name__ == "__main__":
     bot.remove_webhook()
-    time.sleep(1)
     bot.set_webhook(url=WEBHOOK_URL)
-
-if __name__ == '__main__':
-    set_webhook()
-    app.run(host='0.0.0.0', port=PORT)
+    app.run(host="0.0.0.0", port=PORT)
