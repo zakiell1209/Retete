@@ -153,9 +153,7 @@ TAG_PROMPTS = {
     "view_top": "view from above",
     "view_side": "side view",
     "view_close": "close-up",
-    "view_full": "full body visible",
-    "hands_on_chest": "hands gently resting on chest",
-    "no_men": "no men, no male presence"
+    "view_full": "full body visible"
 }
 
 def main_menu():
@@ -194,13 +192,11 @@ def callback(call):
 
     if data == "choose_tags":
         bot.edit_message_text("Выбери категорию тегов:", cid, call.message.message_id, reply_markup=category_menu())
-
     elif data.startswith("cat_"):
         cat = data[4:]
         user_settings[cid]["last_cat"] = cat
         selected = user_settings[cid]["tags"]
         bot.edit_message_text(f"Категория: {CATEGORY_NAMES[cat]}", cid, call.message.message_id, reply_markup=tag_menu(cat, selected))
-
     elif data.startswith("tag_"):
         _, cat, tag = data.split("_", 2)
         tags = user_settings[cid]["tags"]
@@ -209,13 +205,10 @@ def callback(call):
         else:
             tags.append(tag)
         bot.edit_message_reply_markup(cid, call.message.message_id, reply_markup=tag_menu(cat, tags))
-
     elif data == "done_tags":
         bot.edit_message_text("Теги сохранены.", cid, call.message.message_id, reply_markup=main_menu())
-
     elif data == "back_to_cat":
         bot.edit_message_text("Выбери категорию:", cid, call.message.message_id, reply_markup=category_menu())
-
     elif data == "generate":
         tags = user_settings[cid]["tags"]
         if not tags:
@@ -235,14 +228,12 @@ def callback(call):
             bot.send_photo(cid, url, caption="✅ Готово!", reply_markup=kb)
         else:
             bot.send_message(cid, "❌ Ошибка генерации.")
-
     elif data == "edit_tags":
         if "last_prompt" in user_settings[cid]:
             user_settings[cid]["tags"] = user_settings[cid]["last_prompt"]
             bot.send_message(cid, "Изменяем теги:", reply_markup=category_menu())
         else:
             bot.send_message(cid, "Нет сохранённых тегов. Сначала сделай генерацию.")
-
     elif data == "start":
         user_settings[cid] = {"tags": [], "last_cat": None}
         bot.send_message(cid, "Сброс настроек.", reply_markup=main_menu())
@@ -250,14 +241,12 @@ def callback(call):
 def build_prompt(tags):
     base = (
         "nsfw, masterpiece, best quality, fully nude, "
-        "hands on chest, no men, no male, no hands covering nipples"
+        "no men, no male, no hands on chest, no hands covering nipples, hands away from breasts"
     )
     prompts = [TAG_PROMPTS.get(tag, tag) for tag in tags]
 
-    # Пример вариативности: в 70% случаев золотая помада красит губы, язык, ногти, иногда волосы
     if "gold_lipstick" in tags and random.random() < 0.7:
-        if "gold lipstick covering lips, tongue, nails, sometimes hair" not in prompts:
-            prompts.append("gold lipstick covering lips, tongue, nails, sometimes hair")
+        prompts.append("gold lipstick covering lips, tongue, nails, sometimes hair")
 
     return base + ", " + ", ".join(prompts)
 
