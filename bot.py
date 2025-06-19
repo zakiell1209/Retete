@@ -349,18 +349,18 @@ def replicate_generate(prompt):
         print("Error generating image:", e)
         return None
 
-@app.route(f"/{API_TOKEN}", methods=["POST"])
+@app.route('/', methods=['POST'])
 def webhook():
-    json_str = request.get_data().decode("utf-8")
+    json_str = request.get_data().decode('utf-8')
     update = telebot.types.Update.de_json(json_str)
     bot.process_new_updates([update])
-    return ""
+    return "OK", 200
 
-@app.route("/")
-def index():
-    return "Bot is running..."
-
-if __name__ == "__main__":
+def set_webhook():
     bot.remove_webhook()
-    bot.set_webhook(url=WEBHOOK_URL + "/" + API_TOKEN)
-    app.run(host="0.0.0.0", port=PORT)
+    time.sleep(1)
+    bot.set_webhook(url=WEBHOOK_URL)
+
+if __name__ == '__main__':
+    set_webhook()
+    app.run(host='0.0.0.0', port=PORT)
