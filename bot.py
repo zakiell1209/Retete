@@ -297,7 +297,7 @@ def callback(call):
             return
         prompt = build_prompt(tags)
         user_settings[cid]["last_prompt"] = tags.copy()
-        bot.send_message(cid, "⏳ Генерация изображения...")
+        bot.send_message(cid, "⏳ Генерация изображений...")
         count = user_settings[cid].get("count", 1)
         urls = []
         for _ in range(count):
@@ -311,11 +311,8 @@ def callback(call):
                 types.InlineKeyboardButton("Редактировать теги", callback_data="choose_tags"),
                 types.InlineKeyboardButton("Сгенерировать ещё", callback_data="generate")
             )
-            media_group = []
             for url in urls:
-                # Отправляем фото с spoiler (спойлером)
-                media_group.append(types.InputMediaPhoto(media=url, spoiler=True))
-            bot.send_media_group(cid, media_group)
+                bot.send_photo(cid, url)
             bot.send_message(cid, "Выберите действие:", reply_markup=kb)
         else:
             bot.send_message(cid, "Ошибка генерации. Попробуйте позже.")
@@ -341,9 +338,9 @@ def build_prompt(tags):
     for tag in tags:
         if tag in TAG_PROMPTS:
             prompt_parts.append(TAG_PROMPTS[tag])
-    # Строго запрещаем руки, закрывающие грудь и интимные места, и добавим negative prompt в replicate_generate
+    # Убираем руки, закрывающие грудь или интимные места, чётко
     prompt_parts.append("no hands covering breasts or nipples")
-    prompt_parts.append("no hands on genitalia")
+    prompt_parts.append("no clothes on intimate areas")
     prompt_parts.append("realistic, high quality, detailed")
     return ", ".join(prompt_parts)
 
@@ -352,16 +349,9 @@ def replicate_generate(prompt):
         "Authorization": f"Token {REPLICATE_TOKEN}",
         "Content-Type": "application/json",
     }
-    # Добавим негативный prompt для еще более строгого контроля
-    negative_prompt = ("hands, finger, arm, hand covering breasts, hand covering genitalia, "
-                       "blurry, low quality, watermark, text, logo")
-
     json_data = {
         "version": REPLICATE_MODEL,
-        "input": {
-            "prompt": prompt,
-            "negative_prompt": negative_prompt
-        },
+        "input": {"prompt": prompt},
     }
     try:
         response = requests.post("https://api.replicate.com/v1/predictions", headers=headers, json=json_data)
@@ -378,6 +368,7 @@ def replicate_generate(prompt):
             status = prediction["status"]
 
         if status == "succeeded":
+            # Если возвращается список, берём первый
             image_url = prediction["output"][0] if isinstance(prediction["output"], list) else prediction["output"]
             return image_url
         else:
@@ -400,4 +391,4 @@ def set_webhook():
 
 if __name__ == '__main__':
     set_webhook()
-    app.run(host='0.0.0.0', port=PORT)
+    app.run(host='0.0.0.
