@@ -16,6 +16,7 @@ bot = telebot.TeleBot(API_TOKEN)
 app = Flask(__name__)
 user_settings = {}
 
+# --- Категории и теги ---
 CATEGORY_NAMES = {
     "holes": "Отверстия", "toys": "Игрушки", "poses": "Позы", "clothes": "Одежда",
     "body": "Тело", "ethnos": "Этнос", "furry": "Фури", "characters": "Персонажи",
@@ -31,11 +32,11 @@ TAGS = {
         "piercing": "Пирсинг", "long_dildo_path": "Дилдо из ануса выходит изо рта"
     },
     "poses": {
-        "doggy": "Наездница", "standing": "Стоя", "splits": "Шпагат",
-        "squat": "Приседание", "lying": "Лежа", "hor_split": "Горизонтальный шпагат",
-        "ver_split": "Вертикальный шпагат", "side_up_leg": "На боку с ногой вверх",
-        "front_facing": "Лицом к зрителю", "back_facing": "Спиной к зрителю",
-        "lying_knees_up": "Лежа с коленями вверх", "bridge": "Мост", "suspended": "Подвешена"
+        "doggy": "Наездница", "standing": "Стоя", "splits": "Шпагат", "squat": "Приседание",
+        "lying": "Лежа", "hor_split": "Горизонтальный шпагат", "ver_split": "Вертикальный шпагат",
+        "side_up_leg": "На боку с ногой вверх", "front_facing": "Лицом к зрителю",
+        "back_facing": "Спиной к зрителю", "lying_knees_up": "Лежа с коленями вверх",
+        "bridge": "Мост", "suspended": "Подвешена"
     },
     "clothes": {
         "stockings": "Чулки", "bikini_tan_lines": "Загар от бикини", "mask": "Маска",
@@ -43,11 +44,10 @@ TAGS = {
     },
     "body": {
         "big_breasts": "Большая грудь", "small_breasts": "Маленькая грудь",
-        "skin_white": "Белая кожа", "skin_black": "Чёрная кожа",
-        "body_fat": "Пышное тело", "body_thin": "Худое тело", "body_normal": "Нормальное тело",
-        "body_fit": "Подтянутое тело", "body_muscular": "Мускулистое тело",
-        "age_loli": "Лоли", "age_milf": "Милфа", "age_21": "Возраст 21",
-        "cum": "Вся в сперме", "belly_bloat": "Вздутие живота",
+        "skin_white": "Белая кожа", "skin_black": "Чёрная кожа", "body_fat": "Пышное тело",
+        "body_thin": "Худое тело", "body_normal": "Нормальное тело", "body_fit": "Подтянутое тело",
+        "body_muscular": "Мускулистое тело", "age_loli": "Лоли", "age_milf": "Милфа",
+        "age_21": "Возраст 21", "cum": "Вся в сперме", "belly_bloat": "Вздутие живота",
         "succubus_tattoo": "Тату внизу живота"
     },
     "ethnos": {
@@ -68,59 +68,21 @@ TAGS = {
         "gold_lipstick": "Золотая помада"
     },
     "view": {
-        "view_bottom": "Снизу", "view_top": "Сверху",
-        "view_side": "Сбоку", "view_close": "Ближе", "view_full": "Дальше"
+        "view_bottom": "Снизу", "view_top": "Сверху", "view_side": "Сбоку",
+        "view_close": "Ближе", "view_full": "Дальше"
     }
 }
 
-CHARACTER_EXTRA = {
-    "rias": "red hair, blue eyes, large breasts, pale skin, rias gremory, highschool dxd",
-    "akeno": "black hair, purple eyes, large breasts, akeno himejima, highschool dxd",
-    "kafka": "purple wavy hair, kafka, honkai star rail",
-    "eula": "light blue hair, fair skin, eula, genshin impact",
-    "fu_xuan": "pink hair, fu xuan, honkai star rail",
-    "ayase": "black hair, school uniform, ayase seiko"
-}
+# --- Обратный словарь для русского ввода тегов ---
+RUS_TO_KEY = {v: k for group in TAGS.values() for k, v in group.items()}
 
 TAG_PROMPTS = {
-    **CHARACTER_EXTRA,
-    "vagina": "spread pussy", "anal": "spread anus", "both": "spread pussy and anus",
-    "dildo": "dildo inserted in anus", "huge_dildo": "huge dildo",
-    "horse_dildo": "horse dildo", "anal_beads": "anal beads inserted",
-    "anal_plug": "anal plug", "anal_expander": "anal expander stretching anus",
-    "gag": "ball gag", "piercing": "nipple and genital piercings",
-    "long_dildo_path": (
-        "seamless dildo passing from anus to mouth, no internal view, consistent color and material"
-    ),
-    "doggy": "doggy style", "standing": "standing pose", "splits": "doing a split",
-    "hor_split": (
-        "horizontal split, one girl, legs flat on floor, pelvis down, no lifted leg, front view"
-    ),
-    "ver_split": (
-        "vertical split, one girl, standing or supported, one leg up, vertical line, realistic anatomy"
-    ),
-    "side_up_leg": "on side with leg raised", "front_facing": "facing viewer",
-    "back_facing": "back to viewer", "lying_knees_up": "lying with knees up",
-    "bridge": "arched bridge pose", "suspended": "suspended in air by ropes",
-    "stockings": "black stockings only", "mask": "blindfold mask", "heels": "high heels",
-    "shibari": "shibari rope bondage", "big_breasts": "very large breasts",
-    "small_breasts": "small breasts", "skin_white": "pale white skin",
-    "skin_black": "dark black skin", "body_fat": "chubby curvy body", "body_thin": "thin body",
-    "body_normal": "average proportions", "body_fit": "fit and toned", "body_muscular": "muscular build",
-    "age_loli": "young girl loli style", "age_milf": "mature woman", "age_21": "21 years old",
-    "cum": "cum covered body", "belly_bloat": "belly bulge", "succubus_tattoo": "tattoo on lower belly",
-    "futanari": "futanari with penis and breasts", "femboy": "feminine femboy",
-    "ethnicity_asian": "asian", "ethnicity_european": "caucasian",
-    "furry_cow": "furry cow girl", "furry_cat": "furry cat girl",
-    "furry_dog": "furry dog girl", "furry_dragon": "furry dragon girl",
-    "furry_sylveon": "furry sylveon style", "furry_fox": "furry fox girl",
-    "furry_bunny": "furry bunny girl", "furry_wolf": "furry wolf girl",
-    "ahegao": "ahegao expression", "pain_face": "face in pain",
-    "ecstasy_face": "face in ecstasy", "gold_lipstick": "gold lipstick",
-    "view_bottom": "view from below, under surface", "view_top": "view from above",
-    "view_side": "side view", "view_close": "close-up", "view_full": "full body visible"
+    "gold_lipstick": "gold lipstick covering lips",
+    "no_men": "no men", "no_hands": "no hands covering chest or nipples",
+    "fully_nude": "fully nude", "nsfw": "nsfw", "masterpiece": "masterpiece", "best quality": "best quality"
 }
 
+# --- Меню ---
 def main_menu():
     kb = types.InlineKeyboardMarkup()
     kb.add(types.InlineKeyboardButton("🧩 Выбрать теги", callback_data="choose_tags"))
@@ -142,17 +104,41 @@ def tag_menu(category, selected_tags):
     kb.add(types.InlineKeyboardButton("⬅ Назад", callback_data="back_to_cat"))
     return kb
 
+# --- Обработка /start ---
 @bot.message_handler(commands=["start"])
 def start(msg):
     cid = msg.chat.id
-    user_settings[cid] = {"tags": [], "last_cat": None}
+    user_settings[cid] = {"tags": [], "last_cat": None, "count": 1}
     bot.send_message(cid, "Привет! Что делаем?", reply_markup=main_menu())
 
+# --- Обработка выбора количества картинок ---
+@bot.message_handler(commands=["count"])
+def set_count(msg):
+    cid = msg.chat.id
+    count = msg.text.split(" ")[1:]
+    if count and count[0].isdigit() and 1 <= int(count[0]) <= 10:
+        user_settings.setdefault(cid, {})["count"] = int(count[0])
+        bot.send_message(cid, f"Количество изображений: {count[0]}")
+    else:
+        bot.send_message(cid, "Введите: /count 2 (от 1 до 10)")
+
+# --- Обработка русского ввода тегов ---
+@bot.message_handler(func=lambda m: True, content_types=["text"])
+def handle_text(msg):
+    cid = msg.chat.id
+    if cid not in user_settings:
+        user_settings[cid] = {"tags": [], "last_cat": None, "count": 1}
+    parts = [p.strip() for p in msg.text.split(",")]
+    keys = [RUS_TO_KEY[p] for p in parts if p in RUS_TO_KEY]
+    if keys:
+        user_settings[cid]["tags"] = keys
+        bot.send_message(cid, "Теги приняты. Готово к генерации.", reply_markup=main_menu())
+
+# --- Обработка кнопок ---
 @bot.callback_query_handler(func=lambda call: True)
 def callback(call):
     cid = call.message.chat.id
-    if cid not in user_settings:
-        user_settings[cid] = {"tags": [], "last_cat": None}
+    user_settings.setdefault(cid, {"tags": [], "last_cat": None, "count": 1})
     data = call.data
 
     if data == "choose_tags":
@@ -179,20 +165,22 @@ def callback(call):
         if not tags:
             bot.send_message(cid, "Сначала выбери теги!")
             return
+        count = user_settings[cid].get("count", 1)
         prompt = build_prompt(tags)
         user_settings[cid]["last_prompt"] = tags.copy()
-        bot.send_message(cid, "⏳ Генерация изображения...")
-        url = replicate_generate(prompt)
-        if url:
-            kb = types.InlineKeyboardMarkup()
-            kb.add(
-                types.InlineKeyboardButton("🔁 Начать заново", callback_data="start"),
-                types.InlineKeyboardButton("🔧 Изменить теги", callback_data="edit_tags"),
-                types.InlineKeyboardButton("➡ Продолжить с этими", callback_data="generate")
-            )
-            bot.send_photo(cid, url, caption="✅ Готово!", reply_markup=kb)
-        else:
-            bot.send_message(cid, "❌ Ошибка генерации.")
+        bot.send_message(cid, f"⏳ Генерация {count} изображения(й)...")
+        for i in range(count):
+            url = replicate_generate(prompt)
+            if url:
+                kb = types.InlineKeyboardMarkup()
+                kb.add(
+                    types.InlineKeyboardButton("🔁 Начать заново", callback_data="start"),
+                    types.InlineKeyboardButton("🔧 Изменить теги", callback_data="edit_tags"),
+                    types.InlineKeyboardButton("➡ Ещё раз", callback_data="generate")
+                )
+                bot.send_photo(cid, url, caption="✅ Готово!", reply_markup=kb)
+            else:
+                bot.send_message(cid, "❌ Ошибка генерации.")
     elif data == "edit_tags":
         if "last_prompt" in user_settings[cid]:
             user_settings[cid]["tags"] = user_settings[cid]["last_prompt"]
@@ -200,14 +188,16 @@ def callback(call):
         else:
             bot.send_message(cid, "Нет сохранённых тегов. Сначала сделай генерацию.")
     elif data == "start":
-        user_settings[cid] = {"tags": [], "last_cat": None}
+        user_settings[cid] = {"tags": [], "last_cat": None, "count": 1}
         bot.send_message(cid, "Сброс настроек.", reply_markup=main_menu())
 
+# --- Построение prompt ---
 def build_prompt(tags):
-    base = "nsfw, masterpiece, best quality, fully nude, no clothing, no hands covering chest or nipples"
+    base = "nsfw, masterpiece, best quality, fully nude, no men, no hands covering chest or nipples"
     prompts = [TAG_PROMPTS.get(tag, tag) for tag in tags]
     return base + ", " + ", ".join(prompts)
 
+# --- Генерация через Replicate ---
 def replicate_generate(prompt):
     url = "https://api.replicate.com/v1/predictions"
     headers = {"Authorization": f"Token {REPLICATE_TOKEN}", "Content-Type": "application/json"}
@@ -228,6 +218,7 @@ def replicate_generate(prompt):
             return None
     return None
 
+# --- Webhook ---
 @app.route("/", methods=["POST"])
 def webhook():
     update = telebot.types.Update.de_json(request.stream.read().decode("utf-8"))
@@ -240,5 +231,6 @@ def home():
 
 if __name__ == "__main__":
     bot.remove_webhook()
+    time.sleep(1)
     bot.set_webhook(url=WEBHOOK_URL)
     app.run(host="0.0.0.0", port=PORT)
