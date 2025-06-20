@@ -1,4 +1,4 @@
-# bot.py
+# --- bot.py ---
 import os
 import time
 import requests
@@ -74,10 +74,13 @@ TAGS = {
     }
 }
 
-# Создаем словарь для поиска по названию тега на русском
-RU_TO_TAG = {v: k for cat in TAGS.values() for k, v in cat.items()}
+# ✅ Исправленный блок сопоставления русских названий с ключами
+RU_TO_TAG = {}
+for cat_tags in TAGS.values():
+    for key, ru_name in cat_tags.items():
+        RU_TO_TAG[ru_name.lower()] = key
 
-# Обработка текстовых сообщений (ввод тегов вручную)
+# Обработка ввода тегов вручную на русском
 @bot.message_handler(func=lambda msg: True, content_types=["text"])
 def handle_tag_input(msg):
     cid = msg.chat.id
@@ -90,14 +93,14 @@ def handle_tag_input(msg):
     if not tags:
         bot.send_message(cid, "❌ Не удалось распознать ни одного тега.")
         return
-    user_settings[cid] = {"tags": tags, "last_cat": None}
-    bot.send_message(cid, f"✅ Выбраны теги: {', '.join(name for k in tags for name in [RU_TO_TAG.get(k)] if name)}", reply_markup=main_menu())
+    user_settings[cid] = {"tags": tags, "last_cat": None, "count": 1}
+    bot.send_message(cid, f"✅ Выбраны теги: {', '.join(name for key in tags for name in [name for name, val in RU_TO_TAG.items() if val == key])}", reply_markup=main_menu())
 
 TAG_PROMPTS = {
     "gold_lipstick": "gold lipstick on lips only",
     "no_hands_on_chest": "no hands on chest, hands away from breasts",
     "no_covering": "no hands covering nipples or genitals",
-    # добавь остальные как нужно
+    # остальные — через build_prompt
 }
 
 def main_menu():
