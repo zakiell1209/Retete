@@ -115,7 +115,7 @@ TAG_PROMPTS = {
     "stockings": "sheer stockings, thigh high, visible",
     "shibari": "shibari rope bondage, tight ropes",
     "gag": "ball gag, clearly worn",
-    "mask": "face mask, leather or latex",
+    "mask": "face mask, leather or latex"
 }
 
 def main_menu():
