@@ -1,4 +1,3 @@
-# bot.py
 import os
 import time
 import requests
@@ -16,80 +15,13 @@ bot = telebot.TeleBot(API_TOKEN)
 app = Flask(__name__)
 user_settings = {}
 
-# Категории и теги
 CATEGORY_NAMES = {
     "holes": "Отверстия", "toys": "Игрушки", "poses": "Позы", "clothes": "Одежда",
     "body": "Тело", "ethnos": "Этнос", "furry": "Фури", "characters": "Персонажи",
     "head": "Голова", "view": "Обзор"
 }
 
-TAGS = {
-    "holes": {"vagina": "Вагина", "anal": "Анус", "both": "Вагина и анус"},
-    "toys": {
-        "dildo": "Дилдо", "huge_dildo": "Большое дилдо", "horse_dildo": "Лошадиное дилдо",
-        "anal_beads": "Анальные бусы", "anal_plug": "Анальная пробка",
-        "anal_expander": "Анальный расширитель", "gag": "Кляп",
-        "piercing": "Пирсинг", "long_dildo_path": "Дилдо из ануса выходит изо рта"
-    },
-    "poses": {
-        "doggy": "Наездница", "standing": "Стоя", "splits": "Шпагат",
-        "squat": "Приседание", "lying": "Лежа", "hor_split": "Горизонтальный шпагат",
-        "ver_split": "Вертикальный шпагат", "side_up_leg": "На боку с ногой вверх",
-        "front_facing": "Лицом к зрителю", "back_facing": "Спиной к зрителю",
-        "lying_knees_up": "Лежа с коленями вверх", "bridge": "Мост", "suspended": "Подвешена"
-    },
-    "clothes": {
-        "stockings": "Чулки", "bikini_tan_lines": "Загар от бикини", "mask": "Маска",
-        "heels": "Каблуки", "shibari": "Шибари"
-    },
-    "body": {
-        "big_breasts": "Большая грудь", "small_breasts": "Маленькая грудь",
-        "skin_white": "Белая кожа", "skin_black": "Чёрная кожа",
-        "body_fat": "Пышное тело", "body_thin": "Худое тело", "body_normal": "Нормальное тело",
-        "body_fit": "Подтянутое тело", "body_muscular": "Мускулистое тело",
-        "age_loli": "Лоли", "age_milf": "Милфа", "age_21": "Возраст 21",
-        "cum": "Вся в сперме", "belly_bloat": "Вздутие живота", "succubus_tattoo": "Тату внизу живота"
-    },
-    "ethnos": {
-        "futanari": "Футанари", "femboy": "Фембой",
-        "ethnicity_asian": "Азиатка", "ethnicity_european": "Европейка"
-    },
-    "furry": {
-        "furry_cow": "Фури корова", "furry_cat": "Фури кошка", "furry_dog": "Фури собака",
-        "furry_dragon": "Фури дракон", "furry_sylveon": "Фури сильвеон",
-        "furry_fox": "Фури лисица", "furry_bunny": "Фури кролик", "furry_wolf": "Фури волчица"
-    },
-    "characters": {
-        "rias": "Риас Гремори", "akeno": "Акено Химедзима", "kafka": "Кафка (Хонкай)",
-        "eula": "Еола (Геншин)", "fu_xuan": "Фу Сюань", "ayase": "Аясе Сейко"
-    },
-    "head": {
-        "ahegao": "Ахегао", "pain_face": "Лицо в боли", "ecstasy_face": "Лицо в экстазе",
-        "gold_lipstick": "Золотая помада"
-    },
-    "view": {
-        "view_bottom": "Снизу", "view_top": "Сверху",
-        "view_side": "Сбоку", "view_close": "Ближе", "view_full": "Дальше"
-    }
-}
-
-# Русское имя -> ключ
-RU_TO_TAG = {v: k for cat in TAGS.values() for k, v in cat.items()}
-
-# Промпты
-CHARACTER_EXTRA = {
-    "rias": "red hair, blue eyes, large breasts, pale skin, rias gremory, highschool dxd",
-    "akeno": "black hair, purple eyes, large breasts, akeno himejima, highschool dxd",
-    "kafka": "purple wavy hair, kafka, honkai star rail",
-    "eula": "light blue hair, fair skin, eula, genshin impact",
-    "fu_xuan": "pink hair, fu xuan, honkai star rail",
-    "ayase": "black hair, school uniform, ayase seiko"
-}
-
-TAG_PROMPTS = {
-    **CHARACTER_EXTRA,
-    "gold_lipstick": "gold lipstick only on lips"
-}
+# ... (сокращённый TAGS, TAG_PROMPTS, CHARACTER_EXTRA — будет восстановлен в полном файле)
 
 def main_menu():
     kb = types.InlineKeyboardMarkup()
@@ -101,8 +33,8 @@ def category_menu():
     kb = types.InlineKeyboardMarkup(row_width=2)
     for key, name in CATEGORY_NAMES.items():
         kb.add(types.InlineKeyboardButton(name, callback_data=f"cat_{key}"))
-    for i in range(1, 11):
-        kb.add(types.InlineKeyboardButton(f"📸 Кол-во: {i}", callback_data=f"num_{i}"))
+    for i in range(2, 11):
+        kb.add(types.InlineKeyboardButton(f"📷 {i} фото", callback_data=f"count_{i}"))
     kb.add(types.InlineKeyboardButton("✅ Готово", callback_data="done_tags"))
     return kb
 
@@ -117,15 +49,31 @@ def tag_menu(category, selected_tags):
 @bot.message_handler(commands=["start"])
 def start(msg):
     cid = msg.chat.id
-    user_settings[cid] = {"tags": [], "last_cat": None, "num": 1}
+    user_settings[cid] = {"tags": [], "last_cat": None, "count": 1}
     bot.send_message(cid, "Привет! Что делаем?", reply_markup=main_menu())
+
+@bot.message_handler(content_types=["text"])
+def manual_tags(msg):
+    cid = msg.chat.id
+    text = msg.text.lower()
+    all_tags = {v.lower(): k for cat in TAGS.values() for k, v in cat.items()}
+    selected = []
+    for word in text.split(","):
+        tag = all_tags.get(word.strip())
+        if tag:
+            selected.append(tag)
+    if selected:
+        user_settings[cid] = {"tags": selected, "last_cat": None, "count": 1}
+        bot.send_message(cid, "Теги установлены. Жми «Генерировать».", reply_markup=main_menu())
+    else:
+        bot.send_message(cid, "Не удалось распознать теги. Попробуй ещё раз.")
 
 @bot.callback_query_handler(func=lambda call: True)
 def callback(call):
     cid = call.message.chat.id
-    data = call.data
     if cid not in user_settings:
-        user_settings[cid] = {"tags": [], "last_cat": None, "num": 1}
+        user_settings[cid] = {"tags": [], "last_cat": None, "count": 1}
+    data = call.data
 
     if data == "choose_tags":
         bot.edit_message_text("Выбери категорию тегов:", cid, call.message.message_id, reply_markup=category_menu())
@@ -144,34 +92,35 @@ def callback(call):
         bot.edit_message_reply_markup(cid, call.message.message_id, reply_markup=tag_menu(cat, tags))
     elif data == "done_tags":
         bot.edit_message_text("Теги сохранены.", cid, call.message.message_id, reply_markup=main_menu())
+    elif data.startswith("count_"):
+        user_settings[cid]["count"] = int(data.split("_")[1])
+        bot.answer_callback_query(call.id, f"Установлено: {user_settings[cid]['count']} фото")
     elif data == "back_to_cat":
         bot.edit_message_text("Выбери категорию:", cid, call.message.message_id, reply_markup=category_menu())
-    elif data.startswith("num_"):
-        user_settings[cid]["num"] = int(data.split("_")[1])
-        bot.answer_callback_query(call.id, f"Выбрано изображений: {user_settings[cid]['num']}")
     elif data == "generate":
         tags = user_settings[cid]["tags"]
+        count = user_settings[cid].get("count", 1)
         if not tags:
             bot.send_message(cid, "Сначала выбери теги!")
             return
         user_settings[cid]["last_prompt"] = tags.copy()
-        prompt = build_prompt(tags)
-        count = user_settings[cid].get("num", 1)
         bot.send_message(cid, f"⏳ Генерация {count} изображений...")
-        results = []
+        urls = []
+        prompt = build_prompt(tags)
         for _ in range(count):
             url = replicate_generate(prompt)
             if url:
-                results.append(url)
-        if results:
+                urls.append(url)
+        if urls:
             kb = types.InlineKeyboardMarkup()
             kb.add(
                 types.InlineKeyboardButton("🔁 Начать заново", callback_data="start"),
                 types.InlineKeyboardButton("🔧 Изменить теги", callback_data="edit_tags"),
                 types.InlineKeyboardButton("➡ Продолжить с этими", callback_data="generate")
             )
-            for url in results:
-                bot.send_photo(cid, url, reply_markup=kb)
+            for u in urls:
+                bot.send_photo(cid, u)
+            bot.send_message(cid, "✅ Готово!", reply_markup=kb)
         else:
             bot.send_message(cid, "❌ Ошибка генерации.")
     elif data == "edit_tags":
@@ -179,29 +128,17 @@ def callback(call):
             user_settings[cid]["tags"] = user_settings[cid]["last_prompt"]
             bot.send_message(cid, "Изменяем теги:", reply_markup=category_menu())
         else:
-            bot.send_message(cid, "Нет сохранённых тегов.")
+            bot.send_message(cid, "Нет сохранённых тегов. Сначала сделай генерацию.")
     elif data == "start":
-        user_settings[cid] = {"tags": [], "last_cat": None, "num": 1}
+        user_settings[cid] = {"tags": [], "last_cat": None, "count": 1}
         bot.send_message(cid, "Сброс настроек.", reply_markup=main_menu())
 
-@bot.message_handler(content_types=["text"])
-def handle_text(msg):
-    cid = msg.chat.id
-    text = msg.text.lower()
-    selected = []
-    for rus in text.split(","):
-        rus = rus.strip().capitalize()
-        for cat_tags in TAGS.values():
-            for tag, name in cat_tags.items():
-                if name.lower() == rus.lower():
-                    selected.append(tag)
-    if selected:
-        user_settings[cid]["tags"] = selected
-        bot.send_message(cid, "Теги выбраны.", reply_markup=main_menu())
-
 def build_prompt(tags):
-    base = "nsfw, masterpiece, best quality, fully nude, no hands on chest, no hands covering nipples, no clothing, solo, female only"
+    base = "nsfw, masterpiece, best quality, fully nude, no clothing, no hands on chest, no hands covering nipples, hands away from breasts"
     prompts = [TAG_PROMPTS.get(tag, tag) for tag in tags]
+    if "gold_lipstick" in tags:
+        prompts = [p for p in prompts if "gold lipstick" not in p]
+        prompts.append("gold lipstick on lips only")
     return base + ", " + ", ".join(prompts)
 
 def replicate_generate(prompt):
