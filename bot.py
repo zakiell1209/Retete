@@ -1,6 +1,7 @@
 # --- bot.py ---
 import os
 import time
+import random
 import requests
 from flask import Flask, request
 import telebot
@@ -200,15 +201,59 @@ TAG_PROMPTS = {
     "ahegao": "ahegao face",
     "pain_face": "expression of pain",
     "ecstasy_face": "expression of ecstasy",
-    "gold_lipstick": "gold lipstick",
+    "gold_lipstick": "gold lipstick only on lips",
     "from_below": "low angle view, from beneath the subject",
     "from_above": "top-down view",
     "from_side": "side angle",
     "far_view": "full body in frame",
     "close_view": "close-up",
     "no_men": "no men, no male presence",
-    "no_hands": "no hands"
+    "no_hands": "no hands",
+    # запрещаем руки на груди и прикрывающие соски
+    "no_hands_on_chest": "no hands on chest",
+    "no_hands_covering_nipples": "no hands covering nipples",
+    "hands_away_from_breasts": "hands away from breasts",
+    "hands_not_touching_breasts": "hands not touching breasts"
 }
+
+def build_prompt(tags):
+    base = (
+        "nsfw, masterpiece, best quality, fully nude, "
+        "realistic face, detailed face, expressive face, "
+        "no men, no male, female only, solo, "
+        "no mannequin, no background characters, "
+        "no poles, no tail, no horns, no wings, no visual glitches, "
+        "coherent body, full body visible, no hands on chest, "
+        "no hands covering nipples, hands away from breasts, hands not touching breasts"
+    )
+    prompts = [TAG_PROMPTS.get(tag, tag) for tag in tags]
+
+    # Золотая помада всегда, только на губах
+    if "gold_lipstick" in tags:
+        prompts = [p for p in prompts if not p.startswith("gold lipstick")]
+        prompts.append("gold lipstick only on lips")
+
+    return base + ", " + ", ".join(prompts)
+
+def replicate_generate(prompt):
+    url = "https://api.replicate.com/v1/predictions"
+    headers = {"Authorization": f"Token {REPLICATE_TOKEN}", "Content-Type": "application/json"}
+    json_data = {"version": REPLICATE_MODEL, "input": {"prompt": prompt}}
+    r = requests.post(url, headers=headers, json=json_data)
+    if r.status_code != 201:
+        return None
+    status_url = r.json()["urls"]["get"]
+    for _ in range(60):
+        time.sleep(2)
+        r = requests.get(status_url, headers=headers)
+        if r.status_code != 200:
+            return None
+        data = r.json()
+        if data["status"] == "succeeded":
+            return data["output"][0] if isinstance(data["output"], list) else data["output"]
+        elif data["status"] == "failed":
+            return None
+    return None
 
 def main_menu():
     kb = types.InlineKeyboardMarkup()
@@ -246,13 +291,11 @@ def callback(call):
 
     if data == "choose_tags":
         bot.edit_message_text("Выбери категорию тегов:", cid, call.message.message_id, reply_markup=category_menu())
-
     elif data.startswith("cat_"):
         cat = data[4:]
         user_settings[cid]["last_cat"] = cat
         selected = user_settings[cid]["tags"]
         bot.edit_message_text(f"Категория: {CATEGORY_NAMES[cat]}", cid, call.message.message_id, reply_markup=tag_menu(cat, selected))
-
     elif data.startswith("tag_"):
         _, cat, tag = data.split("_", 2)
         tags = user_settings[cid]["tags"]
@@ -261,13 +304,10 @@ def callback(call):
         else:
             tags.append(tag)
         bot.edit_message_reply_markup(cid, call.message.message_id, reply_markup=tag_menu(cat, tags))
-
     elif data == "done_tags":
         bot.edit_message_text("Теги сохранены.", cid, call.message.message_id, reply_markup=main_menu())
-
     elif data == "back_to_cat":
         bot.edit_message_text("Выбери категорию:", cid, call.message.message_id, reply_markup=category_menu())
-
     elif data == "generate":
         tags = user_settings[cid]["tags"]
         if not tags:
@@ -287,51 +327,15 @@ def callback(call):
             bot.send_photo(cid, url, caption="✅ Готово!", reply_markup=kb)
         else:
             bot.send_message(cid, "❌ Ошибка генерации.")
-
     elif data == "edit_tags":
         if "last_prompt" in user_settings[cid]:
             user_settings[cid]["tags"] = user_settings[cid]["last_prompt"]
             bot.send_message(cid, "Изменяем теги:", reply_markup=category_menu())
         else:
             bot.send_message(cid, "Нет сохранённых тегов. Сначала сделай генерацию.")
-
     elif data == "start":
         user_settings[cid] = {"tags": [], "last_cat": None}
         bot.send_message(cid, "Сброс настроек.", reply_markup=main_menu())
-
-def build_prompt(tags):
-    base = (
-        "nsfw, masterpiece, best quality, fully nude, "
-        "no hands, no men, no male presence"
-    )
-    prompts = [TAG_PROMPTS.get(tag, tag) for tag in tags]
-
-    # Золотая помада всегда, только губы
-    if "gold_lipstick" in tags:
-        prompts = [p for p in prompts if "gold lipstick covering" not in p]
-        prompts.append("gold lipstick covering lips")
-
-    return base + ", " + ", ".join(prompts)
-
-def replicate_generate(prompt):
-    url = "https://api.replicate.com/v1/predictions"
-    headers = {"Authorization": f"Token {REPLICATE_TOKEN}", "Content-Type": "application/json"}
-    json_data = {"version": REPLICATE_MODEL, "input": {"prompt": prompt}}
-    r = requests.post(url, headers=headers, json=json_data)
-    if r.status_code != 201:
-        return None
-    status_url = r.json()["urls"]["get"]
-    for _ in range(60):
-        time.sleep(2)
-        r = requests.get(status_url, headers=headers)
-        if r.status_code != 200:
-            return None
-        data = r.json()
-        if data["status"] == "succeeded":
-            return data["output"][0] if isinstance(data["output"], list) else data["output"]
-        elif data["status"] == "failed":
-            return None
-    return None
 
 @app.route("/", methods=["POST"])
 def webhook():
