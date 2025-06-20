@@ -2,7 +2,6 @@
 import os
 import time
 import requests
-import random
 from flask import Flask, request
 import telebot
 from telebot import types
@@ -74,13 +73,11 @@ TAGS = {
     }
 }
 
-# ✅ Исправленный блок сопоставления русских названий с ключами
 RU_TO_TAG = {}
 for cat_tags in TAGS.values():
     for key, ru_name in cat_tags.items():
         RU_TO_TAG[ru_name.lower()] = key
 
-# Обработка ввода тегов вручную на русском
 @bot.message_handler(func=lambda msg: True, content_types=["text"])
 def handle_tag_input(msg):
     cid = msg.chat.id
@@ -98,9 +95,27 @@ def handle_tag_input(msg):
 
 TAG_PROMPTS = {
     "gold_lipstick": "gold lipstick on lips only",
+    "ahegao": "orgasm face, tongue out, drooling",
+    "pain_face": "expression of pain, crying, distressed",
+    "ecstasy_face": "expression of pleasure, orgasm face, flushed cheeks",
     "no_hands_on_chest": "no hands on chest, hands away from breasts",
     "no_covering": "no hands covering nipples or genitals",
-    # остальные — через build_prompt
+    "futanari": "futanari girl, penis, realistic, no deformation",
+    "suspended": "suspended in ropes, full body visible",
+    "hor_split": "horizontal split, legs fully extended, realistic pose",
+    "ver_split": "vertical split, standing or leaning, legs apart",
+    "bridge": "realistic body bridge pose",
+    "cum": "covered in cum, dripping, realistic fluids",
+    "vagina": "detailed vagina, spread, realistic",
+    "anal": "spread anus, realistic detail",
+    "both": "spread vagina and anus, realistic",
+    "view_close": "close-up, focused view",
+    "view_full": "full body visible, no parts cropped",
+    "heels": "high heels, clearly visible",
+    "stockings": "sheer stockings, thigh high, visible",
+    "shibari": "shibari rope bondage, tight ropes",
+    "gag": "ball gag, clearly worn",
+    "mask": "face mask, leather or latex",
 }
 
 def main_menu():
@@ -209,7 +224,7 @@ def callback(call):
         bot.send_message(cid, "Сброс настроек.", reply_markup=main_menu())
 
 def build_prompt(tags):
-    base = "nsfw, masterpiece, best quality, fully nude, no men, no male, no hands on chest, no hands covering nipples, hands away from breasts"
+    base = "nsfw, masterpiece, best quality, fully nude, female only, no men, no male, no background characters, no hands on chest, no hands covering nipples, hands away from breasts, no visual glitches, realistic face, detailed face, coherent body, full body visible, no mannequin, gold lipstick only on lips, no poles"
     prompts = [TAG_PROMPTS.get(tag, tag) for tag in tags]
     return base + ", " + ", ".join(prompts)
 
