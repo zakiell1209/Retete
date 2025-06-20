@@ -17,104 +17,108 @@ app = Flask(__name__)
 user_settings = {}
 
 CATEGORY_NAMES = {
-    "poses": "Позы",
-    "body": "Тело",
-    "head": "Голова",
-    "view": "Обзор",
-    "characters": "Персонажи",
-    "holes": "Отверстия",
-    "toys": "Игрушки",
-    "clothes": "Одежда",
-    "ethnos": "Этнос",
-    "furry": "Фури"
+    "count": "Количество фото",
+    "holes": "Отверстия", "toys": "Игрушки", "poses": "Позы", "clothes": "Одежда",
+    "body": "Тело", "ethnos": "Этнос", "furry": "Фури", "characters": "Персонажи",
+    "head": "Голова", "view": "Обзор"
 }
 
 TAGS = {
+    "count": {
+        "1": "1", "2": "2", "3": "3", "4": "4", "5": "5",
+        "6": "6", "7": "7", "8": "8", "9": "9", "10": "10"
+    },
+    "holes": {"vagina": "Вагина", "anal": "Анус", "both": "Вагина и анус"},
+    "toys": {
+        "dildo": "Дилдо", "huge_dildo": "Большое дилдо", "horse_dildo": "Лошадиное дилдо",
+        "anal_beads": "Анальные бусы", "anal_plug": "Анальная пробка",
+        "anal_expander": "Анальный расширитель", "gag": "Кляп",
+        "piercing": "Пирсинг", "long_dildo_path": "Дилдо из ануса выходит изо рта"
+    },
     "poses": {
-        "standing": "Стоя",
-        "doggy": "Наездница",
-        "ver_split": "Вертикальный шпагат",
-        "hor_split": "Горизонтальный шпагат"
+        "doggy": "Наездница", "standing": "Стоя", "splits": "Шпагат",
+        "squat": "Приседание", "lying": "Лежа", "hor_split": "Горизонтальный шпагат",
+        "ver_split": "Вертикальный шпагат", "side_up_leg": "На боку с ногой вверх",
+        "front_facing": "Лицом к зрителю", "back_facing": "Спиной к зрителю",
+        "lying_knees_up": "Лежа с коленями вверх", "bridge": "Мост", "suspended": "Подвешена"
+    },
+    "clothes": {
+        "stockings": "Чулки", "bikini_tan_lines": "Загар от бикини", "mask": "Маска",
+        "heels": "Каблуки", "shibari": "Шибари"
     },
     "body": {
-        "big_breasts": "Большая грудь",
-        "small_breasts": "Маленькая грудь",
-        "skin_white": "Белая кожа",
-        "skin_black": "Чёрная кожа",
-        "age_loli": "Лоли",
-        "age_milf": "Милфа",
-        "age_21": "Возраст 21"
+        "big_breasts": "Большая грудь", "small_breasts": "Маленькая грудь",
+        "skin_white": "Белая кожа", "skin_black": "Чёрная кожа",
+        "body_fat": "Пышное тело", "body_thin": "Худое тело", "body_normal": "Нормальное тело",
+        "body_fit": "Подтянутое тело", "body_muscular": "Мускулистое тело",
+        "age_loli": "Лоли", "age_milf": "Милфа", "age_21": "Возраст 21",
+        "cum": "Вся в сперме", "belly_bloat": "Вздутие живота",
+        "succubus_tattoo": "Тату внизу живота"
+    },
+    "ethnos": {
+        "futanari": "Футанари", "femboy": "Фембой",
+        "ethnicity_asian": "Азиатка", "ethnicity_european": "Европейка"
+    },
+    "furry": {
+        "furry_cow": "Фури корова", "furry_cat": "Фури кошка", "furry_dog": "Фури собака",
+        "furry_dragon": "Фури дракон", "furry_sylveon": "Фури сильвеон",
+        "furry_fox": "Фури лисица", "furry_bunny": "Фури кролик", "furry_wolf": "Фури волчица"
+    },
+    "characters": {
+        "rias": "Риас Гремори", "akeno": "Акено Химедзима", "kafka": "Кафка (Хонкай)",
+        "eula": "Еола (Геншин)", "fu_xuan": "Фу Сюань", "ayase": "Аясе Сейко"
     },
     "head": {
-        "ahegao": "Ахегао",
-        "ecstasy_face": "Лицо в экстазе",
+        "ahegao": "Ахегао", "pain_face": "Лицо в боли", "ecstasy_face": "Лицо в экстазе",
         "gold_lipstick": "Золотая помада"
     },
     "view": {
-        "view_top": "Сверху",
-        "view_bottom": "Снизу",
-        "view_close": "Ближе"
-    },
-    "characters": {
-        "kafka": "Кафка",
-        "eula": "Еола"
-    },
-    "holes": {
-        "vagina": "Вагина",
-        "anal": "Анус",
-        "both": "Вагина и анус"
-    },
-    "toys": {
-        "dildo": "Дилдо",
-        "long_dildo_path": "Дилдо из ануса выходит изо рта"
-    },
-    "clothes": {
-        "heels": "Каблуки",
-        "stockings": "Чулки",
-        "mask": "Маска",
-        "shibari": "Шибари"
-    },
-    "ethnos": {
-        "futanari": "Футанари",
-        "femboy": "Фембой"
-    },
-    "furry": {
-        "furry_fox": "Фури лисица"
+        "view_bottom": "Снизу", "view_top": "Сверху",
+        "view_side": "Сбоку", "view_close": "Ближе", "view_full": "Дальше"
     }
 }
 
+CHARACTER_EXTRA = {
+    "rias": "red hair, blue eyes, large breasts, pale skin, rias gremory, highschool dxd",
+    "akeno": "black hair, purple eyes, large breasts, akeno himejima, highschool dxd",
+    "kafka": "purple wavy hair, kafka, honkai star rail",
+    "eula": "light blue hair, fair skin, eula, genshin impact",
+    "fu_xuan": "pink hair, fu xuan, honkai star rail",
+    "ayase": "black hair, school uniform, ayase seiko"
+}
+
 TAG_PROMPTS = {
-    "big_breasts": "very large breasts",
-    "small_breasts": "small breasts",
-    "skin_white": "white skin",
-    "skin_black": "black skin",
-    "age_loli": "young girl loli style",
-    "age_milf": "mature woman",
-    "age_21": "21 years old",
-    "ahegao": "ahegao expression",
-    "ecstasy_face": "face in ecstasy",
-    "gold_lipstick": "gold lipstick on lips only",
-    "view_top": "top-down view",
-    "view_bottom": "view from below",
-    "view_close": "close-up",
-    "standing": "standing pose",
-    "doggy": "doggy style pose",
-    "ver_split": "vertical split pose, perfect balance",
-    "hor_split": "horizontal split, flat legs",
-    "vagina": "spread pussy",
-    "anal": "spread anus",
-    "both": "spread pussy and anus",
-    "dildo": "dildo inserted",
-    "long_dildo_path": "dildo from anus to mouth, belly bulge",
-    "heels": "high heels",
-    "stockings": "wearing stockings",
-    "mask": "blindfold mask",
-    "shibari": "shibari rope bondage",
-    "futanari": "futanari with penis and breasts",
-    "femboy": "feminine femboy",
-    "furry_fox": "furry fox girl",
-    "kafka": "purple hair, kafka, honkai star rail",
-    "eula": "light blue hair, eula, genshin impact"
+    **CHARACTER_EXTRA,
+    "vagina": "spread pussy", "anal": "spread anus", "both": "spread pussy and anus",
+    "dildo": "dildo inserted in anus", "huge_dildo": "huge dildo",
+    "horse_dildo": "horse dildo", "anal_beads": "anal beads inserted",
+    "anal_plug": "anal plug", "anal_expander": "anal expander stretching anus",
+    "gag": "ball gag", "piercing": "nipple and genital piercings",
+    "long_dildo_path": "seamless dildo passing from anus to mouth",
+    "doggy": "doggy style", "standing": "standing pose", "splits": "doing a split",
+    "hor_split": "horizontal split, legs flat, pelvis touching floor",
+    "ver_split": "vertical split, leg up, hips aligned",
+    "side_up_leg": "on side with leg raised", "front_facing": "facing viewer",
+    "back_facing": "back to viewer", "lying_knees_up": "lying knees up",
+    "bridge": "arched back bridge pose", "suspended": "suspended by ropes",
+    "stockings": "black stockings", "mask": "blindfold", "heels": "high heels",
+    "shibari": "shibari bondage", "big_breasts": "very large breasts",
+    "small_breasts": "small breasts", "skin_white": "white skin",
+    "skin_black": "black skin", "body_fat": "chubby body", "body_thin": "thin body",
+    "body_normal": "average body", "body_fit": "fit body", "body_muscular": "muscular body",
+    "age_loli": "young girl", "age_milf": "mature woman", "age_21": "21 years old",
+    "cum": "covered in cum", "belly_bloat": "belly bulge",
+    "succubus_tattoo": "tattoo on lower belly", "futanari": "futanari",
+    "femboy": "feminine femboy", "ethnicity_asian": "asian girl",
+    "ethnicity_european": "european girl", "furry_cow": "furry cow girl",
+    "furry_cat": "furry cat girl", "furry_dog": "furry dog girl",
+    "furry_dragon": "furry dragon girl", "furry_sylveon": "furry sylveon style",
+    "furry_fox": "furry fox girl", "furry_bunny": "furry bunny girl",
+    "furry_wolf": "furry wolf girl", "ahegao": "ahegao face",
+    "pain_face": "face in pain", "ecstasy_face": "face in ecstasy",
+    "gold_lipstick": "gold lipstick on lips",
+    "view_bottom": "low angle", "view_top": "top-down view",
+    "view_side": "side view", "view_close": "close-up", "view_full": "full body"
 }
 
 def main_menu():
@@ -144,29 +148,22 @@ def start(msg):
     user_settings[cid] = {"tags": [], "last_cat": None, "count": 1}
     bot.send_message(cid, "Привет! Что делаем?", reply_markup=main_menu())
 
-@bot.message_handler(func=lambda m: m.text.isdigit() and 1 <= int(m.text) <= 10)
-def set_image_count(msg):
-    cid = msg.chat.id
-    count = int(msg.text)
-    if cid not in user_settings:
-        user_settings[cid] = {"tags": [], "last_cat": None}
-    user_settings[cid]["count"] = count
-    bot.send_message(cid, f"Будет сгенерировано {count} изображение(й).")
-
-@bot.message_handler(func=lambda m: m.text)
-def manual_tags(msg):
+@bot.message_handler(content_types=["text"])
+def handle_text(msg):
     cid = msg.chat.id
     text = msg.text.lower()
-    found = []
-    for group in TAGS.values():
-        for key, val in group.items():
-            if val.lower() in text:
-                found.append(key)
-    if not found:
-        bot.send_message(cid, "Не удалось распознать теги.")
-        return
-    user_settings[cid]["tags"] = found
-    bot.send_message(cid, "Теги установлены. Нажми 🎨 Генерировать", reply_markup=main_menu())
+    if cid not in user_settings:
+        user_settings[cid] = {"tags": [], "last_cat": None, "count": 1}
+
+    found_tags = []
+    for cat, tagset in TAGS.items():
+        for tag_key, tag_label in tagset.items():
+            if tag_label.lower() in text:
+                found_tags.append(tag_key)
+
+    if found_tags:
+        user_settings[cid]["tags"] = list(set(user_settings[cid]["tags"] + found_tags))
+        bot.send_message(cid, "Теги обновлены.", reply_markup=main_menu())
 
 @bot.callback_query_handler(func=lambda call: True)
 def callback(call):
@@ -177,67 +174,55 @@ def callback(call):
 
     if data == "choose_tags":
         bot.edit_message_text("Выбери категорию тегов:", cid, call.message.message_id, reply_markup=category_menu())
+
     elif data.startswith("cat_"):
         cat = data[4:]
         user_settings[cid]["last_cat"] = cat
         selected = user_settings[cid]["tags"]
         bot.edit_message_text(f"Категория: {CATEGORY_NAMES[cat]}", cid, call.message.message_id, reply_markup=tag_menu(cat, selected))
+
     elif data.startswith("tag_"):
         _, cat, tag = data.split("_", 2)
-        tags = user_settings[cid]["tags"]
-        if tag in tags:
-            tags.remove(tag)
+        if cat == "count":
+            user_settings[cid]["count"] = int(tag)
+            bot.answer_callback_query(call.id, f"Установлено: {tag} изображений")
         else:
-            tags.append(tag)
-        bot.edit_message_reply_markup(cid, call.message.message_id, reply_markup=tag_menu(cat, tags))
+            tags = user_settings[cid]["tags"]
+            if tag in tags:
+                tags.remove(tag)
+            else:
+                tags.append(tag)
+        bot.edit_message_reply_markup(cid, call.message.message_id, reply_markup=tag_menu(cat, user_settings[cid]["tags"]))
+
     elif data == "done_tags":
         bot.edit_message_text("Теги сохранены.", cid, call.message.message_id, reply_markup=main_menu())
+
+    elif data == "back_to_cat":
+        bot.edit_message_text("Выбери категорию:", cid, call.message.message_id, reply_markup=category_menu())
+
     elif data == "generate":
         tags = user_settings[cid]["tags"]
-        count = user_settings[cid].get("count", 1)
         if not tags:
             bot.send_message(cid, "Сначала выбери теги!")
             return
         prompt = build_prompt(tags)
         user_settings[cid]["last_prompt"] = tags.copy()
-        bot.send_message(cid, f"⏳ Генерация {count} изображение(й)...")
-        results = []
-        for i in range(count):
+        bot.send_message(cid, f"⏳ Генерация {user_settings[cid]['count']} изображений...")
+        for _ in range(user_settings[cid]["count"]):
             url = replicate_generate(prompt)
             if url:
-                results.append(url)
+                bot.send_photo(cid, url)
             else:
                 bot.send_message(cid, "❌ Ошибка генерации.")
-        for url in results:
-            bot.send_photo(cid, url)
-        kb = types.InlineKeyboardMarkup()
-        kb.add(
-            types.InlineKeyboardButton("🔁 Начать заново", callback_data="start"),
-            types.InlineKeyboardButton("🔧 Изменить теги", callback_data="edit_tags"),
-            types.InlineKeyboardButton("➡ Продолжить", callback_data="generate")
-        )
-        bot.send_message(cid, "✅ Готово!", reply_markup=kb)
-    elif data == "edit_tags":
-        if "last_prompt" in user_settings[cid]:
-            user_settings[cid]["tags"] = user_settings[cid]["last_prompt"]
-            bot.send_message(cid, "Изменяем теги:", reply_markup=category_menu())
-        else:
-            bot.send_message(cid, "Нет сохранённых тегов.")
-    elif data == "start":
-        user_settings[cid] = {"tags": [], "last_cat": None, "count": 1}
-        bot.send_message(cid, "Сброс настроек.", reply_markup=main_menu())
 
 def build_prompt(tags):
-    base = "nsfw, masterpiece, best quality, fully nude, no hands on chest, no men, no males"
+    base = "nsfw, masterpiece, best quality, fully nude, no hands on chest, no clothing"
     prompts = [TAG_PROMPTS.get(tag, tag) for tag in tags]
     return base + ", " + ", ".join(prompts)
 
 def replicate_generate(prompt):
     url = "https://api.replicate.com/v1/predictions"
-    headers = {
-        "Authorization": f"Token {REPLICATE_TOKEN}",
-        "Content-Type": "application/json"
-    }
+    headers = {"Authorization": f"Token {REPLICATE_TOKEN}", "Content-Type": "application/json"}
     json_data = {"version": REPLICATE_MODEL, "input": {"prompt": prompt}}
     r = requests.post(url, headers=headers, json=json_data)
     if r.status_code != 201:
