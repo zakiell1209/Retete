@@ -79,7 +79,9 @@ CHARACTER_EXTRA = {
     "eula": "light blue hair, fair skin, eula, genshin impact",
     "fu_xuan": "pink hair, fu xuan, honkai star rail",
     "ayase": "black hair, school uniform, ayase seiko"
-}TAG_PROMPTS = {
+}
+
+TAG_PROMPTS = {
     **CHARACTER_EXTRA,
     "vagina": "spread pussy",
     "anal": "spread anus",
