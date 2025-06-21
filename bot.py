@@ -165,11 +165,15 @@ def webhook():
     bot.process_new_updates([update])
     return "ok", 200
 
-@app.route("/", methods=["GET"])
-def home():
-    return "бот работает", 200
+@app.route(f"/{API_TOKEN}", methods=["POST"])
+def webhook():
+    update = telebot.types.Update.de_json(request.stream.read().decode("utf-8"))
+    bot.process_new_updates([update])
+    return "ok", 200
+
+...
 
 if __name__ == "__main__":
     bot.remove_webhook()
-    bot.set_webhook(url=WEBHOOK_URL_FULL)
+    bot.set_webhook(url=f"{WEBHOOK_URL}/{API_TOKEN}")
     app.run(host="0.0.0.0", port=PORT)
