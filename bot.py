@@ -17,6 +17,13 @@ bot = telebot.TeleBot(API_TOKEN)
 app = Flask(__name__)
 user_settings = {}
 
+NEGATIVE_PROMPT = (
+    "male, man, muscular, penis, testicles, clothes, censored, lowres, bad anatomy, "
+    "text, watermark, blurry, hands on chest, hand on breast, covering breasts"
+)
+
+# Дальше добавим категории, теги, меню, обработчики и генерацию
+
 CATEGORY_NAMES = {
     "holes": "Отверстия", "toys": "Игрушки", "poses": "Позы", "clothes": "Одежда",
     "body": "Тело", "ethnos": "Этнос", "furry": "Фури", "characters": "Персонажи",
@@ -74,35 +81,12 @@ TAGS = {
     }
 }
 
-# ✅ Исправленный блок сопоставления русских названий с ключами
-RU_TO_TAG = {}
-for cat_tags in TAGS.values():
-    for key, ru_name in cat_tags.items():
-        RU_TO_TAG[ru_name.lower()] = key
+# Остальная логика (обработчики, генерация и интерфейс) дописывается...
 
-# Обработка ввода тегов вручную на русском
-@bot.message_handler(func=lambda msg: True, content_types=["text"])
-def handle_tag_input(msg):
-    cid = msg.chat.id
-    tags = []
-    for name in msg.text.split(","):
-        name = name.strip().lower()
-        key = RU_TO_TAG.get(name)
-        if key:
-            tags.append(key)
-    if not tags:
-        bot.send_message(cid, "❌ Не удалось распознать ни одного тега.")
-        return
-    user_settings[cid] = {"tags": tags, "last_cat": None, "count": 1}
-    bot.send_message(cid, f"✅ Выбраны теги: {', '.join(name for key in tags for name in [name for name, val in RU_TO_TAG.items() if val == key])}", reply_markup=main_menu())
 
-TAG_PROMPTS = {
-    "gold_lipstick": "gold lipstick on lips only",
-    "no_hands_on_chest": "no hands on chest, hands away from breasts",
-    "no_covering": "no hands covering nipples or genitals",
-    # остальные — через build_prompt
-}
+from telebot import types
 
+# --- Меню ---
 def main_menu():
     kb = types.InlineKeyboardMarkup()
     kb.add(types.InlineKeyboardButton("🧩 Выбрать теги", callback_data="choose_tags"))
@@ -119,7 +103,7 @@ def category_menu():
 
 def count_menu():
     kb = types.InlineKeyboardMarkup(row_width=5)
-    for i in range(1, 11):
+    for i in range(1, 5):
         kb.add(types.InlineKeyboardButton(str(i), callback_data=f"count_{i}"))
     kb.add(types.InlineKeyboardButton("⬅ Назад", callback_data="back_to_cat"))
     return kb
@@ -180,59 +164,50 @@ def callback(call):
         user_settings[cid]["last_prompt"] = tags.copy()
         bot.send_message(cid, f"⏳ Генерация {count} изображений...")
 
-        images = []
-        for _ in range(count):
-            url = replicate_generate(prompt)
-            if url:
-                images.append(url)
-
+        images = replicate_generate(prompt, count)
         if images:
             media = [types.InputMediaPhoto(url) for url in images]
             bot.send_media_group(cid, media)
             kb = types.InlineKeyboardMarkup()
             kb.add(
                 types.InlineKeyboardButton("🔁 Начать заново", callback_data="start"),
-                types.InlineKeyboardButton("🔧 Изменить теги", callback_data="edit_tags"),
-                types.InlineKeyboardButton("➡ Продолжить с этими", callback_data="generate")
+                types.InlineKeyboardButton("🔧 Изменить теги", callback_data="choose_tags")
             )
             bot.send_message(cid, "✅ Готово!", reply_markup=kb)
         else:
             bot.send_message(cid, "❌ Ошибка генерации.")
-    elif data == "edit_tags":
-        if "last_prompt" in user_settings[cid]:
-            user_settings[cid]["tags"] = user_settings[cid]["last_prompt"]
-            bot.send_message(cid, "Изменяем теги:", reply_markup=category_menu())
-        else:
-            bot.send_message(cid, "Нет сохранённых тегов. Сначала сделай генерацию.")
-    elif data == "start":
-        user_settings[cid] = {"tags": [], "last_cat": None, "count": 1}
-        bot.send_message(cid, "Сброс настроек.", reply_markup=main_menu())
 
 def build_prompt(tags):
     base = "nsfw, masterpiece, best quality, fully nude, no men, no male, no hands on chest, no hands covering nipples, hands away from breasts"
-    prompts = [TAG_PROMPTS.get(tag, tag) for tag in tags]
+    prompts = [tag.replace("_", " ") for tag in tags]
     return base + ", " + ", ".join(prompts)
 
-def replicate_generate(prompt):
+def replicate_generate(prompt, num_outputs):
     url = "https://api.replicate.com/v1/predictions"
     headers = {"Authorization": f"Token {REPLICATE_TOKEN}", "Content-Type": "application/json"}
-    json_data = {"version": REPLICATE_MODEL, "input": {"prompt": prompt}}
+    json_data = {
+        "version": REPLICATE_MODEL,
+        "input": {
+            "prompt": prompt,
+            "negative_prompt": NEGATIVE_PROMPT,
+            "num_outputs": num_outputs
+        }
+    }
     r = requests.post(url, headers=headers, json=json_data)
     if r.status_code != 201:
-        return None
+        return []
     status_url = r.json()["urls"]["get"]
     for _ in range(60):
         time.sleep(2)
         r = requests.get(status_url, headers=headers)
         if r.status_code != 200:
-            return None
+            return []
         data = r.json()
         if data["status"] == "succeeded":
-            output = data["output"]
-            return output[0] if isinstance(output, list) else output
+            return data["output"] if isinstance(data["output"], list) else [data["output"]]
         elif data["status"] == "failed":
-            return None
-    return None
+            return []
+    return []
 
 @app.route("/", methods=["POST"])
 def webhook():
