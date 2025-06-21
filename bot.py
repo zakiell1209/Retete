@@ -8,9 +8,12 @@ from telebot import types
 
 API_TOKEN = os.getenv("TELEGRAM_TOKEN")
 REPLICATE_TOKEN = os.getenv("REPLICATE_API_TOKEN")
-REPLICATE_MODEL = "057e2276ac5dcd8d1575dc37b131f903df9c10c41aed53d47cd7d4f068c19fa5"
+REPLICATE_MODEL = "c1d5b02687df6081c7953c74bcc527858702e8c153c9382012ccc3906752d3ec"
 WEBHOOK_URL = os.getenv("WEBHOOK_URL")
 PORT = int(os.environ.get("PORT", 5000))
+
+WEBHOOK_PATH = f"/webhook/{API_TOKEN}"
+WEBHOOK_URL_FULL = f"{WEBHOOK_URL}{WEBHOOK_PATH}"
 
 bot = telebot.TeleBot(API_TOKEN)
 app = Flask(__name__)
@@ -34,6 +37,7 @@ TAGS = {
         "doggy": "Наездница", "standing": "Стоя", "splits": "Шпагат",
         "squat": "Приседание", "lying": "Лежа", "hor_split": "Горизонтальный шпагат",
         "ver_split": "Вертикальный шпагат", "side_up_leg": "На боку с ногой вверх",
+        "front_facing": "Лицом к зрителю", "back_facing": "Спиной к зрителю",
         "lying_knees_up": "Лежа с коленями вверх", "bridge": "Мост", "suspended": "Подвешена"
     },
     "clothes": {
@@ -72,6 +76,15 @@ TAGS = {
     }
 }
 
+# Остальная логика (RU_TO_TAG, menus, handlers, TAG_PROMPTS, CHARACTER_EXTRA, build_prompt, replicate_generate, routes)
+# будет добавлена в следующей части
+
+# ✅ Сопоставление RU тегов
+RU_TO_TAG = {}
+for cat_tags in TAGS.values():
+    for key, ru_name in cat_tags.items():
+        RU_TO_TAG[ru_name.lower()] = key
+
 CHARACTER_EXTRA = {
     "rias": "red long hair, blue eyes, pale skin, large breasts, rias gremory, highschool dxd",
     "akeno": "long black hair, purple eyes, large breasts, akeno himejima, highschool dxd",
@@ -83,71 +96,36 @@ CHARACTER_EXTRA = {
 
 TAG_PROMPTS = {
     **CHARACTER_EXTRA,
-    "vagina": "spread pussy",
-    "anal": "spread anus",
-    "both": "spread pussy and anus",
-    "dildo": "dildo inserted",
-    "huge_dildo": "huge dildo",
-    "horse_dildo": "horse dildo",
-    "anal_beads": "anal beads inserted",
-    "anal_plug": "anal plug",
-    "anal_expander": "anal expander stretching anus",
-    "gag": "ball gag",
-    "piercing": "nipple and genital piercings",
-    "long_dildo_path": (
-        "dildo inserted into anus, long continuous dildo visibly bulging through stomach, exiting mouth, "
-        "realistic anatomy, full visibility, extreme toy stretch"
-    ),
-    "doggy": "doggy style pose",
-    "standing": "standing nude pose",
-    "splits": "performing full split",
+    "vagina": "spread pussy", "anal": "spread anus", "both": "spread pussy and anus",
+    "dildo": "dildo inserted", "huge_dildo": "huge dildo", "horse_dildo": "horse dildo",
+    "anal_beads": "anal beads inserted", "anal_plug": "anal plug", "anal_expander": "anal expander stretching anus",
+    "gag": "ball gag", "piercing": "nipple and genital piercings",
+    "long_dildo_path": "dildo inserted into anus, long continuous dildo visibly bulging through stomach, exiting mouth, realistic anatomy, full visibility, extreme toy stretch",
+    "doggy": "doggy style pose", "standing": "standing nude pose", "splits": "performing full split",
     "hor_split": "extreme horizontal side split, legs fully apart sideways, pelvis close to ground, realistic flexibility",
-    "ver_split": "vertical front split",
-    "side_up_leg": "on side with leg lifted up high",
-    "lying_knees_up": "lying on back, knees bent upward",
-    "bridge": "bridge pose, back arched, pelvis elevated",
-    "suspended": "suspended in ropes, bondage style",
-    "stockings": "only stockings",
-    "bikini_tan_lines": "bikini tan lines clearly visible",
-    "mask": "mask on face",
-    "heels": "black high heels with red soles",
-    "shibari": "shibari rope bondage",
-    "big_breasts": "big breasts",
-    "small_breasts": "small breasts",
-    "skin_white": "white skin",
-    "skin_black": "dark skin",
-    "body_fat": "curvy thick body",
-    "body_thin": "thin slim body",
-    "body_normal": "average female body",
-    "body_fit": "fit athletic body",
-    "body_muscular": "muscular toned body",
-    "age_loli": "small young girl loli",
-    "age_milf": "mature milf woman",
-    "age_21": "21 year old woman",
-    "cum": "covered in cum, dripping",
-    "belly_bloat": "visible belly bulge from toy",
+    "ver_split": "vertical front split", "side_up_leg": "on side with leg lifted up high",
+    "lying_knees_up": "lying on back, knees bent upward", "bridge": "bridge pose, back arched, pelvis elevated",
+    "suspended": "suspended in ropes, bondage style", "stockings": "only stockings",
+    "bikini_tan_lines": "bikini tan lines clearly visible", "mask": "mask on face",
+    "heels": "black high heels with red soles", "shibari": "shibari rope bondage",
+    "big_breasts": "big breasts", "small_breasts": "small breasts",
+    "skin_white": "white skin", "skin_black": "dark skin",
+    "body_fat": "curvy thick body", "body_thin": "thin slim body", "body_normal": "average female body",
+    "body_fit": "fit athletic body", "body_muscular": "muscular toned body",
+    "age_loli": "small young girl loli", "age_milf": "mature milf woman", "age_21": "21 year old woman",
+    "cum": "covered in cum, dripping", "belly_bloat": "visible belly bulge from toy",
     "succubus_tattoo": "succubus tattoo above pussy",
     "futanari": "futanari girl, realistic penis, big breasts, visible vagina",
     "femboy": "feminine boy with soft features",
-    "ethnicity_asian": "asian girl",
-    "ethnicity_european": "european girl",
-    "furry_cow": "furry cow girl",
-    "furry_cat": "furry cat girl",
-    "furry_dog": "furry dog girl",
-    "furry_dragon": "furry dragon girl",
-    "furry_sylveon": "furry sylveon, pink fur, ribbons, sexy style",
-    "furry_fox": "furry fox girl",
-    "furry_bunny": "furry bunny girl",
-    "furry_wolf": "furry wolf girl",
-    "ahegao": "ahegao face",
-    "pain_face": "expression of pain",
-    "ecstasy_face": "expression of ecstasy",
+    "ethnicity_asian": "asian girl", "ethnicity_european": "european girl",
+    "furry_cow": "furry cow girl", "furry_cat": "furry cat girl", "furry_dog": "furry dog girl",
+    "furry_dragon": "furry dragon girl", "furry_sylveon": "furry sylveon, pink fur, ribbons, sexy style",
+    "furry_fox": "furry fox girl", "furry_bunny": "furry bunny girl", "furry_wolf": "furry wolf girl",
+    "ahegao": "ahegao face", "pain_face": "expression of pain", "ecstasy_face": "expression of ecstasy",
     "gold_lipstick": "gold lipstick on lips only",
     "view_bottom": "camera angle from below, looking up at girl, dramatic perspective, no floor visible",
-    "view_top": "camera angle from above, looking down at girl",
-    "view_side": "side view, side camera perspective",
-    "view_close": "close-up view, detailed face and body",
-    "view_full": "full body visible from distance"
+    "view_top": "camera angle from above, looking down at girl", "view_side": "side view, side camera perspective",
+    "view_close": "close-up view, detailed face and body", "view_full": "full body visible from distance"
 }
 
 def build_prompt(tags):
@@ -181,7 +159,7 @@ def replicate_generate(prompt):
             return None
     return None
 
-@app.route("/", methods=["POST"])
+@app.route(f"/webhook/{API_TOKEN}", methods=["POST"])
 def webhook():
     update = telebot.types.Update.de_json(request.stream.read().decode("utf-8"))
     bot.process_new_updates([update])
@@ -193,5 +171,5 @@ def home():
 
 if __name__ == "__main__":
     bot.remove_webhook()
-    bot.set_webhook(url=WEBHOOK_URL)
+    bot.set_webhook(url=WEBHOOK_URL_FULL)
     app.run(host="0.0.0.0", port=PORT)
