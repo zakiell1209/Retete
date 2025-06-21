@@ -18,8 +18,9 @@ app = Flask(__name__)
 user_settings = {}
 
 NEGATIVE_PROMPT = (
-    "male, man, muscular, penis, testicles, clothes, censored, lowres, bad anatomy, "
-    "text, watermark, blurry, hands on chest, hand on breast, covering breasts"
+    "male, man, muscular male, penis, testicles, clothes, censored, lowres, bad anatomy, "
+    "text, watermark, blurry, multiple people, hand on breast, hands covering chest, "
+    "hands on nipples, covering nipples, extra limbs, painting, sketch, cartoon"
 )
 
 # Дальше добавим категории, теги, меню, обработчики и генерацию
