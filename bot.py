@@ -166,7 +166,6 @@ TAG_PROMPTS = {
     "view_full": "full body visible from distance"
 }
     # остальные — через build_prompt
-}
 
 def main_menu():
     kb = types.InlineKeyboardMarkup()
