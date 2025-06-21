@@ -2,6 +2,7 @@
 import os
 import time
 import requests
+import random
 from flask import Flask, request
 import telebot
 from telebot import types
@@ -95,16 +96,79 @@ def handle_tag_input(msg):
 
 TAG_PROMPTS = {
     "gold_lipstick": "gold lipstick on lips only",
+    "no_hands_on_chest": "no hands on chest, hands away from breasts",
+    "no_covering": "no hands covering nipples or genitals",
+    "vagina": "spread pussy",
+    "anal": "spread anus",
+    "both": "spread pussy and anus",
+    "dildo": "dildo inserted",
+    "huge_dildo": "huge dildo",
+    "horse_dildo": "horse dildo",
+    "anal_beads": "anal beads inserted",
+    "anal_plug": "anal plug",
+    "anal_expander": "anal expander stretching anus",
+    "gag": "ball gag",
+    "piercing": "nipple and genital piercings",
+    "long_dildo_path": (
+        "dildo inserted into anus, long continuous dildo visibly bulging through stomach, "
+        "exiting mouth, realistic anatomy, full visibility, extreme toy stretch"
+    ),
+    "doggy": "doggy style pose",
+    "standing": "standing nude pose",
+    "splits": "performing full split",
     "hor_split": "extreme horizontal side split, legs fully apart sideways, pelvis close to ground, realistic flexibility",
-    "long_dildo_path": "dildo inserted through anus, visible bulge in belly, exiting from mouth, extreme stretching, full visibility, realistic anatomy"
+    "ver_split": "vertical front split",
+    "side_up_leg": "on side with leg lifted up high",
+    "lying_knees_up": "lying on back, knees bent upward",
+    "bridge": "bridge pose, back arched, pelvis elevated",
+    "suspended": "suspended in ropes, bondage style",
+    "stockings": "only stockings",
+    "bikini_tan_lines": "bikini tan lines clearly visible",
+    "mask": "mask on face",
+    "heels": "black high heels with red soles",
+    "shibari": "shibari rope bondage",
+    "big_breasts": "big breasts",
+    "small_breasts": "small breasts",
+    "skin_white": "white skin",
+    "skin_black": "dark skin",
+    "body_fat": "curvy thick body",
+    "body_thin": "thin slim body",
+    "body_normal": "average female body",
+    "body_fit": "fit athletic body",
+    "body_muscular": "muscular toned body",
+    "age_loli": "small young girl loli",
+    "age_milf": "mature milf woman",
+    "age_21": "21 year old woman",
+    "cum": "covered in cum, dripping",
+    "belly_bloat": "visible belly bulge from toy",
+    "succubus_tattoo": "succubus tattoo above pussy",
+    "futanari": "futanari girl, realistic penis, big breasts, visible vagina",
+    "femboy": "feminine boy with soft features",
+    "ethnicity_asian": "asian girl",
+    "ethnicity_european": "european girl",
+    "furry_cow": "furry cow girl",
+    "furry_cat": "furry cat girl",
+    "furry_dog": "furry dog girl",
+    "furry_dragon": "furry dragon girl",
+    "furry_sylveon": "furry sylveon, pink fur, ribbons, sexy style",
+    "furry_fox": "furry fox girl",
+    "furry_bunny": "furry bunny girl",
+    "furry_wolf": "furry wolf girl",
+    "ahegao": "ahegao face",
+    "pain_face": "expression of pain",
+    "ecstasy_face": "expression of ecstasy",
+    "view_bottom": "camera angle from below, looking up at girl, dramatic perspective, no floor visible",
+    "view_top": "camera angle from above, looking down at girl",
+    "view_side": "side view, side camera perspective",
+    "view_close": "close-up view, detailed face and body",
+    "view_full": "full body visible from distance"
 }
 
 def build_prompt(tags):
     base = (
-        "nsfw, masterpiece, best quality, fully nude, no men, no male, female only, "
-        "realistic face, realistic body, coherent anatomy, full body, "
-        "no hands on chest, no hands covering breasts, no hands covering nipples, "
-        "no arms hiding chest, hands away from breasts, no mannequin"
+        "nsfw, masterpiece, best quality, fully nude, no men, no male, "
+        "no hands on chest, no hands covering nipples, hands away from breasts, "
+        "no covering pussy, realistic body, realistic face, coherent full body"
     )
     prompts = [TAG_PROMPTS.get(tag, tag) for tag in tags]
     return base + ", " + ", ".join(prompts)
