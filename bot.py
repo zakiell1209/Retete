@@ -17,19 +17,18 @@ bot = telebot.TeleBot(API_TOKEN)
 app = Flask(__name__)
 user_settings = {}
 
-# Простейший интерфейс
 def main_menu():
     kb = types.InlineKeyboardMarkup()
     kb.add(types.InlineKeyboardButton("🧩 Выбрать теги", callback_data="choose_tags"))
+    kb.add(types.InlineKeyboardButton("📸 Кол-во изображений", callback_data="choose_count"))
     kb.add(types.InlineKeyboardButton("🎨 Генерировать", callback_data="generate"))
     return kb
 
-# Обработка старта
 @bot.message_handler(commands=["start"])
 def start(msg):
     cid = msg.chat.id
     user_settings[cid] = {"prompt": "", "count": 1}
-    bot.send_message(cid, "Привет! Отправь описание (prompt) для генерации или выбери опции ниже.", reply_markup=main_menu())
+    bot.send_message(cid, "Привет! Отправь описание (prompt) или выбери действие ниже:", reply_markup=main_menu())
 
 @bot.callback_query_handler(func=lambda call: True)
 def callback(call):
@@ -42,27 +41,33 @@ def callback(call):
     if data == "choose_tags":
         bot.send_message(cid, "Просто напиши описание вручную, например:
 
-`девушка в чулках, на шпагате, лоли, фури кошка`")
+`девушка в чулках, на шпагате, фури кошка`")
+    elif data == "choose_count":
+        kb = types.InlineKeyboardMarkup(row_width=4)
+        for i in range(1, 5):
+            kb.add(types.InlineKeyboardButton(f"{i}", callback_data=f"count_{i}"))
+        kb.add(types.InlineKeyboardButton("⬅ Назад", callback_data="back_main"))
+        bot.edit_message_text("Выбери количество изображений:", cid, call.message.message_id, reply_markup=kb)
+    elif data.startswith("count_"):
+        count = int(data.split("_")[1])
+        user_settings[cid]["count"] = count
+        bot.send_message(cid, f"✅ Выбрано изображений: {count}", reply_markup=main_menu())
+    elif data == "back_main":
+        bot.edit_message_text("Возврат в главное меню", cid, call.message.message_id, reply_markup=main_menu())
     elif data == "generate":
         prompt = user_settings[cid].get("prompt", "")
         count = user_settings[cid].get("count", 1)
         if not prompt:
             bot.send_message(cid, "Сначала отправь описание.")
             return
-        bot.send_message(cid, f"Генерация {count} изображений...")
-
+        bot.send_message(cid, f"⏳ Генерация {count} изображений...")
         images = replicate_generate(prompt, count)
         if not images:
             bot.send_message(cid, "❌ Не удалось сгенерировать изображения.")
             return
         media = [types.InputMediaPhoto(url) for url in images]
         bot.send_media_group(cid, media)
-    elif data.startswith("count_"):
-        count = int(data.split("_")[1])
-        user_settings[cid]["count"] = count
-        bot.send_message(cid, f"Выбрано: {count} изображений", reply_markup=main_menu())
 
-# Обработка текста как промпта
 @bot.message_handler(content_types=["text"])
 def set_prompt(msg):
     cid = msg.chat.id
