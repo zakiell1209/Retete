@@ -1,4 +1,3 @@
-# --- bot.py ---
 import os
 import time
 import requests
@@ -17,27 +16,75 @@ app = Flask(__name__)
 user_settings = {}
 
 NEGATIVE_PROMPT = (
-    "male, penis, testicles, man, muscular male, censored, blurry, lowres, bad anatomy, watermark, "
-    "clothes, bra, panties, hand on breast, hands on chest, fingers on nipples, covering chest, "
-    "nude censored, realistic censor, mosaic, nsfw censor, arm crossing chest"
+    "male, man, penis, testicles, muscular male, clothes, censored, watermark, blurry, lowres, text, "
+    "hands covering chest, hand on breast, hand on nipple, hand on boobs, arms over breasts, fingers on nipple, "
+    "bra, panties"
 )
 
-TAG_PROMPTS = {
-    "rias": "rias gremory from highschool dxd, red hair, large breasts",
-    "akeno": "akeno himejima from highschool dxd, long black hair, seductive expression",
-    "eula": "eula from genshin impact, blue hair, elegant pose",
-    "fu_xuan": "fu xuan from honkai star rail, purple twin-tails, confident look",
-    "ayase": "ayase seiko, pink hair, school uniform, anime style",
-    "kafka": "kafka from honkai star rail, purple long hair, glasses, bodysuit",
-
-    "ahegao": "ahegao face, tongue out, rolling eyes",
-    "pain_face": "face twisted in pain",
-    "ecstasy_face": "face showing ecstasy",
-
-    "gold_lipstick": "gold lipstick on lips only",
-
-    "no_hands_on_chest": "hands away from chest, arms down, not touching body",
+CATEGORY_NAMES = {
+    "holes": "Отверстия", "toys": "Игрушки", "poses": "Позы", "clothes": "Одежда",
+    "body": "Тело", "ethnos": "Этнос", "furry": "Фури", "characters": "Персонажи",
+    "head": "Голова", "view": "Обзор"
 }
+
+TAGS = {
+    "holes": {"vagina": "Вагина", "anal": "Анус", "both": "Вагина и анус"},
+    "toys": {
+        "dildo": "Дилдо", "huge_dildo": "Большое дилдо", "horse_dildo": "Лошадиное дилдо",
+        "anal_beads": "Анальные бусы", "anal_plug": "Анальная пробка",
+        "anal_expander": "Анальный расширитель", "gag": "Кляп",
+        "piercing": "Пирсинг", "long_dildo_path": "Дилдо из ануса выходит изо рта"
+    },
+    "poses": {
+        "doggy": "Наездница", "standing": "Стоя", "splits": "Шпагат",
+        "squat": "Приседание", "lying": "Лежа", "hor_split": "Горизонтальный шпагат",
+        "ver_split": "Вертикальный шпагат", "side_up_leg": "На боку с ногой вверх",
+        "front_facing": "Лицом к зрителю", "back_facing": "Спиной к зрителю",
+        "lying_knees_up": "Лежа с коленями вверх", "bridge": "Мост", "suspended": "Подвешена"
+    },
+    "clothes": {
+        "stockings": "Чулки", "bikini_tan_lines": "Загар от бикини", "mask": "Маска",
+        "heels": "Каблуки", "shibari": "Шибари"
+    },
+    "body": {
+        "big_breasts": "Большая грудь", "small_breasts": "Маленькая грудь",
+        "skin_white": "Белая кожа", "skin_black": "Чёрная кожа",
+        "body_fat": "Пышное тело", "body_thin": "Худое тело", "body_normal": "Нормальное тело",
+        "body_fit": "Подтянутое тело", "body_muscular": "Мускулистое тело",
+        "age_loli": "Лоли", "age_milf": "Милфа", "age_21": "Возраст 21",
+        "cum": "Вся в сперме", "belly_bloat": "Вздутие живота",
+        "succubus_tattoo": "Тату внизу живота"
+    },
+    "ethnos": {
+        "futanari": "Футанари", "femboy": "Фембой",
+        "ethnicity_asian": "Азиатка", "ethnicity_european": "Европейка"
+    },
+    "furry": {
+        "furry_cow": "Фури корова", "furry_cat": "Фури кошка", "furry_dog": "Фури собака",
+        "furry_dragon": "Фури дракон", "furry_sylveon": "Фури сильвеон",
+        "furry_fox": "Фури лисица", "furry_bunny": "Фури кролик", "furry_wolf": "Фури волчица"
+    },
+    "characters": {
+        "rias": "Риас Гремори", "akeno": "Акено Химедзима", "kafka": "Кафка (Хонкай)",
+        "eula": "Еола (Геншин)", "fu_xuan": "Фу Сюань", "ayase": "Аясе Сейко"
+    },
+    "head": {
+        "ahegao": "Ахегао", "pain_face": "Лицо в боли", "ecstasy_face": "Лицо в экстазе",
+        "gold_lipstick": "Золотая помада", "long_hair": "Длинные волосы", "short_hair": "Короткие волосы",
+        "bob_cut": "Прическа боб", "ponytail": "Конский хвост", "hair_red": "Красные волосы",
+        "hair_white": "Белые волосы", "hair_black": "Чёрные волосы"
+    },
+    "view": {
+        "view_bottom": "Снизу", "view_top": "Сверху",
+        "view_side": "Сбоку", "view_close": "Ближе", "view_full": "Дальше"
+    }
+}
+
+@bot.message_handler(commands=["start"])
+def start(message):
+    cid = message.chat.id
+    user_settings[cid] = {"tags": [], "last_cat": None, "count": 1}
+    bot.send_message(cid, "Привет! Что делаем?", reply_markup=main_menu())
 
 def main_menu():
     kb = types.InlineKeyboardMarkup()
@@ -45,77 +92,88 @@ def main_menu():
     kb.add(types.InlineKeyboardButton("🎨 Генерировать", callback_data="generate"))
     return kb
 
-@bot.message_handler(commands=["start"])
-def start(msg):
-    cid = msg.chat.id
-    user_settings[cid] = {"tags": [], "count": 1}
-    bot.send_message(cid, "Привет! Что делаем?", reply_markup=main_menu())
+def category_menu():
+    kb = types.InlineKeyboardMarkup(row_width=2)
+    for key, name in CATEGORY_NAMES.items():
+        kb.add(types.InlineKeyboardButton(name, callback_data=f"cat_{key}"))
+    kb.add(types.InlineKeyboardButton("✅ Готово", callback_data="done_tags"))
+    kb.add(types.InlineKeyboardButton("📸 Кол-во фото", callback_data="choose_count"))
+    return kb
+
+def count_menu():
+    kb = types.InlineKeyboardMarkup(row_width=5)
+    for i in range(1, 5):
+        kb.add(types.InlineKeyboardButton(str(i), callback_data=f"count_{i}"))
+    kb.add(types.InlineKeyboardButton("⬅ Назад", callback_data="back_to_cat"))
+    return kb
+
+def tag_menu(category, selected_tags):
+    kb = types.InlineKeyboardMarkup(row_width=2)
+    for tag_key, tag_name in TAGS[category].items():
+        label = f"✅ {tag_name}" if tag_key in selected_tags else tag_name
+        kb.add(types.InlineKeyboardButton(label, callback_data=f"tag_{category}_{tag_key}"))
+    kb.add(types.InlineKeyboardButton("⬅ Назад", callback_data="back_to_cat"))
+    return kb
 
 @bot.callback_query_handler(func=lambda call: True)
 def callback(call):
     cid = call.message.chat.id
     data = call.data
-
     if cid not in user_settings:
-        user_settings[cid] = {"tags": [], "count": 1}
+        user_settings[cid] = {"tags": [], "last_cat": None, "count": 1}
 
-    if data == "generate":
+    if data == "choose_tags":
+        bot.edit_message_text("Выбери категорию тегов:", cid, call.message.message_id, reply_markup=category_menu())
+    elif data.startswith("cat_"):
+        cat = data[4:]
+        user_settings[cid]["last_cat"] = cat
+        selected = user_settings[cid]["tags"]
+        bot.edit_message_text(f"Категория: {CATEGORY_NAMES[cat]}", cid, call.message.message_id, reply_markup=tag_menu(cat, selected))
+    elif data.startswith("tag_"):
+        _, cat, tag = data.split("_", 2)
         tags = user_settings[cid]["tags"]
-        count = min(max(user_settings[cid].get("count", 1), 1), 4)
+        if tag in tags:
+            tags.remove(tag)
+        else:
+            tags.append(tag)
+        bot.edit_message_reply_markup(cid, call.message.message_id, reply_markup=tag_menu(cat, tags))
+    elif data == "done_tags":
+        bot.edit_message_text("Теги сохранены.", cid, call.message.message_id, reply_markup=main_menu())
+    elif data == "back_to_cat":
+        bot.edit_message_text("Выбери категорию:", cid, call.message.message_id, reply_markup=category_menu())
+    elif data == "choose_count":
+        bot.edit_message_text("Выбери количество изображений:", cid, call.message.message_id, reply_markup=count_menu())
+    elif data.startswith("count_"):
+        count = int(data.split("_")[1])
+        user_settings[cid]["count"] = count
+        bot.edit_message_text(f"✅ Количество изображений: {count}", cid, call.message.message_id, reply_markup=category_menu())
+    elif data == "generate":
+        tags = user_settings[cid]["tags"]
+        count = user_settings[cid].get("count", 1)
         if not tags:
-            bot.send_message(cid, "❌ Сначала выбери теги!")
+            bot.send_message(cid, "Сначала выбери теги!")
             return
         prompt = build_prompt(tags)
-        bot.send_message(cid, f"🎨 Генерация {count} изображений...")
-        images = []
-        for _ in range(count):
-            url = replicate_generate(prompt)
-            if url:
-                images.append(url)
-        if images:
-            media = [types.InputMediaPhoto(url) for url in images]
+        bot.send_message(cid, f"⏳ Генерация {count} изображений...")
+        urls = replicate_generate(prompt, count)
+        if urls:
+            media = [types.InputMediaPhoto(url) for url in urls]
             bot.send_media_group(cid, media)
-            post_kb = types.InlineKeyboardMarkup()
-            post_kb.add(
-                types.InlineKeyboardButton("🔁 Начать заново", callback_data="start_over"),
-                types.InlineKeyboardButton("🛠 Редактировать теги", callback_data="edit_tags"),
-                types.InlineKeyboardButton("🔂 Продолжить генерацию", callback_data="generate")
+            kb = types.InlineKeyboardMarkup()
+            kb.add(
+                types.InlineKeyboardButton("🔁 Начать заново", callback_data="start"),
+                types.InlineKeyboardButton("🔧 Изменить теги", callback_data="choose_tags"),
+                types.InlineKeyboardButton("➡ Повторить", callback_data="generate")
             )
-            bot.send_message(cid, "✅ Готово!", reply_markup=post_kb)
+            bot.send_message(cid, "✅ Готово!", reply_markup=kb)
         else:
-            bot.send_message(cid, "❌ Не удалось сгенерировать изображения.")
-
-    elif data == "start_over":
-        user_settings[cid] = {"tags": [], "count": 1}
-        bot.send_message(cid, "🔄 Начнём заново!", reply_markup=main_menu())
-
-    elif data == "edit_tags":
-        if "tags" in user_settings[cid]:
-            bot.send_message(cid, "Редактируем теги (введи текстом или нажми /start):")
-        else:
-            bot.send_message(cid, "Нет тегов для редактирования. Используй /start")
-
-@bot.message_handler(func=lambda msg: True, content_types=["text"])
-def handle_tags(msg):
-    cid = msg.chat.id
-    raw = msg.text.lower().split(",")
-    tags = []
-    for r in raw:
-        r = r.strip()
-        if r in TAG_PROMPTS:
-            tags.append(r)
-    if not tags:
-        bot.send_message(cid, "❌ Не удалось распознать теги. Используй /start")
-        return
-    user_settings[cid] = {"tags": tags, "count": 1}
-    bot.send_message(cid, f"✅ Выбраны теги: {', '.join(tags)}", reply_markup=main_menu())
+            bot.send_message(cid, "❌ Ошибка генерации.")
 
 def build_prompt(tags):
-    base = "nsfw, masterpiece, best quality, ultra detailed, anime style, solo female, fully nude, visible nipples, arms at sides, no clothing"
-    mapped = [TAG_PROMPTS.get(t, t) for t in tags]
-    return base + ", " + ", ".join(mapped)
+    base = "nsfw, masterpiece, best quality, fully nude, anime style, solo, no male, hands away from breasts, no bra, no panties"
+    return base + ", " + ", ".join(tags)
 
-def replicate_generate(prompt):
+def replicate_generate(prompt, num_outputs):
     url = "https://api.replicate.com/v1/predictions"
     headers = {"Authorization": f"Token {REPLICATE_TOKEN}", "Content-Type": "application/json"}
     data = {
@@ -123,25 +181,24 @@ def replicate_generate(prompt):
         "input": {
             "prompt": prompt,
             "negative_prompt": NEGATIVE_PROMPT,
-            "num_outputs": 1
+            "num_outputs": num_outputs
         }
     }
     r = requests.post(url, headers=headers, json=data)
     if r.status_code != 201:
-        return None
+        return []
     status_url = r.json()["urls"]["get"]
     for _ in range(60):
         time.sleep(2)
-        r = requests.get(status_url, headers=headers)
-        if r.status_code != 200:
-            return None
-        data = r.json()
+        res = requests.get(status_url, headers=headers)
+        if res.status_code != 200:
+            return []
+        data = res.json()
         if data["status"] == "succeeded":
-            output = data["output"]
-            return output[0] if isinstance(output, list) else output
+            return data["output"] if isinstance(data["output"], list) else [data["output"]]
         elif data["status"] == "failed":
-            return None
-    return None
+            return []
+    return []
 
 @app.route("/", methods=["POST"])
 def webhook():
