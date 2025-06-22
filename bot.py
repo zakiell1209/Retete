@@ -1,4 +1,3 @@
-# --- bot.py (финальная версия) ---
 import os
 import time
 import requests
@@ -12,95 +11,96 @@ REPLICATE_MODEL = "057e2276ac5dcd8d1575dc37b131f903df9c10c41aed53d47cd7d4f068c19
 WEBHOOK_URL = os.getenv("WEBHOOK_URL")
 PORT = int(os.environ.get("PORT", 5000))
 
+NEGATIVE_PROMPT = "male, man, penis, testicles, muscular male, hands on chest, hand covering nipple, hand covering breasts, censored, bra, panties, blurry, lowres, bad anatomy, watermark, text, logo"
+
 bot = telebot.TeleBot(API_TOKEN)
 app = Flask(__name__)
 user_settings = {}
 
-# Отражение по категориям и тегам (укорочено для примера)
-CATEGORY_NAMES = {
-    "clothes": "Одежда", "head": "Голова"
-}
-TAGS = {
-    "clothes": {
-        "stockings": "Чулки", "bikini_tan_lines": "Загар от бикини"
-    },
-    "head": {
-        "ahegao": "Ахегао", "ecstasy_face": "Лицо в экстазе"
-    }
-}
-TAG_PROMPTS = {
-    "stockings": "stockings only, no panties, no bra, no other clothes",
-    "bikini_tan_lines": "dark tanned skin with clear white bikini tan lines, no bikini, no clothing, no underwear",
-    "ahegao": "ahegao face, tongue out, eyes rolling",
-    "ecstasy_face": "face in orgasmic ecstasy"
-}
-
-NEGATIVE_PROMPT = (
-    "male, man, penis, testicles, muscular male, hands covering chest, hand on breast, censored, "
-    "clothes, blurry, lowres, bad anatomy, text, watermark"
-)
-
+# Простейший интерфейс
 def main_menu():
     kb = types.InlineKeyboardMarkup()
     kb.add(types.InlineKeyboardButton("🧩 Выбрать теги", callback_data="choose_tags"))
     kb.add(types.InlineKeyboardButton("🎨 Генерировать", callback_data="generate"))
     return kb
 
+# Обработка старта
 @bot.message_handler(commands=["start"])
 def start(msg):
     cid = msg.chat.id
-    user_settings[cid] = {"tags": [], "count": 1}
-    bot.send_message(cid, "Привет! Что делаем?", reply_markup=main_menu())
+    user_settings[cid] = {"prompt": "", "count": 1}
+    bot.send_message(cid, "Привет! Отправь описание (prompt) для генерации или выбери опции ниже.", reply_markup=main_menu())
 
 @bot.callback_query_handler(func=lambda call: True)
 def callback(call):
     cid = call.message.chat.id
     data = call.data
+
     if cid not in user_settings:
-        user_settings[cid] = {"tags": [], "count": 1}
-    if data == "generate":
-        tags = user_settings[cid]["tags"]
-        count = user_settings[cid]["count"]
-        prompt = build_prompt(tags)
-        bot.send_message(cid, "⏳ Генерация изображений...")
-        images = generate_images(prompt, count)
-        if images:
-            media = [types.InputMediaPhoto(img) for img in images]
-            bot.send_media_group(cid, media)
-        else:
-            bot.send_message(cid, "❌ Ошибка генерации.")
+        user_settings[cid] = {"prompt": "", "count": 1}
 
-def build_prompt(tags):
-    base = "nsfw, masterpiece, ultra detailed, best quality"
-    prompts = [TAG_PROMPTS.get(tag, tag) for tag in tags]
-    return base + ", " + ", ".join(prompts)
+    if data == "choose_tags":
+        bot.send_message(cid, "Просто напиши описание вручную, например:
 
-def generate_images(prompt, num_outputs=1):
+`девушка в чулках, на шпагате, лоли, фури кошка`")
+    elif data == "generate":
+        prompt = user_settings[cid].get("prompt", "")
+        count = user_settings[cid].get("count", 1)
+        if not prompt:
+            bot.send_message(cid, "Сначала отправь описание.")
+            return
+        bot.send_message(cid, f"Генерация {count} изображений...")
+
+        images = replicate_generate(prompt, count)
+        if not images:
+            bot.send_message(cid, "❌ Не удалось сгенерировать изображения.")
+            return
+        media = [types.InputMediaPhoto(url) for url in images]
+        bot.send_media_group(cid, media)
+    elif data.startswith("count_"):
+        count = int(data.split("_")[1])
+        user_settings[cid]["count"] = count
+        bot.send_message(cid, f"Выбрано: {count} изображений", reply_markup=main_menu())
+
+# Обработка текста как промпта
+@bot.message_handler(content_types=["text"])
+def set_prompt(msg):
+    cid = msg.chat.id
+    user_settings[cid] = user_settings.get(cid, {})
+    user_settings[cid]["prompt"] = msg.text.strip()
+    bot.send_message(cid, f"✅ Промпт установлен:
+`{msg.text.strip()}`
+Теперь нажми «🎨 Генерировать»", reply_markup=main_menu())
+
+def replicate_generate(prompt, num_outputs=1):
     url = "https://api.replicate.com/v1/predictions"
-    headers = {"Authorization": f"Token {REPLICATE_TOKEN}", "Content-Type": "application/json"}
-    json_data = {
+    headers = {
+        "Authorization": f"Token {REPLICATE_TOKEN}",
+        "Content-Type": "application/json"
+    }
+    data = {
         "version": REPLICATE_MODEL,
         "input": {
             "prompt": prompt,
             "negative_prompt": NEGATIVE_PROMPT,
-            "num_outputs": min(num_outputs, 4)
+            "num_outputs": min(max(1, num_outputs), 4)
         }
     }
-    r = requests.post(url, headers=headers, json=json_data)
+    r = requests.post(url, headers=headers, json=data)
     if r.status_code != 201:
-        return None
+        return []
     status_url = r.json()["urls"]["get"]
     for _ in range(60):
         time.sleep(2)
         r = requests.get(status_url, headers=headers)
         if r.status_code != 200:
-            return None
-        data = r.json()
-        if data["status"] == "succeeded":
-            return data["output"] if isinstance(data["output"], list) else [data["output"]]
-        elif data["status"] == "failed":
-            return None
-    return None
+            return []
+        result = r.json()
+        if result["status"] == "succeeded":
+            return result["output"] if isinstance(result["output"], list) else [result["output"]]
+        if result["status"] == "failed":
+            return []
+    return []
 
 @app.route("/", methods=["POST"])
 def webhook():
