@@ -7,198 +7,207 @@ from telebot import types
 
 API_TOKEN = os.getenv("TELEGRAM_TOKEN")
 REPLICATE_TOKEN = os.getenv("REPLICATE_API_TOKEN")
-REPLICATE_MODEL = "057e2276ac5dcd8d1575dc37b131f903df9c10c41aed53d47cd7d4f068c19fa5"
 WEBHOOK_URL = os.getenv("WEBHOOK_URL")
 PORT = int(os.environ.get("PORT", 5000))
+
+REPLICATE_MODEL = "057e2276ac5dcd8d1575dc37b131f903df9c10c41aed53d47cd7d4f068c19fa5"
 
 bot = telebot.TeleBot(API_TOKEN)
 app = Flask(__name__)
 user_settings = {}
 
 NEGATIVE_PROMPT = (
-    "male, man, penis, testicles, muscular male, clothes, censored, watermark, blurry, lowres, text, "
-    "hands covering chest, hand on breast, hand on nipple, hand on boobs, arms over breasts, fingers on nipple, "
-    "bra, panties"
+    "male, man, penis, testicles, muscular male, hands on chest, hands covering nipples, "
+    "hand on breast, censored, bra, panties, blurry, lowres, bad anatomy, watermark, text"
 )
 
 CATEGORY_NAMES = {
-    "holes": "Отверстия", "toys": "Игрушки", "poses": "Позы", "clothes": "Одежда",
-    "body": "Тело", "ethnos": "Этнос", "furry": "Фури", "characters": "Персонажи",
-    "head": "Голова", "view": "Обзор"
+    "poses": "Позы", "clothes": "Одежда", "body": "Тело", "head": "Голова",
+    "ethnos": "Этнос", "furry": "Фури", "view": "Обзор", "toys": "Игрушки", "holes": "Отверстия"
 }
 
 TAGS = {
-    "holes": {"vagina": "Вагина", "anal": "Анус", "both": "Вагина и анус"},
-    "toys": {
-        "dildo": "Дилдо", "huge_dildo": "Большое дилдо", "horse_dildo": "Лошадиное дилдо",
-        "anal_beads": "Анальные бусы", "anal_plug": "Анальная пробка",
-        "anal_expander": "Анальный расширитель", "gag": "Кляп",
-        "piercing": "Пирсинг", "long_dildo_path": "Дилдо из ануса выходит изо рта"
-    },
     "poses": {
-        "doggy": "Наездница", "standing": "Стоя", "splits": "Шпагат",
-        "squat": "Приседание", "lying": "Лежа", "hor_split": "Горизонтальный шпагат",
-        "ver_split": "Вертикальный шпагат", "side_up_leg": "На боку с ногой вверх",
-        "front_facing": "Лицом к зрителю", "back_facing": "Спиной к зрителю",
-        "lying_knees_up": "Лежа с коленями вверх", "bridge": "Мост", "suspended": "Подвешена"
+        "doggy": "doggy style, back arched, butt up",
+        "squat": "squatting, legs apart",
+        "lying": "lying down, legs spread",
+        "ver_split": "vertical splits, spread legs",
+        "hor_split": "horizontal splits, flexible pose",
+        "bridge": "backbend pose, arched spine",
+        "suspended": "suspended in air, ropes",
+        "side_up_leg": "lying on side, one leg up"
     },
     "clothes": {
-        "stockings": "Чулки", "bikini_tan_lines": "Загар от бикини", "mask": "Маска",
-        "heels": "Каблуки", "shibari": "Шибари"
+        "stockings": "stockings only, no panties, no bra, sheer",
+        "shibari": "shibari bondage, ropes only, no clothes",
+        "heels": "high heels only, no other clothes",
+        "bikini_tan_lines": "bikini tan lines on bare skin, no bikini"
     },
     "body": {
-        "big_breasts": "Большая грудь", "small_breasts": "Маленькая грудь",
-        "skin_white": "Белая кожа", "skin_black": "Чёрная кожа",
-        "body_fat": "Пышное тело", "body_thin": "Худое тело", "body_normal": "Нормальное тело",
-        "body_fit": "Подтянутое тело", "body_muscular": "Мускулистое тело",
-        "age_loli": "Лоли", "age_milf": "Милфа", "age_21": "Возраст 21",
-        "cum": "Вся в сперме", "belly_bloat": "Вздутие живота",
-        "succubus_tattoo": "Тату внизу живота"
-    },
-    "ethnos": {
-        "futanari": "Футанари", "femboy": "Фембой",
-        "ethnicity_asian": "Азиатка", "ethnicity_european": "Европейка"
-    },
-    "furry": {
-        "furry_cow": "Фури корова", "furry_cat": "Фури кошка", "furry_dog": "Фури собака",
-        "furry_dragon": "Фури дракон", "furry_sylveon": "Фури сильвеон",
-        "furry_fox": "Фури лисица", "furry_bunny": "Фури кролик", "furry_wolf": "Фури волчица"
-    },
-    "characters": {
-        "rias": "Риас Гремори", "akeno": "Акено Химедзима", "kafka": "Кафка (Хонкай)",
-        "eula": "Еола (Геншин)", "fu_xuan": "Фу Сюань", "ayase": "Аясе Сейко"
+        "big_breasts": "large breasts, visible nipples",
+        "small_breasts": "small breasts",
+        "body_thin": "thin body",
+        "body_fat": "curvy body",
+        "skin_white": "white skin",
+        "skin_black": "black skin",
+        "cum": "cum on body and face",
+        "belly_bloat": "bloated belly from anal inflation",
+        "succubus_tattoo": "succubus tattoo on lower belly"
     },
     "head": {
-        "ahegao": "Ахегао", "pain_face": "Лицо в боли", "ecstasy_face": "Лицо в экстазе",
-        "gold_lipstick": "Золотая помада", "long_hair": "Длинные волосы", "short_hair": "Короткие волосы",
-        "bob_cut": "Прическа боб", "ponytail": "Конский хвост", "hair_red": "Красные волосы",
-        "hair_white": "Белые волосы", "hair_black": "Чёрные волосы"
+        "ahegao": "ahegao expression",
+        "pain_face": "face showing pain",
+        "ecstasy_face": "face in ecstasy",
+        "gold_lipstick": "gold lipstick on lips only"
+    },
+    "ethnos": {
+        "futanari": "futanari with female body, no penis visible",
+        "femboy": "femboy with feminine body, soft face",
+        "ethnicity_asian": "asian female character",
+        "ethnicity_european": "european female character"
+    },
+    "furry": {
+        "furry_cow": "anthro cow girl, big breasts, sexy",
+        "furry_fox": "anthro fox girl, long tail, seductive",
+        "furry_wolf": "anthro wolf girl, muscular, dominant"
     },
     "view": {
-        "view_bottom": "Снизу", "view_top": "Сверху",
-        "view_side": "Сбоку", "view_close": "Ближе", "view_full": "Дальше"
+        "view_top": "viewed from above",
+        "view_bottom": "viewed from below",
+        "view_side": "side view",
+        "view_close": "close-up shot",
+        "view_full": "full body shot"
+    },
+    "toys": {
+        "dildo": "dildo insertion in vagina",
+        "huge_dildo": "huge dildo stretching vagina",
+        "horse_dildo": "horse dildo, extreme size, in anus",
+        "anal_beads": "anal beads inside, visible bulge",
+        "anal_plug": "anal plug in anus, visible",
+        "gag": "gag in mouth",
+        "piercing": "body piercings on nipples and navel",
+        "long_dildo_path": "dildo from anus through mouth, body bulge"
+    },
+    "holes": {
+        "vagina": "open vagina, wet",
+        "anal": "open anus, spread",
+        "both": "spread anus and vagina"
     }
 }
 
 @bot.message_handler(commands=["start"])
-def start(message):
-    cid = message.chat.id
-    user_settings[cid] = {"tags": [], "last_cat": None, "count": 1}
-    bot.send_message(cid, "Привет! Что делаем?", reply_markup=main_menu())
-
-def main_menu():
-    kb = types.InlineKeyboardMarkup()
-    kb.add(types.InlineKeyboardButton("🧩 Выбрать теги", callback_data="choose_tags"))
-    kb.add(types.InlineKeyboardButton("🎨 Генерировать", callback_data="generate"))
-    return kb
-
-def category_menu():
-    kb = types.InlineKeyboardMarkup(row_width=2)
-    for key, name in CATEGORY_NAMES.items():
-        kb.add(types.InlineKeyboardButton(name, callback_data=f"cat_{key}"))
-    kb.add(types.InlineKeyboardButton("✅ Готово", callback_data="done_tags"))
-    kb.add(types.InlineKeyboardButton("📸 Кол-во фото", callback_data="choose_count"))
-    return kb
-
-def count_menu():
-    kb = types.InlineKeyboardMarkup(row_width=5)
-    for i in range(1, 5):
-        kb.add(types.InlineKeyboardButton(str(i), callback_data=f"count_{i}"))
-    kb.add(types.InlineKeyboardButton("⬅ Назад", callback_data="back_to_cat"))
-    return kb
-
-def tag_menu(category, selected_tags):
-    kb = types.InlineKeyboardMarkup(row_width=2)
-    for tag_key, tag_name in TAGS[category].items():
-        label = f"✅ {tag_name}" if tag_key in selected_tags else tag_name
-        kb.add(types.InlineKeyboardButton(label, callback_data=f"tag_{category}_{tag_key}"))
-    kb.add(types.InlineKeyboardButton("⬅ Назад", callback_data="back_to_cat"))
-    return kb
+def start(msg):
+    cid = msg.chat.id
+    user_settings[cid] = {"tags": [], "count": 1}
+    markup = types.InlineKeyboardMarkup()
+    markup.add(types.InlineKeyboardButton("🧩 Теги", callback_data="tags"))
+    markup.add(types.InlineKeyboardButton("🎨 Генерация", callback_data="generate"))
+    bot.send_message(cid, "Привет! Выбери действие:", reply_markup=markup)
 
 @bot.callback_query_handler(func=lambda call: True)
 def callback(call):
     cid = call.message.chat.id
     data = call.data
-    if cid not in user_settings:
-        user_settings[cid] = {"tags": [], "last_cat": None, "count": 1}
+    user = user_settings.setdefault(cid, {"tags": [], "count": 1})
 
-    if data == "choose_tags":
-        bot.edit_message_text("Выбери категорию тегов:", cid, call.message.message_id, reply_markup=category_menu())
+    if data == "tags":
+        show_categories(cid, call.message.message_id)
     elif data.startswith("cat_"):
         cat = data[4:]
-        user_settings[cid]["last_cat"] = cat
-        selected = user_settings[cid]["tags"]
-        bot.edit_message_text(f"Категория: {CATEGORY_NAMES[cat]}", cid, call.message.message_id, reply_markup=tag_menu(cat, selected))
+        show_tags(cid, call.message.message_id, cat)
     elif data.startswith("tag_"):
         _, cat, tag = data.split("_", 2)
-        tags = user_settings[cid]["tags"]
+        tags = user["tags"]
         if tag in tags:
             tags.remove(tag)
         else:
             tags.append(tag)
-        bot.edit_message_reply_markup(cid, call.message.message_id, reply_markup=tag_menu(cat, tags))
-    elif data == "done_tags":
-        bot.edit_message_text("Теги сохранены.", cid, call.message.message_id, reply_markup=main_menu())
-    elif data == "back_to_cat":
-        bot.edit_message_text("Выбери категорию:", cid, call.message.message_id, reply_markup=category_menu())
-    elif data == "choose_count":
-        bot.edit_message_text("Выбери количество изображений:", cid, call.message.message_id, reply_markup=count_menu())
-    elif data.startswith("count_"):
-        count = int(data.split("_")[1])
-        user_settings[cid]["count"] = count
-        bot.edit_message_text(f"✅ Количество изображений: {count}", cid, call.message.message_id, reply_markup=category_menu())
+        show_tags(cid, call.message.message_id, cat)
+    elif data == "done":
+        main_menu(cid, "✅ Теги сохранены.", call.message.message_id)
     elif data == "generate":
-        tags = user_settings[cid]["tags"]
-        count = user_settings[cid].get("count", 1)
-        if not tags:
-            bot.send_message(cid, "Сначала выбери теги!")
-            return
-        prompt = build_prompt(tags)
-        bot.send_message(cid, f"⏳ Генерация {count} изображений...")
-        urls = replicate_generate(prompt, count)
-        if urls:
-            media = [types.InputMediaPhoto(url) for url in urls]
-            bot.send_media_group(cid, media)
-            kb = types.InlineKeyboardMarkup()
-            kb.add(
-                types.InlineKeyboardButton("🔁 Начать заново", callback_data="start"),
-                types.InlineKeyboardButton("🔧 Изменить теги", callback_data="choose_tags"),
-                types.InlineKeyboardButton("➡ Повторить", callback_data="generate")
-            )
-            bot.send_message(cid, "✅ Готово!", reply_markup=kb)
-        else:
-            bot.send_message(cid, "❌ Ошибка генерации.")
+        generate_images(cid, user)
+    elif data == "start_over":
+        start(call.message)
+    elif data == "edit_tags":
+        show_categories(cid, call.message.message_id)
+
+def show_categories(cid, mid):
+    kb = types.InlineKeyboardMarkup(row_width=2)
+    for k, v in CATEGORY_NAMES.items():
+        kb.add(types.InlineKeyboardButton(v, callback_data=f"cat_{k}"))
+    kb.add(types.InlineKeyboardButton("✅ Готово", callback_data="done"))
+    bot.edit_message_text("Выбери категорию:", cid, mid, reply_markup=kb)
+
+def show_tags(cid, mid, cat):
+    selected = user_settings[cid]["tags"]
+    kb = types.InlineKeyboardMarkup(row_width=2)
+    for tag, label in TAGS[cat].items():
+        prefix = "✅ " if tag in selected else ""
+        kb.add(types.InlineKeyboardButton(f"{prefix}{label}", callback_data=f"tag_{cat}_{tag}"))
+    kb.add(types.InlineKeyboardButton("⬅ Назад", callback_data="tags"))
+    bot.edit_message_text(f"Категория: {CATEGORY_NAMES[cat]}", cid, mid, reply_markup=kb)
+
+def main_menu(cid, text, mid=None):
+    kb = types.InlineKeyboardMarkup()
+    kb.add(types.InlineKeyboardButton("🧩 Теги", callback_data="tags"))
+    kb.add(types.InlineKeyboardButton("🎨 Генерация", callback_data="generate"))
+    if mid:
+        bot.edit_message_text(text, cid, mid, reply_markup=kb)
+    else:
+        bot.send_message(cid, text, reply_markup=kb)
 
 def build_prompt(tags):
-    base = "nsfw, masterpiece, best quality, fully nude, anime style, solo, no male, hands away from breasts, no bra, no panties"
-    return base + ", " + ", ".join(tags)
+    prompt = "nsfw, masterpiece, best quality, anime style, fully nude, solo female"
+    for tag in tags:
+        for group in TAGS.values():
+            if tag in group:
+                prompt += ", " + group[tag]
+    return prompt
 
-def replicate_generate(prompt, num_outputs):
+def generate_images(cid, user):
+    prompt = build_prompt(user["tags"])
+    count = user.get("count", 1)
+    bot.send_message(cid, f"⏳ Генерация изображений ({count})...")
+    urls = replicate_generate(prompt, count)
+    if not urls:
+        bot.send_message(cid, "❌ Ошибка генерации.")
+        return
+    media = [types.InputMediaPhoto(u) for u in urls]
+    bot.send_media_group(cid, media)
+    kb = types.InlineKeyboardMarkup()
+    kb.add(types.InlineKeyboardButton("🔁 Начать заново", callback_data="start_over"))
+    kb.add(types.InlineKeyboardButton("🎨 Снова", callback_data="generate"))
+    kb.add(types.InlineKeyboardButton("🧩 Изменить теги", callback_data="edit_tags"))
+    bot.send_message(cid, "✅ Готово!", reply_markup=kb)
+
+def replicate_generate(prompt, n=1):
     url = "https://api.replicate.com/v1/predictions"
     headers = {"Authorization": f"Token {REPLICATE_TOKEN}", "Content-Type": "application/json"}
-    data = {
+    json_data = {
         "version": REPLICATE_MODEL,
         "input": {
             "prompt": prompt,
             "negative_prompt": NEGATIVE_PROMPT,
-            "num_outputs": num_outputs
+            "num_outputs": n
         }
     }
-    r = requests.post(url, headers=headers, json=data)
+    r = requests.post(url, headers=headers, json=json_data)
     if r.status_code != 201:
-        return []
+        return None
     status_url = r.json()["urls"]["get"]
     for _ in range(60):
         time.sleep(2)
-        res = requests.get(status_url, headers=headers)
-        if res.status_code != 200:
-            return []
-        data = res.json()
+        r = requests.get(status_url, headers=headers)
+        if r.status_code != 200:
+            return None
+        data = r.json()
         if data["status"] == "succeeded":
-            return data["output"] if isinstance(data["output"], list) else [data["output"]]
+            output = data["output"]
+            return output if isinstance(output, list) else [output]
         elif data["status"] == "failed":
-            return []
-    return []
+            return None
+    return None
 
 @app.route("/", methods=["POST"])
 def webhook():
