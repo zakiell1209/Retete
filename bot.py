@@ -1,4 +1,4 @@
-# --- bot_perfect_final.py ---
+# --- bot.py ---
 import os
 import time
 import requests
@@ -21,7 +21,6 @@ NEGATIVE_PROMPT = (
     "lingerie, panties, bra, censored, watermark, bad anatomy, blurry, duplicate, clothed"
 )
 
-# Простой словарь тегов → англ. описание (будет расширен)
 TAG_PROMPTS = {
     "stockings": "only stockings, no panties, no bra, no other clothing",
     "bikini_tan_lines": "tanned skin with clear bikini tan lines, no bikini",
@@ -96,7 +95,6 @@ def replicate_generate(prompt, count):
     if r.status_code != 201:
         return None
     status_url = r.json()["urls"]["get"]
-
     for _ in range(60):
         time.sleep(2)
         r = requests.get(status_url, headers=headers)
@@ -109,6 +107,50 @@ def replicate_generate(prompt, count):
             return None
     return None
 
+def main_menu():
+    kb = types.InlineKeyboardMarkup()
+    kb.add(types.InlineKeyboardButton("ð§© ÐÐ²ÐµÑÑÐ¸ ÑÐµÐ³Ð¸", callback_data="custom_tags"))
+    kb.add(types.InlineKeyboardButton("ð¨ ÐÐµÐ½ÐµÑÐ¸ÑÐ¾Ð²Ð°ÑÑ", callback_data="generate"))
+    return kb
+
+@bot.message_handler(commands=["start"])
+def start(msg):
+    cid = msg.chat.id
+    user_settings[cid] = {"tags": [], "count": 1}
+    bot.send_message(cid, "ÐÑÐ¸Ð²ÐµÑ! ÐÑÐ¿ÑÐ°Ð²Ñ ÑÐµÐ³Ð¸ Ð²ÑÑÑÐ½ÑÑ Ð¸Ð»Ð¸ Ð²ÑÐ±ÐµÑÐ¸ Ð¸Ð· Ð¼ÐµÐ½Ñ.", reply_markup=main_menu())
+
+@bot.callback_query_handler(func=lambda call: True)
+def callback(call):
+    cid = call.message.chat.id
+    data = call.data
+    if data == "custom_tags":
+        bot.send_message(cid, "ÐÐ²ÐµÐ´Ð¸ ÑÐµÐ³Ð¸ ÑÐµÑÐµÐ· Ð·Ð°Ð¿ÑÑÑÑ Ð½Ð° Ð°Ð½Ð³Ð»Ð¸Ð¹ÑÐºÐ¾Ð¼ (Ð½Ð°Ð¿ÑÐ¸Ð¼ÐµÑ: stockings, anal, cum):")
+        user_settings[cid]["awaiting_tags"] = True
+    elif data == "generate":
+        tags = user_settings[cid].get("tags", [])
+        count = user_settings[cid].get("count", 1)
+        if not tags:
+            bot.send_message(cid, "Ð¡Ð½Ð°ÑÐ°Ð»Ð° Ð²Ð²ÐµÐ´Ð¸ ÑÐµÐ³Ð¸.")
+            return
+        prompt = build_prompt(tags)
+        bot.send_message(cid, f"â³ ÐÐµÐ½ÐµÑÐ°ÑÐ¸Ñ {count} Ð¸Ð·Ð¾Ð±ÑÐ°Ð¶ÐµÐ½Ð¸Ð¹...")
+        images = replicate_generate(prompt, count)
+        if not images:
+            bot.send_message(cid, "â ÐÑÐ¸Ð±ÐºÐ° Ð³ÐµÐ½ÐµÑÐ°ÑÐ¸Ð¸.")
+            return
+        media = [types.InputMediaPhoto(url) for url in images]
+        bot.send_media_group(cid, media)
+
+@bot.message_handler(func=lambda m: True)
+def on_text(msg):
+    cid = msg.chat.id
+    if user_settings.get(cid, {}).get("awaiting_tags"):
+        text = msg.text
+        tags = [tag.strip().lower().replace(" ", "_") for tag in text.split(",")]
+        user_settings[cid]["tags"] = tags
+        user_settings[cid]["awaiting_tags"] = False
+        bot.send_message(cid, f"â Ð¢ÐµÐ³Ð¸ ÑÐ¾ÑÑÐ°Ð½ÐµÐ½Ñ: {', '.join(tags)}", reply_markup=main_menu())
+
 @app.route("/", methods=["POST"])
 def webhook():
     update = telebot.types.Update.de_json(request.stream.read().decode("utf-8"))
@@ -117,7 +159,7 @@ def webhook():
 
 @app.route("/", methods=["GET"])
 def home():
-    return "бот работает", 200
+    return "Ð±Ð¾Ñ ÑÐ°Ð±Ð¾ÑÐ°ÐµÑ", 200
 
 if __name__ == "__main__":
     bot.remove_webhook()
