@@ -82,7 +82,6 @@ for cat in TAGS.values():
 
 # Преобразование тегов в промпты
 TAG_PROMPTS = {
-    # персонажи
     "rias": "red hair, blue eyes, rias gremory, large breasts",
     "akeno": "black hair, purple eyes, akeno himejima",
     "kafka": "purple wavy hair, kafka, honkai star rail",
@@ -91,11 +90,9 @@ TAG_PROMPTS = {
     "ayase": "black hair, school uniform, ayase seiko",
     "2b": "white hair, blindfold, nier automata, 2b",
     "yor": "black hair, red eyes, spy x family, yor forger",
-    # отверстия
     "vagina": "detailed spread vagina",
     "anal": "detailed spread anus",
     "both": "vagina and anus spread",
-    # игрушки
     "dildo": "dildo inserted",
     "huge_dildo": "huge dildo",
     "horse_dildo": "horse dildo",
@@ -105,7 +102,6 @@ TAG_PROMPTS = {
     "gag": "ball gag",
     "piercing": "nipple and genital piercings",
     "long_dildo_path": "dildo in anus, exiting mouth, belly bulge",
-    # позы
     "doggy": "doggy style",
     "standing": "standing pose",
     "splits": "split pose",
@@ -119,13 +115,11 @@ TAG_PROMPTS = {
     "front_facing": "facing viewer",
     "back_facing": "back to viewer",
     "lying_knees_up": "lying, knees up",
-    # одежда
     "stockings": "black thigh-high stockings",
     "heels": "red high heels",
     "mask": "face mask",
     "shibari": "shibari rope bondage",
     "bikini_tan_lines": "bikini tan lines",
-    # тело
     "big_breasts": "large breasts",
     "small_breasts": "small breasts",
     "body_thin": "thin body",
@@ -141,12 +135,10 @@ TAG_PROMPTS = {
     "cum": "cum covered",
     "belly_bloat": "belly bulge",
     "succubus_tattoo": "succubus tattoo on lower abdomen",
-    # этнос
     "futanari": "futanari girl, realistic anatomy",
     "femboy": "femboy with feminine body",
     "ethnicity_asian": "asian girl",
     "ethnicity_european": "european girl",
-    # фури
     "furry_cow": "furry cow girl",
     "furry_cat": "furry cat girl",
     "furry_dog": "furry dog girl",
@@ -155,12 +147,10 @@ TAG_PROMPTS = {
     "furry_bunny": "furry bunny girl",
     "furry_wolf": "furry wolf girl",
     "furry_sylveon": "furry sylveon style",
-    # голова
     "ahegao": "ahegao face, tongue out",
     "ecstasy_face": "face in ecstasy, flushed cheeks",
     "pain_face": "face in pain, distressed",
     "gold_lipstick": "gold lipstick on lips only",
-    # обзор
     "view_top": "top-down view",
     "view_bottom": "low-angle view",
     "view_side": "side view",
@@ -266,6 +256,9 @@ def callback(c):
         user_settings[cid]["count"] = cnt
         bot.edit_message_text(f"✅ Количество: {cnt}", cid, c.message.message_id, reply_markup=main_menu())
 
+    elif data == "back_to_cat":
+        bot.edit_message_text("Выбери категорию:", cid, c.message.message_id, reply_markup=category_menu())
+
     elif data == "generate":
         settings = user_settings[cid]
         tags = settings["tags"]
@@ -300,11 +293,7 @@ def replicate_generate(prompt, negative_prompt, count):
     headers = {"Authorization": f"Token {REPLICATE_TOKEN}", "Content-Type": "application/json"}
     payload = {
         "version": REPLICATE_MODEL,
-        "input": {
-            "prompt": prompt,
-            "negative_prompt": negative_prompt,
-            "num_outputs": count
-        }
+        "input": {"prompt": prompt, "negative_prompt": negative_prompt, "num_outputs": count}
     }
     r = requests.post(url, headers=headers, json=payload)
     if r.status_code != 201:
