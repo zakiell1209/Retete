@@ -135,8 +135,7 @@ TAG_PROMPTS = {
     "huge_dildo": "huge dildo",
     "horse_dildo": "horse dildo",
     "anal_beads": "anal beads inserted",
- דער מלך, [18 черв. 2025, 09:36]
-"anal_plug": "anal plug",
+    "anal_plug": "anal plug",
     "anal_expander": "anal expander stretching anus",
     "gag": "ball gag",
     "piercing": "nipple and genital piercings",
