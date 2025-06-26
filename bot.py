@@ -1,8 +1,8 @@
-# --- bot.py ---
+
+# --- bot.py (финальная сборка) ---
 import os
 import time
 import requests
-import random
 from flask import Flask, request
 import telebot
 from telebot import types
@@ -28,14 +28,15 @@ TAGS = {
     "toys": {
         "dildo": "Дилдо", "huge_dildo": "Большое дилдо", "horse_dildo": "Лошадиное дилдо",
         "anal_beads": "Анальные бусы", "anal_plug": "Анальная пробка",
-        "anal_expander": "Анальный расширитель", "gag": "Кляп", "piercing": "Пирсинг"
+        "anal_expander": "Анальный расширитель", "gag": "Кляп",
+        "piercing": "Пирсинг", "long_dildo_path": "Дилдо из ануса выходит изо рта"
     },
     "poses": {
-        "doggy": "Наездница", "standing": "Стоя", "splits": "Шпагат", "squat": "Приседание",
-        "lying": "Лежа", "hor_split": "Горизонтальный шпагат", "ver_split": "Вертикальный шпагат",
-        "side_up_leg": "На боку с ногой вверх", "front_facing": "Лицом к зрителю",
-        "back_facing": "Спиной к зрителю", "lying_knees_up": "Лежа с коленями вверх",
-        "bridge": "Мост", "suspended": "Подвешена"
+        "doggy": "Наездница", "standing": "Стоя", "splits": "Шпагат",
+        "squat": "Приседание", "lying": "Лежа", "hor_split": "Горизонтальный шпагат",
+        "ver_split": "Вертикальный шпагат", "side_up_leg": "На боку с ногой вверх",
+        "front_facing": "Лицом к зрителю", "back_facing": "Спиной к зрителю",
+        "lying_knees_up": "Лежа с коленями вверх", "bridge": "Мост", "suspended": "Подвешена"
     },
     "clothes": {
         "stockings": "Чулки", "bikini_tan_lines": "Загар от бикини", "mask": "Маска",
@@ -43,10 +44,12 @@ TAGS = {
     },
     "body": {
         "big_breasts": "Большая грудь", "small_breasts": "Маленькая грудь",
-        "skin_white": "Белая кожа", "skin_black": "Чёрная кожа", "body_fat": "Пышное тело",
-        "body_thin": "Худое тело", "body_normal": "Нормальное тело", "body_fit": "Подтянутое тело",
+        "skin_white": "Белая кожа", "skin_black": "Чёрная кожа",
+        "body_fat": "Пышное тело", "body_thin": "Худое тело", "body_normal": "Нормальное тело",
+        "body_fit": "Подтянутое тело", "body_muscular": "Мускулистое тело",
         "age_loli": "Лоли", "age_milf": "Милфа", "age_21": "Возраст 21",
-        "cum": "Вся в сперме", "belly_bloat": "Вздутие живота", "succubus_tattoo": "Тату внизу живота"
+        "cum": "Вся в сперме", "belly_bloat": "Вздутие живота",
+        "succubus_tattoo": "Тату внизу живота"
     },
     "ethnos": {
         "futanari": "Футанари", "femboy": "Фембой",
@@ -59,29 +62,55 @@ TAGS = {
     },
     "characters": {
         "rias": "Риас Гремори", "akeno": "Акено Химедзима", "kafka": "Кафка (Хонкай)",
-        "eula": "Еола (Геншин)", "fu_xuan": "Фу Сюань", "ayase": "Аясе Сейко",
-        "kiana": "Киана (League of Legends)", "yor_forger": "Йор Форжер (Spy x Family)",
-        "esdeath": "Эсдес (Akame ga Kill)", "asia_argento": "Асия (High School DxD)",
-        "koneko": "Конеко (High School DxD)", "chun_li": "Чун Ли (Street Fighter)",
-        "2b": "2B (NieR:Automata)"
+        "eula": "Еола (Геншин)", "fu_xuan": "Фу Сюань", "ayase": "Аясе Сейко"
     },
     "head": {
         "ahegao": "Ахегао", "pain_face": "Лицо в боли", "ecstasy_face": "Лицо в экстазе",
         "gold_lipstick": "Золотая помада"
     },
     "view": {
-        "view_bottom": "Снизу", "view_top": "Сверху", "view_side": "Сбоку",
-        "view_close": "Ближе", "view_full": "Дальше"
+        "view_bottom": "Снизу", "view_top": "Сверху",
+        "view_side": "Сбоку", "view_close": "Ближе", "view_full": "Дальше"
     }
 }
 
-RU_TO_TAG = {v.lower(): k for d in TAGS.values() for k, v in d.items()}
+# Быстрая таблица русские → теги
+RU_TO_TAG = {}
+for cat_tags in TAGS.values():
+    for key, ru_name in cat_tags.items():
+        RU_TO_TAG[ru_name.lower()] = key
+
+# Отдельные уточнения к тегам
+TAG_PROMPTS = {
+    "gold_lipstick": "gold lipstick only on lips",
+    "no_hands_on_chest": "no hands on chest, hands away from breasts",
+    "no_covering": "no hands covering nipples or genitals",
+}
+
+NEGATIVE_PROMPT = "nsfw, worst quality, low quality, jpeg artifacts, watermark, ugly, deformed, hands on chest, hands covering nipples, extra limbs, missing fingers, bad anatomy, bad hands, blurry"
+
+# Продолжение будет записано отдельно
 
 @bot.message_handler(commands=["start"])
 def start(msg):
     cid = msg.chat.id
     user_settings[cid] = {"tags": [], "last_cat": None, "count": 1}
-    bot.send_message(cid, "Привет! Выбирай:", reply_markup=main_menu())
+    bot.send_message(cid, "Привет! Выбери теги или начни генерацию.", reply_markup=main_menu())
+
+@bot.message_handler(func=lambda msg: True, content_types=["text"])
+def handle_tag_input(msg):
+    cid = msg.chat.id
+    tags = []
+    for name in msg.text.split(","):
+        name = name.strip().lower()
+        key = RU_TO_TAG.get(name)
+        if key:
+            tags.append(key)
+    if not tags:
+        bot.send_message(cid, "❌ Не удалось распознать ни одного тега.")
+        return
+    user_settings[cid] = {"tags": tags, "last_cat": None, "count": 1}
+    bot.send_message(cid, f"✅ Выбраны теги: {', '.join(name for key in tags for name, val in RU_TO_TAG.items() if val == key)}", reply_markup=main_menu())
 
 def main_menu():
     kb = types.InlineKeyboardMarkup()
@@ -98,7 +127,7 @@ def category_menu():
     return kb
 
 def count_menu():
-    kb = types.InlineKeyboardMarkup(row_width=5)
+    kb = types.InlineKeyboardMarkup(row_width=4)
     for i in range(1, 5):
         kb.add(types.InlineKeyboardButton(str(i), callback_data=f"count_{i}"))
     kb.add(types.InlineKeyboardButton("⬅ Назад", callback_data="back_to_cat"))
@@ -153,37 +182,19 @@ def callback(call):
         prompt = build_prompt(tags)
         user_settings[cid]["last_prompt"] = tags.copy()
         bot.send_message(cid, f"⏳ Генерация {count} изображений...")
-
         urls = replicate_generate(prompt, count)
         if urls:
             media = [types.InputMediaPhoto(url) for url in urls]
             bot.send_media_group(cid, media)
-            kb = types.InlineKeyboardMarkup()
-            kb.add(
-                types.InlineKeyboardButton("🔁 Начать заново", callback_data="start"),
-                types.InlineKeyboardButton("🔧 Изменить теги", callback_data="edit_tags"),
-                types.InlineKeyboardButton("➡ Продолжить", callback_data="generate")
-            )
-            bot.send_message(cid, "✅ Готово!", reply_markup=kb)
         else:
             bot.send_message(cid, "❌ Ошибка генерации.")
-    elif data == "edit_tags":
-        if "last_prompt" in user_settings[cid]:
-            user_settings[cid]["tags"] = user_settings[cid]["last_prompt"]
-            bot.send_message(cid, "Изменяем теги:", reply_markup=category_menu())
-        else:
-            bot.send_message(cid, "Нет сохранённых тегов.")
-    elif data == "start":
-        user_settings[cid] = {"tags": [], "last_cat": None, "count": 1}
-        bot.send_message(cid, "Сброс настроек.", reply_markup=main_menu())
 
 def build_prompt(tags):
-    base = "nsfw, masterpiece, best quality, fully nude, solo female, no men, no male, no hands on chest, no hands covering nipples"
-    return base + ", " + ", ".join(tags)
+    base_prompt = "masterpiece, best quality, anime style, no hands on chest, no covering, fully visible"
+    tag_prompts = [TAG_PROMPTS.get(tag, tag.replace('_', ' ')) for tag in tags]
+    return base_prompt + ", " + ", ".join(tag_prompts)
 
-NEGATIVE_PROMPT = "male, man, penis, testicles, hand on breast, hands covering chest, blurry, lowres, bad anatomy, watermark"
-
-def replicate_generate(prompt, num_outputs):
+def replicate_generate(prompt, count):
     url = "https://api.replicate.com/v1/predictions"
     headers = {"Authorization": f"Token {REPLICATE_TOKEN}", "Content-Type": "application/json"}
     json_data = {
@@ -191,28 +202,28 @@ def replicate_generate(prompt, num_outputs):
         "input": {
             "prompt": prompt,
             "negative_prompt": NEGATIVE_PROMPT,
-            "num_outputs": num_outputs
+            "num_outputs": count
         }
     }
     r = requests.post(url, headers=headers, json=json_data)
     if r.status_code != 201:
-        return []
+        return None
     status_url = r.json()["urls"]["get"]
     for _ in range(60):
         time.sleep(2)
         r = requests.get(status_url, headers=headers)
         if r.status_code != 200:
-            return []
+            return None
         data = r.json()
         if data["status"] == "succeeded":
-            return data["output"]
+            return data["output"] if isinstance(data["output"], list) else [data["output"]]
         elif data["status"] == "failed":
-            return []
-    return []
+            return None
+    return None
 
 @app.route("/", methods=["POST"])
 def webhook():
-    update = telebot.types.Update.de_json(request.stream.read().decode())
+    update = telebot.types.Update.de_json(request.stream.read().decode("utf-8"))
     bot.process_new_updates([update])
     return "ok", 200
 
