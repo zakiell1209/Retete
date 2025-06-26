@@ -1,4 +1,3 @@
-דער מלך, [18 черв. 2025, 09:36]
 # --- bot.py ---
 import os
 import time
