@@ -240,7 +240,6 @@ def callback(call):
 
     elif data.startswith("tag_"):
         _, cat, tag = data.split("_", 2)
- דער מלך, [18 черв. 2025, 09:36]
 tags = user_settings[cid]["tags"]
         if tag in tags:
             tags.remove(tag)
