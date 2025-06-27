@@ -8,7 +8,7 @@ from telebot import types
 
 API_TOKEN = os.getenv("TELEGRAM_TOKEN")
 REPLICATE_TOKEN = os.getenv("REPLICATE_API_TOKEN")
-REPLICATE_MODEL = "057e2276ac5dcd8d1575dc37b131f903df9c10c41aed53d47cd7d4f068c19fa5"
+REPLICATE_MODEL = "c1d5b02687df6081c7953c74bcc527858702e8c153c9382012ccc3906752d3ec"
 WEBHOOK_URL = os.getenv("WEBHOOK_URL")
 PORT = int(os.environ.get("PORT", 5000))
 
@@ -16,20 +16,19 @@ bot = telebot.TeleBot(API_TOKEN)
 app = Flask(__name__)
 user_settings = {}
 
-# 👉 Категории
 CATEGORY_NAMES = {
     "poses": "Позы", "clothes": "Одежда", "body": "Тело", "ethnos": "Этнос",
     "holes": "Отверстия", "toys": "Игрушки", "furry": "Фури", "characters": "Персонажи",
     "head": "Голова", "view": "Обзор"
 }
 
-# 👉 Теги
 TAGS = {
     "poses": {
-        "doggy": "Наездница", "standing": "Стоя", "splits": "Шпагат", "squat": "Присед",
-        "lying": "Лежа", "hor_split": "Горизонтальный шпагат", "ver_split": "Вертикальный шпагат",
-        "side_up_leg": "Нога вверх", "bridge": "Мост", "suspended": "Подвешена",
-        "front_facing": "Лицом к зрителю", "back_facing": "Спиной", "lying_knees_up": "Лежа, колени вверх"
+        "doggy": "Наездница", "standing": "Стоя", "splits": "Шпагат",
+        "squat": "Присед", "lying": "Лежа", "hor_split": "Горизонтальный шпагат",
+        "ver_split": "Вертикальный шпагат", "side_up_leg": "Нога вверх", "bridge": "Мост",
+        "suspended": "Подвешена", "front_facing": "Лицом к зрителю", "back_facing": "Спиной",
+        "lying_knees_up": "Лежа, колени вверх"
     },
     "clothes": {
         "stockings": "Чулки", "heels": "Каблуки", "mask": "Маска",
@@ -73,31 +72,11 @@ TAGS = {
     }
 }
 
-# 👉 Русский → английский тег
-RU_TO_TAG = {ru.lower(): tag for group in TAGS.values() for tag, ru in group.items()}
+RU_TO_TAG = {}
+for cat in TAGS.values():
+    for key, ru in cat.items():
+        RU_TO_TAG[ru.lower()] = key
 
-# 👉 Промпты
-def build_prompt(tags):
-    parts = [tag_prompt_map(t) for t in tags]
-    return "nsfw, anime style, masterpiece, best quality, fully nude, " + ", ".join(parts)
-
-def tag_prompt_map(t):
-    m = {
-        "vagina": "detailed spread vagina with toy if any",
-        "anal": "detailed spread anus with toy if any",
-        "both": "spread vagina and anus with inserted toys",
-        "futanari": "futanari girl, realistic anatomy, visible penis",
-        "femboy": "femboy, feminine, soft skin, cute face",
-        "ayase": "black hair, school uniform, dan dadan style, seiko ayase, expressive eyes"
-    }
-    return m.get(t, t.replace("_", " "))
-
-NEGATIVE_PROMPT = (
-    "bad anatomy, blurry, cropped, watermark, lowres, text, "
-    "hands on chest, hands covering nipples or genitals, male, clothing"
-)
-
-# 👉 Интерфейс
 def main_menu():
     kb = types.InlineKeyboardMarkup()
     kb.add(types.InlineKeyboardButton("🧩 Выбрать теги", callback_data="choose_tags"))
@@ -127,11 +106,10 @@ def tag_menu(category, selected):
     kb.add(types.InlineKeyboardButton("⬅ Назад", callback_data="back_to_cat"))
     return kb
 
-# 👉 Команды
 @bot.message_handler(commands=["start"])
 def cmd_start(msg):
     cid = msg.chat.id
-    user_settings[cid] = {"tags": [], "count": 1, "last_cat": None}
+    user_settings[cid] = {"tags": [], "last_prompt": [], "count": 1, "last_cat": None}
     bot.send_message(cid, "Привет! Что делаем?", reply_markup=main_menu())
 
 @bot.message_handler(func=lambda m: True, content_types=["text"])
@@ -140,52 +118,64 @@ def handle_manual(m):
     names = [n.strip().lower() for n in m.text.split(",")]
     keys = [RU_TO_TAG[n] for n in names if n in RU_TO_TAG]
     if not keys:
-        bot.send_message(cid, "❌ Теги не распознаны.")
+        bot.send_message(cid, "❌ Теги не распознаны. Проверь правильность написания.")
         return
-    user_settings[cid] = {"tags": keys, "count": 1, "last_cat": None}
-    ru = ", ".join([TAGS[c][k] for c in TAGS for k in keys if k in TAGS[c]])
-    bot.send_message(cid, f"✅ Выбраны теги: {ru}", reply_markup=main_menu())
+    user_settings[cid] = {"tags": keys, "last_prompt": keys.copy(), "count": 1, "last_cat": None}
+    bot.send_message(cid, f"✅ Выбраны теги", reply_markup=main_menu())
 
-# 👉 Callback кнопки
 @bot.callback_query_handler(func=lambda c: True)
 def callback(c):
     cid = c.message.chat.id
     data = c.data
-    settings = user_settings.setdefault(cid, {"tags": [], "count": 1, "last_cat": None})
+    if cid not in user_settings:
+        user_settings[cid] = {"tags": [], "last_prompt": [], "count": 1, "last_cat": None}
 
     if data == "choose_tags":
         bot.edit_message_text("Выбери категорию:", cid, c.message.message_id, reply_markup=category_menu())
+
     elif data.startswith("cat_"):
-        cat = data[4:]
-        settings["last_cat"] = cat
+        cat = data.split("_", 1)[1]
+        user_settings[cid]["last_cat"] = cat
         bot.edit_message_text(f"Категория: {CATEGORY_NAMES[cat]}", cid, c.message.message_id,
-                              reply_markup=tag_menu(cat, settings["tags"]))
+                              reply_markup=tag_menu(cat, user_settings[cid]["tags"]))
+
     elif data.startswith("tag_"):
         _, cat, tag = data.split("_", 2)
-        if tag in settings["tags"]:
-            settings["tags"].remove(tag)
+        tags = user_settings[cid]["tags"]
+        if tag in tags:
+            tags.remove(tag)
         else:
-            settings["tags"].append(tag)
-        bot.edit_message_reply_markup(cid, c.message.message_id, reply_markup=tag_menu(cat, settings["tags"]))
+            tags.append(tag)
+        bot.edit_message_reply_markup(cid, c.message.message_id, reply_markup=tag_menu(cat, tags))
+
     elif data == "done_tags":
         bot.edit_message_text("Теги сохранены.", cid, c.message.message_id, reply_markup=main_menu())
+
     elif data == "choose_count":
-        bot.edit_message_text("Сколько изображений?", cid, c.message.message_id, reply_markup=count_menu())
+        bot.edit_message_text("Сколько изображений сгенерировать?", cid, c.message.message_id, reply_markup=count_menu())
+
     elif data.startswith("count_"):
-        settings["count"] = int(data[6:])
-        bot.edit_message_text(f"✅ Количество: {settings['count']}", cid, c.message.message_id, reply_markup=main_menu())
+        cnt = int(data.split("_", 1)[1])
+        user_settings[cid]["count"] = cnt
+        bot.edit_message_text(f"✅ Количество: {cnt}", cid, c.message.message_id, reply_markup=main_menu())
+
     elif data == "back_to_cat":
         bot.edit_message_text("Выбери категорию:", cid, c.message.message_id, reply_markup=category_menu())
+
     elif data == "generate":
+        settings = user_settings[cid]
         tags = settings["tags"]
         if not tags:
             bot.send_message(cid, "❌ Сначала выбери теги!", reply_markup=main_menu())
             return
         bot.send_message(cid, "⏳ Генерация...")
-        prompt = build_prompt(tags)
-        images = replicate_generate(prompt, NEGATIVE_PROMPT, settings["count"])
-        if images:
-            media = [types.InputMediaPhoto(u) for u in images]
+        prompt = ", ".join(tags)
+        final = f"nsfw, anime style, masterpiece, best quality, fully nude, ultra detailed, {prompt}"
+        negative_prompt = "bad anatomy, lowres, text, hands on chest, clothing, male"
+        size = settings["count"]
+        urls = replicate_generate(final, negative_prompt, size)
+        if urls:
+            media = [types.InputMediaPhoto(u) for u in urls]
             bot.send_media_group(cid, media)
             kb = types.InlineKeyboardMarkup()
             kb.add(
@@ -195,15 +185,18 @@ def callback(c):
             )
             bot.send_message(cid, "✅ Готово!", reply_markup=kb)
         else:
-            bot.send_message(cid, "❌ Не удалось сгенерировать.", reply_markup=main_menu())
-    elif data == "start":
-        user_settings[cid] = {"tags": [], "count": 1, "last_cat": None}
-        bot.send_message(cid, "🔄 Сброс настроек.", reply_markup=main_menu())
+            bot.send_message(cid, "❌ Ошибка генерации.", reply_markup=main_menu())
 
-# 👉 Запрос в Replicate
+    elif data == "start":
+        user_settings[cid] = {"tags": [], "last_prompt": [], "count": 1, "last_cat": None}
+        bot.send_message(cid, "🔄 Настройки сброшены.", reply_markup=main_menu())
+
 def replicate_generate(prompt, negative_prompt, count):
     url = "https://api.replicate.com/v1/predictions"
-    headers = {"Authorization": f"Token {REPLICATE_TOKEN}", "Content-Type": "application/json"}
+    headers = {
+        "Authorization": f"Token {REPLICATE_TOKEN}",
+        "Content-Type": "application/json"
+    }
     payload = {
         "version": REPLICATE_MODEL,
         "input": {
@@ -223,12 +216,12 @@ def replicate_generate(prompt, negative_prompt, count):
             return []
         data = r.json()
         if data["status"] == "succeeded":
-            return data["output"] if isinstance(data["output"], list) else [data["output"]]
+            output = data["output"]
+            return output if isinstance(output, list) else [output]
         elif data["status"] == "failed":
             return []
     return []
 
-# 👉 Flask
 @app.route("/", methods=["POST"])
 def webhook():
     update = telebot.types.Update.de_json(request.stream.read().decode("utf-8"))
