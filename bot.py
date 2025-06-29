@@ -8,7 +8,7 @@ from telebot import types
 
 API_TOKEN = os.getenv("TELEGRAM_TOKEN")
 REPLICATE_TOKEN = os.getenv("REPLICATE_API_TOKEN")
-REPLICATE_MODEL = "c1d5b02687df6081c7953c74bcc527858702e8c153c9382012ccc3906752d3ec"
+REPLICATE_MODEL = "057e2276ac5dcd8d1575dc37b131f903df9c10c41aed53d47cd7d4f068c19fa5"
 WEBHOOK_URL = os.getenv("WEBHOOK_URL")
 PORT = int(os.environ.get("PORT", 5000))
 
@@ -51,7 +51,7 @@ TAGS = {
     "toys": {
         "dildo": "Дилдо", "huge_dildo": "Большое дилдо", "horse_dildo": "Лошадиное дилдо",
         "anal_beads": "Анальные бусы", "anal_plug": "Анальная пробка", "anal_expander": "Анальный расширитель",
-        "gag": "Кляп", "piercing": "Пирсинг", "long_dildo_path": "Дилдо через рот"
+        "gag": "Кляп", "piercing": "Пирсинг", "long_dildo_path": "Дилдо через рот", "double_dildo": "Два дилдо"
     },
     "furry": {
         "furry_cow": "Фури корова", "furry_cat": "Фури кошка", "furry_dog": "Фури собака",
@@ -61,7 +61,8 @@ TAGS = {
     "characters": {
         "rias": "Риас Гремори", "akeno": "Акено", "kafka": "Кафка",
         "eula": "Еола", "fu_xuan": "Фу Сюань", "ayase": "Аясе Сейко",
-        "2b": "2B", "yor": "Йор Форжер"
+        "2b": "2B", "yor": "Йор Форжер", "kiana": "Киана", "katarina": "Катарина",
+        "esdeath": "Эсдес", "koneko": "Конеко", "sparkle": "Светлячок"
     },
     "head": {
         "ahegao": "Ахегао", "ecstasy_face": "Экстаз", "pain_face": "Боль", "gold_lipstick": "Золотая помада"
@@ -76,6 +77,94 @@ RU_TO_TAG = {}
 for cat in TAGS.values():
     for key, ru in cat.items():
         RU_TO_TAG[ru.lower()] = key
+
+TAG_PROMPTS = {
+    # Персонажи
+    "rias": "red hair, blue eyes, rias gremory, large breasts",
+    "akeno": "black hair, purple eyes, akeno himejima",
+    "kafka": "purple wavy hair, kafka, honkai star rail",
+    "eula": "light blue hair, eula, genshin impact",
+    "fu_xuan": "pink twin tails, fu xuan, honkai star rail",
+    "ayase": "black hair, school uniform, ayase seiko, dandadan anime, accurate",
+    "2b": "white bob haircut, blindfold, black leotard, nier automata, 2b",
+    "yor": "black long hair, red eyes, assassin dress, spy x family, yor forger",
+    "kiana": "white hair, blue eyes, kiana kaslana, league of legends",
+    "katarina": "red hair, daggers, assassin outfit, katarina, league of legends",
+    "esdeath": "blue military uniform, long blue hair, akame ga kill, esdeath",
+    "koneko": "white hair, yellow eyes, petite body, highschool dxd, koneko toujou",
+    "sparkle": "sparkle, honkai star rail, pink hair, sci-fi outfit",
+    # Игрушки
+    "dildo": "dildo inserted in vagina",
+    "huge_dildo": "huge dildo in anus",
+    "horse_dildo": "horse dildo, anal",
+    "anal_beads": "anal beads in anus",
+    "anal_plug": "anal plug inserted",
+    "anal_expander": "anal expander in anus",
+    "gag": "ball gag in mouth",
+    "piercing": "nipple piercing, genital piercing",
+    "long_dildo_path": "dildo inserted in anus exiting mouth, belly bulge",
+    "double_dildo": "two dildos inserted in anus, stretched",
+    # Отверстия
+    "vagina": "realistic spread vagina, open",
+    "anal": "spread anus, gaping, realistic",
+    "both": "spread vagina and anus, detailed",
+    # Пол, тело, этнос
+    "futanari": "futanari with realistic penis and vagina, no balls",
+    "femboy": "feminine femboy, small penis, slim body, girly face",
+    "ethnicity_asian": "asian girl",
+    "ethnicity_european": "european girl",
+    "big_breasts": "very large natural breasts",
+    "small_breasts": "flat chest, small breasts",
+    "body_thin": "thin body",
+    "body_fit": "athletic body",
+    "body_fat": "plump curvy body",
+    "body_normal": "average female body",
+    "skin_white": "pale white skin",
+    "skin_black": "dark african skin",
+    "body_muscular": "muscular defined body",
+    "age_loli": "petite body, youthful",
+    "age_milf": "mature face and body",
+    "age_21": "adult female, 21 years old",
+    "cum": "cum on face, breasts, body",
+    "belly_bloat": "belly bulge from toy",
+    "succubus_tattoo": "succubus tattoo on belly",
+    # Позы
+    "doggy": "on all fours, doggy style",
+    "standing": "standing pose, open legs",
+    "splits": "doing splits, flexible",
+    "squat": "squatting, spread legs",
+    "lying": "lying down, seductive",
+    "hor_split": "horizontal split pose, legs wide",
+    "ver_split": "vertical split, leg raised",
+    "side_up_leg": "side pose, one leg up",
+    "bridge": "bridge pose, back arched",
+    "suspended": "tied and suspended in air, bondage ropes",
+    "front_facing": "facing viewer",
+    "back_facing": "back to viewer",
+    "lying_knees_up": "lying, knees bent upward",
+    # Одежда
+    "stockings": "black thigh-high stockings only",
+    "heels": "red high heels",
+    "mask": "blindfold mask",
+    "shibari": "shibari rope bondage",
+    "bikini_tan_lines": "bikini tan lines only, no clothes",
+    # Голова
+    "ahegao": "ahegao expression, tongue out",
+    "ecstasy_face": "face of pleasure, flushed cheeks",
+    "pain_face": "painful expression, tears",
+    "gold_lipstick": "shiny gold lipstick",
+    # Обзор
+    "view_top": "view from above",
+    "view_bottom": "view from below",
+    "view_side": "side profile",
+    "view_close": "close-up shot",
+    "view_full": "full body visible"
+}
+
+NEGATIVE_PROMPT = (
+    "bad anatomy, lowres, blurry, watermark, signature, text, "
+    "hands covering, male, clothes, censored, distorted face, broken fingers"
+)
 
 def main_menu():
     kb = types.InlineKeyboardMarkup()
@@ -118,10 +207,10 @@ def handle_manual(m):
     names = [n.strip().lower() for n in m.text.split(",")]
     keys = [RU_TO_TAG[n] for n in names if n in RU_TO_TAG]
     if not keys:
-        bot.send_message(cid, "❌ Теги не распознаны. Проверь правильность написания.")
+        bot.send_message(cid, "❌ Теги не распознаны.")
         return
     user_settings[cid] = {"tags": keys, "last_prompt": keys.copy(), "count": 1, "last_cat": None}
-    bot.send_message(cid, f"✅ Выбраны теги", reply_markup=main_menu())
+    bot.send_message(cid, f"✅ Теги обновлены.", reply_markup=main_menu())
 
 @bot.callback_query_handler(func=lambda c: True)
 def callback(c):
@@ -129,51 +218,40 @@ def callback(c):
     data = c.data
     if cid not in user_settings:
         user_settings[cid] = {"tags": [], "last_prompt": [], "count": 1, "last_cat": None}
-
     if data == "choose_tags":
         bot.edit_message_text("Выбери категорию:", cid, c.message.message_id, reply_markup=category_menu())
-
     elif data.startswith("cat_"):
         cat = data.split("_", 1)[1]
         user_settings[cid]["last_cat"] = cat
         bot.edit_message_text(f"Категория: {CATEGORY_NAMES[cat]}", cid, c.message.message_id,
                               reply_markup=tag_menu(cat, user_settings[cid]["tags"]))
-
     elif data.startswith("tag_"):
         _, cat, tag = data.split("_", 2)
         tags = user_settings[cid]["tags"]
-        if tag in tags:
-            tags.remove(tag)
-        else:
-            tags.append(tag)
+        if tag in tags: tags.remove(tag)
+        else: tags.append(tag)
         bot.edit_message_reply_markup(cid, c.message.message_id, reply_markup=tag_menu(cat, tags))
-
     elif data == "done_tags":
         bot.edit_message_text("Теги сохранены.", cid, c.message.message_id, reply_markup=main_menu())
-
     elif data == "choose_count":
-        bot.edit_message_text("Сколько изображений сгенерировать?", cid, c.message.message_id, reply_markup=count_menu())
-
+        bot.edit_message_text("Сколько изображений сгенерировать?", cid,
+                              c.message.message_id, reply_markup=count_menu())
     elif data.startswith("count_"):
         cnt = int(data.split("_", 1)[1])
         user_settings[cid]["count"] = cnt
         bot.edit_message_text(f"✅ Количество: {cnt}", cid, c.message.message_id, reply_markup=main_menu())
-
     elif data == "back_to_cat":
         bot.edit_message_text("Выбери категорию:", cid, c.message.message_id, reply_markup=category_menu())
-
     elif data == "generate":
-        settings = user_settings[cid]
-        tags = settings["tags"]
+        tags = user_settings[cid]["tags"]
         if not tags:
             bot.send_message(cid, "❌ Сначала выбери теги!", reply_markup=main_menu())
             return
         bot.send_message(cid, "⏳ Генерация...")
-        prompt = ", ".join(tags)
-        final = f"nsfw, anime style, masterpiece, best quality, fully nude, ultra detailed, {prompt}"
-        negative_prompt = "bad anatomy, lowres, text, hands on chest, clothing, male"
-        size = settings["count"]
-        urls = replicate_generate(final, negative_prompt, size)
+        prompt = ", ".join(TAG_PROMPTS.get(t, t) for t in tags)
+        final = f"nsfw, anime style, high detail, masterpiece, best quality, fully nude, {prompt}"
+        size = user_settings[cid]["count"]
+        urls = replicate_generate(final, NEGATIVE_PROMPT, size)
         if urls:
             media = [types.InputMediaPhoto(u) for u in urls]
             bot.send_media_group(cid, media)
@@ -185,18 +263,14 @@ def callback(c):
             )
             bot.send_message(cid, "✅ Готово!", reply_markup=kb)
         else:
-            bot.send_message(cid, "❌ Ошибка генерации.", reply_markup=main_menu())
-
+            bot.send_message(cid, "❌ Не удалось сгенерировать.", reply_markup=main_menu())
     elif data == "start":
         user_settings[cid] = {"tags": [], "last_prompt": [], "count": 1, "last_cat": None}
-        bot.send_message(cid, "🔄 Настройки сброшены.", reply_markup=main_menu())
+        bot.send_message(cid, "🔄 Сброшено.", reply_markup=main_menu())
 
 def replicate_generate(prompt, negative_prompt, count):
     url = "https://api.replicate.com/v1/predictions"
-    headers = {
-        "Authorization": f"Token {REPLICATE_TOKEN}",
-        "Content-Type": "application/json"
-    }
+    headers = {"Authorization": f"Token {REPLICATE_TOKEN}", "Content-Type": "application/json"}
     payload = {
         "version": REPLICATE_MODEL,
         "input": {
@@ -216,8 +290,7 @@ def replicate_generate(prompt, negative_prompt, count):
             return []
         data = r.json()
         if data["status"] == "succeeded":
-            output = data["output"]
-            return output if isinstance(output, list) else [output]
+            return data["output"] if isinstance(data["output"], list) else [data["output"]]
         elif data["status"] == "failed":
             return []
     return []
