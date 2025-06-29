@@ -8,7 +8,7 @@ from telebot import types
 
 API_TOKEN = os.getenv("TELEGRAM_TOKEN")
 REPLICATE_TOKEN = os.getenv("REPLICATE_API_TOKEN")
-REPLICATE_MODEL = "057e2276ac5dcd8d1575dc37b131f903df9c10c41aed53d47cd7d4f068c19fa5"
+REPLICATE_MODEL = "c1d5b02687df6081c7953c74bcc527858702e8c153c9382012ccc3906752d3ec"
 WEBHOOK_URL = os.getenv("WEBHOOK_URL")
 PORT = int(os.environ.get("PORT", 5000))
 
@@ -24,22 +24,26 @@ CATEGORY_NAMES = {
 
 TAGS = {
     "poses": {
-        "doggy": "Наездница", "standing": "Стоя", "splits": "Шпагат", "squat": "Присед", "lying": "Лежа",
-        "hor_split": "Горизонтальный шпагат", "ver_split": "Вертикальный шпагат", "side_up_leg": "Нога вверх",
-        "bridge": "Мост", "suspended": "Подвешена", "front_facing": "Лицом к зрителю",
-        "back_facing": "Спиной", "lying_knees_up": "Лежа, колени вверх"
+        "doggy": "Наездница", "standing": "Стоя", "splits": "Шпагат",
+        "squat": "Присед", "lying": "Лежа", "hor_split": "Горизонтальный шпагат",
+        "ver_split": "Вертикальный шпагат", "side_up_leg": "Нога вверх", "bridge": "Мост",
+        "suspended": "Подвешена", "front_facing": "Лицом к зрителю", "back_facing": "Спиной",
+        "lying_knees_up": "Лежа, колени вверх"
     },
     "clothes": {
-        "stockings": "Чулки", "heels": "Каблуки", "mask": "Маска", "shibari": "Шибари", "bikini_tan_lines": "Загар от бикини"
+        "stockings": "Чулки", "heels": "Каблуки", "mask": "Маска",
+        "shibari": "Шибари", "bikini_tan_lines": "Загар от бикини"
     },
     "body": {
-        "big_breasts": "Большая грудь", "small_breasts": "Маленькая грудь", "body_thin": "Худое",
-        "body_fit": "Подтянутое", "body_fat": "Пышное", "body_normal": "Нормальное", "skin_white": "Белая кожа",
-        "skin_black": "Чёрная кожа", "body_muscular": "Мускулистое", "age_loli": "Лоли", "age_milf": "Милфа",
-        "age_21": "Возраст 21", "cum": "Вся в сперме", "belly_bloat": "Вздутие живота", "succubus_tattoo": "Тату на животе"
+        "big_breasts": "Большая грудь", "small_breasts": "Маленькая грудь",
+        "body_thin": "Худое", "body_fit": "Подтянутое", "body_fat": "Пышное",
+        "body_normal": "Нормальное", "skin_white": "Белая кожа", "skin_black": "Чёрная кожа",
+        "body_muscular": "Мускулистое", "age_loli": "Лоли", "age_milf": "Милфа", "age_21": "Возраст 21",
+        "cum": "Вся в сперме", "belly_bloat": "Вздутие живота", "succubus_tattoo": "Тату на животе"
     },
     "ethnos": {
-        "ethnicity_asian": "Азиатка", "ethnicity_european": "Европейка", "futanari": "Футанари", "femboy": "Фембой"
+        "ethnicity_asian": "Азиатка", "ethnicity_european": "Европейка",
+        "futanari": "Футанари", "femboy": "Фембой"
     },
     "holes": {
         "vagina": "Вагина", "anal": "Анус", "both": "Вагина и анус"
@@ -47,7 +51,8 @@ TAGS = {
     "toys": {
         "dildo": "Дилдо", "huge_dildo": "Большое дилдо", "horse_dildo": "Лошадиное дилдо",
         "anal_beads": "Анальные бусы", "anal_plug": "Анальная пробка", "anal_expander": "Анальный расширитель",
-        "gag": "Кляп", "piercing": "Пирсинг", "long_dildo_path": "Дилдо через рот", "double_dildo": "Два дилдо"
+        "gag": "Кляп", "piercing": "Пирсинг", "long_dildo_path": "Дилдо через рот",
+        "double_dildo": "Два дилдо"
     },
     "furry": {
         "furry_cow": "Фури корова", "furry_cat": "Фури кошка", "furry_dog": "Фури собака",
@@ -55,47 +60,29 @@ TAGS = {
         "furry_wolf": "Фури волчица", "furry_sylveon": "Фури сильвеон"
     },
     "characters": {
-        "rias": "Риас Гремори", "akeno": "Акено", "kafka": "Кафка", "eula": "Еола", "fu_xuan": "Фу Сюань",
-        "ayase": "Аясе Сейко", "2b": "2B", "yor": "Йор Форжер", "kiana": "Киана", "katarina": "Катарина",
-        "esdeath": "Есдес", "koneko": "Конеко", "sparkle": "Селестия"
+        "rias": "Риас Гремори", "akeno": "Акено", "kafka": "Кафка",
+        "eula": "Еола", "fu_xuan": "Фу Сюань", "ayase": "Аясе Сейко",
+        "2b": "2B", "yor": "Йор Форжер", "esdeath": "Эсдес", "katarina": "Катарина"
     },
     "head": {
         "ahegao": "Ахегао", "ecstasy_face": "Экстаз", "pain_face": "Боль", "gold_lipstick": "Золотая помада"
     },
     "view": {
-        "view_top": "Сверху", "view_bottom": "Снизу", "view_side": "Сбоку", "view_close": "Близко", "view_full": "Полный рост"
+        "view_top": "Сверху", "view_bottom": "Снизу", "view_side": "Сбоку",
+        "view_close": "Близко", "view_full": "Полный рост"
     }
 }
 
-RU_TO_TAG = {ru.lower(): key for cat in TAGS.values() for key, ru in cat.items()}
+RU_TO_TAG = {}
+for cat in TAGS.values():
+    for key, ru in cat.items():
+        RU_TO_TAG[ru.lower()] = key
 
-TAG_PROMPTS = {
-    **{k: v for k, v in {
-        "rias": "red hair, blue eyes, rias gremory, large breasts",
-        "akeno": "black hair, purple eyes, akeno himejima",
-        "kafka": "purple wavy hair, kafka, honkai star rail",
-        "eula": "light blue hair, eula, genshin impact",
-        "fu_xuan": "pink hair, fu xuan, honkai star rail",
-        "ayase": "short black hair, expressive face, dan da dan, seiko ayase",
-        "2b": "white bobcut hair, blindfold, black leotard, nier automata, 2b",
-        "yor": "black hair bun, red eyes, assassin dress, yor forger, spy x family",
-        "kiana": "white hair, twin tails, battle suit, league of legends",
-        "katarina": "red hair, twin daggers, league of legends, assassin",
-        "esdeath": "blue long hair, military uniform, akame ga kill",
-        "koneko": "white short hair, school uniform, small breasts, highschool dxd",
-        "sparkle": "long purple hair, star motifs, honkai star rail",
-        "futanari": "futanari girl, visible penis and testicles, realistic anatomy",
-        "femboy": "feminine boy, small penis, small testicles, soft face, flat chest",
-        "double_dildo": "two dildos inserted in anus",
-        "bikini_tan_lines": "detailed bikini tan lines, no clothes, clear skin contrast"
-    }.items()},
-    **{t: t.replace("_", " ") for cat in TAGS.values() for t in cat}
-}
-
-NEGATIVE_PROMPT = (
-    "bad anatomy, blurry, cropped, watermark, lowres, text, "
-    "hands on chest, hands covering nipples or genitals, male, clothing, clothes, bra, panties"
-)
+@bot.message_handler(commands=["start"])
+def cmd_start(msg):
+    cid = msg.chat.id
+    user_settings[cid] = {"tags": [], "last_prompt": [], "count": 1, "last_cat": None}
+    bot.send_message(cid, "Привет! Что делаем?", reply_markup=main_menu())
 
 def main_menu():
     kb = types.InlineKeyboardMarkup()
@@ -126,23 +113,16 @@ def tag_menu(category, selected):
     kb.add(types.InlineKeyboardButton("⬅ Назад", callback_data="back_to_cat"))
     return kb
 
-@bot.message_handler(commands=["start"])
-def cmd_start(msg):
-    cid = msg.chat.id
-    user_settings[cid] = {"tags": [], "last_prompt": [], "count": 1, "last_cat": None}
-    bot.send_message(cid, "Привет! Что делаем?", reply_markup=main_menu())
-
 @bot.message_handler(func=lambda m: True, content_types=["text"])
 def handle_manual(m):
     cid = m.chat.id
     names = [n.strip().lower() for n in m.text.split(",")]
     keys = [RU_TO_TAG[n] for n in names if n in RU_TO_TAG]
     if not keys:
-        bot.send_message(cid, "❌ Теги не распознаны.")
+        bot.send_message(cid, "❌ Теги не распознаны. Проверь правильность написания.")
         return
     user_settings[cid] = {"tags": keys, "last_prompt": keys.copy(), "count": 1, "last_cat": None}
-    ru = ", ".join([TAGS[c][k] for c in TAGS for k in keys if k in TAGS[c]])
-    bot.send_message(cid, f"✅ Выбраны теги: {ru}", reply_markup=main_menu())
+    bot.send_message(cid, f"✅ Выбраны теги", reply_markup=main_menu())
 
 @bot.callback_query_handler(func=lambda c: True)
 def callback(c):
@@ -150,6 +130,7 @@ def callback(c):
     data = c.data
     if cid not in user_settings:
         user_settings[cid] = {"tags": [], "last_prompt": [], "count": 1, "last_cat": None}
+
     if data == "choose_tags":
         bot.edit_message_text("Выбери категорию:", cid, c.message.message_id, reply_markup=category_menu())
     elif data.startswith("cat_"):
@@ -160,8 +141,10 @@ def callback(c):
     elif data.startswith("tag_"):
         _, cat, tag = data.split("_", 2)
         tags = user_settings[cid]["tags"]
-        if tag in tags: tags.remove(tag)
-        else: tags.append(tag)
+        if tag in tags:
+            tags.remove(tag)
+        else:
+            tags.append(tag)
         bot.edit_message_reply_markup(cid, c.message.message_id, reply_markup=tag_menu(cat, tags))
     elif data == "done_tags":
         bot.edit_message_text("Теги сохранены.", cid, c.message.message_id, reply_markup=main_menu())
@@ -180,9 +163,12 @@ def callback(c):
             bot.send_message(cid, "❌ Сначала выбери теги!", reply_markup=main_menu())
             return
         bot.send_message(cid, "⏳ Генерация...")
-        prompt = ", ".join(TAG_PROMPTS.get(t, t) for t in tags)
-        final = f"nsfw, anime style, masterpiece, best quality, fully nude, {prompt}"
-        urls = replicate_generate(final, NEGATIVE_PROMPT, settings["count"])
+        prompt = ", ".join([
+            "nsfw", "anime style", "masterpiece", "best quality", "ultra detailed",
+            "fully nude", "no clothes", "no censorship"
+        ] + tags)
+        negative_prompt = "bad anatomy, blurry, watermark, clothes, male, hands on chest, censored"
+        urls = replicate_generate(prompt, negative_prompt, settings["count"])
         if urls:
             media = [types.InputMediaPhoto(u) for u in urls]
             bot.send_media_group(cid, media)
@@ -202,27 +188,34 @@ def callback(c):
 def replicate_generate(prompt, negative_prompt, count):
     url = "https://api.replicate.com/v1/predictions"
     headers = {"Authorization": f"Token {REPLICATE_TOKEN}", "Content-Type": "application/json"}
-    payload = {"version": REPLICATE_MODEL, "input": {
-        "prompt": prompt, "negative_prompt": negative_prompt, "num_outputs": count}}
+    payload = {
+        "version": REPLICATE_MODEL,
+        "input": {
+            "prompt": prompt,
+            "negative_prompt": negative_prompt,
+            "num_outputs": count
+        }
+    }
     r = requests.post(url, headers=headers, json=payload)
-    if r.status_code != 201: return []
+    if r.status_code != 201:
+        return []
     status_url = r.json()["urls"]["get"]
     for _ in range(60):
         time.sleep(2)
         r = requests.get(status_url, headers=headers)
-        if r.status_code != 200: return []
+        if r.status_code != 200:
+            return []
         data = r.json()
         if data["status"] == "succeeded":
-            out = data["output"]
-            return out if isinstance(out, list) else [out]
+            output = data["output"]
+            return output if isinstance(output, list) else [output]
         elif data["status"] == "failed":
             return []
     return []
 
 @app.route("/", methods=["POST"])
 def webhook():
-    upd = request.stream.read().decode("utf-8")
-    update = telebot.types.Update.de_json(upd)
+    update = telebot.types.Update.de_json(request.stream.read().decode("utf-8"))
     bot.process_new_updates([update])
     return "ok", 200
 
