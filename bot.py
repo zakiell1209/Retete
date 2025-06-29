@@ -24,26 +24,22 @@ CATEGORY_NAMES = {
 
 TAGS = {
     "poses": {
-        "doggy": "Наездница", "standing": "Стоя", "splits": "Шпагат",
-        "squat": "Присед", "lying": "Лежа", "hor_split": "Горизонтальный шпагат",
-        "ver_split": "Вертикальный шпагат", "side_up_leg": "Нога вверх", "bridge": "Мост",
-        "suspended": "Подвешена", "front_facing": "Лицом к зрителю", "back_facing": "Спиной",
-        "lying_knees_up": "Лежа, колени вверх"
+        "doggy": "Наездница", "standing": "Стоя", "splits": "Шпагат", "squat": "Присед", "lying": "Лежа",
+        "hor_split": "Горизонтальный шпагат", "ver_split": "Вертикальный шпагат", "side_up_leg": "Нога вверх",
+        "bridge": "Мост", "suspended": "Подвешена", "front_facing": "Лицом к зрителю",
+        "back_facing": "Спиной", "lying_knees_up": "Лежа, колени вверх"
     },
     "clothes": {
-        "stockings": "Чулки", "heels": "Каблуки", "mask": "Маска",
-        "shibari": "Шибари", "bikini_tan_lines": "Загар от бикини"
+        "stockings": "Чулки", "heels": "Каблуки", "mask": "Маска", "shibari": "Шибари", "bikini_tan_lines": "Загар от бикини"
     },
     "body": {
-        "big_breasts": "Большая грудь", "small_breasts": "Маленькая грудь",
-        "body_thin": "Худое", "body_fit": "Подтянутое", "body_fat": "Пышное",
-        "body_normal": "Нормальное", "skin_white": "Белая кожа", "skin_black": "Чёрная кожа",
-        "body_muscular": "Мускулистое", "age_loli": "Лоли", "age_milf": "Милфа", "age_21": "Возраст 21",
-        "cum": "Вся в сперме", "belly_bloat": "Вздутие живота", "succubus_tattoo": "Тату на животе"
+        "big_breasts": "Большая грудь", "small_breasts": "Маленькая грудь", "body_thin": "Худое",
+        "body_fit": "Подтянутое", "body_fat": "Пышное", "body_normal": "Нормальное", "skin_white": "Белая кожа",
+        "skin_black": "Чёрная кожа", "body_muscular": "Мускулистое", "age_loli": "Лоли", "age_milf": "Милфа",
+        "age_21": "Возраст 21", "cum": "Вся в сперме", "belly_bloat": "Вздутие живота", "succubus_tattoo": "Тату на животе"
     },
     "ethnos": {
-        "ethnicity_asian": "Азиатка", "ethnicity_european": "Европейка",
-        "futanari": "Футанари", "femboy": "Фембой"
+        "ethnicity_asian": "Азиатка", "ethnicity_european": "Европейка", "futanari": "Футанари", "femboy": "Фембой"
     },
     "holes": {
         "vagina": "Вагина", "anal": "Анус", "both": "Вагина и анус"
@@ -59,111 +55,46 @@ TAGS = {
         "furry_wolf": "Фури волчица", "furry_sylveon": "Фури сильвеон"
     },
     "characters": {
-        "rias": "Риас Гремори", "akeno": "Акено", "kafka": "Кафка",
-        "eula": "Еола", "fu_xuan": "Фу Сюань", "ayase": "Аясе Сейко",
-        "2b": "2B", "yor": "Йор Форжер", "kiana": "Киана", "katarina": "Катарина",
-        "esdeath": "Эсдес", "koneko": "Конеко", "sparkle": "Светлячок"
+        "rias": "Риас Гремори", "akeno": "Акено", "kafka": "Кафка", "eula": "Еола", "fu_xuan": "Фу Сюань",
+        "ayase": "Аясе Сейко", "2b": "2B", "yor": "Йор Форжер", "kiana": "Киана", "katarina": "Катарина",
+        "esdeath": "Есдес", "koneko": "Конеко", "sparkle": "Селестия"
     },
     "head": {
         "ahegao": "Ахегао", "ecstasy_face": "Экстаз", "pain_face": "Боль", "gold_lipstick": "Золотая помада"
     },
     "view": {
-        "view_top": "Сверху", "view_bottom": "Снизу", "view_side": "Сбоку",
-        "view_close": "Близко", "view_full": "Полный рост"
+        "view_top": "Сверху", "view_bottom": "Снизу", "view_side": "Сбоку", "view_close": "Близко", "view_full": "Полный рост"
     }
 }
 
-RU_TO_TAG = {}
-for cat in TAGS.values():
-    for key, ru in cat.items():
-        RU_TO_TAG[ru.lower()] = key
+RU_TO_TAG = {ru.lower(): key for cat in TAGS.values() for key, ru in cat.items()}
 
 TAG_PROMPTS = {
-    # Персонажи
-    "rias": "red hair, blue eyes, rias gremory, large breasts",
-    "akeno": "black hair, purple eyes, akeno himejima",
-    "kafka": "purple wavy hair, kafka, honkai star rail",
-    "eula": "light blue hair, eula, genshin impact",
-    "fu_xuan": "pink twin tails, fu xuan, honkai star rail",
-    "ayase": "black hair, school uniform, ayase seiko, dandadan anime, accurate",
-    "2b": "white bob haircut, blindfold, black leotard, nier automata, 2b",
-    "yor": "black long hair, red eyes, assassin dress, spy x family, yor forger",
-    "kiana": "white hair, blue eyes, kiana kaslana, league of legends",
-    "katarina": "red hair, daggers, assassin outfit, katarina, league of legends",
-    "esdeath": "blue military uniform, long blue hair, akame ga kill, esdeath",
-    "koneko": "white hair, yellow eyes, petite body, highschool dxd, koneko toujou",
-    "sparkle": "sparkle, honkai star rail, pink hair, sci-fi outfit",
-    # Игрушки
-    "dildo": "dildo inserted in vagina",
-    "huge_dildo": "huge dildo in anus",
-    "horse_dildo": "horse dildo, anal",
-    "anal_beads": "anal beads in anus",
-    "anal_plug": "anal plug inserted",
-    "anal_expander": "anal expander in anus",
-    "gag": "ball gag in mouth",
-    "piercing": "nipple piercing, genital piercing",
-    "long_dildo_path": "dildo inserted in anus exiting mouth, belly bulge",
-    "double_dildo": "two dildos inserted in anus, stretched",
-    # Отверстия
-    "vagina": "realistic spread vagina, open",
-    "anal": "spread anus, gaping, realistic",
-    "both": "spread vagina and anus, detailed",
-    # Пол, тело, этнос
-    "futanari": "futanari with realistic penis and vagina, no balls",
-    "femboy": "feminine femboy, small penis, slim body, girly face",
-    "ethnicity_asian": "asian girl",
-    "ethnicity_european": "european girl",
-    "big_breasts": "very large natural breasts",
-    "small_breasts": "flat chest, small breasts",
-    "body_thin": "thin body",
-    "body_fit": "athletic body",
-    "body_fat": "plump curvy body",
-    "body_normal": "average female body",
-    "skin_white": "pale white skin",
-    "skin_black": "dark african skin",
-    "body_muscular": "muscular defined body",
-    "age_loli": "petite body, youthful",
-    "age_milf": "mature face and body",
-    "age_21": "adult female, 21 years old",
-    "cum": "cum on face, breasts, body",
-    "belly_bloat": "belly bulge from toy",
-    "succubus_tattoo": "succubus tattoo on belly",
-    # Позы
-    "doggy": "on all fours, doggy style",
-    "standing": "standing pose, open legs",
-    "splits": "doing splits, flexible",
-    "squat": "squatting, spread legs",
-    "lying": "lying down, seductive",
-    "hor_split": "horizontal split pose, legs wide",
-    "ver_split": "vertical split, leg raised",
-    "side_up_leg": "side pose, one leg up",
-    "bridge": "bridge pose, back arched",
-    "suspended": "tied and suspended in air, bondage ropes",
-    "front_facing": "facing viewer",
-    "back_facing": "back to viewer",
-    "lying_knees_up": "lying, knees bent upward",
-    # Одежда
-    "stockings": "black thigh-high stockings only",
-    "heels": "red high heels",
-    "mask": "blindfold mask",
-    "shibari": "shibari rope bondage",
-    "bikini_tan_lines": "bikini tan lines only, no clothes",
-    # Голова
-    "ahegao": "ahegao expression, tongue out",
-    "ecstasy_face": "face of pleasure, flushed cheeks",
-    "pain_face": "painful expression, tears",
-    "gold_lipstick": "shiny gold lipstick",
-    # Обзор
-    "view_top": "view from above",
-    "view_bottom": "view from below",
-    "view_side": "side profile",
-    "view_close": "close-up shot",
-    "view_full": "full body visible"
+    **{k: v for k, v in {
+        "rias": "red hair, blue eyes, rias gremory, large breasts",
+        "akeno": "black hair, purple eyes, akeno himejima",
+        "kafka": "purple wavy hair, kafka, honkai star rail",
+        "eula": "light blue hair, eula, genshin impact",
+        "fu_xuan": "pink hair, fu xuan, honkai star rail",
+        "ayase": "short black hair, expressive face, dan da dan, seiko ayase",
+        "2b": "white bobcut hair, blindfold, black leotard, nier automata, 2b",
+        "yor": "black hair bun, red eyes, assassin dress, yor forger, spy x family",
+        "kiana": "white hair, twin tails, battle suit, league of legends",
+        "katarina": "red hair, twin daggers, league of legends, assassin",
+        "esdeath": "blue long hair, military uniform, akame ga kill",
+        "koneko": "white short hair, school uniform, small breasts, highschool dxd",
+        "sparkle": "long purple hair, star motifs, honkai star rail",
+        "futanari": "futanari girl, visible penis and testicles, realistic anatomy",
+        "femboy": "feminine boy, small penis, small testicles, soft face, flat chest",
+        "double_dildo": "two dildos inserted in anus",
+        "bikini_tan_lines": "detailed bikini tan lines, no clothes, clear skin contrast"
+    }.items()},
+    **{t: t.replace("_", " ") for cat in TAGS.values() for t in cat}
 }
 
 NEGATIVE_PROMPT = (
-    "bad anatomy, lowres, blurry, watermark, signature, text, "
-    "hands covering, male, clothes, censored, distorted face, broken fingers"
+    "bad anatomy, blurry, cropped, watermark, lowres, text, "
+    "hands on chest, hands covering nipples or genitals, male, clothing, clothes, bra, panties"
 )
 
 def main_menu():
@@ -210,7 +141,8 @@ def handle_manual(m):
         bot.send_message(cid, "❌ Теги не распознаны.")
         return
     user_settings[cid] = {"tags": keys, "last_prompt": keys.copy(), "count": 1, "last_cat": None}
-    bot.send_message(cid, f"✅ Теги обновлены.", reply_markup=main_menu())
+    ru = ", ".join([TAGS[c][k] for c in TAGS for k in keys if k in TAGS[c]])
+    bot.send_message(cid, f"✅ Выбраны теги: {ru}", reply_markup=main_menu())
 
 @bot.callback_query_handler(func=lambda c: True)
 def callback(c):
@@ -234,8 +166,7 @@ def callback(c):
     elif data == "done_tags":
         bot.edit_message_text("Теги сохранены.", cid, c.message.message_id, reply_markup=main_menu())
     elif data == "choose_count":
-        bot.edit_message_text("Сколько изображений сгенерировать?", cid,
-                              c.message.message_id, reply_markup=count_menu())
+        bot.edit_message_text("Сколько изображений сгенерировать?", cid, c.message.message_id, reply_markup=count_menu())
     elif data.startswith("count_"):
         cnt = int(data.split("_", 1)[1])
         user_settings[cid]["count"] = cnt
@@ -243,15 +174,15 @@ def callback(c):
     elif data == "back_to_cat":
         bot.edit_message_text("Выбери категорию:", cid, c.message.message_id, reply_markup=category_menu())
     elif data == "generate":
-        tags = user_settings[cid]["tags"]
+        settings = user_settings[cid]
+        tags = settings["tags"]
         if not tags:
             bot.send_message(cid, "❌ Сначала выбери теги!", reply_markup=main_menu())
             return
         bot.send_message(cid, "⏳ Генерация...")
         prompt = ", ".join(TAG_PROMPTS.get(t, t) for t in tags)
-        final = f"nsfw, anime style, high detail, masterpiece, best quality, fully nude, {prompt}"
-        size = user_settings[cid]["count"]
-        urls = replicate_generate(final, NEGATIVE_PROMPT, size)
+        final = f"nsfw, anime style, masterpiece, best quality, fully nude, {prompt}"
+        urls = replicate_generate(final, NEGATIVE_PROMPT, settings["count"])
         if urls:
             media = [types.InputMediaPhoto(u) for u in urls]
             bot.send_media_group(cid, media)
@@ -263,41 +194,35 @@ def callback(c):
             )
             bot.send_message(cid, "✅ Готово!", reply_markup=kb)
         else:
-            bot.send_message(cid, "❌ Не удалось сгенерировать.", reply_markup=main_menu())
+            bot.send_message(cid, "❌ Ошибка генерации.", reply_markup=main_menu())
     elif data == "start":
         user_settings[cid] = {"tags": [], "last_prompt": [], "count": 1, "last_cat": None}
-        bot.send_message(cid, "🔄 Сброшено.", reply_markup=main_menu())
+        bot.send_message(cid, "🔄 Настройки сброшены.", reply_markup=main_menu())
 
 def replicate_generate(prompt, negative_prompt, count):
     url = "https://api.replicate.com/v1/predictions"
     headers = {"Authorization": f"Token {REPLICATE_TOKEN}", "Content-Type": "application/json"}
-    payload = {
-        "version": REPLICATE_MODEL,
-        "input": {
-            "prompt": prompt,
-            "negative_prompt": negative_prompt,
-            "num_outputs": count
-        }
-    }
+    payload = {"version": REPLICATE_MODEL, "input": {
+        "prompt": prompt, "negative_prompt": negative_prompt, "num_outputs": count}}
     r = requests.post(url, headers=headers, json=payload)
-    if r.status_code != 201:
-        return []
+    if r.status_code != 201: return []
     status_url = r.json()["urls"]["get"]
     for _ in range(60):
         time.sleep(2)
         r = requests.get(status_url, headers=headers)
-        if r.status_code != 200:
-            return []
+        if r.status_code != 200: return []
         data = r.json()
         if data["status"] == "succeeded":
-            return data["output"] if isinstance(data["output"], list) else [data["output"]]
+            out = data["output"]
+            return out if isinstance(out, list) else [out]
         elif data["status"] == "failed":
             return []
     return []
 
 @app.route("/", methods=["POST"])
 def webhook():
-    update = telebot.types.Update.de_json(request.stream.read().decode("utf-8"))
+    upd = request.stream.read().decode("utf-8")
+    update = telebot.types.Update.de_json(upd)
     bot.process_new_updates([update])
     return "ok", 200
 
