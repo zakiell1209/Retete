@@ -437,6 +437,7 @@ def generate_handler(call):
             "⚠ Некоторые теги были автоматически удалены из-за конфликтов:\n" +
             "\n".join(f"• {TAGS.get(tag.split('_')[0], {}).get(tag, tag)}" 
             for tag in removed)
+        )
         bot.send_message(cid, warning)
     
     prompt = build_prompt(filtered_tags)
