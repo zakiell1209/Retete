@@ -17,6 +17,18 @@ WEBHOOK_URL = os.getenv("WEBHOOK_URL")
 PORT = int(os.environ.get("PORT", 5000))
 REPLICATE_MODEL = "c1d5b02687df6081c7953c74bcc527858702e8c153c9382012ccc3906752d3ec"
 
+# Параметры генерации по умолчанию
+DEFAULT_GENERATION_PARAMS = {
+    "width": 512,
+    "height": 768,
+    "num_outputs": 1,
+    "guidance_scale": 7.5,
+    "num_inference_steps": 50,
+    "negative_prompt": ("bad anatomy, extra limbs, poorly drawn hands, fused fingers, "
+                       "extra digits, missing arms, missing legs, extra arms, extra legs, "
+                       "mutated hands, fused fingers, long neck")
+}
+
 # Инициализация бота и приложения
 bot = telebot.TeleBot(API_TOKEN)
 app = Flask(__name__)
@@ -134,41 +146,41 @@ CHARACTER_EXTRA = {
 
 TAG_PROMPTS = {
     **CHARACTER_EXTRA,
-    "vagina": "spread pussy",
-    "anal": "spread anus",
-    "both": "spread pussy and anus",
-    "dildo": "dildo inserted",
-    "huge_dildo": "huge dildo",
-    "horse_dildo": "horse dildo",
-    "anal_beads": "anal beads inserted",
-    "anal_plug": "anal plug",
-    "anal_expander": "anal expander stretching anus",
-    "gag": "ball gag",
-    "piercing": "nipple and genital piercings",
+    "vagina": "spread pussy, hands not covering",
+    "anal": "spread anus, hands not covering",
+    "both": "spread pussy and anus, hands not covering",
+    "dildo": "dildo inserted, hands not covering",
+    "huge_dildo": "huge dildo, hands not covering",
+    "horse_dildo": "horse dildo, hands not covering",
+    "anal_beads": "anal beads inserted, hands not covering",
+    "anal_plug": "anal plug, hands not covering",
+    "anal_expander": "anal expander stretching anus, hands not covering",
+    "gag": "ball gag, hands not covering",
+    "piercing": "nipple and genital piercings, hands not covering",
     "long_dildo_path": (
         "dildo inserted into anus, pushing visibly through intestines with clear belly bulge, "
         "exiting from mouth, seamless and continuous dildo, consistent texture, realistic rubber"
     ),
-    "doggy": "doggy style",
-    "standing": "standing pose",
-    "splits": "doing a split",
+    "doggy": "doggy style, hands on floor or holding ankles",
+    "standing": "standing pose, arms at sides or holding something",
+    "splits": "doing a split, arms balanced or raised",
     "hor_split": (
         "horizontal split, legs stretched fully to sides, pelvis on floor, thighs spread open, "
-        "inner thighs visible, high detail"
+        "inner thighs visible, high detail, hands not covering"
     ),
-    "ver_split": "vertical split",
-    "side_up_leg": "on side with leg raised",
-    "front_facing": "facing viewer",
-    "back_facing": "back to viewer",
-    "lying_knees_up": "legs up, knees bent",
-    "bridge": "arched back bridge pose",
-    "suspended": "suspended by ropes",
-    "stockings": "wearing stockings only",
-    "mask": "mask on face",
-    "heels": "high heels with red soles",
-    "shibari": "shibari ropes",
-    "big_breasts": "big breasts",
-    "small_breasts": "small breasts",
+    "ver_split": "vertical split, arms balanced",
+    "side_up_leg": "on side with leg raised, hands not covering",
+    "front_facing": "facing viewer, hands not covering",
+    "back_facing": "back to viewer, hands not covering",
+    "lying_knees_up": "legs up, knees bent, hands not covering",
+    "bridge": "arched back bridge pose, hands supporting weight",
+    "suspended": "suspended by ropes, hands not covering",
+    "stockings": "wearing stockings only, hands not covering",
+    "mask": "mask on face, hands not covering",
+    "heels": "high heels with red soles, hands not covering",
+    "shibari": "shibari ropes, hands not covering",
+    "big_breasts": "big breasts, hands not covering",
+    "small_breasts": "small breasts, hands not covering",
     "skin_white": "white skin",
     "skin_black": "black skin",
     "body_fat": "curvy body",
@@ -183,7 +195,7 @@ TAG_PROMPTS = {
     "belly_bloat": "belly bulge from toy",
     "succubus_tattoo": "succubus tattoo on lower abdomen",
     "futanari": "futanari girl with large breasts",
-    "femboy": "femboy with feminine body",
+    "femboy": "male, feminine body, flat chest, no breasts, feminine facial features",
     "ethnicity_asian": "asian girl",
     "ethnicity_european": "european girl",
     "furry_cow": "furry cow girl",
@@ -256,7 +268,7 @@ def tag_menu(category, selected_tags):
 def build_prompt(tags):
     valid_tags = filter_tags(tags)
     base = "nsfw, masterpiece, ultra detailed, anime style, best quality"
-    mandatory = ["fully nude", "no clothing covering chest or genitals"]
+    mandatory = ["fully nude", "no clothing covering chest or genitals", "hands not covering"]
     tag_prompts = [TAG_PROMPTS.get(tag, tag) for tag in valid_tags]
     return ", ".join([base] + mandatory + tag_prompts)
 
@@ -266,20 +278,12 @@ def replicate_generate(prompt):
         "Authorization": f"Token {REPLICATE_TOKEN}",
         "Content-Type": "application/json"
     }
-    json_data = {
-        "version": REPLICATE_MODEL,
-        "input": {
-            "prompt": prompt,
-            "width": 512,
-            "height": 768,
-            "num_outputs": 1,
-            "guidance_scale": 7.5,
-            "num_inference_steps": 50
-        }
-    }
+    
+    input_data = {"prompt": prompt}
+    input_data.update(DEFAULT_GENERATION_PARAMS)
     
     try:
-        r = requests.post(url, headers=headers, json=json_data, timeout=10)
+        r = requests.post(url, headers=headers, json={"version": REPLICATE_MODEL, "input": input_data}, timeout=10)
         r.raise_for_status()
         status_url = r.json()["urls"]["get"]
         start_time = time.time()
@@ -433,10 +437,11 @@ def generate_handler(call):
             "⚠ Некоторые теги были автоматически удалены из-за конфликтов:\n" +
             "\n".join(f"• {TAGS.get(tag.split('_')[0], {}).get(tag, tag)}" 
             for tag in removed)
-        )
         bot.send_message(cid, warning)
     
     prompt = build_prompt(filtered_tags)
+    user_settings[cid]["last_prompt"] = tuple(filtered_tags)  # Сохраняем как кортеж
+    
     bot.edit_message_text("🔄 Генерация начата...", cid, call.message.message_id)
     
     url = replicate_generate(prompt)
@@ -450,6 +455,38 @@ def generate_handler(call):
         bot.send_photo(cid, url, caption="✅ Готово!", reply_markup=kb)
     else:
         bot.send_message(cid, "❌ Ошибка генерации. Попробуйте другие теги.")
+
+@bot.callback_query_handler(func=lambda call: call.data in ["start", "edit_tags", "generate"])
+def post_generation_handler(call):
+    cid = call.message.chat.id
+    try:
+        if call.data == "start":
+            user_settings[cid] = {"tags": [], "last_cat": None}
+            bot.edit_message_text(
+                "Настройки сброшены. Что делаем?",
+                chat_id=cid,
+                message_id=call.message.message_id,
+                reply_markup=main_menu()
+            )
+        elif call.data == "edit_tags":
+            if "last_prompt" in user_settings.get(cid, {}):
+                user_settings[cid]["tags"] = list(user_settings[cid]["last_prompt"])
+                bot.edit_message_text(
+                    "Изменяем теги:",
+                    chat_id=cid,
+                    message_id=call.message.message_id,
+                    reply_markup=category_menu()
+                )
+            else:
+                bot.answer_callback_query(call.id, "Нет сохранённых тегов")
+        elif call.data == "generate":
+            if cid in user_settings and user_settings[cid].get("last_prompt"):
+                generate_handler(call)
+            else:
+                bot.answer_callback_query(call.id, "Сначала выберите теги")
+    except Exception as e:
+        logger.error(f"Error in post_generation_handler: {str(e)}")
+        bot.answer_callback_query(call.id, "⚠ Ошибка обработки запроса")
 
 @app.route('/', methods=['GET', 'POST'])
 def webhook():
