@@ -123,7 +123,83 @@ TAGS = {
     }
 }
 
-# Группы исключающих тегов
+CHARACTER_EXTRA = {
+    "rias": "red long hair, blue eyes, pale skin, large breasts, rias gremory, highschool dxd",
+    "akeno": "long black hair, purple eyes, large breasts, akeno himejima, highschool dxd",
+    "kafka": "purple wavy hair, cold expression, kafka, honkai star rail",
+    "eula": "light blue hair, fair skin, eula, genshin impact",
+    "fu_xuan": "pink hair, fu xuan, honkai star rail",
+    "ayase": "black hair, school uniform, ayase seiko"
+}
+
+TAG_PROMPTS = {
+    **CHARACTER_EXTRA,
+    "vagina": "spread pussy",
+    "anal": "spread anus",
+    "both": "spread pussy and anus",
+    "dildo": "dildo inserted",
+    "huge_dildo": "huge dildo",
+    "horse_dildo": "horse dildo",
+    "anal_beads": "anal beads inserted",
+    "anal_plug": "anal plug",
+    "anal_expander": "anal expander stretching anus",
+    "gag": "ball gag",
+    "piercing": "nipple and genital piercings",
+    "long_dildo_path": (
+        "dildo inserted into anus, pushing visibly through intestines with clear belly bulge, "
+        "exiting from mouth, seamless and continuous dildo, consistent texture, realistic rubber"
+    ),
+    "doggy": "doggy style",
+    "standing": "standing pose",
+    "splits": "doing a split",
+    "hor_split": (
+        "horizontal split, legs stretched fully to sides, pelvis on floor, thighs spread open, "
+        "inner thighs visible, high detail"
+    ),
+    "ver_split": "vertical split",
+    "side_up_leg": "on side with leg raised",
+    "front_facing": "facing viewer",
+    "back_facing": "back to viewer",
+    "lying_knees_up": "legs up, knees bent",
+    "bridge": "arched back bridge pose",
+    "suspended": "suspended by ropes",
+    "stockings": "wearing stockings only",
+    "mask": "mask on face",
+    "heels": "high heels with red soles",
+    "shibari": "shibari ropes",
+    "big_breasts": "big breasts",
+    "small_breasts": "small breasts",
+    "skin_white": "white skin",
+    "skin_black": "black skin",
+    "body_fat": "curvy body",
+    "body_thin": "thin body",
+    "body_normal": "average body",
+    "body_fit": "fit body",
+    "body_muscular": "muscular body",
+    "age_loli": "loli",
+    "age_milf": "milf",
+    "age_21": "age 21",
+    "cum": "cum covered",
+    "belly_bloat": "belly bulge from toy",
+    "succubus_tattoo": "succubus tattoo on lower abdomen",
+    "futanari": "futanari girl with large breasts",
+    "femboy": "femboy with feminine body",
+    "ethnicity_asian": "asian girl",
+    "ethnicity_european": "european girl",
+    "furry_cow": "furry cow girl",
+    "furry_cat": "furry cat girl",
+    "furry_dog": "furry dog girl",
+    "furry_dragon": "furry dragon girl",
+    "furry_sylveon": "furry sylveon, pink, ribbons, sexy",
+    "furry_fox": "furry fox girl",
+    "furry_bunny": "furry bunny girl",
+    "furry_wolf": "furry wolf girl",
+    "ahegao": "ahegao face",
+    "pain_face": "face in pain",
+    "ecstasy_face": "face in ecstasy",
+    "gold_lipstick": "gold lipstick"
+}
+
 EXCLUSIVE_GROUPS = {
     "breast_size": ["big_breasts", "small_breasts"],
     "body_type": ["body_fat", "body_thin", "body_normal", "body_fit", "body_muscular"],
@@ -131,7 +207,15 @@ EXCLUSIVE_GROUPS = {
     "age": ["age_loli", "age_milf", "age_21"]
 }
 
-# Функции меню
+def filter_tags(tags):
+    filtered = list(tags)
+    for group in EXCLUSIVE_GROUPS.values():
+        found = [t for t in filtered if t in group]
+        if len(found) > 1:
+            for t in found[1:]:
+                filtered.remove(t)
+    return filtered
+
 def main_menu():
     kb = types.InlineKeyboardMarkup(row_width=2)
     kb.add(
@@ -152,7 +236,6 @@ def category_menu():
 
 def tag_menu(category, selected_tags):
     kb = types.InlineKeyboardMarkup(row_width=2)
-    
     if category not in TAGS:
         return kb
     
@@ -170,14 +253,62 @@ def tag_menu(category, selected_tags):
     
     return kb
 
-# Обработчики команд
+def build_prompt(tags):
+    valid_tags = filter_tags(tags)
+    base = "nsfw, masterpiece, ultra detailed, anime style, best quality"
+    mandatory = ["fully nude", "no clothing covering chest or genitals"]
+    tag_prompts = [TAG_PROMPTS.get(tag, tag) for tag in valid_tags]
+    return ", ".join([base] + mandatory + tag_prompts)
+
+def replicate_generate(prompt):
+    url = "https://api.replicate.com/v1/predictions"
+    headers = {
+        "Authorization": f"Token {REPLICATE_TOKEN}",
+        "Content-Type": "application/json"
+    }
+    json_data = {
+        "version": REPLICATE_MODEL,
+        "input": {
+            "prompt": prompt,
+            "width": 512,
+            "height": 768,
+            "num_outputs": 1,
+            "guidance_scale": 7.5,
+            "num_inference_steps": 50
+        }
+    }
+    
+    try:
+        r = requests.post(url, headers=headers, json=json_data, timeout=10)
+        r.raise_for_status()
+        status_url = r.json()["urls"]["get"]
+        start_time = time.time()
+        
+        while time.time() - start_time < 120:
+            time.sleep(5)
+            r = requests.get(status_url, headers=headers, timeout=10)
+            r.raise_for_status()
+            data = r.json()
+            
+            if data["status"] == "succeeded":
+                return data["output"][0] if isinstance(data["output"], list) else data["output"]
+            elif data["status"] == "failed":
+                logger.error(f"Generation failed: {data.get('error', 'Unknown error')}")
+                return None
+                
+        logger.error("Generation timed out")
+        return None
+        
+    except Exception as e:
+        logger.error(f"API request failed: {str(e)}")
+        return None
+
 @bot.message_handler(commands=["start"])
 def start(msg):
     cid = msg.chat.id
     user_settings[cid] = {"tags": [], "last_cat": None}
     bot.send_message(cid, "Привет! Что делаем?", reply_markup=main_menu())
 
-# Обработчики callback-запросов
 @bot.callback_query_handler(func=lambda call: call.data == "help")
 def show_help(call):
     help_text = (
@@ -286,17 +417,60 @@ def done_tags_handler(call):
         logger.error(f"Error in done_tags_handler: {str(e)}")
         bot.answer_callback_query(call.id, "⚠ Ошибка сохранения")
 
-# Остальные функции (build_prompt, replicate_generate) остаются без изменений
+@bot.callback_query_handler(func=lambda call: call.data == "generate")
+def generate_handler(call):
+    cid = call.message.chat.id
+    if cid not in user_settings or not user_settings[cid]["tags"]:
+        bot.answer_callback_query(call.id, "Сначала выберите теги!")
+        return
+    
+    raw_tags = user_settings[cid]["tags"]
+    filtered_tags = filter_tags(raw_tags)
+    
+    if len(filtered_tags) != len(raw_tags):
+        removed = set(raw_tags) - set(filtered_tags)
+        warning = (
+            "⚠ Некоторые теги были автоматически удалены из-за конфликтов:\n" +
+            "\n".join(f"• {TAGS.get(tag.split('_')[0], {}).get(tag, tag)}" 
+            for tag in removed)
+        bot.send_message(cid, warning)
+    
+    prompt = build_prompt(filtered_tags)
+    bot.edit_message_text("🔄 Генерация начата...", cid, call.message.message_id)
+    
+    url = replicate_generate(prompt)
+    if url:
+        kb = types.InlineKeyboardMarkup(row_width=2)
+        kb.add(
+            types.InlineKeyboardButton("🔁 Начать заново", callback_data="start"),
+            types.InlineKeyboardButton("🔧 Изменить теги", callback_data="edit_tags"),
+            types.InlineKeyboardButton("➡ Продолжить с этими", callback_data="generate")
+        )
+        bot.send_photo(cid, url, caption="✅ Готово!", reply_markup=kb)
+    else:
+        bot.send_message(cid, "❌ Ошибка генерации. Попробуйте другие теги.")
 
-if __name__ == "__main__":
+@app.route('/', methods=['GET', 'POST'])
+def webhook():
+    if request.method == 'POST':
+        if request.headers.get('content-type') == 'application/json':
+            json_data = request.get_json()
+            update = telebot.types.Update.de_json(json_data)
+            bot.process_new_updates([update])
+            return '', 200
+        return 'Invalid content type', 400
+    return 'Bot is running', 200
+
+if __name__ == '__main__':
     logger.info("Starting bot...")
     try:
         if WEBHOOK_URL:
             bot.remove_webhook()
             time.sleep(1)
             bot.set_webhook(url=WEBHOOK_URL)
-            app.run(host="0.0.0.0", port=PORT)
+            app.run(host='0.0.0.0', port=PORT)
         else:
+            bot.remove_webhook()
             bot.infinity_polling()
     except Exception as e:
         logger.error(f"Bot crashed: {str(e)}")
