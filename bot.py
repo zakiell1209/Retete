@@ -39,10 +39,10 @@ TAGS = {
         "vagina": "Вагина",
         "anal": "Анус",
         "both": "Вагина и анус",
-        "prolapsed_uterus": "Выпавшая матка", # НОВЫЙ ТЕГ
-        "prolapsed_anus": "Выпавший анус",     # НОВЫЙ ТЕГ
-        "dilated_anus": "Расширенный анус",    # НОВЫЙ ТЕГ
-        "dilated_vagina": "Расширенная киска"  # НОВЫЙ ТЕГ
+        "prolapsed_uterus": "Выпавшая матка", 
+        "prolapsed_anus": "Выпавший анус",     
+        "dilated_anus": "Расширенный анус",    
+        "dilated_vagina": "Расширенная киска"  
     },
     "toys": {
         "dildo": "Дилдо",
@@ -96,7 +96,7 @@ TAGS = {
     },
     "ethnos": {
         "futanari": "Футанари",
-        "femboy": "Фембой", # ПРОМПТ ИЗМЕНЕН НИЖЕ
+        "femboy": "Фембой", 
         "ethnicity_asian": "Азиатка",
         "ethnicity_european": "Европейка"
     },
@@ -136,16 +136,16 @@ CHARACTER_EXTRA = {
     "ayase": "black hair, school uniform, ayase seiko"
 }
 
-# Полный список промптов для тегов, включая персонажей
+# Полный список промптов для тегов
 TAG_PROMPTS = {
     **CHARACTER_EXTRA,
     "vagina": "spread pussy",
     "anal": "spread anus",
     "both": "spread pussy and anus",
-    "prolapsed_uterus": "prolapsed uterus, uterus exposed, visible uterus", # НОВЫЙ ПРОМПТ
-    "prolapsed_anus": "prolapsed anus, anus exposed, visible anus",         # НОВЫЙ ПРОМПТ
-    "dilated_anus": "dilated anus, anus stretched, internal view of anus, anus gaping", # НОВЫЙ ПРОМПТ
-    "dilated_vagina": "dilated vagina, vagina stretched, internal view of vagina, vagina gaping, spread pussy, labia spread", # НОВЫЙ ПРОМПТ
+    "prolapsed_uterus": "prolapsed uterus, uterus exposed, visible uterus", 
+    "prolapsed_anus": "prolapsed anus, anus exposed, visible anus",         
+    "dilated_anus": "dilated anus, anus stretched, internal view of anus, anus gaping", 
+    "dilated_vagina": "dilated vagina, vagina stretched, internal view of vagina, vagina gaping, spread pussy, labia spread", 
     "dildo": "dildo inserted",
     "huge_dildo": "huge dildo",
     "horse_dildo": "horse dildo",
@@ -192,7 +192,7 @@ TAG_PROMPTS = {
     "belly_bloat": "belly bulge from toy",
     "succubus_tattoo": "succubus tattoo on lower abdomen",
     "futanari": "futanari girl with large breasts",
-    "femboy": "male, boy, feminine body, femboy, androgynous", # ОБНОВЛЕННЫЙ ПРОМПТ ДЛЯ ФЕМБОЯ
+    "femboy": "male, boy, very feminine body, femboy, androgynous, flat chest, penis, testicles", # ОБНОВЛЕННЫЙ И УСИЛЕННЫЙ ПРОМПТ ДЛЯ ФЕМБОЯ
     "ethnicity_asian": "asian girl",
     "ethnicity_european": "european girl",
     "furry_cow": "furry cow girl",
@@ -324,50 +324,73 @@ def build_prompt(tags):
     """
     Строит промпт для модели Replicate на основе выбранных тегов.
     Управляет длиной промпта, чтобы избежать его усечения моделью.
+    Формирует позитивный и негативный части промпта.
     """
-    # ОБНОВЛЕННЫЙ БАЗОВЫЙ ПРОМПТ для контроля рук и общей анатомии
-    base = "nsfw, masterpiece, ultra detailed, anime style, best quality, fully nude, no clothing covering chest or genitals, hands by side, arms relaxed, no hands on breasts, no hands covering genitals, natural hand placement, visible breasts, perfect anatomy, no deformed hands, no deformed fingers"
+    # Базовый позитивный промпт: сфокусирован на желаемом качестве
+    base_positive = "nsfw, masterpiece, ultra detailed, anime style, best quality, fully nude, no clothing covering chest or genitals"
     
+    # Базовый негативный промпт: что модель ДОЛЖНА ИЗБЕГАТЬ.
+    # Используем синтаксис с весом (слово:число) для усиления
+    base_negative = "bad anatomy, deformed, disfigured, poorly drawn face, poorly drawn hands, missing limbs, extra limbs, fused fingers, too many fingers, too few fingers, lowres, bad hands, text, error, missing fingers, extra digit, fewer digits, cropped, worst quality, low quality, normal quality, jpeg artifacts, signature, watermark, username, blurry, artist name, (hands on chest:1.5), (hands covering breasts:1.5), (hands covering crotch:1.5), (out of frame:1.2), (ugly:1.2), (femboy as girl:1.5)"
+
+    positive_parts = []
     # Сортируем теги для обеспечения согласованности промпта
     sorted_tags = sorted(tags)
     
-    prompts = []
     for tag in sorted_tags:
         # Используем конкретный промпт из TAG_PROMPTS или сам тег в качестве запасного варианта
         prompt_segment = TAG_PROMPTS.get(tag, tag)
-        prompts.append(prompt_segment)
+        positive_parts.append(prompt_segment)
     
     # Используем набор (set) для удаления дубликатов сегментов промпта
-    unique_prompts_set = set(prompts)
-    final_prompt_parts = [p for p in unique_prompts_set if p] # Отфильтровываем пустые строки
+    unique_positive_parts = set(positive_parts)
     
-    combined_prompt = base
-    if final_prompt_parts:
-        # Объединяем части промпта через ", "
-        combined_prompt += ", " + ", ".join(final_prompt_parts)
+    # Объединяем позитивные части
+    final_positive_prompt_str = base_positive
+    if unique_positive_parts:
+        final_positive_prompt_str += ", " + ", ".join(unique_positive_parts)
+
+    # Комбинируем позитивный и негативный промпт.
+    # В этой модели нет отдельного параметра negative_prompt, поэтому добавляем его в конец.
+    # Это распространенный способ для некоторых моделей, хотя и не идеальный.
+    combined_prompt = f"{final_positive_prompt_str} AND {base_negative}"
 
     # --- УПРАВЛЕНИЕ ДЛИНОЙ ПРОМПТА ---
-    # Максимально допустимая длина промпта. Подберите это значение экспериментально.
-    # Обычные лимиты находятся в районе 75-250 слов, что соответствует нескольким сотням символов.
-    MAX_PROMPT_LENGTH = 700  # Примерный лимит, скорректируйте по необходимости
+    # Максимально допустимая длина промпта.
+    # Это важный параметр, который нужно будет регулировать экспериментально.
+    MAX_PROMPT_LENGTH = 700  # Начнем с 700, возможно, потребуется корректировка
     truncated = False # Флаг, указывающий, был ли промпт усечен
 
     if len(combined_prompt) > MAX_PROMPT_LENGTH:
         truncated = True
-        truncated_prompt_parts = [base] # Начинаем с базовой части промпта
-        current_length = len(base)
+        # Если промпт слишком длинный, мы сначала формируем позитивную часть,
+        # а затем добавляем негативную, усекая ее при необходимости.
+        
+        # Разделяем на позитивную и негативную части для усечения
+        current_positive_length = len(base_positive)
+        truncated_positive_parts = [base_positive]
 
-        # Перестраиваем промпт, добавляя теги, пока не будет достигнут лимит
-        for part in final_prompt_parts:
-            # +2 для ", " разделителя
-            if current_length + len(part) + 2 <= MAX_PROMPT_LENGTH:
-                truncated_prompt_parts.append(part)
-                current_length += len(part) + 2
+        for part in unique_positive_parts:
+            if current_positive_length + len(part) + 2 <= MAX_PROMPT_LENGTH - len(f" AND {base_negative}"):
+                truncated_positive_parts.append(part)
+                current_positive_length += len(part) + 2
             else:
-                break # Прекращаем добавление тегов, если лимит превышен
+                break
+        
+        final_positive_prompt_str = ", ".join(truncated_positive_parts)
+        
+        # Теперь добавляем негативную часть, убедившись, что она помещается
+        # Если вся комбинация все еще слишком длинная, возможно, придется усечь и негативную часть,
+        # но это менее желательно. Сейчас просто пытаемся вставить ее.
+        
+        combined_prompt = f"{final_positive_prompt_str} AND {base_negative}"
+        
+        # Если даже после усечения позитивной части общий промпт все равно слишком длинный
+        # (что маловероятно, если MAX_PROMPT_LENGTH достаточно большой),
+        # то придется обрезать и негативную часть. Но пока оставляем так.
+        if len(combined_prompt) > MAX_PROMPT_LENGTH:
+            combined_prompt = combined_prompt[:MAX_PROMPT_LENGTH] # Грубое усечение, если уж совсем не помещается
 
-        combined_prompt = ", ".join(truncated_prompt_parts)
-    
     return {"prompt": combined_prompt, "truncated": truncated}
 
 # --- Функция для генерации изображения через Replicate ---
