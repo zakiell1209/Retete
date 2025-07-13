@@ -6,17 +6,21 @@ from flask import Flask, request
 import telebot
 from telebot import types
 
+# Получение токенов и URL из переменных окружения
 API_TOKEN = os.getenv("TELEGRAM_TOKEN")
 REPLICATE_TOKEN = os.getenv("REPLICATE_API_TOKEN")
 WEBHOOK_URL = os.getenv("WEBHOOK_URL")
 PORT = int(os.environ.get("PORT", 5000))
 
+# ID модели Replicate, которую вы используете
 REPLICATE_MODEL = "c1d5b02687df6081c7953c74bcc527858702e8c153c9382012ccc3906752d3ec"
 
+# Инициализация бота и Flask приложения
 bot = telebot.TeleBot(API_TOKEN)
 app = Flask(__name__)
-user_settings = {}
+user_settings = {} # Словарь для хранения настроек пользователей
 
+# Названия категорий для меню выбора тегов
 CATEGORY_NAMES = {
     "holes": "Отверстия",
     "toys": "Игрушки",
@@ -29,6 +33,7 @@ CATEGORY_NAMES = {
     "head": "Голова"
 }
 
+# Словарь тегов, сгруппированных по категориям
 TAGS = {
     "holes": {
         "vagina": "Вагина",
@@ -117,6 +122,7 @@ TAGS = {
     }
 }
 
+# Дополнительные промпты для персонажей
 CHARACTER_EXTRA = {
     "rias": "red long hair, blue eyes, pale skin, large breasts, rias gremory, highschool dxd",
     "akeno": "long black hair, purple eyes, large breasts, akeno himejima, highschool dxd",
@@ -126,6 +132,7 @@ CHARACTER_EXTRA = {
     "ayase": "black hair, school uniform, ayase seiko"
 }
 
+# Полный список промптов для тегов, включая персонажей
 TAG_PROMPTS = {
     **CHARACTER_EXTRA,
     "vagina": "spread pussy",
@@ -194,13 +201,16 @@ TAG_PROMPTS = {
     "gold_lipstick": "gold lipstick"
 }
 
+# --- Функции для создания клавиатур ---
 def main_menu():
+    """Создает главное меню бота."""
     kb = types.InlineKeyboardMarkup()
     kb.add(types.InlineKeyboardButton("🧩 Выбрать теги", callback_data="choose_tags"))
     kb.add(types.InlineKeyboardButton("🎨 Генерировать", callback_data="generate"))
     return kb
 
 def category_menu():
+    """Создает меню выбора категорий тегов."""
     kb = types.InlineKeyboardMarkup(row_width=2)
     for key, name in CATEGORY_NAMES.items():
         kb.add(types.InlineKeyboardButton(name, callback_data=f"cat_{key}"))
@@ -208,6 +218,7 @@ def category_menu():
     return kb
 
 def tag_menu(category, selected_tags):
+    """Создает меню выбора тегов внутри определенной категории."""
     kb = types.InlineKeyboardMarkup(row_width=2)
     for tag_key, tag_name in TAGS[category].items():
         label = f"✅ {tag_name}" if tag_key in selected_tags else tag_name
@@ -215,36 +226,40 @@ def tag_menu(category, selected_tags):
     kb.add(types.InlineKeyboardButton("⬅ Назад", callback_data="back_to_cat"))
     return kb
 
+# --- Обработчики сообщений и колбэков ---
 @bot.message_handler(commands=["start"])
 def start(msg):
+    """Обработчик команды /start."""
     cid = msg.chat.id
-    user_settings[cid] = {"tags": [], "last_cat": None}
+    user_settings[cid] = {"tags": [], "last_cat": None} # Инициализация настроек пользователя
     bot.send_message(cid, "Привет! Что делаем?", reply_markup=main_menu())
 
 @bot.callback_query_handler(func=lambda call: True)
 def callback(call):
+    """Общий обработчик для всех кнопок колбэка."""
     cid = call.message.chat.id
+    # Убедимся, что настройки для пользователя существуют
     if cid not in user_settings:
         user_settings[cid] = {"tags": [], "last_cat": None}
 
-    data = call.data
+    data = call.data # Данные из колбэка кнопки
 
     if data == "choose_tags":
         bot.edit_message_text("Выбери категорию тегов:", cid, call.message.message_id, reply_markup=category_menu())
 
     elif data.startswith("cat_"):
-        cat = data[4:]
-        user_settings[cid]["last_cat"] = cat
-        selected = user_settings[cid]["tags"]
+        cat = data[4:] # Извлекаем название категории
+        user_settings[cid]["last_cat"] = cat # Сохраняем последнюю выбранную категорию
+        selected = user_settings[cid]["tags"] # Текущие выбранные теги
         bot.edit_message_text(f"Категория: {CATEGORY_NAMES[cat]}", cid, call.message.message_id, reply_markup=tag_menu(cat, selected))
 
     elif data.startswith("tag_"):
-        _, cat, tag = data.split("_", 2)
+        _, cat, tag = data.split("_", 2) # Извлекаем категорию и тег
         tags = user_settings[cid]["tags"]
         if tag in tags:
-            tags.remove(tag)
+            tags.remove(tag) # Если тег уже выбран, удаляем его
         else:
-            tags.append(tag)
+            tags.append(tag) # Иначе добавляем
         bot.edit_message_reply_markup(cid, call.message.message_id, reply_markup=tag_menu(cat, tags))
 
     elif data == "done_tags":
@@ -259,17 +274,19 @@ def callback(call):
             bot.send_message(cid, "Сначала выбери теги!")
             return
         
+        # Строим промпт и получаем информацию о его усечении
         prompt_info = build_prompt(tags)
         prompt = prompt_info["prompt"]
         truncated = prompt_info["truncated"]
 
-        user_settings[cid]["last_prompt_tags"] = tags.copy() # Store the original selected tags
+        # Сохраняем исходные выбранные теги для кнопки "Изменить теги"
+        user_settings[cid]["last_prompt_tags"] = tags.copy() 
         
         if truncated:
             bot.send_message(cid, "⚠️ **Внимание**: Некоторые теги были отброшены из-за превышения лимита длины запроса. Попробуйте выбрать меньше тегов для лучшего результата.", parse_mode="Markdown")
         
         bot.send_message(cid, "⏳ Генерация изображения...")
-        url = replicate_generate(prompt)
+        url = replicate_generate(prompt) # Вызываем функцию генерации
         if url:
             kb = types.InlineKeyboardMarkup()
             kb.add(
@@ -282,6 +299,7 @@ def callback(call):
             bot.send_message(cid, "❌ Ошибка генерации. Пожалуйста, попробуйте еще раз.")
 
     elif data == "edit_tags":
+        # Загружаем последние использованные теги для редактирования
         if "last_prompt_tags" in user_settings[cid]:
             user_settings[cid]["tags"] = user_settings[cid]["last_prompt_tags"]
             bot.send_message(cid, "Изменяем теги, использованные в предыдущей генерации:", reply_markup=category_menu())
@@ -289,52 +307,64 @@ def callback(call):
             bot.send_message(cid, "Нет сохранённых тегов с предыдущей генерации. Сначала сделай генерацию.")
 
     elif data == "start":
+        # Сброс настроек пользователя и возвращение в главное меню
         user_settings[cid] = {"tags": [], "last_cat": None}
         bot.send_message(cid, "Настройки сброшены. Начнем заново!", reply_markup=main_menu())
 
+# --- Функция для построения промпта ---
 def build_prompt(tags):
-    base = "nsfw, masterpiece, ultra detailed, anime style, best quality, fully nude, no clothing covering chest or genitals"
+    """
+    Строит промпт для модели Replicate на основе выбранных тегов.
+    Управляет длиной промпта, чтобы избежать его усечения моделью.
+    """
+    # ОБНОВЛЕННЫЙ БАЗОВЫЙ ПРОМПТ для контроля рук
+    base = "nsfw, masterpiece, ultra detailed, anime style, best quality, fully nude, no clothing covering chest or genitals, hands away from chest, open pose, natural hand placement, visible breasts, no hands covering breasts"
     
-    # Sort tags to ensure consistent prompt generation
+    # Сортируем теги для обеспечения согласованности промпта
     sorted_tags = sorted(tags)
     
     prompts = []
     for tag in sorted_tags:
+        # Используем конкретный промпт из TAG_PROMPTS или сам тег в качестве запасного варианта
         prompt_segment = TAG_PROMPTS.get(tag, tag)
         prompts.append(prompt_segment)
     
-    # Use a set to ensure unique prompt segments to avoid redundancy
+    # Используем набор (set) для удаления дубликатов сегментов промпта
     unique_prompts_set = set(prompts)
-    final_prompt_parts = [p for p in unique_prompts_set if p] # Filter out empty strings
+    final_prompt_parts = [p for p in unique_prompts_set if p] # Отфильтровываем пустые строки
     
     combined_prompt = base
     if final_prompt_parts:
+        # Объединяем части промпта через ", "
         combined_prompt += ", " + ", ".join(final_prompt_parts)
 
-    # --- PROMPT LENGTH MANAGEMENT ---
-    MAX_PROMPT_LENGTH = 700  # Adjust this limit based on your Replicate model's performance
-    truncated = False
+    # --- УПРАВЛЕНИЕ ДЛИНОЙ ПРОМПТА ---
+    # Максимально допустимая длина промпта. Подберите это значение экспериментально.
+    # Обычные лимиты находятся в районе 75-250 слов, что соответствует нескольким сотням символов.
+    MAX_PROMPT_LENGTH = 700  # Примерный лимит, скорректируйте по необходимости
+    truncated = False # Флаг, указывающий, был ли промпт усечен
 
     if len(combined_prompt) > MAX_PROMPT_LENGTH:
         truncated = True
-        truncated_prompt_parts = [base]
+        truncated_prompt_parts = [base] # Начинаем с базовой части промпта
         current_length = len(base)
 
-        # Rebuild the prompt by adding tags until the limit is reached
+        # Перестраиваем промпт, добавляя теги, пока не будет достигнут лимит
         for part in final_prompt_parts:
-            # Add 2 for the ", " separator
+            # +2 для ", " разделителя
             if current_length + len(part) + 2 <= MAX_PROMPT_LENGTH:
                 truncated_prompt_parts.append(part)
                 current_length += len(part) + 2
             else:
-                break # Stop adding tags if the limit is exceeded
+                break # Прекращаем добавление тегов, если лимит превышен
 
         combined_prompt = ", ".join(truncated_prompt_parts)
     
     return {"prompt": combined_prompt, "truncated": truncated}
 
-
+# --- Функция для генерации изображения через Replicate ---
 def replicate_generate(prompt):
+    """Отправляет запрос на генерацию изображения в Replicate API и ожидает результат."""
     url = "https://api.replicate.com/v1/predictions"
     headers = {
         "Authorization": f"Token {REPLICATE_TOKEN}",
@@ -344,34 +374,37 @@ def replicate_generate(prompt):
         "version": REPLICATE_MODEL,
         "input": {"prompt": prompt}
     }
+    
+    # Отправка запроса на создание предсказания
     r = requests.post(url, headers=headers, json=json_data)
     if r.status_code != 201:
-        print(f"Error submitting prediction: {r.status_code} - {r.text}")
+        print(f"Ошибка при отправке предсказания: {r.status_code} - {r.text}")
         return None
     
-    status_url = r.json()["urls"]["get"]
+    status_url = r.json()["urls"]["get"] # URL для получения статуса предсказания
 
-    # Increased polling attempts and slightly adjusted sleep
-    for i in range(90): # Increased from 60 to 90 attempts (3 minutes total)
-        time.sleep(2) # Keep sleep at 2 seconds
+    # Ожидание завершения генерации (до 3 минут)
+    for i in range(90): # Увеличено с 60 до 90 попыток (3 минуты)
+        time.sleep(2) # Ожидание 2 секунды между попытками
         r = requests.get(status_url, headers=headers)
         if r.status_code != 200:
-            print(f"Error getting prediction status: {r.status_code} - {r.text}")
+            print(f"Ошибка при получении статуса предсказания: {r.status_code} - {r.text}")
             return None
         data = r.json()
         if data["status"] == "succeeded":
+            # Возвращаем URL первого изображения, если оно есть
             return data["output"][0] if isinstance(data["output"], list) and data["output"] else None
         elif data["status"] == "failed":
-            print(f"Prediction failed: {data.get('error', 'No error message provided')}")
+            print(f"Предсказание не удалось: {data.get('error', 'Сообщение об ошибке не предоставлено')}")
             return None
-        # Add a print for debugging to see status
-        # print(f"Prediction status: {data['status']}")
     
-    print("Prediction timed out.")
+    print("Время ожидания предсказания истекло.")
     return None
 
+# --- Настройка вебхука Flask ---
 @app.route("/", methods=["POST"])
 def webhook():
+    """Обрабатывает входящие обновления от Telegram."""
     json_str = request.stream.read().decode("utf-8")
     update = telebot.types.Update.de_json(json_str)
     bot.process_new_updates([update])
@@ -379,9 +412,13 @@ def webhook():
 
 @app.route("/", methods=["GET"])
 def home():
+    """Простой маршрут для проверки работы приложения."""
     return "бот работает", 200
 
+# --- Запуск бота ---
 if __name__ == "__main__":
+    # Убираем старый вебхук и устанавливаем новый
     bot.remove_webhook()
     bot.set_webhook(url=WEBHOOK_URL)
+    # Запускаем Flask приложение
     app.run(host="0.0.0.0", port=PORT)
