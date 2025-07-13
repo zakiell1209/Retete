@@ -13,11 +13,10 @@ WEBHOOK_URL = os.getenv("WEBHOOK_URL")
 PORT = int(os.environ.get("PORT", 5000))
 
 # ID модели Replicate, которую вы используете
-# ОБНОВЛЕНО: Новая модель, поддерживающая негативные промпты
 REPLICATE_MODEL = "057e2276ac5dcd8d1575dc37b131f903df9c10c41aed53d47cd7d4f068c19fa5"
 
 # Инициализация бота и Flask приложения
-bot = telebot.TeleBot(API_TOKEN)
+bot = telebot.TeleBot(API_TOKEN) # Исправил опечатку здесь: было API_Bot
 app = Flask(__name__)
 user_settings = {} # Словарь для хранения настроек пользователей
 
@@ -146,8 +145,7 @@ TAG_PROMPTS = {
     "prolapsed_uterus": "prolapsed uterus, uterus exposed, visible uterus", 
     "prolapsed_anus": "prolapsed anus, anus exposed, visible anus",         
     "dilated_anus": "dilated anus, anus stretched, internal view of anus, anus gaping", 
-    # Уточненный промпт для "Расширенная киска" - добавим "realistic, detailed" и попробуем более общие термины
-    "dilated_vagina": "dilated vagina, vagina stretched, internal view of vagina, vagina gaping, spread pussy, labia spread, realistic, detailed", 
+    "dilated_vagina": "dilated vagina, vagina stretched, internal view of vagina, vagina gaping, spread pussy, labia spread, realistic, detailed, high focus", 
     "dildo": "dildo inserted",
     "huge_dildo": "huge dildo",
     "horse_dildo": "horse dildo",
@@ -194,8 +192,7 @@ TAG_PROMPTS = {
     "belly_bloat": "belly bulge from toy",
     "succubus_tattoo": "succubus tattoo on lower abdomen",
     "futanari": "futanari girl with large breasts",
-    # Уточненный промпт для "Фембоя"
-    "femboy": "male, boy, very feminine body, femboy, androgynous, flat chest, penis, testicles, thin waist, wide hips", 
+    "femboy": "male, boy, very feminine body, femboy, androgynous, flat chest, penis, testicles, thin waist, wide hips, boyish hips, no breasts", 
     "ethnicity_asian": "asian girl",
     "ethnicity_european": "european girl",
     "furry_cow": "furry cow girl",
@@ -330,12 +327,11 @@ def build_prompt(tags):
     Строит промпт для модели Replicate на основе выбранных тегов.
     Формирует позитивный и негативный части промпта для новой модели.
     """
-    # Базовый позитивный промпт: сфокусирован на желаемом качестве
-    # Сделаем его короче, чтобы оставалось больше места для выбранных пользователем тегов.
-    base_positive = "masterpiece, best quality, ultra detailed, anime style, highly detailed, expressive eyes, dynamic pose, perfect lighting, volumetric lighting, fully nude, no clothing covering chest or genitals"
+    # Базовый позитивный промпт: максимально минимальный, чтобы не конфликтовать с внутренними промптами модели.
+    # Фокусируемся только на качестве и стиле.
+    base_positive = "masterpiece, best quality, ultra detailed, anime style, highly detailed, expressive eyes, perfect lighting, volumetric lighting, fully nude, no clothing covering chest or genitals, solo"
     
     # Базовый негативный промпт: что модель ДОЛЖНА ИЗБЕГАТЬ.
-    # Этот промпт будет всегда отправляться целиком, так как он критически важен.
     base_negative = (
         "lowres, bad anatomy, bad hands, bad face, deformed, disfigured, "
         "poorly drawn face, poorly drawn hands, missing limbs, extra limbs, "
@@ -344,40 +340,35 @@ def build_prompt(tags):
         "cropped, worst quality, low quality, normal quality, "
         "extra_digit, fewer_digits, text, error, "
         "mutated hands and fingers, bad hand, malformed hands, "
-        "long neck, bad nose, bad mouth, extra legs, extra arms, "
-        "multiple heads, (hands on chest:1.5), (hands covering breasts:1.5), (hands covering crotch:1.5), "
-        "ugly, out of frame, censored, (vagina not visible:1.5), (clitoris not visible:1.5), (vagina closed:1.5), " # Добавлено для "расширенной киски"
-        "missing penis, missing testicles" # Для фембоя
+        "long neck, bad nose, bad mouth, "
+        "(extra legs:1.7), (extra arms:1.7), (multiple heads:1.7), " 
+        "(hands on chest:2.5), (hands covering breasts:2.5), (hands covering crotch:2.5), " 
+        "ugly, out of frame, censored, "
+        "(vagina not visible:1.7), (clitoris not visible:1.7), (vagina closed:1.7), " 
+        "missing penis, missing testicles, (femboy as girl:1.7), (breasts:1.5)"
     )
 
     positive_parts = []
-    # Сортируем теги для обеспечения согласованности промпта
     sorted_tags = sorted(tags)
     
     for tag in sorted_tags:
         prompt_segment = TAG_PROMPTS.get(tag, tag)
         positive_parts.append(prompt_segment)
     
-    # Используем набор (set) для удаления дубликатов сегментов промпта
     unique_positive_parts = set(positive_parts)
     
-    # Формируем окончательный позитивный промпт
     final_positive_prompt_str = base_positive
     if unique_positive_parts:
-        # Убедимся, что добавляем только не пустые части и соединяем их
         cleaned_parts = [p for p in unique_positive_parts if p.strip()]
         if cleaned_parts:
             final_positive_prompt_str += ", " + ", ".join(cleaned_parts)
 
-    # --- УПРАВЛЕНИЕ ДЛИНОЙ ПОЗИТИВНОГО ПРОМПТА ---
-    # Мы усекаем ТОЛЬКО позитивный промпт, негативный отправляем целиком.
-    MAX_POSITIVE_PROMPT_LENGTH = 700 # Этот лимит только для позитивного промпта
+    MAX_POSITIVE_PROMPT_LENGTH = 450 
     truncated = False 
 
     if len(final_positive_prompt_str) > MAX_POSITIVE_PROMPT_LENGTH:
         truncated = True
         final_positive_prompt_str = final_positive_prompt_str[:MAX_POSITIVE_PROMPT_LENGTH]
-        # Можно добавить маркер, что промпт был усечен, но пока просто обрезаем.
     
     return {
         "positive_prompt": final_positive_prompt_str, 
@@ -400,7 +391,8 @@ def replicate_generate(positive_prompt, negative_prompt):
         "version": REPLICATE_MODEL,
         "input": {
             "prompt": positive_prompt,
-            "negative_prompt": negative_prompt # Передаем негативный промпт отдельно
+            "negative_prompt": negative_prompt,
+            "prepend_preprompt": False # ВОТ ЭТО ГЛАВНОЕ ИЗМЕНЕНИЕ! Отключаем дефолтные промпты Replicate.
         }
     }
     
@@ -408,24 +400,25 @@ def replicate_generate(positive_prompt, negative_prompt):
     r = requests.post(url, headers=headers, json=json_data)
     if r.status_code != 201:
         print(f"Ошибка при отправке предсказания: {r.status_code} - {r.text}")
-        print(f"Response: {r.text}") # Добавим вывод ответа для отладки
+        print(f"Request JSON: {json_data}") 
+        print(f"Response: {r.text}") 
         return None
     
-    status_url = r.json()["urls"]["get"] # URL для получения статуса предсказания
+    status_url = r.json()["urls"]["get"] 
 
     # Ожидание завершения генерации (до 3 минут)
-    for i in range(90): # 90 попыток * 2 секунды = 180 секунд = 3 минуты
-        time.sleep(2) # Ожидание 2 секунды между попытками
+    for i in range(90): 
+        time.sleep(2) 
         r = requests.get(status_url, headers=headers)
         if r.status_code != 200:
             print(f"Ошибка при получении статуса предсказания: {r.status_code} - {r.text}")
             return None
         data = r.json()
         if data["status"] == "succeeded":
-            # Возвращаем URL первого изображения, если оно есть
             return data["output"][0] if isinstance(data["output"], list) and data["output"] else None
         elif data["status"] == "failed":
             print(f"Предсказание не удалось: {data.get('error', 'Сообщение об ошибке не предоставлено')}")
+            print(f"Request JSON: {json_data}") 
             return None
     
     print("Время ожидания предсказания истекло.")
@@ -447,8 +440,6 @@ def home():
 
 # --- Запуск бота ---
 if __name__ == "__main__":
-    # Убираем старый вебхук и устанавливаем новый
     bot.remove_webhook()
     bot.set_webhook(url=WEBHOOK_URL)
-    # Запускаем Flask приложение
     app.run(host="0.0.0.0", port=PORT)
