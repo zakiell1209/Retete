@@ -1,28 +1,22 @@
+# --- bot.py ---
 import os
 import time
 import requests
-import logging
 from flask import Flask, request
 import telebot
 from telebot import types
 
-# Настройка логирования
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
-
-# Конфигурация
 API_TOKEN = os.getenv("TELEGRAM_TOKEN")
 REPLICATE_TOKEN = os.getenv("REPLICATE_API_TOKEN")
 WEBHOOK_URL = os.getenv("WEBHOOK_URL")
 PORT = int(os.environ.get("PORT", 5000))
+
 REPLICATE_MODEL = "c1d5b02687df6081c7953c74bcc527858702e8c153c9382012ccc3906752d3ec"
 
-# Инициализация бота и приложения
 bot = telebot.TeleBot(API_TOKEN)
 app = Flask(__name__)
 user_settings = {}
 
-# Базы данных тегов
 CATEGORY_NAMES = {
     "holes": "Отверстия",
     "toys": "Игрушки",
@@ -134,36 +128,42 @@ CHARACTER_EXTRA = {
 
 TAG_PROMPTS = {
     **CHARACTER_EXTRA,
-    "vagina": "spread pussy, hands not covering",
-    "anal": "spread anus, hands not covering",
-    "both": "spread pussy and anus, hands not covering",
-    "femboy": "1boy, male, feminine body, flat chest, no breasts, feminine facial features",
-    "dildo": "dildo inserted, hands not covering",
-    "huge_dildo": "huge dildo, hands not covering",
-    "horse_dildo": "horse dildo, hands not covering",
-    "anal_beads": "anal beads inserted, hands not covering",
-    "anal_plug": "anal plug, hands not covering",
-    "anal_expander": "anal expander stretching anus, hands not covering",
-    "gag": "ball gag, hands not covering",
-    "piercing": "nipple and genital piercings, hands not covering",
-    "long_dildo_path": "dildo path from anus to mouth, visible bulge, hands not covering",
-    "doggy": "doggy style, hands on floor or holding ankles",
-    "standing": "standing pose, arms at sides or holding something",
-    "splits": "doing a split, arms balanced",
-    "hor_split": "horizontal split, arms for balance",
-    "ver_split": "vertical split, arms for balance",
-    "side_up_leg": "on side with leg raised, arms positioned naturally",
-    "front_facing": "facing viewer, arms at sides",
-    "back_facing": "back to viewer, arms at sides",
-    "lying_knees_up": "legs up, knees bent, arms at sides",
-    "bridge": "arched back bridge pose, arms supporting",
-    "suspended": "suspended by ropes, arms restrained",
-    "stockings": "wearing stockings only, hands not covering",
-    "mask": "mask on face, hands not covering",
-    "heels": "high heels with red soles, hands not covering",
-    "shibari": "shibari ropes, hands not covering",
-    "big_breasts": "big breasts, hands not covering",
-    "small_breasts": "small breasts, hands not covering",
+    "vagina": "spread pussy",
+    "anal": "spread anus",
+    "both": "spread pussy and anus",
+    "dildo": "dildo inserted",
+    "huge_dildo": "huge dildo",
+    "horse_dildo": "horse dildo",
+    "anal_beads": "anal beads inserted",
+
+"anal_plug": "anal plug",
+    "anal_expander": "anal expander stretching anus",
+    "gag": "ball gag",
+    "piercing": "nipple and genital piercings",
+    "long_dildo_path": (
+        "dildo inserted into anus, pushing visibly through intestines with clear belly bulge, "
+        "exiting from mouth, seamless and continuous dildo, consistent texture, realistic rubber"
+    ),
+    "doggy": "doggy style",
+    "standing": "standing pose",
+    "splits": "doing a split",
+    "hor_split": (
+        "horizontal split, legs stretched fully to sides, pelvis on floor, thighs spread open, "
+        "inner thighs visible, high detail"
+    ),
+    "ver_split": "vertical split",
+    "side_up_leg": "on side with leg raised",
+    "front_facing": "facing viewer",
+    "back_facing": "back to viewer",
+    "lying_knees_up": "legs up, knees bent",
+    "bridge": "arched back bridge pose",
+    "suspended": "suspended by ropes",
+    "stockings": "wearing stockings only",
+    "mask": "mask on face",
+    "heels": "high heels with red soles",
+    "shibari": "shibari ropes",
+    "big_breasts": "big breasts",
+    "small_breasts": "small breasts",
     "skin_white": "white skin",
     "skin_black": "black skin",
     "body_fat": "curvy body",
@@ -178,6 +178,7 @@ TAG_PROMPTS = {
     "belly_bloat": "belly bulge from toy",
     "succubus_tattoo": "succubus tattoo on lower abdomen",
     "futanari": "futanari girl with large breasts",
+    "femboy": "femboy with feminine body",
     "ethnicity_asian": "asian girl",
     "ethnicity_european": "european girl",
     "furry_cow": "furry cow girl",
@@ -194,108 +195,26 @@ TAG_PROMPTS = {
     "gold_lipstick": "gold lipstick"
 }
 
-EXCLUSIVE_GROUPS = {
-    "breast_size": ["big_breasts", "small_breasts"],
-    "body_type": ["body_fat", "body_thin", "body_normal", "body_fit", "body_muscular"],
-    "skin_color": ["skin_white", "skin_black"],
-    "age": ["age_loli", "age_milf", "age_21"]
-}
-
-DEFAULT_GENERATION_PARAMS = {
-    "width": 512,
-    "height": 768,
-    "num_outputs": 1,
-    "guidance_scale": 7.5,
-    "num_inference_steps": 50,
-    "negative_prompt": "bad anatomy, extra limbs, poorly drawn hands, fused fingers, hands on breasts"
-}
-
-def filter_tags(tags):
-    filtered = list(tags)
-    for group in EXCLUSIVE_GROUPS.values():
-        found = [t for t in filtered if t in group]
-        if len(found) > 1:
-            for t in found[1:]:
-                filtered.remove(t)
-    return filtered
-
 def main_menu():
-    kb = types.InlineKeyboardMarkup(row_width=2)
-    kb.add(
-        types.InlineKeyboardButton("🧩 Выбрать теги", callback_data="choose_tags"),
-        types.InlineKeyboardButton("🎨 Генерировать", callback_data="generate"),
-        types.InlineKeyboardButton("ℹ Помощь", callback_data="help")
-    )
+    kb = types.InlineKeyboardMarkup()
+    kb.add(types.InlineKeyboardButton("🧩 Выбрать теги", callback_data="choose_tags"))
+    kb.add(types.InlineKeyboardButton("🎨 Генерировать", callback_data="generate"))
     return kb
 
 def category_menu():
     kb = types.InlineKeyboardMarkup(row_width=2)
-    buttons = []
     for key, name in CATEGORY_NAMES.items():
-        buttons.append(types.InlineKeyboardButton(name, callback_data=f"cat_{key}"))
-    kb.add(*buttons)
+        kb.add(types.InlineKeyboardButton(name, callback_data=f"cat_{key}"))
     kb.add(types.InlineKeyboardButton("✅ Готово", callback_data="done_tags"))
     return kb
 
 def tag_menu(category, selected_tags):
     kb = types.InlineKeyboardMarkup(row_width=2)
-    if category not in TAGS:
-        return kb
-    
     for tag_key, tag_name in TAGS[category].items():
-        emoji = "✅ " if tag_key in selected_tags else ""
-        kb.add(types.InlineKeyboardButton(
-            f"{emoji}{tag_name}",
-            callback_data=f"tag_{category}_{tag_key}"
-        ))
-    
-    kb.add(types.InlineKeyboardButton(
-        "⬅ Назад",
-        callback_data="back_to_cat"
-    ))
-    
+        label = f"✅ {tag_name}" if tag_key in selected_tags else tag_name
+        kb.add(types.InlineKeyboardButton(label, callback_data=f"tag_{category}_{tag_key}"))
+    kb.add(types.InlineKeyboardButton("⬅ Назад", callback_data="back_to_cat"))
     return kb
-
-def build_prompt(tags):
-    valid_tags = filter_tags(tags)
-    base = "nsfw, masterpiece, ultra detailed, anime style, best quality"
-    mandatory = ["fully nude", "no clothing covering chest or genitals"]
-    tag_prompts = [TAG_PROMPTS.get(tag, tag) for tag in valid_tags]
-    return ", ".join([base] + mandatory + tag_prompts)
-
-def replicate_generate(prompt):
-    url = "https://api.replicate.com/v1/predictions"
-    headers = {
-        "Authorization": f"Token {REPLICATE_TOKEN}",
-        "Content-Type": "application/json"
-    }
-    
-    input_data = {"prompt": prompt}
-    input_data.update(DEFAULT_GENERATION_PARAMS)
-    
-    try:
-        r = requests.post(url, headers=headers, json={"version": REPLICATE_MODEL, "input": input_data}, timeout=10)
-        r.raise_for_status()
-        status_url = r.json()["urls"]["get"]
-        
-        for _ in range(24):  # Ожидание до 2 минут (5 сек * 24)
-            time.sleep(5)
-            r = requests.get(status_url, headers=headers, timeout=10)
-            r.raise_for_status()
-            data = r.json()
-            
-            if data["status"] == "succeeded":
-                return data["output"][0] if isinstance(data["output"], list) else data["output"]
-            elif data["status"] == "failed":
-                logger.error(f"Generation failed: {data.get('error', 'Unknown error')}")
-                return None
-        
-        logger.error("Generation timed out")
-        return None
-        
-    except Exception as e:
-        logger.error(f"API request failed: {str(e)}")
-        return None
 
 @bot.message_handler(commands=["start"])
 def start(msg):
@@ -303,224 +222,114 @@ def start(msg):
     user_settings[cid] = {"tags": [], "last_cat": None}
     bot.send_message(cid, "Привет! Что делаем?", reply_markup=main_menu())
 
-@bot.callback_query_handler(func=lambda call: call.data == "help")
-def show_help(call):
-    help_text = (
-        "📚 <b>Инструкция по использованию бота:</b>\n\n"
-        "1. Нажмите '🧩 Выбрать теги' для выбора параметров генерации\n"
-        "2. Выберите нужные категории и теги\n"
-        "3. Нажмите '🎨 Генерировать' для создания изображения\n\n"
-        "⏳ Генерация обычно занимает 1-2 минуты\n"
-        "🔄 Вы можете изменить теги и сгенерировать заново"
-    )
-    bot.edit_message_text(
-        help_text,
-        call.message.chat.id,
-        call.message.message_id,
-        parse_mode="HTML"
-    )
-
-@bot.callback_query_handler(func=lambda call: call.data == "choose_tags")
-def choose_tags_handler(call):
+@bot.callback_query_handler(func=lambda call: True)
+def callback(call):
     cid = call.message.chat.id
     if cid not in user_settings:
         user_settings[cid] = {"tags": [], "last_cat": None}
-    
-    try:
-        bot.edit_message_text(
-            "Выбери категорию тегов:",
-            chat_id=cid,
-            message_id=call.message.message_id,
-            reply_markup=category_menu()
-        )
-    except Exception as e:
-        logger.error(f"Error in choose_tags_handler: {str(e)}")
-        bot.answer_callback_query(call.id, "⚠ Ошибка обновления меню")
 
-@bot.callback_query_handler(func=lambda call: call.data.startswith("cat_"))
-def category_handler(call):
-    cid = call.message.chat.id
-    category = call.data.split("_", 1)[1]
-    
-    if cid not in user_settings:
-        user_settings[cid] = {"tags": [], "last_cat": None}
-    
-    user_settings[cid]["last_cat"] = category
-    
-    try:
-        bot.edit_message_text(
-            f"Категория: {CATEGORY_NAMES.get(category, '???')}",
-            chat_id=cid,
-            message_id=call.message.message_id,
-            reply_markup=tag_menu(category, user_settings[cid]["tags"])
-        )
-    except Exception as e:
-        logger.error(f"Error in category_handler: {str(e)}")
-        bot.answer_callback_query(call.id, "⚠ Ошибка загрузки тегов")
+    data = call.data
 
-@bot.callback_query_handler(func=lambda call: call.data.startswith("tag_"))
-def tag_handler(call):
-    cid = call.message.chat.id
-    _, category, tag = call.data.split("_", 2)
-    
-    if cid not in user_settings:
-        user_settings[cid] = {"tags": [], "last_cat": None}
-    
-    tags = user_settings[cid]["tags"]
-    
-    if tag in tags:
-        tags.remove(tag)
-    else:
-        tags.append(tag)
-    
-    try:
-        bot.edit_message_reply_markup(
-            chat_id=cid,
-            message_id=call.message.message_id,
-            reply_markup=tag_menu(category, tags)
-        )
-    except Exception as e:
-        logger.error(f"Error in tag_handler: {str(e)}")
-        bot.answer_callback_query(call.id, "⚠ Ошибка обновления тегов")
+    if data == "choose_tags":
+        bot.edit_message_text("Выбери категорию тегов:", cid, call.message.message_id, reply_markup=category_menu())
 
-@bot.callback_query_handler(func=lambda call: call.data == "back_to_cat")
-def back_to_cat_handler(call):
-    cid = call.message.chat.id
-    try:
-        bot.edit_message_text(
-            "Выбери категорию:",
-            chat_id=cid,
-            message_id=call.message.message_id,
-            reply_markup=category_menu()
-        )
-    except Exception as e:
-        logger.error(f"Error in back_to_cat_handler: {str(e)}")
-        bot.answer_callback_query(call.id, "⚠ Ошибка возврата")
+    elif data.startswith("cat_"):
+        cat = data[4:]
+        user_settings[cid]["last_cat"] = cat
+        selected = user_settings[cid]["tags"]
+        bot.edit_message_text(f"Категория: {CATEGORY_NAMES[cat]}", cid, call.message.message_id, reply_markup=tag_menu(cat, selected))
 
-@bot.callback_query_handler(func=lambda call: call.data == "done_tags")
-def done_tags_handler(call):
-    cid = call.message.chat.id
-    try:
-        bot.edit_message_text(
-            "Теги сохранены. Что дальше?",
-            chat_id=cid,
-            message_id=call.message.message_id,
-            reply_markup=main_menu()
-        )
-    except Exception as e:
-        logger.error(f"Error in done_tags_handler: {str(e)}")
-        bot.answer_callback_query(call.id, "⚠ Ошибка сохранения")
+    elif data.startswith("tag_"):
+        _, cat, tag = data.split("_", 2)
 
-@bot.callback_query_handler(func=lambda call: call.data == "generate")
-def generate_handler(call):
-    cid = call.message.chat.id
-    if cid not in user_settings or not user_settings[cid]["tags"]:
-        bot.answer_callback_query(call.id, "Сначала выберите теги!")
-        return
-    
-    raw_tags = user_settings[cid]["tags"]
-    filtered_tags = filter_tags(raw_tags)
-    
-    if len(filtered_tags) != len(raw_tags):
-        removed = set(raw_tags) - set(filtered_tags)
-        warning = "⚠ Некоторые теги были автоматически удалены из-за конфликтов:\n" + \
-                 "\n".join(f"• {TAGS.get(tag.split('_')[0], {}).get(tag, tag)}" for tag in removed)
-        bot.send_message(cid, warning)
-    
-    # Сохраняем теги для повторной генерации
-    user_settings[cid]["last_prompt"] = filtered_tags.copy()
-    
-    prompt = build_prompt(filtered_tags)
-    bot.edit_message_text("🔄 Генерация начата...", cid, call.message.message_id)
-    
-    url = replicate_generate(prompt)
-    if url:
-        kb = types.InlineKeyboardMarkup(row_width=2)
-        kb.add(
-            types.InlineKeyboardButton("🔄 Начать заново", callback_data="reset_all"),
-            types.InlineKeyboardButton("✏️ Изменить теги", callback_data="change_tags"),
-            types.InlineKeyboardButton("🔁 Повторить", callback_data="repeat_generate")
-        )
-        bot.send_photo(cid, url, caption="✅ Готово!", reply_markup=kb)
-    else:
-        bot.send_message(cid, "❌ Ошибка генерации. Попробуйте другие теги.")
+tags = user_settings[cid]["tags"]
+        if tag in tags:
+            tags.remove(tag)
+        else:
+            tags.append(tag)
+        bot.edit_message_reply_markup(cid, call.message.message_id, reply_markup=tag_menu(cat, tags))
 
-@bot.callback_query_handler(func=lambda call: call.data == "reset_all")
-def reset_all_handler(call):
-    cid = call.message.chat.id
-    user_settings[cid] = {"tags": [], "last_cat": None}
-    bot.edit_message_text(
-        "Все настройки сброшены. Начните заново:",
-        chat_id=cid,
-        message_id=call.message.message_id,
-        reply_markup=main_menu()
-    )
+    elif data == "done_tags":
+        bot.edit_message_text("Теги сохранены.", cid, call.message.message_id, reply_markup=main_menu())
 
-@bot.callback_query_handler(func=lambda call: call.data == "change_tags")
-def change_tags_handler(call):
-    cid = call.message.chat.id
-    if cid in user_settings and "last_prompt" in user_settings[cid]:
-        user_settings[cid]["tags"] = user_settings[cid]["last_prompt"].copy()
-        bot.edit_message_text(
-            "Редактирование тегов:",
-            chat_id=cid,
-            message_id=call.message.message_id,
-            reply_markup=category_menu()
-        )
-    else:
-        bot.answer_callback_query(call.id, "Нет сохранённых тегов для изменения", show_alert=True)
+    elif data == "back_to_cat":
+        bot.edit_message_text("Выбери категорию:", cid, call.message.message_id, reply_markup=category_menu())
 
-@bot.callback_query_handler(func=lambda call: call.data == "repeat_generate")
-def repeat_generate_handler(call):
-    cid = call.message.chat.id
-    if cid in user_settings and "last_prompt" in user_settings[cid]:
-        # Создаем временное сообщение о начале генерации
-        msg = bot.send_message(cid, "🔄 Повторная генерация изображения...")
-        
-        prompt = build_prompt(user_settings[cid]["last_prompt"])
+    elif data == "generate":
+        tags = user_settings[cid]["tags"]
+        if not tags:
+            bot.send_message(cid, "Сначала выбери теги!")
+            return
+        prompt = build_prompt(tags)
+        user_settings[cid]["last_prompt"] = tags.copy()
+        bot.send_message(cid, "⏳ Генерация изображения...")
         url = replicate_generate(prompt)
-        
         if url:
-            kb = types.InlineKeyboardMarkup(row_width=2)
+            kb = types.InlineKeyboardMarkup()
             kb.add(
-                types.InlineKeyboardButton("🔄 Начать заново", callback_data="reset_all"),
-                types.InlineKeyboardButton("✏️ Изменить теги", callback_data="change_tags"),
-                types.InlineKeyboardButton("🔁 Повторить", callback_data="repeat_generate")
+                types.InlineKeyboardButton("🔁 Начать заново", callback_data="start"),
+                types.InlineKeyboardButton("🔧 Изменить теги", callback_data="edit_tags"),
+                types.InlineKeyboardButton("➡ Продолжить с этими", callback_data="generate")
             )
-            # Удаляем временное сообщение
-            bot.delete_message(cid, msg.message_id)
             bot.send_photo(cid, url, caption="✅ Готово!", reply_markup=kb)
         else:
-            bot.edit_message_text(
-                "❌ Ошибка при повторной генерации",
-                chat_id=cid,
-                message_id=msg.message_id
-            )
-    else:
-        bot.answer_callback_query(call.id, "Сначала выполните генерацию с тегами", show_alert=True)
+            bot.send_message(cid, "❌ Ошибка генерации.")
 
-@app.route('/', methods=['GET', 'POST'])
-def webhook():
-    if request.method == 'POST':
-        if request.headers.get('content-type') == 'application/json':
-            json_data = request.get_json()
-            update = telebot.types.Update.de_json(json_data)
-            bot.process_new_updates([update])
-            return '', 200
-        return 'Invalid content type', 400
-    return 'Bot is running', 200
-
-if __name__ == '__main__':
-    logger.info("Starting bot...")
-    try:
-        if WEBHOOK_URL:
-            bot.remove_webhook()
-            time.sleep(1)
-            bot.set_webhook(url=WEBHOOK_URL)
-            app.run(host='0.0.0.0', port=PORT)
+    elif data == "edit_tags":
+        if "last_prompt" in user_settings[cid]:
+            user_settings[cid]["tags"] = user_settings[cid]["last_prompt"]
+            bot.send_message(cid, "Изменяем теги:", reply_markup=category_menu())
         else:
-            bot.remove_webhook()
-            bot.infinity_polling()
-    except Exception as e:
-        logger.error(f"Bot crashed: {str(e)}")
-        raise
+            bot.send_message(cid, "Нет сохранённых тегов. Сначала сделай генерацию.")
+
+    elif data == "start":
+        user_settings[cid] = {"tags": [], "last_cat": None}
+        bot.send_message(cid, "Сброс настроек.", reply_markup=main_menu())
+
+def build_prompt(tags):
+    base = "nsfw, masterpiece, ultra detailed, anime style, best quality, fully nude, no clothing covering chest or genitals"
+    prompts = [TAG_PROMPTS.get(tag, tag) for tag in tags]
+    return base + ", " + ", ".join(prompts) if prompts else base
+
+def replicate_generate(prompt):
+    url = "https://api.replicate.com/v1/predictions"
+    headers = {
+        "Authorization": f"Token {REPLICATE_TOKEN}",
+        "Content-Type": "application/json"
+    }
+    json_data = {
+        "version": REPLICATE_MODEL,
+        "input": {"prompt": prompt}
+    }
+    r = requests.post(url, headers=headers, json=json_data)
+    if r.status_code != 201:
+        return None
+    status_url = r.json()["urls"]["get"]
+
+    for _ in range(60):
+        time.sleep(2)
+        r = requests.get(status_url, headers=headers)
+        if r.status_code != 200:
+            return None
+        data = r.json()
+        if data["status"] == "succeeded":
+            return data["output"][0] if isinstance(data["output"], list) else data["output"]
+        elif data["status"] == "failed":
+            return None
+    return None
+
+@app.route("/", methods=["POST"])
+def webhook():
+    json_str = request.stream.read().decode("utf-8")
+    update = telebot.types.Update.de_json(json_str)
+    bot.process_new_updates([update])
+    return "ok", 200
+
+@app.route("/", methods=["GET"])
+def home():
+    return "бот работает", 200
+
+if name == "__main__":
+    bot.remove_webhook()
+    bot.set_webhook(url=WEBHOOK_URL)
+    app.run(host="0.0.0.0", port=PORT)
