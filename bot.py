@@ -135,8 +135,7 @@ TAG_PROMPTS = {
     "huge_dildo": "huge dildo",
     "horse_dildo": "horse dildo",
     "anal_beads": "anal beads inserted",
-
-"anal_plug": "anal plug",
+    "anal_plug": "anal plug",
     "anal_expander": "anal expander stretching anus",
     "gag": "ball gag",
     "piercing": "nipple and genital piercings",
@@ -241,8 +240,7 @@ def callback(call):
 
     elif data.startswith("tag_"):
         _, cat, tag = data.split("_", 2)
-
-tags = user_settings[cid]["tags"]
+        tags = user_settings[cid]["tags"]
         if tag in tags:
             tags.remove(tag)
         else:
@@ -260,8 +258,16 @@ tags = user_settings[cid]["tags"]
         if not tags:
             bot.send_message(cid, "Сначала выбери теги!")
             return
-        prompt = build_prompt(tags)
-        user_settings[cid]["last_prompt"] = tags.copy()
+        
+        prompt_info = build_prompt(tags)
+        prompt = prompt_info["prompt"]
+        truncated = prompt_info["truncated"]
+
+        user_settings[cid]["last_prompt_tags"] = tags.copy() # Store the original selected tags
+        
+        if truncated:
+            bot.send_message(cid, "⚠️ **Внимание**: Некоторые теги были отброшены из-за превышения лимита длины запроса. Попробуйте выбрать меньше тегов для лучшего результата.", parse_mode="Markdown")
+        
         bot.send_message(cid, "⏳ Генерация изображения...")
         url = replicate_generate(prompt)
         if url:
@@ -273,23 +279,60 @@ tags = user_settings[cid]["tags"]
             )
             bot.send_photo(cid, url, caption="✅ Готово!", reply_markup=kb)
         else:
-            bot.send_message(cid, "❌ Ошибка генерации.")
+            bot.send_message(cid, "❌ Ошибка генерации. Пожалуйста, попробуйте еще раз.")
 
     elif data == "edit_tags":
-        if "last_prompt" in user_settings[cid]:
-            user_settings[cid]["tags"] = user_settings[cid]["last_prompt"]
-            bot.send_message(cid, "Изменяем теги:", reply_markup=category_menu())
+        if "last_prompt_tags" in user_settings[cid]:
+            user_settings[cid]["tags"] = user_settings[cid]["last_prompt_tags"]
+            bot.send_message(cid, "Изменяем теги, использованные в предыдущей генерации:", reply_markup=category_menu())
         else:
-            bot.send_message(cid, "Нет сохранённых тегов. Сначала сделай генерацию.")
+            bot.send_message(cid, "Нет сохранённых тегов с предыдущей генерации. Сначала сделай генерацию.")
 
     elif data == "start":
         user_settings[cid] = {"tags": [], "last_cat": None}
-        bot.send_message(cid, "Сброс настроек.", reply_markup=main_menu())
+        bot.send_message(cid, "Настройки сброшены. Начнем заново!", reply_markup=main_menu())
 
 def build_prompt(tags):
     base = "nsfw, masterpiece, ultra detailed, anime style, best quality, fully nude, no clothing covering chest or genitals"
-    prompts = [TAG_PROMPTS.get(tag, tag) for tag in tags]
-    return base + ", " + ", ".join(prompts) if prompts else base
+    
+    # Sort tags to ensure consistent prompt generation
+    sorted_tags = sorted(tags)
+    
+    prompts = []
+    for tag in sorted_tags:
+        prompt_segment = TAG_PROMPTS.get(tag, tag)
+        prompts.append(prompt_segment)
+    
+    # Use a set to ensure unique prompt segments to avoid redundancy
+    unique_prompts_set = set(prompts)
+    final_prompt_parts = [p for p in unique_prompts_set if p] # Filter out empty strings
+    
+    combined_prompt = base
+    if final_prompt_parts:
+        combined_prompt += ", " + ", ".join(final_prompt_parts)
+
+    # --- PROMPT LENGTH MANAGEMENT ---
+    MAX_PROMPT_LENGTH = 700  # Adjust this limit based on your Replicate model's performance
+    truncated = False
+
+    if len(combined_prompt) > MAX_PROMPT_LENGTH:
+        truncated = True
+        truncated_prompt_parts = [base]
+        current_length = len(base)
+
+        # Rebuild the prompt by adding tags until the limit is reached
+        for part in final_prompt_parts:
+            # Add 2 for the ", " separator
+            if current_length + len(part) + 2 <= MAX_PROMPT_LENGTH:
+                truncated_prompt_parts.append(part)
+                current_length += len(part) + 2
+            else:
+                break # Stop adding tags if the limit is exceeded
+
+        combined_prompt = ", ".join(truncated_prompt_parts)
+    
+    return {"prompt": combined_prompt, "truncated": truncated}
+
 
 def replicate_generate(prompt):
     url = "https://api.replicate.com/v1/predictions"
@@ -303,19 +346,28 @@ def replicate_generate(prompt):
     }
     r = requests.post(url, headers=headers, json=json_data)
     if r.status_code != 201:
+        print(f"Error submitting prediction: {r.status_code} - {r.text}")
         return None
+    
     status_url = r.json()["urls"]["get"]
 
-    for _ in range(60):
-        time.sleep(2)
+    # Increased polling attempts and slightly adjusted sleep
+    for i in range(90): # Increased from 60 to 90 attempts (3 minutes total)
+        time.sleep(2) # Keep sleep at 2 seconds
         r = requests.get(status_url, headers=headers)
         if r.status_code != 200:
+            print(f"Error getting prediction status: {r.status_code} - {r.text}")
             return None
         data = r.json()
         if data["status"] == "succeeded":
-            return data["output"][0] if isinstance(data["output"], list) else data["output"]
+            return data["output"][0] if isinstance(data["output"], list) and data["output"] else None
         elif data["status"] == "failed":
+            print(f"Prediction failed: {data.get('error', 'No error message provided')}")
             return None
+        # Add a print for debugging to see status
+        # print(f"Prediction status: {data['status']}")
+    
+    print("Prediction timed out.")
     return None
 
 @app.route("/", methods=["POST"])
@@ -329,7 +381,7 @@ def webhook():
 def home():
     return "бот работает", 200
 
-if name == "__main__":
+if __name__ == "__main__":
     bot.remove_webhook()
     bot.set_webhook(url=WEBHOOK_URL)
     app.run(host="0.0.0.0", port=PORT)
