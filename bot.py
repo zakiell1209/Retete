@@ -38,7 +38,11 @@ TAGS = {
     "holes": {
         "vagina": "Вагина",
         "anal": "Анус",
-        "both": "Вагина и анус"
+        "both": "Вагина и анус",
+        "prolapsed_uterus": "Выпавшая матка", # НОВЫЙ ТЕГ
+        "prolapsed_anus": "Выпавший анус",     # НОВЫЙ ТЕГ
+        "dilated_anus": "Расширенный анус",    # НОВЫЙ ТЕГ
+        "dilated_vagina": "Расширенная киска"  # НОВЫЙ ТЕГ
     },
     "toys": {
         "dildo": "Дилдо",
@@ -92,7 +96,7 @@ TAGS = {
     },
     "ethnos": {
         "futanari": "Футанари",
-        "femboy": "Фембой",
+        "femboy": "Фембой", # ПРОМПТ ИЗМЕНЕН НИЖЕ
         "ethnicity_asian": "Азиатка",
         "ethnicity_european": "Европейка"
     },
@@ -138,6 +142,10 @@ TAG_PROMPTS = {
     "vagina": "spread pussy",
     "anal": "spread anus",
     "both": "spread pussy and anus",
+    "prolapsed_uterus": "prolapsed uterus, uterus exposed, visible uterus", # НОВЫЙ ПРОМПТ
+    "prolapsed_anus": "prolapsed anus, anus exposed, visible anus",         # НОВЫЙ ПРОМПТ
+    "dilated_anus": "dilated anus, anus stretched, internal view of anus, anus gaping", # НОВЫЙ ПРОМПТ
+    "dilated_vagina": "dilated vagina, vagina stretched, internal view of vagina, vagina gaping, spread pussy, labia spread", # НОВЫЙ ПРОМПТ
     "dildo": "dildo inserted",
     "huge_dildo": "huge dildo",
     "horse_dildo": "horse dildo",
@@ -184,7 +192,7 @@ TAG_PROMPTS = {
     "belly_bloat": "belly bulge from toy",
     "succubus_tattoo": "succubus tattoo on lower abdomen",
     "futanari": "futanari girl with large breasts",
-    "femboy": "femboy with feminine body",
+    "femboy": "male, boy, feminine body, femboy, androgynous", # ОБНОВЛЕННЫЙ ПРОМПТ ДЛЯ ФЕМБОЯ
     "ethnicity_asian": "asian girl",
     "ethnicity_european": "european girl",
     "furry_cow": "furry cow girl",
@@ -197,7 +205,7 @@ TAG_PROMPTS = {
     "furry_wolf": "furry wolf girl",
     "ahegao": "ahegao face",
     "pain_face": "face in pain",
-    "ecstasy_face": "face in ecstasy",
+    "ecstasy_face": "ecstasy face",
     "gold_lipstick": "gold lipstick"
 }
 
@@ -317,8 +325,8 @@ def build_prompt(tags):
     Строит промпт для модели Replicate на основе выбранных тегов.
     Управляет длиной промпта, чтобы избежать его усечения моделью.
     """
-    # ОБНОВЛЕННЫЙ БАЗОВЫЙ ПРОМПТ для контроля рук
-    base = "nsfw, masterpiece, ultra detailed, anime style, best quality, fully nude, no clothing covering chest or genitals, hands away from chest, open pose, natural hand placement, visible breasts, no hands covering breasts"
+    # ОБНОВЛЕННЫЙ БАЗОВЫЙ ПРОМПТ для контроля рук и общей анатомии
+    base = "nsfw, masterpiece, ultra detailed, anime style, best quality, fully nude, no clothing covering chest or genitals, hands by side, arms relaxed, no hands on breasts, no hands covering genitals, natural hand placement, visible breasts, perfect anatomy, no deformed hands, no deformed fingers"
     
     # Сортируем теги для обеспечения согласованности промпта
     sorted_tags = sorted(tags)
