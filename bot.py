@@ -13,7 +13,8 @@ WEBHOOK_URL = os.getenv("WEBHOOK_URL")
 PORT = int(os.environ.get("PORT", 5000))
 
 # ID модели Replicate, которую вы используете
-REPLICATE_MODEL = "c1d5b02687df6081c7953c74bcc527858702e8c153c9382012ccc3906752d3ec"
+# ОБНОВЛЕНО: Новая модель, поддерживающая негативные промпты
+REPLICATE_MODEL = "057e2276ac5dcd8d1575dc37b131f903df9c10c41aed53d47cd7d4f068c19fa5"
 
 # Инициализация бота и Flask приложения
 bot = telebot.TeleBot(API_TOKEN)
@@ -145,7 +146,8 @@ TAG_PROMPTS = {
     "prolapsed_uterus": "prolapsed uterus, uterus exposed, visible uterus", 
     "prolapsed_anus": "prolapsed anus, anus exposed, visible anus",         
     "dilated_anus": "dilated anus, anus stretched, internal view of anus, anus gaping", 
-    "dilated_vagina": "dilated vagina, vagina stretched, internal view of vagina, vagina gaping, spread pussy, labia spread", 
+    # Уточненный промпт для "Расширенная киска" - добавим "realistic, detailed" и попробуем более общие термины
+    "dilated_vagina": "dilated vagina, vagina stretched, internal view of vagina, vagina gaping, spread pussy, labia spread, realistic, detailed", 
     "dildo": "dildo inserted",
     "huge_dildo": "huge dildo",
     "horse_dildo": "horse dildo",
@@ -192,7 +194,8 @@ TAG_PROMPTS = {
     "belly_bloat": "belly bulge from toy",
     "succubus_tattoo": "succubus tattoo on lower abdomen",
     "futanari": "futanari girl with large breasts",
-    "femboy": "male, boy, very feminine body, femboy, androgynous, flat chest, penis, testicles", # ОБНОВЛЕННЫЙ И УСИЛЕННЫЙ ПРОМПТ ДЛЯ ФЕМБОЯ
+    # Уточненный промпт для "Фембоя"
+    "femboy": "male, boy, very feminine body, femboy, androgynous, flat chest, penis, testicles, thin waist, wide hips", 
     "ethnicity_asian": "asian girl",
     "ethnicity_european": "european girl",
     "furry_cow": "furry cow girl",
@@ -284,8 +287,9 @@ def callback(call):
         
         # Строим промпт и получаем информацию о его усечении
         prompt_info = build_prompt(tags)
-        prompt = prompt_info["prompt"]
-        truncated = prompt_info["truncated"]
+        positive_prompt = prompt_info["positive_prompt"]
+        negative_prompt = prompt_info["negative_prompt"]
+        truncated = prompt_info["truncated"] # Флаг усечения позитивного промпта
 
         # Сохраняем исходные выбранные теги для кнопки "Изменить теги"
         user_settings[cid]["last_prompt_tags"] = tags.copy() 
@@ -294,7 +298,8 @@ def callback(call):
             bot.send_message(cid, "⚠️ **Внимание**: Некоторые теги были отброшены из-за превышения лимита длины запроса. Попробуйте выбрать меньше тегов для лучшего результата.", parse_mode="Markdown")
         
         bot.send_message(cid, "⏳ Генерация изображения...")
-        url = replicate_generate(prompt) # Вызываем функцию генерации
+        # Передаем ОБА промпта в функцию генерации
+        url = replicate_generate(positive_prompt, negative_prompt) 
         if url:
             kb = types.InlineKeyboardMarkup()
             kb.add(
@@ -323,79 +328,69 @@ def callback(call):
 def build_prompt(tags):
     """
     Строит промпт для модели Replicate на основе выбранных тегов.
-    Управляет длиной промпта, чтобы избежать его усечения моделью.
-    Формирует позитивный и негативный части промпта.
+    Формирует позитивный и негативный части промпта для новой модели.
     """
     # Базовый позитивный промпт: сфокусирован на желаемом качестве
-    base_positive = "nsfw, masterpiece, ultra detailed, anime style, best quality, fully nude, no clothing covering chest or genitals"
+    # Сделаем его короче, чтобы оставалось больше места для выбранных пользователем тегов.
+    base_positive = "masterpiece, best quality, ultra detailed, anime style, highly detailed, expressive eyes, dynamic pose, perfect lighting, volumetric lighting, fully nude, no clothing covering chest or genitals"
     
     # Базовый негативный промпт: что модель ДОЛЖНА ИЗБЕГАТЬ.
-    # Используем синтаксис с весом (слово:число) для усиления
-    base_negative = "bad anatomy, deformed, disfigured, poorly drawn face, poorly drawn hands, missing limbs, extra limbs, fused fingers, too many fingers, too few fingers, lowres, bad hands, text, error, missing fingers, extra digit, fewer digits, cropped, worst quality, low quality, normal quality, jpeg artifacts, signature, watermark, username, blurry, artist name, (hands on chest:1.5), (hands covering breasts:1.5), (hands covering crotch:1.5), (out of frame:1.2), (ugly:1.2), (femboy as girl:1.5)"
+    # Этот промпт будет всегда отправляться целиком, так как он критически важен.
+    base_negative = (
+        "lowres, bad anatomy, bad hands, bad face, deformed, disfigured, "
+        "poorly drawn face, poorly drawn hands, missing limbs, extra limbs, "
+        "fused fingers, too many fingers, too few fingers, "
+        "jpeg artifacts, signature, watermark, username, blurry, artist name, "
+        "cropped, worst quality, low quality, normal quality, "
+        "extra_digit, fewer_digits, text, error, "
+        "mutated hands and fingers, bad hand, malformed hands, "
+        "long neck, bad nose, bad mouth, extra legs, extra arms, "
+        "multiple heads, (hands on chest:1.5), (hands covering breasts:1.5), (hands covering crotch:1.5), "
+        "ugly, out of frame, censored, (vagina not visible:1.5), (clitoris not visible:1.5), (vagina closed:1.5), " # Добавлено для "расширенной киски"
+        "missing penis, missing testicles" # Для фембоя
+    )
 
     positive_parts = []
     # Сортируем теги для обеспечения согласованности промпта
     sorted_tags = sorted(tags)
     
     for tag in sorted_tags:
-        # Используем конкретный промпт из TAG_PROMPTS или сам тег в качестве запасного варианта
         prompt_segment = TAG_PROMPTS.get(tag, tag)
         positive_parts.append(prompt_segment)
     
     # Используем набор (set) для удаления дубликатов сегментов промпта
     unique_positive_parts = set(positive_parts)
     
-    # Объединяем позитивные части
+    # Формируем окончательный позитивный промпт
     final_positive_prompt_str = base_positive
     if unique_positive_parts:
-        final_positive_prompt_str += ", " + ", ".join(unique_positive_parts)
+        # Убедимся, что добавляем только не пустые части и соединяем их
+        cleaned_parts = [p for p in unique_positive_parts if p.strip()]
+        if cleaned_parts:
+            final_positive_prompt_str += ", " + ", ".join(cleaned_parts)
 
-    # Комбинируем позитивный и негативный промпт.
-    # В этой модели нет отдельного параметра negative_prompt, поэтому добавляем его в конец.
-    # Это распространенный способ для некоторых моделей, хотя и не идеальный.
-    combined_prompt = f"{final_positive_prompt_str} AND {base_negative}"
+    # --- УПРАВЛЕНИЕ ДЛИНОЙ ПОЗИТИВНОГО ПРОМПТА ---
+    # Мы усекаем ТОЛЬКО позитивный промпт, негативный отправляем целиком.
+    MAX_POSITIVE_PROMPT_LENGTH = 700 # Этот лимит только для позитивного промпта
+    truncated = False 
 
-    # --- УПРАВЛЕНИЕ ДЛИНОЙ ПРОМПТА ---
-    # Максимально допустимая длина промпта.
-    # Это важный параметр, который нужно будет регулировать экспериментально.
-    MAX_PROMPT_LENGTH = 700  # Начнем с 700, возможно, потребуется корректировка
-    truncated = False # Флаг, указывающий, был ли промпт усечен
-
-    if len(combined_prompt) > MAX_PROMPT_LENGTH:
+    if len(final_positive_prompt_str) > MAX_POSITIVE_PROMPT_LENGTH:
         truncated = True
-        # Если промпт слишком длинный, мы сначала формируем позитивную часть,
-        # а затем добавляем негативную, усекая ее при необходимости.
-        
-        # Разделяем на позитивную и негативную части для усечения
-        current_positive_length = len(base_positive)
-        truncated_positive_parts = [base_positive]
-
-        for part in unique_positive_parts:
-            if current_positive_length + len(part) + 2 <= MAX_PROMPT_LENGTH - len(f" AND {base_negative}"):
-                truncated_positive_parts.append(part)
-                current_positive_length += len(part) + 2
-            else:
-                break
-        
-        final_positive_prompt_str = ", ".join(truncated_positive_parts)
-        
-        # Теперь добавляем негативную часть, убедившись, что она помещается
-        # Если вся комбинация все еще слишком длинная, возможно, придется усечь и негативную часть,
-        # но это менее желательно. Сейчас просто пытаемся вставить ее.
-        
-        combined_prompt = f"{final_positive_prompt_str} AND {base_negative}"
-        
-        # Если даже после усечения позитивной части общий промпт все равно слишком длинный
-        # (что маловероятно, если MAX_PROMPT_LENGTH достаточно большой),
-        # то придется обрезать и негативную часть. Но пока оставляем так.
-        if len(combined_prompt) > MAX_PROMPT_LENGTH:
-            combined_prompt = combined_prompt[:MAX_PROMPT_LENGTH] # Грубое усечение, если уж совсем не помещается
-
-    return {"prompt": combined_prompt, "truncated": truncated}
+        final_positive_prompt_str = final_positive_prompt_str[:MAX_POSITIVE_PROMPT_LENGTH]
+        # Можно добавить маркер, что промпт был усечен, но пока просто обрезаем.
+    
+    return {
+        "positive_prompt": final_positive_prompt_str, 
+        "negative_prompt": base_negative,
+        "truncated": truncated
+    }
 
 # --- Функция для генерации изображения через Replicate ---
-def replicate_generate(prompt):
-    """Отправляет запрос на генерацию изображения в Replicate API и ожидает результат."""
+def replicate_generate(positive_prompt, negative_prompt):
+    """
+    Отправляет запрос на генерацию изображения в Replicate API, используя
+    отдельные позитивный и негативный промпты, и ожидает результат.
+    """
     url = "https://api.replicate.com/v1/predictions"
     headers = {
         "Authorization": f"Token {REPLICATE_TOKEN}",
@@ -403,19 +398,23 @@ def replicate_generate(prompt):
     }
     json_data = {
         "version": REPLICATE_MODEL,
-        "input": {"prompt": prompt}
+        "input": {
+            "prompt": positive_prompt,
+            "negative_prompt": negative_prompt # Передаем негативный промпт отдельно
+        }
     }
     
     # Отправка запроса на создание предсказания
     r = requests.post(url, headers=headers, json=json_data)
     if r.status_code != 201:
         print(f"Ошибка при отправке предсказания: {r.status_code} - {r.text}")
+        print(f"Response: {r.text}") # Добавим вывод ответа для отладки
         return None
     
     status_url = r.json()["urls"]["get"] # URL для получения статуса предсказания
 
     # Ожидание завершения генерации (до 3 минут)
-    for i in range(90): # Увеличено с 60 до 90 попыток (3 минуты)
+    for i in range(90): # 90 попыток * 2 секунды = 180 секунд = 3 минуты
         time.sleep(2) # Ожидание 2 секунды между попытками
         r = requests.get(status_url, headers=headers)
         if r.status_code != 200:
