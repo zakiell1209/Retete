@@ -19,7 +19,7 @@ bot = telebot.TeleBot(API_TOKEN)
 app = Flask(__name__)
 user_settings = {} # Словарь для хранения настроек пользователей
 
-# --- Обновленные категории ---
+# --- Категории для меню ---
 CATEGORY_NAMES = {
     "holes": "Отверстия",
     "toys": "Игрушки",
@@ -34,7 +34,7 @@ CATEGORY_NAMES = {
     "pokemon": "Покемоны"
 }
 
-# --- Обновленные теги с новыми добавлениями ---
+# --- Теги с новыми добавлениями ---
 TAGS = {
     "holes": {
         "vagina": "Вагина",
@@ -152,7 +152,7 @@ TAGS = {
     }
 }
 
-# --- Обновленные промпты с новыми добавлениями ---
+# --- Промпты для модели ---
 CHARACTER_EXTRA = {
     "rias": "red long hair, blue eyes, pale skin, large breasts, rias gremory, highschool dxd",
     "akeno": "long black hair, purple eyes, large breasts, akeno himejima, highschool dxd",
@@ -412,8 +412,8 @@ def build_prompt(tags):
 # --- Функция для генерации изображения через Replicate ---
 def replicate_generate(positive_prompt, negative_prompt):
     """
-    Отправляет запрос на генерацию изображения в Replicate API, используя
-    оптимальные настройки для достижения максимальной точности.
+    Отправляет запрос на генерацию изображения в Replicate API,
+    используя оптимальные настройки для достижения максимальной точности.
     """
     url = "https://api.replicate.com/v1/predictions"
     headers = {
@@ -430,11 +430,10 @@ def replicate_generate(positive_prompt, negative_prompt):
             "height": 1024,
             "steps": 50,
             "guidance_scale": 12,
-            "refiner": True,
             "scheduler": "DPM++ 2M SDE Karras",
             "adetailer_face": True,
             "adetailer_hand": True,
-            "seed": -1 # -1 для случайного сида
+            "seed": -1
         }
     }
 
