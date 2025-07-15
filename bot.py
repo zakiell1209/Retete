@@ -375,4 +375,4 @@ def build_prompt(tags):
         "extra_digit, fewer_digits, text, error, "
         "mutated hands and fingers, bad hand, malformed hands, "
         "long neck, bad nose, bad mouth, "
-        "(hands on chest:3.0), (hands covering breasts:3.0), (hands on breasts
+        "(hands on chest:3.0), (hands covering breasts:3.0), (hands on breasts"
