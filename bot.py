@@ -164,11 +164,11 @@ CHARACTER_EXTRA = {
     "esdeath": "esdeath, akame ga kill, blue hair, military uniform, high heels",
     "formidable": "formidable, azur lane, long white hair, dress",
     "sparkle": "sparkle, honkai star rail, pink hair, elegant dress, theatrical",
-    "acheron": "(acheron:1.2), (honkai star rail:1.2), purple hair, long coat, samurai",
-    "castoria": "(castoria:1.2), (fate grand order:1.2), white hair, dress, long sleeves",
+    "acheron": "(acheron, honkai star rail, purple hair, long coat, samurai:1.2)", # Усиленный промпт
+    "castoria": "(castoria, fate grand order, white hair, dress:1.2)", # Усиленный промпт
     "lady_dimitrescu": "lady dimitrescu, resident evil, tall female, white dress, elegant hat, sharp claws, mature female",
     "chun_li": "chun li, street fighter, muscular thighs, qipao, hair buns",
-    "atomic_heart_twins": "(robot:1.5), (twin sisters:1.5), (black bodysuit:1.5), (black hair, white hair:1.5), atomic heart",
+    "atomic_heart_twins": "(atomic heart twins, black outfit, white and black hair, robot, two girls:1.3)", # Усиленный промпт
     "yoruichi_shihoin": "yoruichi shihoin, bleach, dark skin, purple hair",
     "saber": "saber, artoria pendragon, fate series, blonde hair, blue dress",
     "mona": "mona, genshin impact, black hair, leotard, golden headdress",
@@ -184,11 +184,11 @@ TAG_PROMPTS = {
     "vagina": "spread pussy",
     "anus": "spread anus",
     "both": "spread pussy and anus",
-    "dilated_anus": "(dilated anus:1.5), (anus stretched:1.5), internal view of anus, anus gaping",
-    "dilated_vagina": "(dilated vagina:1.5), (vagina stretched:1.5), internal view of vagina, vagina gaping, spread pussy, labia spread, realistic, detailed, high focus",
-    "prolapsed_uterus": "prolapsed uterus, uterus exposed, visible uterus",
-    "prolapsed_anus": "prolapsed anus, anus exposed, visible anus",
-    "two_dildos_one_hole": "(two dildos inserted:1.5), (two dildos into one orifice:1.5)",
+    "dilated_anus": "(dilated anus, anus stretched, anus gaping, realistic, detailed:1.4)",
+    "dilated_vagina": "(dilated vagina, vagina stretched, vagina gaping, realistic, detailed:1.4)",
+    "prolapsed_uterus": "(prolapsed uterus, uterus exposed, visible uterus, realistic, detailed:1.5)",
+    "prolapsed_anus": "(prolapsed anus, anus exposed, visible anus, realistic, detailed:1.5)",
+    "two_dildos_one_hole": "(two dildos inserted, two dildos into one orifice:1.5)",
     "dildo": "dildo inserted",
     "huge_dildo": "huge dildo",
     "horse_dildo": "horse dildo",
@@ -201,21 +201,21 @@ TAG_PROMPTS = {
     "doggy": "doggy style, on all fours",
     "squat": "squatting pose",
     "lying": "lying down",
-    "hor_split": "(horizontal split:1.2), (legs stretched fully to sides:1.2), pelvis on floor, inner thighs visible",
+    "hor_split": "(horizontal split, legs stretched fully to sides, pelvis on floor, inner thighs visible:1.2)",
     "ver_split": "(vertical split:1.2)",
     "on_back_legs_behind_head": "on back, legs behind head",
     "on_side_leg_up": "on side with leg raised",
-    "suspended": "suspended",
-    "front_facing": "front to viewer",
-    "back_facing": "back to viewer",
-    "top_down_view": "(shot from above:1.5), (top-down view:1.5)",
-    "bottom_up_view": "(shot from below:1.5), (bottom-up view:1.5)",
+    "suspended": "Подвешена",
+    "front_facing": "(front to viewer:1.2)",
+    "back_facing": "(back to viewer:1.2)",
+    "top_down_view": "(from a top-down view:1.3)",
+    "bottom_up_view": "(from a bottom-up view:1.3)",
     "hands_spreading_vagina": "hands spreading vagina",
     "stockings": "wearing stockings only",
     "stockings_fishnet": "fishnet stockings",
-    "bikini_tan_lines": "bikini tan lines",
+    "bikini_tan_lines": "(bikini tan lines, no bikini, no swimsuit:1.4)",
     "shibari": "shibari ropes",
-    "cow_costume": "cow costume, cow ears, cow horns, cow tail, wearing stockings only",
+    "cow_costume": "(cow costume, cow ears, cow horns, cow tail, cow print lingerie:1.2)",
     "big_breasts": "big breasts",
     "small_breasts": "small breasts",
     "body_fit": "fit body",
@@ -227,18 +227,18 @@ TAG_PROMPTS = {
     "cum": "cum covered",
     "belly_bloat": "belly bulge, pregnant looking belly",
     "succubus_tattoo": "succubus tattoo on lower abdomen",
-    "futanari": "(futanari:1.7)",
+    "futanari": "futanari girl with large breasts",
     "femboy": "male, boy, very feminine body, femboy, androgynous, flat chest, penis, testicles, thin waist, wide hips, boyish hips, no breasts",
     "ethnicity_asian": "asian girl",
     "ethnicity_european": "european girl",
-    "furry_cow": "(furry cow girl:1.2), (cow costume:1.2)",
-    "furry_cat": "(furry cat girl:1.2), (cat costume:1.2)",
-    "furry_dog": "(furry dog girl:1.2), (dog costume:1.2)",
-    "furry_dragon": "(furry dragon girl:1.2), (dragon costume:1.2)",
-    "furry_sylveon": "(furry sylveon:1.2), (sylveon costume:1.2), pink, ribbons, sexy",
-    "furry_fox": "(furry fox girl:1.2), (fox costume:1.2)",
-    "furry_bunny": "(furry bunny girl:1.2), (bunny costume:1.2)",
-    "furry_wolf": "(furry wolf girl:1.2), (wolf costume:1.2)",
+    "furry_cow": "furry cow girl",
+    "furry_cat": "furry cat girl",
+    "furry_dog": "furry dog girl",
+    "furry_dragon": "furry dragon girl",
+    "furry_sylveon": "furry sylveon, pink, ribbons, sexy",
+    "furry_fox": "furry fox girl",
+    "furry_bunny": "furry bunny girl",
+    "furry_wolf": "furry wolf girl",
     "ahegao": "ahegao face",
     "pain_face": "face in pain",
     "ecstasy_face": "ecstasy face",
@@ -247,7 +247,7 @@ TAG_PROMPTS = {
     "clitoral_piercing": "clitoral piercing",
     "foot_fetish": "foot fetish",
     "footjob": "footjob",
-    "mouth_nipples": "(mouths instead of nipples:2.0)",
+    "mouth_nipples": "(mouths instead of nipples:1.8)",
     "reshiram": "reshiram, pokemon",
     "mew": "mew, pokemon",
     "mewtwo": "mewtwo, pokemon",
@@ -365,7 +365,8 @@ def build_prompt(tags):
     """
     Строит промпт для модели Replicate на основе выбранных тегов.
     """
-    base_positive = "masterpiece, best quality, ultra detailed, anime style, highly detailed, expressive eyes, perfect lighting, volumetric lighting, fully nude, no clothing covering chest or genitals, solo"
+    # Автоматически добавляем промпты для видимости
+    base_positive = "masterpiece, best quality, ultra detailed, anime style, highly detailed, expressive eyes, perfect lighting, volumetric lighting, fully nude, no clothing covering chest or genitals, solo, visible breasts, visible nipples, visible vagina, visible anus"
     base_negative = (
         "lowres, bad anatomy, bad hands, bad face, deformed, disfigured, "
         "poorly drawn face, poorly drawn hands, missing limbs, extra limbs, "
@@ -375,109 +376,136 @@ def build_prompt(tags):
         "extra_digit, fewer_digits, text, error, "
         "mutated hands and fingers, bad hand, malformed hands, "
         "long neck, bad nose, bad mouth, "
-        "(hands on chest:3.0), (hands covering breasts:3.0), (hands on breasts)"
+        "(hands on chest:2.5), (hands covering breasts:2.5), (hands on breasts:2.5), "
+        "ugly, out of frame, censored, "
+        "shirt, dress, bra, panties, lingerie, swimsuit, bikini, "
+        "(vagina not visible:1.7), (clitoris not visible:1.7), (vagina closed:1.7), "
+        "missing penis, missing testicles, (femboy as girl:1.7), (breasts:1.5)"
     )
 
-    positive_tags = []
-    negative_tags = []
+    positive_parts = []
+    character_tags = [tag for tag in tags if tag in TAGS["characters"]]
+    furry_tags = [tag for tag in tags if tag in TAGS["furry"]]
+    futanari_tag = "futanari" in tags
+
+    # Логика для смешения персонажей и фури
+    if character_tags and furry_tags:
+        for char_tag in character_tags:
+            char_prompt = TAG_PROMPTS.get(char_tag, char_tag)
+            for furry_tag in furry_tags:
+                furry_prompt = TAG_PROMPTS.get(furry_tag, furry_tag)
+                # Комбинируем промпты
+                positive_parts.append(f"{char_prompt}, {furry_prompt}")
+    else:
+        # Стандартная обработка, если нет смешения
+        for tag in tags:
+            prompt_segment = TAG_PROMPTS.get(tag, tag)
+            positive_parts.append(prompt_segment)
+
+    # Логика для футанари-версии персонажа
+    if futanari_tag and character_tags:
+        for char_tag in character_tags:
+            char_prompt = TAG_PROMPTS.get(char_tag, char_tag)
+            # Добавляем к промпту персонажа футанари-промпт
+            positive_parts.append(f"{char_prompt}, futanari girl with large breasts")
+
+    unique_positive_parts = set(positive_parts)
+
+    final_positive_prompt_str = base_positive
+    
+    # Логика для нескольких персонажей
+    if len(character_tags) > 1:
+        final_positive_prompt_str = final_positive_prompt_str.replace("solo", "multiple girls, group photo")
+
+    if unique_positive_parts:
+        cleaned_parts = [p for p in unique_positive_parts if p.strip()]
+        if cleaned_parts:
+            final_positive_prompt_str += ", " + ", ".join(cleaned_parts)
+
+    MAX_POSITIVE_PROMPT_LENGTH = 450
     truncated = False
 
-    for tag in tags:
-        prompt = TAG_PROMPTS.get(tag)
-        if prompt:
-            if "hands on chest" in prompt or "femboy" in prompt:
-                # Пример логики, если нужно добавлять в негативный промпт
-                # Сейчас все идет в позитивный, но я оставлю это для примера
-                positive_tags.append(prompt)
-            else:
-                positive_tags.append(prompt)
-
-    positive_prompt = f"{base_positive}, {', '.join(positive_tags)}"
-    # Проверка на лимит (примерный)
-    if len(positive_prompt) > 2048:
-        positive_prompt = positive_prompt[:2048]
+    if len(final_positive_prompt_str) > MAX_POSITIVE_PROMPT_LENGTH:
         truncated = True
+        final_positive_prompt_str = final_positive_prompt_str[:MAX_POSITIVE_PROMPT_LENGTH]
 
     return {
-        "positive_prompt": positive_prompt,
+        "positive_prompt": final_positive_prompt_str,
         "negative_prompt": base_negative,
         "truncated": truncated
     }
 
-# --- Функция для генерации на Replicate ---
+# --- Функция для генерации изображения через Replicate ---
 def replicate_generate(positive_prompt, negative_prompt):
     """
-    Отправляет запрос на генерацию изображения в Replicate.
+    Отправляет запрос на генерацию изображения в Replicate API,
+    используя оптимальные настройки для достижения максимальной точности.
     """
+    url = "https://api.replicate.com/v1/predictions"
     headers = {
         "Authorization": f"Token {REPLICATE_TOKEN}",
         "Content-Type": "application/json"
     }
-    
-    data = {
+    json_data = {
         "version": REPLICATE_MODEL,
         "input": {
             "prompt": positive_prompt,
             "negative_prompt": negative_prompt,
-            "width": 768,
-            "height": 768
+            "prepend_preprompt": False,
+            "width": 1024,
+            "height": 1024,
+            "steps": 50,
+            "guidance_scale": 15,
+            "scheduler": "DPM++ 2M SDE Karras",
+            "adetailer_face": True,
+            "adetailer_hand": True,
+            "seed": -1
         }
     }
 
-    try:
-        response = requests.post("https://api.replicate.com/v1/predictions", headers=headers, json=data)
-        response.raise_for_status()
-        prediction_id = response.json().get("id")
+    # Отправка запроса на создание предсказания
+    r = requests.post(url, headers=headers, json=json_data)
+    if r.status_code != 201:
+        print(f"Ошибка при отправке предсказания: {r.status_code} - {r.text}")
+        print(f"Request JSON: {json_data}")
+        return None
 
-        if not prediction_id:
-            print("Ошибка: Не удалось получить ID предсказания.")
+    status_url = r.json()["urls"]["get"]
+
+    # Ожидание завершения генерации (до 3 минут)
+    for i in range(90):
+        time.sleep(2)
+        r = requests.get(status_url, headers=headers)
+        if r.status_code != 200:
+            print(f"Ошибка при получении статуса предсказания: {r.status_code} - {r.text}")
+            return None
+        data = r.json()
+        if data["status"] == "succeeded":
+            return data["output"][0] if isinstance(data["output"], list) and data["output"] else None
+        elif data["status"] == "failed":
+            print(f"Предсказание не удалось: {data.get('error', 'Сообщение об ошибке не предоставлено')}")
+            print(f"Request JSON: {json_data}")
             return None
 
-        # Ожидаем завершения генерации
-        for _ in range(30): # Попытки ожидания
-            time.sleep(3)
-            status_response = requests.get(f"https://api.replicate.com/v1/predictions/{prediction_id}", headers=headers)
-            status = status_response.json().get("status")
+    print("Время ожидания предсказания истекло.")
+    return None
 
-            if status == "succeeded":
-                output_url = status_response.json()["output"][0]
-                return output_url
-            elif status == "failed":
-                print("Генерация не удалась.")
-                return None
-
-        print("Таймаут ожидания генерации.")
-        return None
-
-    except requests.exceptions.RequestException as e:
-        print(f"Ошибка запроса к Replicate: {e}")
-        return None
-
-# --- Настройка вебхука и запуск ---
-@app.route("/", methods=["GET", "POST"])
+# --- Настройка вебхука Flask ---
+@app.route("/", methods=["POST"])
 def webhook():
-    """Обработчик вебхука для Telegram."""
-    if request.method == "POST":
-        update = telebot.types.Update.de_json(request.stream.read().decode("utf-8"))
-        bot.process_new_updates([update])
-        return "OK", 200
-    else:
-        return "Bot is running on webhook.", 200
+    """Обрабатывает входящие обновления от Telegram."""
+    json_str = request.stream.read().decode("utf-8")
+    update = telebot.types.Update.de_json(json_str)
+    bot.process_new_updates([update])
+    return "ok", 200
 
-def set_webhook():
-    """Устанавливает вебхук для бота."""
-    try:
-        bot.remove_webhook()
-        time.sleep(1)
-        bot.set_webhook(url=WEBHOOK_URL)
-        print(f"Webhook установлен: {WEBHOOK_URL}")
-    except Exception as e:
-        print(f"Ошибка при установке вебхука: {e}")
+@app.route("/", methods=["GET"])
+def home():
+    """Простой маршрут для проверки работы приложения."""
+    return "бот работает", 200
 
+# --- Запуск бота ---
 if __name__ == "__main__":
-    if WEBHOOK_URL:
-        set_webhook()
-        app.run(host="0.0.00.0", port=PORT)
-    else:
-        print("WEBHOOK_URL не установлен. Запуск в режиме long polling...")
-        bot.polling(none_stop=True)
+    bot.remove_webhook()
+    bot.set_webhook(url=WEBHOOK_URL)
+    app.run(host="0.0.0.0", port=PORT)
