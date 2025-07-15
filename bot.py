@@ -375,4 +375,109 @@ def build_prompt(tags):
         "extra_digit, fewer_digits, text, error, "
         "mutated hands and fingers, bad hand, malformed hands, "
         "long neck, bad nose, bad mouth, "
-        "(hands on chest:3.0), (hands covering breasts:3.0), (hands on breasts"
+        "(hands on chest:3.0), (hands covering breasts:3.0), (hands on breasts)"
+    )
+
+    positive_tags = []
+    negative_tags = []
+    truncated = False
+
+    for tag in tags:
+        prompt = TAG_PROMPTS.get(tag)
+        if prompt:
+            if "hands on chest" in prompt or "femboy" in prompt:
+                # Пример логики, если нужно добавлять в негативный промпт
+                # Сейчас все идет в позитивный, но я оставлю это для примера
+                positive_tags.append(prompt)
+            else:
+                positive_tags.append(prompt)
+
+    positive_prompt = f"{base_positive}, {', '.join(positive_tags)}"
+    # Проверка на лимит (примерный)
+    if len(positive_prompt) > 2048:
+        positive_prompt = positive_prompt[:2048]
+        truncated = True
+
+    return {
+        "positive_prompt": positive_prompt,
+        "negative_prompt": base_negative,
+        "truncated": truncated
+    }
+
+# --- Функция для генерации на Replicate ---
+def replicate_generate(positive_prompt, negative_prompt):
+    """
+    Отправляет запрос на генерацию изображения в Replicate.
+    """
+    headers = {
+        "Authorization": f"Token {REPLICATE_TOKEN}",
+        "Content-Type": "application/json"
+    }
+    
+    data = {
+        "version": REPLICATE_MODEL,
+        "input": {
+            "prompt": positive_prompt,
+            "negative_prompt": negative_prompt,
+            "width": 768,
+            "height": 768
+        }
+    }
+
+    try:
+        response = requests.post("https://api.replicate.com/v1/predictions", headers=headers, json=data)
+        response.raise_for_status()
+        prediction_id = response.json().get("id")
+
+        if not prediction_id:
+            print("Ошибка: Не удалось получить ID предсказания.")
+            return None
+
+        # Ожидаем завершения генерации
+        for _ in range(30): # Попытки ожидания
+            time.sleep(3)
+            status_response = requests.get(f"https://api.replicate.com/v1/predictions/{prediction_id}", headers=headers)
+            status = status_response.json().get("status")
+
+            if status == "succeeded":
+                output_url = status_response.json()["output"][0]
+                return output_url
+            elif status == "failed":
+                print("Генерация не удалась.")
+                return None
+
+        print("Таймаут ожидания генерации.")
+        return None
+
+    except requests.exceptions.RequestException as e:
+        print(f"Ошибка запроса к Replicate: {e}")
+        return None
+
+# --- Настройка вебхука и запуск ---
+@app.route("/", methods=["GET", "POST"])
+def webhook():
+    """Обработчик вебхука для Telegram."""
+    if request.method == "POST":
+        update = telebot.types.Update.de_json(request.stream.read().decode("utf-8"))
+        bot.process_new_updates([update])
+        return "OK", 200
+    else:
+        return "Bot is running on webhook.", 200
+
+def set_webhook():
+    """Устанавливает вебхук для бота."""
+    try:
+        bot.remove_webhook()
+        time.sleep(1)
+        bot.set_webhook(url=WEBHOOK_URL)
+        print(f"Webhook установлен: {WEBHOOK_URL}")
+    except Exception as e:
+        print(f"Ошибка при установке вебхука: {e}")
+
+if __name__ == "__main__":
+    if WEBHOOK_URL:
+        set_webhook()
+        app.run(host="0.0.00.0", port=PORT)
+    else:
+        print("WEBHOOK_URL не установлен. Запуск в режиме long polling...")
+        bot.polling(none_stop=True)
