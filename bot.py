@@ -164,11 +164,11 @@ CHARACTER_EXTRA = {
     "esdeath": "esdeath, akame ga kill, blue hair, military uniform, high heels",
     "formidable": "formidable, azur lane, long white hair, dress",
     "sparkle": "sparkle, honkai star rail, pink hair, elegant dress, theatrical",
-    "acheron": "(acheron, honkai star rail, purple hair, long coat, samurai:1.2)", # Усиленный промпт
-    "castoria": "(castoria, fate grand order, white hair, dress:1.2)", # Усиленный промпт
+    "acheron": "(acheron:1.2), (honkai star rail:1.2), purple hair, long coat, samurai",
+    "castoria": "(castoria:1.2), (fate grand order:1.2), white hair, dress, long sleeves",
     "lady_dimitrescu": "lady dimitrescu, resident evil, tall female, white dress, elegant hat, sharp claws, mature female",
     "chun_li": "chun li, street fighter, muscular thighs, qipao, hair buns",
-    "atomic_heart_twins": "(atomic heart twins, black outfit, white and black hair, robot, two girls:1.3)", # Усиленный промпт
+    "atomic_heart_twins": "(robot:1.5), (twin sisters:1.5), (black bodysuit:1.5), (black hair, white hair:1.5), atomic heart",
     "yoruichi_shihoin": "yoruichi shihoin, bleach, dark skin, purple hair",
     "saber": "saber, artoria pendragon, fate series, blonde hair, blue dress",
     "mona": "mona, genshin impact, black hair, leotard, golden headdress",
@@ -184,11 +184,11 @@ TAG_PROMPTS = {
     "vagina": "spread pussy",
     "anus": "spread anus",
     "both": "spread pussy and anus",
-    "dilated_anus": "(dilated anus, anus stretched, anus gaping, realistic, detailed:1.4)",
-    "dilated_vagina": "(dilated vagina, vagina stretched, vagina gaping, realistic, detailed:1.4)",
-    "prolapsed_uterus": "(prolapsed uterus, uterus exposed, visible uterus, realistic, detailed:1.5)",
-    "prolapsed_anus": "(prolapsed anus, anus exposed, visible anus, realistic, detailed:1.5)",
-    "two_dildos_one_hole": "(two dildos inserted, two dildos into one orifice:1.5)",
+    "dilated_anus": "(dilated anus:1.5), (anus stretched:1.5), (open anus:1.5), internal view of anus, anus gaping",
+    "dilated_vagina": "(dilated vagina:1.5), (vagina stretched:1.5), (open pussy:1.5), internal view of vagina, vagina gaping, spread pussy, labia spread, realistic, detailed, high focus",
+    "prolapsed_uterus": "prolapsed uterus, uterus exposed, visible uterus",
+    "prolapsed_anus": "prolapsed anus, anus exposed, visible anus",
+    "two_dildos_one_hole": "(two dildos inserted:1.5), (two dildos into one orifice:1.5)",
     "dildo": "dildo inserted",
     "huge_dildo": "huge dildo",
     "horse_dildo": "horse dildo",
@@ -201,21 +201,21 @@ TAG_PROMPTS = {
     "doggy": "doggy style, on all fours",
     "squat": "squatting pose",
     "lying": "lying down",
-    "hor_split": "(horizontal split, legs stretched fully to sides, pelvis on floor, inner thighs visible:1.2)",
+    "hor_split": "(horizontal split:1.2), (legs stretched fully to sides:1.2), pelvis on floor, inner thighs visible",
     "ver_split": "(vertical split:1.2)",
     "on_back_legs_behind_head": "on back, legs behind head",
     "on_side_leg_up": "on side with leg raised",
-    "suspended": "Подвешена",
-    "front_facing": "(front to viewer:1.2)",
-    "back_facing": "(back to viewer:1.2)",
-    "top_down_view": "(from a top-down view:1.3)",
-    "bottom_up_view": "(from a bottom-up view:1.3)",
+    "suspended": "suspended",
+    "front_facing": "front to viewer",
+    "back_facing": "back to viewer",
+    "top_down_view": "(shot from above:1.5), (top-down view:1.5)",
+    "bottom_up_view": "(shot from below:1.5), (bottom-up view:1.5)",
     "hands_spreading_vagina": "hands spreading vagina",
     "stockings": "wearing stockings only",
     "stockings_fishnet": "fishnet stockings",
-    "bikini_tan_lines": "(bikini tan lines, no bikini, no swimsuit:1.4)",
+    "bikini_tan_lines": "bikini tan lines",
     "shibari": "shibari ropes",
-    "cow_costume": "(cow costume, cow ears, cow horns, cow tail, cow print lingerie:1.2)",
+    "cow_costume": "cow costume, cow ears, cow horns, cow tail, wearing stockings only",
     "big_breasts": "big breasts",
     "small_breasts": "small breasts",
     "body_fit": "fit body",
@@ -227,18 +227,18 @@ TAG_PROMPTS = {
     "cum": "cum covered",
     "belly_bloat": "belly bulge, pregnant looking belly",
     "succubus_tattoo": "succubus tattoo on lower abdomen",
-    "futanari": "futanari girl with large breasts",
+    "futanari": "(futanari:1.7)",
     "femboy": "male, boy, very feminine body, femboy, androgynous, flat chest, penis, testicles, thin waist, wide hips, boyish hips, no breasts",
     "ethnicity_asian": "asian girl",
     "ethnicity_european": "european girl",
-    "furry_cow": "furry cow girl",
-    "furry_cat": "furry cat girl",
-    "furry_dog": "furry dog girl",
-    "furry_dragon": "furry dragon girl",
-    "furry_sylveon": "furry sylveon, pink, ribbons, sexy",
-    "furry_fox": "furry fox girl",
-    "furry_bunny": "furry bunny girl",
-    "furry_wolf": "furry wolf girl",
+    "furry_cow": "(furry cow girl:1.2), (cow costume:1.2)",
+    "furry_cat": "(furry cat girl:1.2), (cat costume:1.2)",
+    "furry_dog": "(furry dog girl:1.2), (dog costume:1.2)",
+    "furry_dragon": "(furry dragon girl:1.2), (dragon costume:1.2)",
+    "furry_sylveon": "(furry sylveon:1.2), (sylveon costume:1.2), pink, ribbons, sexy",
+    "furry_fox": "(furry fox girl:1.2), (fox costume:1.2)",
+    "furry_bunny": "(furry bunny girl:1.2), (bunny costume:1.2)",
+    "furry_wolf": "(furry wolf girl:1.2), (wolf costume:1.2)",
     "ahegao": "ahegao face",
     "pain_face": "face in pain",
     "ecstasy_face": "ecstasy face",
@@ -247,7 +247,7 @@ TAG_PROMPTS = {
     "clitoral_piercing": "clitoral piercing",
     "foot_fetish": "foot fetish",
     "footjob": "footjob",
-    "mouth_nipples": "(mouths instead of nipples:1.8)",
+    "mouth_nipples": "(mouths instead of nipples:2.0)",
     "reshiram": "reshiram, pokemon",
     "mew": "mew, pokemon",
     "mewtwo": "mewtwo, pokemon",
@@ -329,12 +329,8 @@ def callback(call):
         prompt_info = build_prompt(tags)
         positive_prompt = prompt_info["positive_prompt"]
         negative_prompt = prompt_info["negative_prompt"]
-        truncated = prompt_info["truncated"]
-
+        
         user_settings[cid]["last_prompt_tags"] = tags.copy()
-
-        if truncated:
-            bot.send_message(cid, "⚠️ **Внимание**: Некоторые теги были отброшены из-за превышения лимита длины запроса. Попробуйте выбрать меньше тегов для лучшего результата.", parse_mode="Markdown")
 
         bot.send_message(cid, "⏳ Генерация изображения...")
         url = replicate_generate(positive_prompt, negative_prompt)
@@ -365,8 +361,7 @@ def build_prompt(tags):
     """
     Строит промпт для модели Replicate на основе выбранных тегов.
     """
-    # Автоматически добавляем промпты для видимости
-    base_positive = "masterpiece, best quality, ultra detailed, anime style, highly detailed, expressive eyes, perfect lighting, volumetric lighting, fully nude, no clothing covering chest or genitals, solo, visible breasts, visible nipples, visible vagina, visible anus"
+    base_positive = "masterpiece, best quality, ultra detailed, anime style, highly detailed, expressive eyes, perfect lighting, volumetric lighting, fully nude, no clothing covering chest or genitals, solo"
     base_negative = (
         "lowres, bad anatomy, bad hands, bad face, deformed, disfigured, "
         "poorly drawn face, poorly drawn hands, missing limbs, extra limbs, "
@@ -376,63 +371,57 @@ def build_prompt(tags):
         "extra_digit, fewer_digits, text, error, "
         "mutated hands and fingers, bad hand, malformed hands, "
         "long neck, bad nose, bad mouth, "
-        "(hands on chest:2.5), (hands covering breasts:2.5), (hands on breasts:2.5), "
+        "(hands on chest:3.0), (hands covering breasts:3.0), (hands on breasts:3.0), "
         "ugly, out of frame, censored, "
-        "shirt, dress, bra, panties, lingerie, swimsuit, bikini, "
+        "(shirt:1.5), (dress:1.5), (bra:1.5), (panties:1.5), (lingerie:1.5), (swimsuit:1.5), (bikini:1.5), "
         "(vagina not visible:1.7), (clitoris not visible:1.7), (vagina closed:1.7), "
         "missing penis, missing testicles, (femboy as girl:1.7), (breasts:1.5)"
     )
 
     positive_parts = []
-    character_tags = [tag for tag in tags if tag in TAGS["characters"]]
-    furry_tags = [tag for tag in tags if tag in TAGS["furry"]]
-    futanari_tag = "futanari" in tags
+    
+    is_futanari = "futanari" in tags
+    furry_tag = next((tag for tag in tags if tag.startswith("furry_")), None)
+    character_tags = [tag for tag in tags if tag in CHARACTER_EXTRA]
 
-    # Логика для смешения персонажей и фури
-    if character_tags and furry_tags:
-        for char_tag in character_tags:
-            char_prompt = TAG_PROMPTS.get(char_tag, char_tag)
-            for furry_tag in furry_tags:
-                furry_prompt = TAG_PROMPTS.get(furry_tag, furry_tag)
-                # Комбинируем промпты
-                positive_parts.append(f"{char_prompt}, {furry_prompt}")
-    else:
-        # Стандартная обработка, если нет смешения
-        for tag in tags:
-            prompt_segment = TAG_PROMPTS.get(tag, tag)
-            positive_parts.append(prompt_segment)
+    tags_to_process = list(tags)
 
-    # Логика для футанари-версии персонажа
-    if futanari_tag and character_tags:
-        for char_tag in character_tags:
-            char_prompt = TAG_PROMPTS.get(char_tag, char_tag)
-            # Добавляем к промпту персонажа футанари-промпт
-            positive_parts.append(f"{char_prompt}, futanari girl with large breasts")
+    # Логика для нескольких персонажей
+    if len(character_tags) > 1:
+        base_positive += ", (multiple girls:1.5)"
+    
+    # Логика для фури и футанари в сочетании с персонажами
+    if character_tags:
+        if is_futanari:
+            tags_to_process.remove("futanari")
+            base_positive += ", (futanari:1.7)"
+        if furry_tag:
+            tags_to_process.remove(furry_tag)
+            furry_prompt = TAG_PROMPTS.get(furry_tag, "")
+            base_positive += f", {furry_prompt}"
+
+    sorted_tags = sorted(tags_to_process)
+
+    for tag in sorted_tags:
+        prompt_segment = TAG_PROMPTS.get(tag, tag)
+        
+        # Специальная обработка для линий от загара
+        if tag == "bikini_tan_lines":
+            base_negative += ", (bikini:1.5)"
+
+        positive_parts.append(prompt_segment)
 
     unique_positive_parts = set(positive_parts)
 
     final_positive_prompt_str = base_positive
-    
-    # Логика для нескольких персонажей
-    if len(character_tags) > 1:
-        final_positive_prompt_str = final_positive_prompt_str.replace("solo", "multiple girls, group photo")
-
     if unique_positive_parts:
         cleaned_parts = [p for p in unique_positive_parts if p.strip()]
         if cleaned_parts:
             final_positive_prompt_str += ", " + ", ".join(cleaned_parts)
 
-    MAX_POSITIVE_PROMPT_LENGTH = 450
-    truncated = False
-
-    if len(final_positive_prompt_str) > MAX_POSITIVE_PROMPT_LENGTH:
-        truncated = True
-        final_positive_prompt_str = final_positive_prompt_str[:MAX_POSITIVE_PROMPT_LENGTH]
-
     return {
         "positive_prompt": final_positive_prompt_str,
-        "negative_prompt": base_negative,
-        "truncated": truncated
+        "negative_prompt": base_negative
     }
 
 # --- Функция для генерации изображения через Replicate ---
