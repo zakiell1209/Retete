@@ -1,4 +1,3 @@
-# --- bot.py ---
 import os
 import time
 import requests
@@ -16,11 +15,11 @@ PORT = int(os.environ.get("PORT", 5000))
 REPLICATE_MODEL = "057e2276ac5dcd8d1575dc37b131f903df9c10c41aed53d47cd7d4f068c19fa5"
 
 # Инициализация бота и Flask приложения
-bot = telebot.TeleBot(API_TOKEN) # Исправил опечатку здесь: было API_Bot
+bot = telebot.TeleBot(API_TOKEN)
 app = Flask(__name__)
 user_settings = {} # Словарь для хранения настроек пользователей
 
-# Названия категорий для меню выбора тегов
+# --- Обновленные категории ---
 CATEGORY_NAMES = {
     "holes": "Отверстия",
     "toys": "Игрушки",
@@ -30,73 +29,70 @@ CATEGORY_NAMES = {
     "ethnos": "Этнос",
     "furry": "Фури",
     "characters": "Персонажи",
-    "head": "Голова"
+    "head": "Голова",
+    "fetish": "Фетиши",  # НОВАЯ КАТЕГОРИЯ
+    "pokemon": "Покемоны"  # НОВАЯ КАТЕГОРИЯ
 }
 
-# Словарь тегов, сгруппированных по категориям
+# --- Обновленные теги с новыми добавлениями ---
 TAGS = {
     "holes": {
         "vagina": "Вагина",
-        "anal": "Анус",
+        "anus": "Анус",
         "both": "Вагина и анус",
-        "prolapsed_uterus": "Выпавшая матка", 
-        "prolapsed_anus": "Выпавший анус",     
-        "dilated_anus": "Расширенный анус",    
-        "dilated_vagina": "Расширенная киска"  
+        "dilated_anus": "Расширенный анус",
+        "dilated_vagina": "Расширенная киска",
+        "prolapsed_uterus": "Выпавшая матка",
+        "prolapsed_anus": "Выпавший анус",
+        "two_dildos_one_hole": "Два дилдо в одно отверстие"
     },
     "toys": {
         "dildo": "Дилдо",
         "huge_dildo": "Большое дилдо",
-        "horse_dildo": "Лошадиное дилдо",
-        "anal_beads": "Анальные бусы",
+        "horse_dildo": "Конский дилдо",
+        "anal_beads": "Анальные шарики",
         "anal_plug": "Анальная пробка",
-        "anal_expander": "Анальный расширитель",
-        "gag": "Кляп",
-        "piercing": "Пирсинг",
-        "long_dildo_path": "Дилдо из ануса выходит изо рта"
+        "long_dildo_path": "Дилдо сквозь все тело"
     },
     "poses": {
-        "doggy": "Наездница (догги-стайл)",
+        "doggy": "На четвереньках",
         "standing": "Стоя",
-        "splits": "Шпагат",
         "squat": "Приседание",
         "lying": "Лежа",
         "hor_split": "Горизонтальный шпагат",
         "ver_split": "Вертикальный шпагат",
-        "side_up_leg": "На боку с поднятой ногой",
-        "front_facing": "Лицом к зрителю",
-        "back_facing": "Спиной к зрителю",
-        "lying_knees_up": "Лежа с согнутыми коленями",
-        "bridge": "Мост",
-        "suspended": "Подвешена"
+        "on_back_legs_behind_head": "На спине ноги за головой",  # НОВЫЙ ТЕГ
+        "on_side_leg_up": "На боку нога вверх",  # НОВЫЙ ТЕГ
+        "suspended": "Подвешена",
+        "front_facing": "Вид спереди",
+        "back_facing": "Вид сзади",
+        "top_down_view": "Вид сверху",
+        "bottom_up_view": "Вид снизу",
+        "hands_spreading_vagina": "Руки раздвигают влагалище" # НОВЫЙ ТЕГ
     },
     "clothes": {
-        "stockings": "Чулки",
-        "bikini_tan_lines": "Загар от бикини",
-        "mask": "Маска",
-        "heels": "Каблуки",
-        "shibari": "Шибари"
+        "stockings": "Чулки обычные",
+        "stockings_fishnet": "Чулки сеточкой", # НОВЫЙ ТЕГ
+        "bikini_tan_lines": "Линии от загара в бикини",
+        "shibari": "Шибари",
+        "cow_costume": "Костюм коровы"  # НОВЫЙ ТЕГ
     },
     "body": {
         "big_breasts": "Большая грудь",
         "small_breasts": "Маленькая грудь",
-        "skin_white": "Белая кожа",
-        "skin_black": "Чёрная кожа",
-        "body_fat": "Пышное тело",
-        "body_thin": "Худое тело",
-        "body_normal": "Нормальное тело",
         "body_fit": "Подтянутое тело",
+        "body_fat": "Пышное тело",
         "body_muscular": "Мускулистое тело",
         "age_loli": "Лоли",
         "age_milf": "Милфа",
-        "age_21": "Возраст 21",
+        "age_21": "21 год",
         "cum": "Вся в сперме",
-        "belly_bloat": "Вздутие живота",
-        "succubus_tattoo": "Тату внизу живота"
+        "belly_bloat": "Вздутие живота(похоже на беременность)",
+        "succubus_tattoo": "Татуировка суккуба"
     },
     "ethnos": {
         "futanari": "Футанари",
-        "femboy": "Фембой", 
+        "femboy": "Фембой",
         "ethnicity_asian": "Азиатка",
         "ethnicity_european": "Европейка"
     },
@@ -105,94 +101,133 @@ TAGS = {
         "furry_cat": "Фури кошка",
         "furry_dog": "Фури собака",
         "furry_dragon": "Фури дракон",
-        "furry_sylveon": "Фури сильвеон",
+        "furry_sylveon": "Фури сильвеон", # Перенес сюда
         "furry_fox": "Фури лисица",
-        "furry_bunny": "Фури кролик",
+        "furry_bunny": "Фури кролик", # Обновил тег
         "furry_wolf": "Фури волчица"
-    },
-    "characters": {
-        "rias": "Риас Гремори",
-        "akeno": "Акено Химедзима",
-        "kafka": "Кафка (Хонкай)",
-        "eula": "Еола (Геншин)",
-        "fu_xuan": "Фу Сюань (Хонкай)",
-        "ayase": "Аясе Сейко"
     },
     "head": {
         "ahegao": "Ахегао",
         "pain_face": "Лицо в боли",
         "ecstasy_face": "Лицо в экстазе",
         "gold_lipstick": "Золотая помада"
+    },
+    "fetish": { # НОВАЯ КАТЕГОРИЯ
+        "nipple_piercing": "Пирсинг сосков",
+        "clitoral_piercing": "Пирсинг клитора",
+        "foot_fetish": "Футфетиш",
+        "footjob": "Футджоб",
+        "mouth_nipples": "Вместо сосков рты"
+    },
+    "pokemon": { # НОВАЯ КАТЕГОРИЯ
+        "reshiram": "Реширам",
+        "mew": "Мю",
+        "mewtwo": "Мюту",
+        "gardevoir": "Гардевуар"
+    },
+    "characters": {
+        "rias": "Риас Грегори",
+        "akeno": "Акено Химеджима",
+        "kafka": "Кафка",
+        "eula": "Еола",
+        "fu_xuan": "Фу Сюань",
+        "yor_forger": "Йор Форджер",
+        "2b_nier": "2B (NieR Automata)",
+        "esdeath": "Есдес",
+        "formidable": "Formidable",
+        "sparkle": "Искорка",
+        "acheron": "Геоцина",
+        "castoria": "Кастория",
+        "lady_dimitrescu": "Леди Димитреску",
+        "chun_li": "Чун Ли",
+        "atomic_heart_twins": "Близняшки (Atomic Heart)",
+        "yoruichi_shihoin": "Шихоин Йориичи", # Предположил Yoruichi Shihoin
+        "saber": "Сейбер",
+        "mona": "Мона",
+        "klee": "Кли",
+        "raiden_shogun": "Райден",
+        "astolfo": "Астольфо",
+        "hestia": "Гестия",
+        "lucifer_helltaker": "Люцифер (Helltaker)"
     }
 }
 
-# Дополнительные промпты для персонажей
+# --- Обновленные промпты с новыми добавлениями ---
 CHARACTER_EXTRA = {
     "rias": "red long hair, blue eyes, pale skin, large breasts, rias gremory, highschool dxd",
     "akeno": "long black hair, purple eyes, large breasts, akeno himejima, highschool dxd",
     "kafka": "purple wavy hair, cold expression, kafka, honkai star rail",
     "eula": "light blue hair, fair skin, eula, genshin impact",
     "fu_xuan": "pink hair, fu xuan, honkai star rail",
-    "ayase": "black hair, school uniform, ayase seiko"
+    "yor_forger": "yor forger, spy x family, black hair, red dress",
+    "2b_nier": "2b, nier automata, white hair, black dress",
+    "esdeath": "esdeath, akame ga kill, blue hair, military uniform, high heels",
+    "formidable": "formidable, azur lane, long white hair, dress",
+    "sparkle": "sparkle, honkai star rail, pink hair, elegant dress, theatrical",
+    "acheron": "acheron, honkai star rail, purple hair, long coat, samurai",
+    "castoria": "castoria, fate grand order, white hair, dress",
+    "lady_dimitrescu": "lady dimitrescu, resident evil, tall female, white dress, elegant hat, sharp claws, mature female",
+    "chun_li": "chun li, street fighter, muscular thighs, qipao, hair buns",
+    "atomic_heart_twins": "atomic heart twins, black outfit, white and black hair, robot",
+    "yoruichi_shihoin": "yoruichi shihoin, bleach, dark skin, purple hair", # Предположил Yoruichi Shihoin
+    "saber": "saber, artoria pendragon, fate series, blonde hair, blue dress",
+    "mona": "mona, genshin impact, black hair, leotard, golden headdress",
+    "klee": "klee, genshin impact, blonde hair, red dress, explosive",
+    "raiden_shogun": "raiden shogun, genshin impact, purple hair, kimono, electro archon",
+    "astolfo": "astolfo, fate series, pink hair, femboy, androgynous",
+    "hestia": "hestia, danmachi, black hair, blue ribbons, white dress",
+    "lucifer_helltaker": "lucifer, helltaker, long black hair, business suit"
 }
 
-# Полный список промптов для тегов
 TAG_PROMPTS = {
     **CHARACTER_EXTRA,
     "vagina": "spread pussy",
-    "anal": "spread anus",
+    "anus": "spread anus",
     "both": "spread pussy and anus",
-    "prolapsed_uterus": "prolapsed uterus, uterus exposed, visible uterus", 
-    "prolapsed_anus": "prolapsed anus, anus exposed, visible anus",         
-    "dilated_anus": "dilated anus, anus stretched, internal view of anus, anus gaping", 
-    "dilated_vagina": "dilated vagina, vagina stretched, internal view of vagina, vagina gaping, spread pussy, labia spread, realistic, detailed, high focus", 
+    "dilated_anus": "dilated anus, anus stretched, internal view of anus, anus gaping",
+    "dilated_vagina": "dilated vagina, vagina stretched, internal view of vagina, vagina gaping, spread pussy, labia spread, realistic, detailed, high focus",
+    "prolapsed_uterus": "prolapsed uterus, uterus exposed, visible uterus",
+    "prolapsed_anus": "prolapsed anus, anus exposed, visible anus",
+    "two_dildos_one_hole": "two dildos inserted, two dildos into one orifice",  # НОВЫЙ ТЕГ
     "dildo": "dildo inserted",
     "huge_dildo": "huge dildo",
     "horse_dildo": "horse dildo",
     "anal_beads": "anal beads inserted",
     "anal_plug": "anal plug",
-    "anal_expander": "anal expander stretching anus",
-    "gag": "ball gag",
-    "piercing": "nipple and genital piercings",
     "long_dildo_path": (
         "dildo inserted into anus, pushing visibly through intestines with clear belly bulge, "
         "exiting from mouth, seamless and continuous dildo, consistent texture, realistic rubber"
     ),
-    "doggy": "doggy style",
-    "standing": "standing pose",
-    "splits": "doing a split",
-    "hor_split": (
-        "horizontal split, legs stretched fully to sides, pelvis on floor, thighs spread open, "
-        "inner thighs visible, high detail"
-    ),
+    "doggy": "doggy style, on all fours",
+    "squat": "squatting pose",
+    "lying": "lying down",
+    "hor_split": "horizontal split, legs stretched fully to sides, pelvis on floor, inner thighs visible",
     "ver_split": "vertical split",
-    "side_up_leg": "on side with leg raised",
-    "front_facing": "facing viewer",
+    "on_back_legs_behind_head": "on back, legs behind head",  # НОВЫЙ ТЕГ
+    "on_side_leg_up": "on side with leg raised",
+    "front_facing": "front to viewer",
     "back_facing": "back to viewer",
-    "lying_knees_up": "legs up, knees bent",
-    "bridge": "arched back bridge pose",
-    "suspended": "suspended by ropes",
+    "top_down_view": "from a top-down view",
+    "bottom_up_view": "from a bottom-up view",
+    "hands_spreading_vagina": "hands spreading vagina",  # НОВЫЙ ТЕГ
     "stockings": "wearing stockings only",
-    "mask": "mask on face",
-    "heels": "high heels with red soles",
+    "stockings_fishnet": "fishnet stockings", # НОВЫЙ ТЕГ
+    "bikini_tan_lines": "bikini tan lines",
     "shibari": "shibari ropes",
+    "cow_costume": "cow costume, cow ears, cow horns, cow tail",  # НОВЫЙ ТЕГ
     "big_breasts": "big breasts",
     "small_breasts": "small breasts",
-    "skin_white": "white skin",
-    "skin_black": "black skin",
-    "body_fat": "curvy body",
-    "body_thin": "thin body",
-    "body_normal": "average body",
     "body_fit": "fit body",
+    "body_fat": "curvy body",
     "body_muscular": "muscular body",
     "age_loli": "loli",
     "age_milf": "milf",
     "age_21": "age 21",
     "cum": "cum covered",
-    "belly_bloat": "belly bulge from toy",
+    "belly_bloat": "belly bulge, pregnant looking belly",
     "succubus_tattoo": "succubus tattoo on lower abdomen",
     "futanari": "futanari girl with large breasts",
-    "femboy": "male, boy, very feminine body, femboy, androgynous, flat chest, penis, testicles, thin waist, wide hips, boyish hips, no breasts", 
+    "femboy": "male, boy, very feminine body, femboy, androgynous, flat chest, penis, testicles, thin waist, wide hips, boyish hips, no breasts",
     "ethnicity_asian": "asian girl",
     "ethnicity_european": "european girl",
     "furry_cow": "furry cow girl",
@@ -206,7 +241,16 @@ TAG_PROMPTS = {
     "ahegao": "ahegao face",
     "pain_face": "face in pain",
     "ecstasy_face": "ecstasy face",
-    "gold_lipstick": "gold lipstick"
+    "gold_lipstick": "gold lipstick",
+    "nipple_piercing": "nipple piercing", # НОВЫЙ ТЕГ
+    "clitoral_piercing": "clitoral piercing", # НОВЫЙ ТЕГ
+    "foot_fetish": "foot fetish", # НОВЫЙ ТЕГ
+    "footjob": "footjob", # НОВЫЙ ТЕГ
+    "mouth_nipples": "mouths instead of nipples", # НОВЫЙ ТЕГ
+    "reshiram": "reshiram, pokemon", # НОВЫЙ ТЕГ
+    "mew": "mew, pokemon", # НОВЫЙ ТЕГ
+    "mewtwo": "mewtwo, pokemon", # НОВЫЙ ТЕГ
+    "gardevoir": "gardevoir, pokemon" # НОВЫЙ ТЕГ
 }
 
 # --- Функции для создания клавиатур ---
@@ -281,7 +325,7 @@ def callback(call):
         if not tags:
             bot.send_message(cid, "Сначала выбери теги!")
             return
-        
+
         # Строим промпт и получаем информацию о его усечении
         prompt_info = build_prompt(tags)
         positive_prompt = prompt_info["positive_prompt"]
@@ -289,14 +333,14 @@ def callback(call):
         truncated = prompt_info["truncated"] # Флаг усечения позитивного промпта
 
         # Сохраняем исходные выбранные теги для кнопки "Изменить теги"
-        user_settings[cid]["last_prompt_tags"] = tags.copy() 
-        
+        user_settings[cid]["last_prompt_tags"] = tags.copy()
+
         if truncated:
             bot.send_message(cid, "⚠️ **Внимание**: Некоторые теги были отброшены из-за превышения лимита длины запроса. Попробуйте выбрать меньше тегов для лучшего результата.", parse_mode="Markdown")
-        
+
         bot.send_message(cid, "⏳ Генерация изображения...")
         # Передаем ОБА промпта в функцию генерации
-        url = replicate_generate(positive_prompt, negative_prompt) 
+        url = replicate_generate(positive_prompt, negative_prompt)
         if url:
             kb = types.InlineKeyboardMarkup()
             kb.add(
@@ -330,7 +374,7 @@ def build_prompt(tags):
     # Базовый позитивный промпт: максимально минимальный, чтобы не конфликтовать с внутренними промптами модели.
     # Фокусируемся только на качестве и стиле.
     base_positive = "masterpiece, best quality, ultra detailed, anime style, highly detailed, expressive eyes, perfect lighting, volumetric lighting, fully nude, no clothing covering chest or genitals, solo"
-    
+
     # Базовый негативный промпт: что модель ДОЛЖНА ИЗБЕГАТЬ.
     base_negative = (
         "lowres, bad anatomy, bad hands, bad face, deformed, disfigured, "
@@ -341,37 +385,37 @@ def build_prompt(tags):
         "extra_digit, fewer_digits, text, error, "
         "mutated hands and fingers, bad hand, malformed hands, "
         "long neck, bad nose, bad mouth, "
-        "(extra legs:1.7), (extra arms:1.7), (multiple heads:1.7), " 
-        "(hands on chest:2.5), (hands covering breasts:2.5), (hands covering crotch:2.5), " 
+        "(extra legs:1.7), (extra arms:1.7), (multiple heads:1.7), "
+        "(hands on chest:2.5), (hands covering breasts:2.5), (hands covering crotch:2.5), "
         "ugly, out of frame, censored, "
-        "(vagina not visible:1.7), (clitoris not visible:1.7), (vagina closed:1.7), " 
+        "(vagina not visible:1.7), (clitoris not visible:1.7), (vagina closed:1.7), "
         "missing penis, missing testicles, (femboy as girl:1.7), (breasts:1.5)"
     )
 
     positive_parts = []
     sorted_tags = sorted(tags)
-    
+
     for tag in sorted_tags:
         prompt_segment = TAG_PROMPTS.get(tag, tag)
         positive_parts.append(prompt_segment)
-    
+
     unique_positive_parts = set(positive_parts)
-    
+
     final_positive_prompt_str = base_positive
     if unique_positive_parts:
         cleaned_parts = [p for p in unique_positive_parts if p.strip()]
         if cleaned_parts:
             final_positive_prompt_str += ", " + ", ".join(cleaned_parts)
 
-    MAX_POSITIVE_PROMPT_LENGTH = 450 
-    truncated = False 
+    MAX_POSITIVE_PROMPT_LENGTH = 450
+    truncated = False
 
     if len(final_positive_prompt_str) > MAX_POSITIVE_PROMPT_LENGTH:
         truncated = True
         final_positive_prompt_str = final_positive_prompt_str[:MAX_POSITIVE_PROMPT_LENGTH]
-    
+
     return {
-        "positive_prompt": final_positive_prompt_str, 
+        "positive_prompt": final_positive_prompt_str,
         "negative_prompt": base_negative,
         "truncated": truncated
     }
@@ -392,23 +436,23 @@ def replicate_generate(positive_prompt, negative_prompt):
         "input": {
             "prompt": positive_prompt,
             "negative_prompt": negative_prompt,
-            "prepend_preprompt": False # ВОТ ЭТО ГЛАВНОЕ ИЗМЕНЕНИЕ! Отключаем дефолтные промпты Replicate.
+            "prepend_preprompt": False
         }
     }
-    
+
     # Отправка запроса на создание предсказания
     r = requests.post(url, headers=headers, json=json_data)
     if r.status_code != 201:
         print(f"Ошибка при отправке предсказания: {r.status_code} - {r.text}")
-        print(f"Request JSON: {json_data}") 
-        print(f"Response: {r.text}") 
+        print(f"Request JSON: {json_data}")
+        print(f"Response: {r.text}")
         return None
-    
-    status_url = r.json()["urls"]["get"] 
+
+    status_url = r.json()["urls"]["get"]
 
     # Ожидание завершения генерации (до 3 минут)
-    for i in range(90): 
-        time.sleep(2) 
+    for i in range(90):
+        time.sleep(2)
         r = requests.get(status_url, headers=headers)
         if r.status_code != 200:
             print(f"Ошибка при получении статуса предсказания: {r.status_code} - {r.text}")
@@ -418,9 +462,9 @@ def replicate_generate(positive_prompt, negative_prompt):
             return data["output"][0] if isinstance(data["output"], list) and data["output"] else None
         elif data["status"] == "failed":
             print(f"Предсказание не удалось: {data.get('error', 'Сообщение об ошибке не предоставлено')}")
-            print(f"Request JSON: {json_data}") 
+            print(f"Request JSON: {json_data}")
             return None
-    
+
     print("Время ожидания предсказания истекло.")
     return None
 
