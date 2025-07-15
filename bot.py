@@ -11,8 +11,8 @@ REPLICATE_TOKEN = os.getenv("REPLICATE_API_TOKEN")
 WEBHOOK_URL = os.getenv("WEBHOOK_URL")
 PORT = int(os.environ.get("PORT", 5000))
 
-# ID модели Replicate, которую вы используете
-REPLICATE_MODEL = "057e2276ac5dcd8d1575dc37b131f903df9c10c41aed53d47cd7d4f068c19fa5"
+# ID новой модели Replicate, которую вы используете
+REPLICATE_MODEL = "e28ab49ae4c4fb92f9646c221d2aec239cbd461f1bcbee45c8e792aa8c95e133"
 
 # Инициализация бота и Flask приложения
 bot = telebot.TeleBot(API_TOKEN)
@@ -30,8 +30,8 @@ CATEGORY_NAMES = {
     "furry": "Фури",
     "characters": "Персонажи",
     "head": "Голова",
-    "fetish": "Фетиши",  # НОВАЯ КАТЕГОРИЯ
-    "pokemon": "Покемоны"  # НОВАЯ КАТЕГОРИЯ
+    "fetish": "Фетиши",
+    "pokemon": "Покемоны"
 }
 
 # --- Обновленные теги с новыми добавлениями ---
@@ -61,21 +61,21 @@ TAGS = {
         "lying": "Лежа",
         "hor_split": "Горизонтальный шпагат",
         "ver_split": "Вертикальный шпагат",
-        "on_back_legs_behind_head": "На спине ноги за головой",  # НОВЫЙ ТЕГ
-        "on_side_leg_up": "На боку нога вверх",  # НОВЫЙ ТЕГ
+        "on_back_legs_behind_head": "На спине ноги за головой",
+        "on_side_leg_up": "На боку нога вверх",
         "suspended": "Подвешена",
         "front_facing": "Вид спереди",
         "back_facing": "Вид сзади",
         "top_down_view": "Вид сверху",
         "bottom_up_view": "Вид снизу",
-        "hands_spreading_vagina": "Руки раздвигают влагалище" # НОВЫЙ ТЕГ
+        "hands_spreading_vagina": "Руки раздвигают влагалище"
     },
     "clothes": {
         "stockings": "Чулки обычные",
-        "stockings_fishnet": "Чулки сеточкой", # НОВЫЙ ТЕГ
+        "stockings_fishnet": "Чулки сеточкой",
         "bikini_tan_lines": "Линии от загара в бикини",
         "shibari": "Шибари",
-        "cow_costume": "Костюм коровы"  # НОВЫЙ ТЕГ
+        "cow_costume": "Костюм коровы"
     },
     "body": {
         "big_breasts": "Большая грудь",
@@ -101,9 +101,9 @@ TAGS = {
         "furry_cat": "Фури кошка",
         "furry_dog": "Фури собака",
         "furry_dragon": "Фури дракон",
-        "furry_sylveon": "Фури сильвеон", # Перенес сюда
+        "furry_sylveon": "Фури сильвеон",
         "furry_fox": "Фури лисица",
-        "furry_bunny": "Фури кролик", # Обновил тег
+        "furry_bunny": "Фури кролик",
         "furry_wolf": "Фури волчица"
     },
     "head": {
@@ -112,14 +112,14 @@ TAGS = {
         "ecstasy_face": "Лицо в экстазе",
         "gold_lipstick": "Золотая помада"
     },
-    "fetish": { # НОВАЯ КАТЕГОРИЯ
+    "fetish": {
         "nipple_piercing": "Пирсинг сосков",
         "clitoral_piercing": "Пирсинг клитора",
         "foot_fetish": "Футфетиш",
         "footjob": "Футджоб",
         "mouth_nipples": "Вместо сосков рты"
     },
-    "pokemon": { # НОВАЯ КАТЕГОРИЯ
+    "pokemon": {
         "reshiram": "Реширам",
         "mew": "Мю",
         "mewtwo": "Мюту",
@@ -141,7 +141,7 @@ TAGS = {
         "lady_dimitrescu": "Леди Димитреску",
         "chun_li": "Чун Ли",
         "atomic_heart_twins": "Близняшки (Atomic Heart)",
-        "yoruichi_shihoin": "Шихоин Йориичи", # Предположил Yoruichi Shihoin
+        "yoruichi_shihoin": "Шихоин Йориичи",
         "saber": "Сейбер",
         "mona": "Мона",
         "klee": "Кли",
@@ -169,7 +169,7 @@ CHARACTER_EXTRA = {
     "lady_dimitrescu": "lady dimitrescu, resident evil, tall female, white dress, elegant hat, sharp claws, mature female",
     "chun_li": "chun li, street fighter, muscular thighs, qipao, hair buns",
     "atomic_heart_twins": "atomic heart twins, black outfit, white and black hair, robot",
-    "yoruichi_shihoin": "yoruichi shihoin, bleach, dark skin, purple hair", # Предположил Yoruichi Shihoin
+    "yoruichi_shihoin": "yoruichi shihoin, bleach, dark skin, purple hair",
     "saber": "saber, artoria pendragon, fate series, blonde hair, blue dress",
     "mona": "mona, genshin impact, black hair, leotard, golden headdress",
     "klee": "klee, genshin impact, blonde hair, red dress, explosive",
@@ -188,7 +188,7 @@ TAG_PROMPTS = {
     "dilated_vagina": "dilated vagina, vagina stretched, internal view of vagina, vagina gaping, spread pussy, labia spread, realistic, detailed, high focus",
     "prolapsed_uterus": "prolapsed uterus, uterus exposed, visible uterus",
     "prolapsed_anus": "prolapsed anus, anus exposed, visible anus",
-    "two_dildos_one_hole": "two dildos inserted, two dildos into one orifice",  # НОВЫЙ ТЕГ
+    "two_dildos_one_hole": "two dildos inserted, two dildos into one orifice",
     "dildo": "dildo inserted",
     "huge_dildo": "huge dildo",
     "horse_dildo": "horse dildo",
@@ -203,18 +203,18 @@ TAG_PROMPTS = {
     "lying": "lying down",
     "hor_split": "horizontal split, legs stretched fully to sides, pelvis on floor, inner thighs visible",
     "ver_split": "vertical split",
-    "on_back_legs_behind_head": "on back, legs behind head",  # НОВЫЙ ТЕГ
+    "on_back_legs_behind_head": "on back, legs behind head",
     "on_side_leg_up": "on side with leg raised",
     "front_facing": "front to viewer",
     "back_facing": "back to viewer",
     "top_down_view": "from a top-down view",
     "bottom_up_view": "from a bottom-up view",
-    "hands_spreading_vagina": "hands spreading vagina",  # НОВЫЙ ТЕГ
+    "hands_spreading_vagina": "hands spreading vagina",
     "stockings": "wearing stockings only",
-    "stockings_fishnet": "fishnet stockings", # НОВЫЙ ТЕГ
+    "stockings_fishnet": "fishnet stockings",
     "bikini_tan_lines": "bikini tan lines",
     "shibari": "shibari ropes",
-    "cow_costume": "cow costume, cow ears, cow horns, cow tail",  # НОВЫЙ ТЕГ
+    "cow_costume": "cow costume, cow ears, cow horns, cow tail",
     "big_breasts": "big breasts",
     "small_breasts": "small breasts",
     "body_fit": "fit body",
@@ -242,15 +242,15 @@ TAG_PROMPTS = {
     "pain_face": "face in pain",
     "ecstasy_face": "ecstasy face",
     "gold_lipstick": "gold lipstick",
-    "nipple_piercing": "nipple piercing", # НОВЫЙ ТЕГ
-    "clitoral_piercing": "clitoral piercing", # НОВЫЙ ТЕГ
-    "foot_fetish": "foot fetish", # НОВЫЙ ТЕГ
-    "footjob": "footjob", # НОВЫЙ ТЕГ
-    "mouth_nipples": "mouths instead of nipples", # НОВЫЙ ТЕГ
-    "reshiram": "reshiram, pokemon", # НОВЫЙ ТЕГ
-    "mew": "mew, pokemon", # НОВЫЙ ТЕГ
-    "mewtwo": "mewtwo, pokemon", # НОВЫЙ ТЕГ
-    "gardevoir": "gardevoir, pokemon" # НОВЫЙ ТЕГ
+    "nipple_piercing": "nipple piercing",
+    "clitoral_piercing": "clitoral piercing",
+    "foot_fetish": "foot fetish",
+    "footjob": "footjob",
+    "mouth_nipples": "mouths instead of nipples",
+    "reshiram": "reshiram, pokemon",
+    "mew": "mew, pokemon",
+    "mewtwo": "mewtwo, pokemon",
+    "gardevoir": "gardevoir, pokemon"
 }
 
 # --- Функции для создания клавиатур ---
@@ -283,35 +283,34 @@ def tag_menu(category, selected_tags):
 def start(msg):
     """Обработчик команды /start."""
     cid = msg.chat.id
-    user_settings[cid] = {"tags": [], "last_cat": None} # Инициализация настроек пользователя
+    user_settings[cid] = {"tags": [], "last_cat": None}
     bot.send_message(cid, "Привет! Что делаем?", reply_markup=main_menu())
 
 @bot.callback_query_handler(func=lambda call: True)
 def callback(call):
     """Общий обработчик для всех кнопок колбэка."""
     cid = call.message.chat.id
-    # Убедимся, что настройки для пользователя существуют
     if cid not in user_settings:
         user_settings[cid] = {"tags": [], "last_cat": None}
 
-    data = call.data # Данные из колбэка кнопки
+    data = call.data
 
     if data == "choose_tags":
         bot.edit_message_text("Выбери категорию тегов:", cid, call.message.message_id, reply_markup=category_menu())
 
     elif data.startswith("cat_"):
-        cat = data[4:] # Извлекаем название категории
-        user_settings[cid]["last_cat"] = cat # Сохраняем последнюю выбранную категорию
-        selected = user_settings[cid]["tags"] # Текущие выбранные теги
+        cat = data[4:]
+        user_settings[cid]["last_cat"] = cat
+        selected = user_settings[cid]["tags"]
         bot.edit_message_text(f"Категория: {CATEGORY_NAMES[cat]}", cid, call.message.message_id, reply_markup=tag_menu(cat, selected))
 
     elif data.startswith("tag_"):
-        _, cat, tag = data.split("_", 2) # Извлекаем категорию и тег
+        _, cat, tag = data.split("_", 2)
         tags = user_settings[cid]["tags"]
         if tag in tags:
-            tags.remove(tag) # Если тег уже выбран, удаляем его
+            tags.remove(tag)
         else:
-            tags.append(tag) # Иначе добавляем
+            tags.append(tag)
         bot.edit_message_reply_markup(cid, call.message.message_id, reply_markup=tag_menu(cat, tags))
 
     elif data == "done_tags":
@@ -326,20 +325,17 @@ def callback(call):
             bot.send_message(cid, "Сначала выбери теги!")
             return
 
-        # Строим промпт и получаем информацию о его усечении
         prompt_info = build_prompt(tags)
         positive_prompt = prompt_info["positive_prompt"]
         negative_prompt = prompt_info["negative_prompt"]
-        truncated = prompt_info["truncated"] # Флаг усечения позитивного промпта
+        truncated = prompt_info["truncated"]
 
-        # Сохраняем исходные выбранные теги для кнопки "Изменить теги"
         user_settings[cid]["last_prompt_tags"] = tags.copy()
 
         if truncated:
             bot.send_message(cid, "⚠️ **Внимание**: Некоторые теги были отброшены из-за превышения лимита длины запроса. Попробуйте выбрать меньше тегов для лучшего результата.", parse_mode="Markdown")
 
         bot.send_message(cid, "⏳ Генерация изображения...")
-        # Передаем ОБА промпта в функцию генерации
         url = replicate_generate(positive_prompt, negative_prompt)
         if url:
             kb = types.InlineKeyboardMarkup()
@@ -353,7 +349,6 @@ def callback(call):
             bot.send_message(cid, "❌ Ошибка генерации. Пожалуйста, попробуйте еще раз.")
 
     elif data == "edit_tags":
-        # Загружаем последние использованные теги для редактирования
         if "last_prompt_tags" in user_settings[cid]:
             user_settings[cid]["tags"] = user_settings[cid]["last_prompt_tags"]
             bot.send_message(cid, "Изменяем теги, использованные в предыдущей генерации:", reply_markup=category_menu())
@@ -361,7 +356,6 @@ def callback(call):
             bot.send_message(cid, "Нет сохранённых тегов с предыдущей генерации. Сначала сделай генерацию.")
 
     elif data == "start":
-        # Сброс настроек пользователя и возвращение в главное меню
         user_settings[cid] = {"tags": [], "last_cat": None}
         bot.send_message(cid, "Настройки сброшены. Начнем заново!", reply_markup=main_menu())
 
@@ -369,13 +363,8 @@ def callback(call):
 def build_prompt(tags):
     """
     Строит промпт для модели Replicate на основе выбранных тегов.
-    Формирует позитивный и негативный части промпта для новой модели.
     """
-    # Базовый позитивный промпт: максимально минимальный, чтобы не конфликтовать с внутренними промптами модели.
-    # Фокусируемся только на качестве и стиле.
     base_positive = "masterpiece, best quality, ultra detailed, anime style, highly detailed, expressive eyes, perfect lighting, volumetric lighting, fully nude, no clothing covering chest or genitals, solo"
-
-    # Базовый негативный промпт: что модель ДОЛЖНА ИЗБЕГАТЬ.
     base_negative = (
         "lowres, bad anatomy, bad hands, bad face, deformed, disfigured, "
         "poorly drawn face, poorly drawn hands, missing limbs, extra limbs, "
@@ -424,7 +413,7 @@ def build_prompt(tags):
 def replicate_generate(positive_prompt, negative_prompt):
     """
     Отправляет запрос на генерацию изображения в Replicate API, используя
-    отдельные позитивный и негативный промпты, и ожидает результат.
+    оптимальные настройки для достижения максимальной точности.
     """
     url = "https://api.replicate.com/v1/predictions"
     headers = {
@@ -436,7 +425,16 @@ def replicate_generate(positive_prompt, negative_prompt):
         "input": {
             "prompt": positive_prompt,
             "negative_prompt": negative_prompt,
-            "prepend_preprompt": False
+            "prepend_preprompt": False,
+            "width": 1024,
+            "height": 1024,
+            "steps": 50,
+            "guidance_scale": 12,
+            "refiner": True,
+            "scheduler": "DPM++ 2M SDE Karras",
+            "adetailer_face": True,
+            "adetailer_hand": True,
+            "seed": -1 # -1 для случайного сида
         }
     }
 
@@ -445,7 +443,6 @@ def replicate_generate(positive_prompt, negative_prompt):
     if r.status_code != 201:
         print(f"Ошибка при отправке предсказания: {r.status_code} - {r.text}")
         print(f"Request JSON: {json_data}")
-        print(f"Response: {r.text}")
         return None
 
     status_url = r.json()["urls"]["get"]
