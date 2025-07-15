@@ -205,6 +205,7 @@ TAG_PROMPTS = {
     "ver_split": "vertical split",
     "on_back_legs_behind_head": "on back, legs behind head",
     "on_side_leg_up": "on side with leg raised",
+    "suspended": "Подвешена",
     "front_facing": "front to viewer",
     "back_facing": "back to viewer",
     "top_down_view": "from a top-down view",
@@ -374,9 +375,9 @@ def build_prompt(tags):
         "extra_digit, fewer_digits, text, error, "
         "mutated hands and fingers, bad hand, malformed hands, "
         "long neck, bad nose, bad mouth, "
-        "(extra legs:1.7), (extra arms:1.7), (multiple heads:1.7), "
-        "(hands on chest:2.5), (hands covering breasts:2.5), (hands covering crotch:2.5), "
+        "(hands on chest:2.5), (hands covering breasts:2.5), (hands on breasts:2.5), "
         "ugly, out of frame, censored, "
+        "shirt, dress, bra, panties, lingerie, swimsuit, bikini, "
         "(vagina not visible:1.7), (clitoris not visible:1.7), (vagina closed:1.7), "
         "missing penis, missing testicles, (femboy as girl:1.7), (breasts:1.5)"
     )
@@ -429,7 +430,7 @@ def replicate_generate(positive_prompt, negative_prompt):
             "width": 1024,
             "height": 1024,
             "steps": 50,
-            "guidance_scale": 12,
+            "guidance_scale": 15,
             "scheduler": "DPM++ 2M SDE Karras",
             "adetailer_face": True,
             "adetailer_hand": True,
