@@ -154,29 +154,29 @@ TAGS = {
 
 # --- Промпты для модели ---
 CHARACTER_EXTRA = {
-    "rias": "red long hair, blue eyes, pale skin, large breasts, rias gremory, highschool dxd",
-    "akeno": "long black hair, purple eyes, large breasts, akeno himejima, highschool dxd",
-    "kafka": "purple wavy hair, cold expression, kafka, honkai star rail",
-    "eula": "light blue hair, fair skin, eula, genshin impact",
-    "fu_xuan": "pink hair, fu xuan, honkai star rail",
-    "yor_forger": "yor forger, spy x family, black hair, red dress",
-    "2b_nier": "2b, nier automata, white hair, black dress",
-    "esdeath": "esdeath, akame ga kill, blue hair, military uniform, high heels",
-    "formidable": "formidable, azur lane, long white hair, dress",
-    "sparkle": "sparkle, honkai star rail, pink hair, elegant dress, theatrical",
-    "acheron": "(acheron:1.2), (honkai star rail:1.2), purple hair, long coat, samurai",
-    "castoria": "(castoria:1.2), (fate grand order:1.2), white hair, dress, long sleeves",
-    "lady_dimitrescu": "lady dimitrescu, resident evil, tall female, white dress, elegant hat, sharp claws, mature female",
-    "chun_li": "chun li, street fighter, muscular thighs, qipao, hair buns",
+    "rias": "(rias gremory:1.3), red long hair, blue eyes, pale skin, large breasts, highschool dxd",
+    "akeno": "(akeno himejima:1.3), long black hair, purple eyes, large breasts, highschool dxd",
+    "kafka": "(kafka:1.3), purple wavy hair, cold expression, honkai star rail",
+    "eula": "(eula:1.3), light blue hair, fair skin, genshin impact",
+    "fu_xuan": "(fu xuan:1.3), pink hair, honkai star rail",
+    "yor_forger": "(yor forger:1.3), spy x family, black hair, red dress",
+    "2b_nier": "(2b:1.3), nier automata, white hair, black dress",
+    "esdeath": "(esdeath:1.3), akame ga kill, blue hair, military uniform, high heels",
+    "formidable": "(formidable:1.3), azur lane, long white hair, dress",
+    "sparkle": "(sparkle:1.3), honkai star rail, pink hair, elegant dress, theatrical",
+    "acheron": "(acheron:1.3), (honkai star rail:1.3), purple hair, long coat, samurai",
+    "castoria": "(castoria:1.3), (fate grand order:1.3), white hair, dress, long sleeves",
+    "lady_dimitrescu": "(lady dimitrescu:1.3), resident evil, tall female, white dress, elegant hat, sharp claws, mature female",
+    "chun_li": "(chun li:1.3), street fighter, muscular thighs, qipao, hair buns",
     "atomic_heart_twins": "(robot:1.5), (twin sisters:1.5), (black bodysuit:1.5), (black hair, white hair:1.5), atomic heart",
-    "yoruichi_shihoin": "yoruichi shihoin, bleach, dark skin, purple hair",
-    "saber": "saber, artoria pendragon, fate series, blonde hair, blue dress",
-    "mona": "mona, genshin impact, black hair, leotard, golden headdress",
-    "klee": "klee, genshin impact, blonde hair, red dress, explosive",
-    "raiden_shogun": "raiden shogun, genshin impact, purple hair, kimono, electro archon",
-    "astolfo": "astolfo, fate series, pink hair, femboy, androgynous",
-    "hestia": "hestia, danmachi, black hair, blue ribbons, white dress",
-    "lucifer_helltaker": "lucifer, helltaker, long black hair, business suit"
+    "yoruichi_shihoin": "(yoruichi shihoin:1.3), bleach, dark skin, purple hair",
+    "saber": "(saber:1.3), artoria pendragon, fate series, blonde hair, blue dress",
+    "mona": "(mona:1.3), genshin impact, black hair, leotard, golden headdress",
+    "klee": "(klee:1.3), genshin impact, blonde hair, red dress, explosive",
+    "raiden_shogun": "(raiden shogun:1.3), genshin impact, purple hair, kimono, electro archon",
+    "astolfo": "(astolfo:1.3), fate series, pink hair, femboy, androgynous",
+    "hestia": "(hestia:1.3), danmachi, black hair, blue ribbons, white dress",
+    "lucifer_helltaker": "(lucifer:1.3), helltaker, long black hair, business suit"
 }
 
 TAG_PROMPTS = {
@@ -198,11 +198,11 @@ TAG_PROMPTS = {
         "dildo inserted into anus, pushing visibly through intestines with clear belly bulge, "
         "exiting from mouth, seamless and continuous dildo, consistent texture, realistic rubber"
     ),
-    "doggy": "doggy style, on all fours",
-    "squat": "squatting pose",
+    "doggy": "(doggy style:1.2), (on all fours:1.2), (hands on floor:1.5)",
+    "squat": "(squatting pose:1.2), (hands behind head:1.5)",
     "lying": "lying down",
     "hor_split": "(horizontal split:1.2), (legs stretched fully to sides:1.2), pelvis on floor, inner thighs visible",
-    "ver_split": "(vertical split:1.2)",
+    "ver_split": "(vertical split:1.2), (holding own raised leg:1.5)",
     "on_back_legs_behind_head": "on back, legs behind head",
     "on_side_leg_up": "on side with leg raised",
     "suspended": "suspended",
@@ -374,6 +374,7 @@ def build_prompt(tags):
         "(hands on chest:3.0), (hands covering breasts:3.0), (hands on breasts:3.0), "
         "ugly, out of frame, censored, "
         "(shirt:1.5), (dress:1.5), (bra:1.5), (panties:1.5), (lingerie:1.5), (swimsuit:1.5), (bikini:1.5), "
+        "(skirt:1.5), (jacket:1.5), (t-shirt:1.5), (shorts:1.5), (jeans:1.5), "
         "(vagina not visible:1.7), (clitoris not visible:1.7), (vagina closed:1.7), "
         "missing penis, missing testicles, (femboy as girl:1.7), (breasts:1.5)"
     )
