@@ -154,29 +154,29 @@ TAGS = {
 
 # --- Промпты для модели ---
 CHARACTER_EXTRA = {
-    "rias": "(rias gremory:1.3), red long hair, blue eyes, pale skin, large breasts, highschool dxd",
-    "akeno": "(akeno himejima:1.3), long black hair, purple eyes, large breasts, highschool dxd",
-    "kafka": "(kafka:1.3), purple wavy hair, cold expression, honkai star rail",
-    "eula": "(eula:1.3), light blue hair, fair skin, genshin impact",
-    "fu_xuan": "(fu xuan:1.3), pink hair, honkai star rail",
-    "yor_forger": "(yor forger:1.3), spy x family, black hair, red dress",
-    "2b_nier": "(2b:1.3), nier automata, white hair, black dress",
-    "esdeath": "(esdeath:1.3), akame ga kill, blue hair, military uniform, high heels",
-    "formidable": "(formidable:1.3), azur lane, long white hair, dress",
-    "sparkle": "(sparkle:1.3), honkai star rail, pink hair, elegant dress, theatrical",
-    "acheron": "(acheron:1.3), (honkai star rail:1.3), purple hair, long coat, samurai",
-    "castoria": "(castoria:1.3), (fate grand order:1.3), white hair, dress, long sleeves",
-    "lady_dimitrescu": "(lady dimitrescu:1.3), resident evil, tall female, white dress, elegant hat, sharp claws, mature female",
-    "chun_li": "(chun li:1.3), street fighter, muscular thighs, qipao, hair buns",
-    "atomic_heart_twins": "(robot:1.5), (twin sisters:1.5), (black bodysuit:1.5), (black hair, white hair:1.5), atomic heart",
-    "yoruichi_shihoin": "(yoruichi shihoin:1.3), bleach, dark skin, purple hair",
-    "saber": "(saber:1.3), artoria pendragon, fate series, blonde hair, blue dress",
-    "mona": "(mona:1.3), genshin impact, black hair, leotard, golden headdress",
-    "klee": "(klee:1.3), genshin impact, blonde hair, red dress, explosive",
-    "raiden_shogun": "(raiden shogun:1.3), genshin impact, purple hair, kimono, electro archon",
-    "astolfo": "(astolfo:1.3), fate series, pink hair, femboy, androgynous",
-    "hestia": "(hestia:1.3), danmachi, black hair, blue ribbons, white dress",
-    "lucifer_helltaker": "(lucifer:1.3), helltaker, long black hair, business suit"
+    "rias": "rias gremory, red long hair, blue eyes, pale skin, large breasts, highschool dxd",
+    "akeno": "akeno himejima, long black hair, purple eyes, large breasts, highschool dxd",
+    "kafka": "kafka, purple wavy hair, cold expression, honkai star rail",
+    "eula": "eula, light blue hair, fair skin, genshin impact",
+    "fu_xuan": "fu xuan, pink hair, honkai star rail",
+    "yor_forger": "yor forger, spy x family, black hair, red dress",
+    "2b_nier": "2b, nier automata, white hair, black dress",
+    "esdeath": "esdeath, akame ga kill, blue hair, military uniform, high heels",
+    "formidable": "formidable, azur lane, long white hair, dress",
+    "sparkle": "sparkle, honkai star rail, pink hair, elegant dress, theatrical",
+    "acheron": "acheron, honkai star rail, purple hair, long coat, samurai",
+    "castoria": "castoria, fate grand order, white hair, dress, long sleeves",
+    "lady_dimitrescu": "lady dimitrescu, resident evil, tall female, white dress, elegant hat, sharp claws, mature female",
+    "chun_li": "chun li, street fighter, muscular thighs, qipao, hair buns",
+    "atomic_heart_twins": "robot, twin sisters, black bodysuit, black hair, white hair, atomic heart",
+    "yoruichi_shihoin": "yoruichi shihoin, bleach, dark skin, purple hair",
+    "saber": "saber, artoria pendragon, fate series, blonde hair, blue dress",
+    "mona": "mona, genshin impact, black hair, leotard, golden headdress",
+    "klee": "klee, genshin impact, blonde hair, red dress, explosive",
+    "raiden_shogun": "raiden shogun, genshin impact, purple hair, kimono, electro archon",
+    "astolfo": "astolfo, fate series, pink hair, femboy, androgynous",
+    "hestia": "hestia, danmachi, black hair, blue ribbons, white dress",
+    "lucifer_helltaker": "lucifer, helltaker, long black hair, business suit"
 }
 
 TAG_PROMPTS = {
@@ -184,11 +184,11 @@ TAG_PROMPTS = {
     "vagina": "spread pussy",
     "anus": "spread anus",
     "both": "spread pussy and anus",
-    "dilated_anus": "(dilated anus:1.5), (anus stretched:1.5), (open anus:1.5), internal view of anus, anus gaping",
-    "dilated_vagina": "(dilated vagina:1.5), (vagina stretched:1.5), (open pussy:1.5), internal view of vagina, vagina gaping, spread pussy, labia spread, realistic, detailed, high focus",
+    "dilated_anus": "dilated anus, anus stretched, open anus, internal view of anus, anus gaping",
+    "dilated_vagina": "dilated vagina, vagina stretched, open pussy, internal view of vagina, vagina gaping, spread pussy, labia spread, realistic, detailed, high focus",
     "prolapsed_uterus": "prolapsed uterus, uterus exposed, visible uterus",
     "prolapsed_anus": "prolapsed anus, anus exposed, visible anus",
-    "two_dildos_one_hole": "(two dildos inserted:1.5), (two dildos into one orifice:1.5)",
+    "two_dildos_one_hole": "two dildos inserted, two dildos into one orifice",
     "dildo": "dildo inserted",
     "huge_dildo": "huge dildo",
     "horse_dildo": "horse dildo",
@@ -198,18 +198,18 @@ TAG_PROMPTS = {
         "dildo inserted into anus, pushing visibly through intestines with clear belly bulge, "
         "exiting from mouth, seamless and continuous dildo, consistent texture, realistic rubber"
     ),
-    "doggy": "(doggy style:1.2), (on all fours:1.2), (hands on floor:1.5)",
-    "squat": "(squatting pose:1.2), (hands behind head:1.5)",
+    "doggy": "doggy style, on all fours, hands on floor",
+    "squat": "squatting pose, hands behind head",
     "lying": "lying down",
-    "hor_split": "(horizontal split:1.2), (legs stretched fully to sides:1.2), pelvis on floor, inner thighs visible",
-    "ver_split": "(vertical split:1.2), (holding own raised leg:1.5)",
+    "hor_split": "horizontal split, legs stretched fully to sides, pelvis on floor, inner thighs visible",
+    "ver_split": "vertical split, holding own raised leg",
     "on_back_legs_behind_head": "on back, legs behind head",
     "on_side_leg_up": "on side with leg raised",
     "suspended": "suspended",
     "front_facing": "front to viewer",
     "back_facing": "back to viewer",
-    "top_down_view": "(shot from above:1.5), (top-down view:1.5)",
-    "bottom_up_view": "(shot from below:1.5), (bottom-up view:1.5)",
+    "top_down_view": "shot from above, top-down view",
+    "bottom_up_view": "shot from below, bottom-up view",
     "hands_spreading_vagina": "hands spreading vagina",
     "stockings": "wearing stockings only",
     "stockings_fishnet": "fishnet stockings",
@@ -227,18 +227,18 @@ TAG_PROMPTS = {
     "cum": "cum covered",
     "belly_bloat": "belly bulge, pregnant looking belly",
     "succubus_tattoo": "succubus tattoo on lower abdomen",
-    "futanari": "(futanari:1.7)",
+    "futanari": "futanari",
     "femboy": "male, boy, very feminine body, femboy, androgynous, flat chest, penis, testicles, thin waist, wide hips, boyish hips, no breasts",
     "ethnicity_asian": "asian girl",
     "ethnicity_european": "european girl",
-    "furry_cow": "(furry cow girl:1.2), (cow costume:1.2)",
-    "furry_cat": "(furry cat girl:1.2), (cat costume:1.2)",
-    "furry_dog": "(furry dog girl:1.2), (dog costume:1.2)",
-    "furry_dragon": "(furry dragon girl:1.2), (dragon costume:1.2)",
-    "furry_sylveon": "(furry sylveon:1.2), (sylveon costume:1.2), pink, ribbons, sexy",
-    "furry_fox": "(furry fox girl:1.2), (fox costume:1.2)",
-    "furry_bunny": "(furry bunny girl:1.2), (bunny costume:1.2)",
-    "furry_wolf": "(furry wolf girl:1.2), (wolf costume:1.2)",
+    "furry_cow": "furry cow girl, cow costume",
+    "furry_cat": "furry cat girl, cat costume",
+    "furry_dog": "furry dog girl, dog costume",
+    "furry_dragon": "furry dragon girl, dragon costume",
+    "furry_sylveon": "furry sylveon, sylveon costume, pink, ribbons, sexy",
+    "furry_fox": "furry fox girl, fox costume",
+    "furry_bunny": "furry bunny girl, bunny costume",
+    "furry_wolf": "furry wolf girl, wolf costume",
     "ahegao": "ahegao face",
     "pain_face": "face in pain",
     "ecstasy_face": "ecstasy face",
@@ -247,7 +247,7 @@ TAG_PROMPTS = {
     "clitoral_piercing": "clitoral piercing",
     "foot_fetish": "foot fetish",
     "footjob": "footjob",
-    "mouth_nipples": "(mouths instead of nipples:2.0)",
+    "mouth_nipples": "mouths instead of nipples",
     "reshiram": "reshiram, pokemon",
     "mew": "mew, pokemon",
     "mewtwo": "mewtwo, pokemon",
@@ -371,12 +371,12 @@ def build_prompt(tags):
         "extra_digit, fewer_digits, text, error, "
         "mutated hands and fingers, bad hand, malformed hands, "
         "long neck, bad nose, bad mouth, "
-        "(hands on chest:3.0), (hands covering breasts:3.0), (hands on breasts:3.0), "
+        "hands on chest, hands covering breasts, hands on breasts, "
         "ugly, out of frame, censored, "
-        "(shirt:1.5), (dress:1.5), (bra:1.5), (panties:1.5), (lingerie:1.5), (swimsuit:1.5), (bikini:1.5), "
-        "(skirt:1.5), (jacket:1.5), (t-shirt:1.5), (shorts:1.5), (jeans:1.5), "
-        "(vagina not visible:1.7), (clitoris not visible:1.7), (vagina closed:1.7), "
-        "missing penis, missing testicles, (femboy as girl:1.7), (breasts:1.5)"
+        "shirt, dress, bra, panties, lingerie, swimsuit, bikini, "
+        "skirt, jacket, t-shirt, shorts, jeans, "
+        "vagina not visible, clitoris not visible, vagina closed, "
+        "missing penis, missing testicles, femboy as girl, breasts"
     )
 
     positive_parts = []
@@ -389,13 +389,13 @@ def build_prompt(tags):
 
     # Логика для нескольких персонажей
     if len(character_tags) > 1:
-        base_positive += ", (multiple girls:1.5)"
+        base_positive += ", multiple girls"
     
     # Логика для фури и футанари в сочетании с персонажами
     if character_tags:
         if is_futanari:
             tags_to_process.remove("futanari")
-            base_positive += ", (futanari:1.7)"
+            base_positive += ", futanari"
         if furry_tag:
             tags_to_process.remove(furry_tag)
             furry_prompt = TAG_PROMPTS.get(furry_tag, "")
@@ -408,7 +408,7 @@ def build_prompt(tags):
         
         # Специальная обработка для линий от загара
         if tag == "bikini_tan_lines":
-            base_negative += ", (bikini:1.5)"
+            base_negative += ", bikini"
 
         positive_parts.append(prompt_segment)
 
