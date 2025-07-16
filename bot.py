@@ -150,7 +150,15 @@ TAGS = {
         "hestia": "Гестия",
         "lucifer_helltaker": "Люцифер (Helltaker)",
         "freya_danmachi": "Фрея (Danmachi)",
-        "aphrodite_ragnarok": "Афродита (Повесть о конце света)"
+        "aphrodite_ragnarok": "Афродита (Повесть о конце света)",
+        "hinata_naruto": "Хината (Наруто)",
+        "tsunade_naruto": "Цунаде (Наруто)",
+        "albedo_overlord": "Альбедо (Повелитель)",
+        "shalltear_overlord": "Шалтир (Повелитель)",
+        "yumeko_kakegurui": "Юмеко Джабами (Безумный азарт)",
+        "kirari_kakegurui": "Кирари Момобами (Безумный азарт)",
+        "mary_kakegurui": "Мэри Саотомэ (Безумный азарт)",
+        "mei_mei_jujutsu": "Мэй Мэй (Магическая битва)"
     }
 }
 
@@ -180,7 +188,15 @@ CHARACTER_EXTRA = {
     "hestia": "hestia, danmachi, black hair, blue ribbons, white dress",
     "lucifer_helltaker": "lucifer, helltaker, long black hair, business suit",
     "freya_danmachi": "freya, danmachi, long silver hair, purple eyes, elegant dress",
-    "aphrodite_ragnarok": "aphrodite, record of ragnarok, large breasts, blonde hair, revealing outfit"
+    "aphrodite_ragnarok": "aphrodite, record of ragnarok, large breasts, blonde hair, revealing outfit",
+    "hinata_naruto": "hinata hyuga, naruto, long dark blue hair, byakugan, shy, large breasts",
+    "tsunade_naruto": "tsunade, naruto, blonde hair, large breasts, strong, medical ninja",
+    "albedo_overlord": "albedo, overlord, succubus, black wings, white dress, long black hair",
+    "shalltear_overlord": "shalltear bloodfallen, overlord, vampire, short blonde hair, frilly dress, parasol",
+    "yumeko_kakegurui": "yumeko jabami, kakegurui, long black hair, red eyes, school uniform, insane smile",
+    "kirari_kakegurui": "kirari momobami, kakegurui, white hair, blue lips, school uniform, student council president",
+    "mary_kakegurui": "mary saotome, kakegurui, blonde hair, school uniform, twin tails",
+    "mei_mei_jujutsu": "mei mei, jujutsu kaisen, long black hair, axe, confident expression"
 }
 
 TAG_PROMPTS = {
