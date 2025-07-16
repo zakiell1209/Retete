@@ -148,7 +148,9 @@ TAGS = {
         "raiden_shogun": "Райден",
         "astolfo": "Астольфо",
         "hestia": "Гестия",
-        "lucifer_helltaker": "Люцифер (Helltaker)"
+        "lucifer_helltaker": "Люцифер (Helltaker)",
+        "freya_danmachi": "Фрея (Danmachi)",
+        "aphrodite_ragnarok": "Афродита (Повесть о конце света)"
     }
 }
 
@@ -176,7 +178,9 @@ CHARACTER_EXTRA = {
     "raiden_shogun": "raiden shogun, genshin impact, purple hair, kimono, electro archon",
     "astolfo": "astolfo, fate series, pink hair, femboy, androgynous",
     "hestia": "hestia, danmachi, black hair, blue ribbons, white dress",
-    "lucifer_helltaker": "lucifer, helltaker, long black hair, business suit"
+    "lucifer_helltaker": "lucifer, helltaker, long black hair, business suit",
+    "freya_danmachi": "freya, danmachi, long silver hair, purple eyes, elegant dress",
+    "aphrodite_ragnarok": "aphrodite, record of ragnarok, large breasts, blonde hair, revealing outfit"
 }
 
 TAG_PROMPTS = {
