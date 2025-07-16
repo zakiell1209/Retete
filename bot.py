@@ -11,8 +11,8 @@ REPLICATE_TOKEN = os.getenv("REPLICATE_API_TOKEN")
 WEBHOOK_URL = os.getenv("WEBHOOK_URL")
 PORT = int(os.environ.get("PORT", 5000))
 
-# ID новой модели Replicate, которую вы используете
-REPLICATE_MODEL = "e28ab49ae4c4fb92f9646c221d2aec239cbd461f1bcbee45c8e792aa8c95e133"
+# ID модели Replicate, которую вы используете (из видео)
+REPLICATE_MODEL = "aisha-ai-official/anillustrious-v4"
 
 # Инициализация бота и Flask приложения
 bot = telebot.TeleBot(API_TOKEN)
@@ -469,27 +469,37 @@ def build_prompt(tags):
 def replicate_generate(positive_prompt, negative_prompt):
     """
     Отправляет запрос на генерацию изображения в Replicate API,
-    используя оптимальные настройки для достижения максимальной точности.
+    используя настройки, оптимизированные для максимальной точности.
     """
     url = "https://api.replicate.com/v1/predictions"
     headers = {
         "Authorization": f"Token {REPLICATE_TOKEN}",
         "Content-Type": "application/json"
     }
+    
+    # Параметры, оптимизированные для максимальной точности
     json_data = {
-        "version": REPLICATE_MODEL,
+        "version": REPLICATE_MODEL, # Используем указанную модель
         "input": {
             "prompt": positive_prompt,
             "negative_prompt": negative_prompt,
-            "prepend_preprompt": False,
-            "width": 1024,
-            "height": 1024,
-            "steps": 50,
-            "guidance_scale": 15,
-            "scheduler": "DPM++ 2M SDE Karras",
-            "adetailer_face": True,
-            "adetailer_hand": True,
-            "seed": -1
+            "vae": "NeptuniaXL-VAE-ContrastSaturation", # Из видео
+            "prompt_conjunction": True, # Из видео
+            "width": 1024, # Из видео
+            "height": 2517, # Из видео (для вертикального изображения)
+            "steps": 70, # Увеличено для точности (было 50)
+            "guidance_scale": 9, # Увеличено для точности (было 7)
+            "scheduler": "DPM++ 2M SDE Karras", # Рекомендовано для точности/качества
+            "adetailer_face": True, # Включено для точности
+            "adetailer_hand": True, # Включено для точности
+            "seed": -1,
+            "pag_scale": 32.06, # Из видео
+            "clip_skip": 2, # Из видео
+            "guidance_rescale": 1, # Из видео
+            "upscale": "x2", # Включено для детализации (может быть x4, x8, но x2 - хороший старт)
+            "refiner": True, # Включено для точности
+            "refiner_strength": 0.6, # Настроено для точности
+            "prepend_preprompt": False # Отключено, чтобы не мешать основному промпту
         }
     }
 
@@ -511,6 +521,7 @@ def replicate_generate(positive_prompt, negative_prompt):
             return None
         data = r.json()
         if data["status"] == "succeeded":
+            # Выходные данные для апскейлинга могут быть в другом формате (списке)
             return data["output"][0] if isinstance(data["output"], list) and data["output"] else None
         elif data["status"] == "failed":
             print(f"Предсказание не удалось: {data.get('error', 'Сообщение об ошибке не предоставлено')}")
