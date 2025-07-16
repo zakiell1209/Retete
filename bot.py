@@ -12,7 +12,7 @@ WEBHOOK_URL = os.getenv("WEBHOOK_URL")
 PORT = int(os.environ.get("PORT", 5000))
 
 # ID новой модели Replicate, которую вы используете
-REPLICATE_MODEL = "e28ab49ae4c4fb92f9646c221d2aec239cbd461f1bcbee45c8e792aa8c95e133"
+REPLICATE_MODEL = "80441e2c32a55f2fcf9b77fa0a74c6c86ad7deac51eed722b9faedb253265cb4"
 
 # Инициализация бота и Flask приложения
 bot = telebot.TeleBot(API_TOKEN)
@@ -484,8 +484,8 @@ def replicate_generate(positive_prompt, negative_prompt):
             "prepend_preprompt": False,
             "width": 1024,
             "height": 1024,
-            "steps": 50,
-            "guidance_scale": 15,
+            "steps": 75,  # Изменено с 50 на 75
+            "guidance_scale": 18, # Изменено с 15 на 18
             "scheduler": "DPM++ 2M SDE Karras",
             "adetailer_face": True,
             "adetailer_hand": True,
