@@ -12,7 +12,7 @@ WEBHOOK_URL = os.getenv("WEBHOOK_URL")
 PORT = int(os.environ.get("PORT", 5000))
 
 # ID модели Replicate, которую вы используете (из видео)
-REPLICATE_MODEL = "aisha-ai-official/anillustrious-v4"
+REPLICATE_MODEL = "80441e2c32a55f2fcf9b77fa0a74c6c86ad7deac51eed722b9faedb253265cb4"
 
 # Инициализация бота и Flask приложения
 bot = telebot.TeleBot(API_TOKEN)
