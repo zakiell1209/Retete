@@ -11,7 +11,7 @@ REPLICATE_TOKEN = os.getenv("REPLICATE_API_TOKEN")
 WEBHOOK_URL = os.getenv("WEBHOOK_URL")
 PORT = int(os.environ.get("PORT", 5000))
 
-# ID модели Replicate, которую вы используете (из видео)
+# ID модели Replicate, которую вы указали (из последнего кода)
 REPLICATE_MODEL = "80441e2c32a55f2fcf9b77fa0a74c6c86ad7deac51eed722b9faedb253265cb4"
 
 # Инициализация бота и Flask приложения
@@ -19,7 +19,7 @@ bot = telebot.TeleBot(API_TOKEN)
 app = Flask(__name__)
 user_settings = {} # Словарь для хранения настроек пользователей
 
-# --- Категории для меню ---
+# --- Категории для меню (возвращены из предыдущих версий) ---
 CATEGORY_NAMES = {
     "holes": "Отверстия",
     "toys": "Игрушки",
@@ -34,7 +34,7 @@ CATEGORY_NAMES = {
     "pokemon": "Покемоны"
 }
 
-# --- Теги с новыми добавлениями ---
+# --- Теги (возвращены из предыдущих версий) ---
 TAGS = {
     "holes": {
         "vagina": "Вагина",
@@ -162,7 +162,7 @@ TAGS = {
     }
 }
 
-# --- Промпты для модели ---
+# --- Промпты для модели (возвращены из предыдущих версий) ---
 CHARACTER_EXTRA = {
     "rias": "rias gremory, red long hair, blue eyes, pale skin, large breasts, highschool dxd",
     "akeno": "akeno himejima, long black hair, purple eyes, large breasts, highschool dxd",
@@ -274,7 +274,7 @@ TAG_PROMPTS = {
     "gardevoir": "gardevoir, pokemon"
 }
 
-# --- Функции для создания клавиатур ---
+# --- Функции для создания клавиатур (возвращены из предыдущих версий) ---
 def main_menu():
     """Создает главное меню бота."""
     kb = types.InlineKeyboardMarkup()
@@ -346,6 +346,7 @@ def callback(call):
             bot.send_message(cid, "Сначала выбери теги!")
             return
 
+        # Используем функцию build_prompt для создания промптов из выбранных тегов
         prompt_info = build_prompt(tags)
         positive_prompt = prompt_info["positive_prompt"]
         negative_prompt = prompt_info["negative_prompt"]
@@ -376,12 +377,12 @@ def callback(call):
         user_settings[cid] = {"tags": [], "last_cat": None}
         bot.send_message(cid, "Настройки сброшены. Начнем заново!", reply_markup=main_menu())
 
-# --- Функция для определения категории тега ---
+# --- Функция для определения категории тега (возвращена из предыдущих версий) ---
 def tag_category(tag):
     """Определяет категорию, к которой относится тег."""
     for cat, items in TAGS.items():
         if tag in items:
-            if cat in ["body", "ethnos"]: # Объединяем "body" и "ethnos" в одну категорию "body" для приоритетов
+            if cat in ["body", "ethnos"]:
                 return "body"
             if cat == "poses":
                 return "pose"
@@ -393,15 +394,15 @@ def tag_category(tag):
                 return "clothes"
             if cat == "fetish":
                 return "fetish"
-            if cat == "head": # "head" для лица
+            if cat == "head":
                 return "face"
     return None
 
-# --- Оптимизированная функция для построения промпта ---
+# --- Оптимизированная функция для построения промпта (возвращена из предыдущих версий) ---
 def build_prompt(tags):
     """
     Строит промпт для модели Replicate на основе выбранных тегов,
-    используя новую логику группировки и обработки конфликтов.
+    используя логику группировки и обработки конфликтов.
     """
     base = [
         "masterpiece", "best quality", "ultra detailed", "anime style", "highly detailed",
@@ -426,21 +427,17 @@ def build_prompt(tags):
         "blurry, cropped, worst quality, low quality, text, error, mutated, censored, "
         "hands on chest, hands covering breasts, clothing covering genitals, shirt, bra, bikini, "
         "vagina not visible, anus not visible, penis not visible, bad proportions, "
-        "all clothes, all clothing" # Добавлено для усиления удаления одежды
+        "all clothes, all clothing"
     )
 
-    # Уникальные теги и спец. обработка конфликтов
     unique = set(tags)
     
-    # Приоритет большим грудям
     if "big_breasts" in unique and "small_breasts" in unique:
         unique.remove("small_breasts") 
     
-    # Костюм коровы уже включён в furry_cow
     if "furry_cow" in unique:
         unique.discard("cow_costume") 
 
-    # Группировка по категориям
     for tag in unique:
         if tag in CHARACTER_EXTRA:
             priority["character"].append(CHARACTER_EXTRA[tag])
@@ -452,11 +449,9 @@ def build_prompt(tags):
                 priority[key].append(TAG_PROMPTS[tag])
 
     prompt_parts = base[:]
-    # Порядок добавления важен: персонажи, фури, тело, позы, отверстия, игрушки, одежда, фетиши, лицо
     for section in ["character", "furry", "body", "pose", "holes", "toys", "clothes", "fetish", "face"]:
         prompt_parts.extend(priority[section])
 
-    # Танлайны убирают купальник из негативного промпта
     if "bikini_tan_lines" in unique:
         base_negative += ", bikini"
 
@@ -465,87 +460,75 @@ def build_prompt(tags):
         "negative_prompt": base_negative
     } 
 
-# --- Функция для генерации изображения через Replicate ---
-def replicate_generate(positive_prompt, negative_prompt):
-    """
-    Отправляет запрос на генерацию изображения в Replicate API,
-    используя настройки, оптимизированные для максимальной точности.
-    """
+# --- Функция для генерации изображения через Replicate (настройки из последнего кода) ---
+def replicate_generate(prompt, negative_prompt):
     url = "https://api.replicate.com/v1/predictions"
     headers = {
         "Authorization": f"Token {REPLICATE_TOKEN}",
         "Content-Type": "application/json"
     }
-    
-    # Параметры, оптимизированные для максимальной точности
+
+    # Настройки модели взяты из последнего предоставленного вами кода
     json_data = {
-        "version": REPLICATE_MODEL, # Используем указанную модель
+        "version": REPLICATE_MODEL,
         "input": {
-            "prompt": positive_prompt,
+            "prompt": prompt,
             "negative_prompt": negative_prompt,
-            "vae": "NeptuniaXL-VAE-ContrastSaturation", # Из видео
-            "prompt_conjunction": True, # Из видео
-            "width": 1024, # Из видео
-            "height": 2517, # Из видео (для вертикального изображения)
-            "steps": 70, # Увеличено для точности (было 50)
-            "guidance_scale": 9, # Увеличено для точности (было 7)
-            "scheduler": "DPM++ 2M SDE Karras", # Рекомендовано для точности/качества
-            "adetailer_face": True, # Включено для точности
-            "adetailer_hand": True, # Включено для точности
-            "seed": -1,
-            "pag_scale": 32.06, # Из видео
-            "clip_skip": 2, # Из видео
-            "guidance_rescale": 1, # Из видео
-            "upscale": "x2", # Включено для детализации (может быть x4, x8, но x2 - хороший старт)
-            "refiner": True, # Включено для точности
-            "refiner_strength": 0.6, # Настроено для точности
-            "prepend_preprompt": False # Отключено, чтобы не мешать основному промпту
+            "width": 1024,
+            "height": 1536,  # Высота из последнего кода
+            "steps": 45,     # Шаги из последнего кода
+            "cfg_scale": 12.5, # CFG Scale из последнего кода
+            "scheduler": "DPM++ 2M SDE Karras", # Scheduler из последнего кода
+            "clip_skip": 2, # Clip Skip из последнего кода
+            "guidance_rescale": 1.0, # Guidance Rescale из последнего кода
+            "refiner": True, # Refiner из последнего кода
+            "refiner_strength": 0.45, # Refiner Strength из последнего кода
+            "adetailer_face": True, # ADetailer Face из последнего кода
+            "adetailer_hand": True, # ADetailer Hand из последнего кода
+            "seed": -1
+            # Обратите внимание: 'vae', 'prompt_conjunction', 'upscale', 'pag_scale' 
+            # из предыдущей "оптимизированной" версии отсутствуют в вашем последнем коде.
+            # Если они все еще нужны, их нужно добавить вручную в этот json_data['input'].
+            # Я оставил только те параметры, которые были в вашем последнем предоставленном коде.
         }
     }
 
-    # Отправка запроса на создание предсказания
-    r = requests.post(url, headers=headers, json=json_data)
-    if r.status_code != 201:
-        print(f"Ошибка при отправке предсказания: {r.status_code} - {r.text}")
-        print(f"Request JSON: {json_data}")
+    try:
+        r = requests.post(url, headers=headers, json=json_data)
+        if r.status_code != 201:
+            print("Ошибка при запуске:", r.text)
+            return None
+
+        status_url = r.json()["urls"]["get"]
+
+        for _ in range(90): # Максимум 3 минуты ожидания (90 * 2 секунды)
+            time.sleep(2)
+            r = requests.get(status_url, headers=headers)
+            data = r.json()
+            if data["status"] == "succeeded":
+                # Убедимся, что возвращаем первый элемент списка, если output - список
+                return data["output"][0] if isinstance(data["output"], list) else data["output"]
+            if data["status"] == "failed":
+                print("Ошибка генерации:", data.get("error"))
+                return None
+        print("Превышено время ожидания")
         return None
 
-    status_url = r.json()["urls"]["get"]
+    except Exception as e:
+        print("Исключение:", str(e))
+        return None
 
-    # Ожидание завершения генерации (до 3 минут)
-    for i in range(90):
-        time.sleep(2)
-        r = requests.get(status_url, headers=headers)
-        if r.status_code != 200:
-            print(f"Ошибка при получении статуса предсказания: {r.status_code} - {r.text}")
-            return None
-        data = r.json()
-        if data["status"] == "succeeded":
-            # Выходные данные для апскейлинга могут быть в другом формате (списке)
-            return data["output"][0] if isinstance(data["output"], list) and data["output"] else None
-        elif data["status"] == "failed":
-            print(f"Предсказание не удалось: {data.get('error', 'Сообщение об ошибке не предоставлено')}")
-            print(f"Request JSON: {json_data}")
-            return None
-
-    print("Время ожидания предсказания истекло.")
-    return None
-
-# --- Настройка вебхука Flask ---
+# Flask webhook
 @app.route("/", methods=["POST"])
 def webhook():
-    """Обрабатывает входящие обновления от Telegram."""
-    json_str = request.stream.read().decode("utf-8")
-    update = telebot.types.Update.de_json(json_str)
+    update = telebot.types.Update.de_json(request.stream.read().decode("utf-8"))
     bot.process_new_updates([update])
     return "ok", 200
 
 @app.route("/", methods=["GET"])
 def home():
-    """Простой маршрут для проверки работы приложения."""
     return "бот работает", 200
 
-# --- Запуск бота ---
 if __name__ == "__main__":
     bot.remove_webhook()
     bot.set_webhook(url=WEBHOOK_URL)
