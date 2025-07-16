@@ -376,74 +376,94 @@ def callback(call):
         user_settings[cid] = {"tags": [], "last_cat": None}
         bot.send_message(cid, "Настройки сброшены. Начнем заново!", reply_markup=main_menu())
 
-# --- Функция для построения промпта ---
+# --- Функция для определения категории тега ---
+def tag_category(tag):
+    """Определяет категорию, к которой относится тег."""
+    for cat, items in TAGS.items():
+        if tag in items:
+            if cat in ["body", "ethnos"]: # Объединяем "body" и "ethnos" в одну категорию "body" для приоритетов
+                return "body"
+            if cat == "poses":
+                return "pose"
+            if cat == "holes":
+                return "holes"
+            if cat == "toys":
+                return "toys"
+            if cat == "clothes":
+                return "clothes"
+            if cat == "fetish":
+                return "fetish"
+            if cat == "head": # "head" для лица
+                return "face"
+    return None
+
+# --- Оптимизированная функция для построения промпта ---
 def build_prompt(tags):
     """
-    Строит промпт для модели Replicate на основе выбранных тегов.
+    Строит промпт для модели Replicate на основе выбранных тегов,
+    используя новую логику группировки и обработки конфликтов.
     """
-    base_positive = "masterpiece, best quality, ultra detailed, anime style, highly detailed, expressive eyes, perfect lighting, volumetric lighting, fully nude, no clothing covering chest or genitals, solo"
+    base = [
+        "masterpiece", "best quality", "ultra detailed", "anime style", "highly detailed",
+        "expressive eyes", "perfect lighting", "volumetric lighting", "fully nude", "solo"
+    ]
+
+    priority = {
+        "character": [],
+        "furry": [],
+        "body": [],
+        "pose": [],
+        "holes": [],
+        "toys": [],
+        "clothes": [],
+        "fetish": [],
+        "face": []
+    }
+    
     base_negative = (
-        "lowres, bad anatomy, bad hands, bad face, deformed, disfigured, "
-        "poorly drawn face, poorly drawn hands, missing limbs, extra limbs, "
-        "fused fingers, too many fingers, too few fingers, "
-        "jpeg artifacts, signature, watermark, username, blurry, artist name, "
-        "cropped, worst quality, low quality, normal quality, "
-        "extra_digit, fewer_digits, text, error, "
-        "mutated hands and fingers, bad hand, malformed hands, "
-        "long neck, bad nose, bad mouth, "
-        "hands on chest, hands covering breasts, hands on breasts, "
-        "ugly, out of frame, censored, "
-        "shirt, dress, bra, panties, lingerie, swimsuit, bikini, "
-        "skirt, jacket, t-shirt, shorts, jeans, "
-        "vagina not visible, clitoris not visible, vagina closed, "
-        "missing penis, missing testicles, femboy as girl, breasts"
+        "lowres, bad anatomy, bad hands, bad face, deformed, disfigured, poorly drawn, "
+        "missing limbs, extra limbs, fused fingers, jpeg artifacts, signature, watermark, "
+        "blurry, cropped, worst quality, low quality, text, error, mutated, censored, "
+        "hands on chest, hands covering breasts, clothing covering genitals, shirt, bra, bikini, "
+        "vagina not visible, anus not visible, penis not visible, bad proportions, "
+        "all clothes, all clothing" # Добавлено для усиления удаления одежды
     )
 
-    positive_parts = []
+    # Уникальные теги и спец. обработка конфликтов
+    unique = set(tags)
     
-    is_futanari = "futanari" in tags
-    furry_tag = next((tag for tag in tags if tag.startswith("furry_")), None)
-    character_tags = [tag for tag in tags if tag in CHARACTER_EXTRA]
-
-    tags_to_process = list(tags)
-
-    # Логика для нескольких персонажей
-    if len(character_tags) > 1:
-        base_positive += ", multiple girls"
+    # Приоритет большим грудям
+    if "big_breasts" in unique and "small_breasts" in unique:
+        unique.remove("small_breasts") 
     
-    # Логика для фури и футанари в сочетании с персонажами
-    if character_tags:
-        if is_futanari:
-            tags_to_process.remove("futanari")
-            base_positive += ", futanari"
-        if furry_tag:
-            tags_to_process.remove(furry_tag)
-            furry_prompt = TAG_PROMPTS.get(furry_tag, "")
-            base_positive += f", {furry_prompt}"
+    # Костюм коровы уже включён в furry_cow
+    if "furry_cow" in unique:
+        unique.discard("cow_costume") 
 
-    sorted_tags = sorted(tags_to_process)
+    # Группировка по категориям
+    for tag in unique:
+        if tag in CHARACTER_EXTRA:
+            priority["character"].append(CHARACTER_EXTRA[tag])
+        elif tag.startswith("furry_"):
+            priority["furry"].append(TAG_PROMPTS.get(tag, tag))
+        elif tag in TAG_PROMPTS:
+            key = tag_category(tag)
+            if key:
+                priority[key].append(TAG_PROMPTS[tag])
 
-    for tag in sorted_tags:
-        prompt_segment = TAG_PROMPTS.get(tag, tag)
-        
-        # Специальная обработка для линий от загара
-        if tag == "bikini_tan_lines":
-            base_negative += ", bikini"
+    prompt_parts = base[:]
+    # Порядок добавления важен: персонажи, фури, тело, позы, отверстия, игрушки, одежда, фетиши, лицо
+    for section in ["character", "furry", "body", "pose", "holes", "toys", "clothes", "fetish", "face"]:
+        prompt_parts.extend(priority[section])
 
-        positive_parts.append(prompt_segment)
-
-    unique_positive_parts = set(positive_parts)
-
-    final_positive_prompt_str = base_positive
-    if unique_positive_parts:
-        cleaned_parts = [p for p in unique_positive_parts if p.strip()]
-        if cleaned_parts:
-            final_positive_prompt_str += ", " + ", ".join(cleaned_parts)
+    # Танлайны убирают купальник из негативного промпта
+    if "bikini_tan_lines" in unique:
+        base_negative += ", bikini"
 
     return {
-        "positive_prompt": final_positive_prompt_str,
+        "positive_prompt": ", ".join(prompt_parts),
         "negative_prompt": base_negative
-    }
+    } 
 
 # --- Функция для генерации изображения через Replicate ---
 def replicate_generate(positive_prompt, negative_prompt):
