@@ -395,6 +395,8 @@ def tag_category(tag):
                 return "fetish"
             if cat == "head": # "head" для лица
                 return "face"
+            if cat == "pokemon": # Добавлено для распознавания категории покемонов
+                return "pokemon"
     return None
 
 # --- Оптимизированная функция для построения промпта ---
@@ -417,7 +419,8 @@ def build_prompt(tags):
         "toys": [],
         "clothes": [],
         "fetish": [],
-        "face": []
+        "face": [],
+        "pokemon": [] # Добавлено для хранения тегов покемонов
     }
     
     base_negative = (
@@ -452,8 +455,8 @@ def build_prompt(tags):
                 priority[key].append(TAG_PROMPTS[tag])
 
     prompt_parts = base[:]
-    # Порядок добавления важен: персонажи, фури, тело, позы, отверстия, игрушки, одежда, фетиши, лицо
-    for section in ["character", "furry", "body", "pose", "holes", "toys", "clothes", "fetish", "face"]:
+    # Порядок добавления важен: персонажи, фури, покемоны, тело, позы, отверстия, игрушки, одежда, фетиши, лицо
+    for section in ["character", "furry", "pokemon", "body", "pose", "holes", "toys", "clothes", "fetish", "face"]: # Добавлен "pokemon"
         prompt_parts.extend(priority[section])
 
     # Танлайны убирают купальник из негативного промпта
@@ -484,8 +487,8 @@ def replicate_generate(positive_prompt, negative_prompt):
             "prepend_preprompt": False,
             "width": 1024,
             "height": 1024,
-            "steps": 75,  # Изменено с 50 на 75
-            "guidance_scale": 18, # Изменено с 15 на 18
+            "steps": 75,
+            "guidance_scale": 18,
             "scheduler": "DPM++ 2M SDE Karras",
             "adetailer_face": True,
             "adetailer_hand": True,
