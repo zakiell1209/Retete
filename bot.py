@@ -123,125 +123,210 @@ TAGS = {
         "reshiram": "Реширам",
         "mew": "Мю",
         "mewtwo": "Мюту",
-        "gardevoir": "Гардевуар"
+        "gardevoir": "Гардевуар",
+        "umbreon": "Эмбреон",
+        "lugia": "Лугия",
+        "shadow_lugia": "Шадоу Лугия",
+        "lopunny": "Лопанни",
+        "goodra": "Гудра"
     },
     "characters": {
-        "rias": "Риас Грегори",
-        "akeno": "Акено Химеджима",
-        "kafka": "Кафка",
-        "eula": "Еола",
-        "fu_xuan": "Фу Сюань",
-        "yor_forger": "Йор Форджер",
-        "2b_nier": "2B (NieR Automata)",
-        "esdeath": "Есдес",
-        "formidable": "Formidable",
-        "sparkle": "Искорка",
-        "acheron": "Геоцина",
-        "castoria": "Кастория",
-        "lady_dimitrescu": "Леди Димитреску",
-        "chun_li": "Чун Ли",
-        "atomic_heart_twins": "Близняшки (Atomic Heart)",
-        "yoruichi_shihoin": "Шихоин Йориичи",
-        "saber": "Сейбер",
-        "mona": "Мона",
-        "klee": "Кли",
-        "raiden_shogun": "Райден",
-        "astolfo": "Астольфо",
-        "hestia": "Гестия",
-        "lucifer_helltaker": "Люцифер (Helltaker)",
-        "freya_danmachi": "Фрея (Danmachi)",
-        "aphrodite_ragnarok": "Афродита (Повесть о конце света)",
-        "hinata_naruto": "Хината (Наруто)",
-        "tsunade_naruto": "Цунаде (Наруто)",
-        "albedo_overlord": "Альбедо (Повелитель)",
-        "shalltear_overlord": "Шалтир (Повелитель)",
-        "yumeko_kakegurui": "Юмеко Джабами (Безумный азарт)",
-        "kirari_kakegurui": "Кирари Момобами (Безумный азарт)",
-        "mary_kakegurui": "Мэри Саотомэ (Безумный азарт)",
-        "mei_mei_jujutsu": "Мэй Мэй (Магическая битва)",
-        "jessie_pokemon": "Джесси (Покемоны)",
-        "lusamine_pokemon": "Лусамине (Покемоны)",
-        "umbreon_pokemon": "Эмбреон (Покемоны)",
-        "lugia_pokemon": "Лугия (Покемоны)",
-        "shadow_lugia_pokemon": "Шадоу Лугия (Покемоны)",
-        "lopunny_pokemon": "Лопанни (Покемоны)",
-        "goodra_pokemon": "Гудра (Покемоны)",
-        "paimon_genshin": "Паймон (Genshin Impact)",
-        "ellen_joe_zzz": "Эллен Джо (Zenless Zone Zero)",
-        "mirelia_melromarc": "Мирелия К. Мелромарк (Герой Щита)",
-        "malty_melromarc": "Малти С. Мелромарк (Герой Щита)",
-        "xenovia_quarta": "Ксеновия Кварта (Демоны старшей школы)",
-        "serafall_leviathan": "Серафалл Левиафан (Демоны старшей школы)",
-        "asia_argento": "Азия Ардженто (Демоны старшей школы)",
-        "koneko_toujou": "Конеко Тодзё (Демоны старшей школы)",
-        "shidou_irina": "Шидо Ирина (Демоны старшей школы)",
-        "gasper_vladi": "Гаспер Влади (Демоны старшей школы)",
-        "rossweisse_dxd": "Россвайссе (Демоны старшей школы)",
-        "yasaka_dxd": "Ясака (High School DxD)",
-        "grayfia_lucifuge": "Грейфия Люцифуг (Демоны старшей школы)"
+        # Демоны старшей школы
+        "dxd_rias": "Риас Грегори",
+        "dxd_akeno": "Акено Химеджима",
+        "dxd_xenovia_quarta": "Ксеновия Кварта",
+        "dxd_serafall_leviathan": "Серафалл Левиафан",
+        "dxd_asia_argento": "Азия Ардженто",
+        "dxd_koneko_toujou": "Конеко Тодзё",
+        "dxd_shidou_irina": "Шидо Ирина",
+        "dxd_gasper_vladi": "Гаспер Влади",
+        "dxd_rossweisse": "Россвайссе",
+        "dxd_yasaka": "Ясака",
+        "dxd_grayfia_lucifuge": "Грейфия Люцифуг",
+        
+        # Genshin Impact
+        "genshin_eula": "Еола",
+        "genshin_mona": "Мона",
+        "genshin_klee": "Кли",
+        "genshin_raiden_shogun": "Райден",
+        "genshin_paimon": "Паймон",
+
+        # Honkai Star Rail
+        "hsr_kafka": "Кафка",
+        "hsr_fu_xuan": "Фу Сюань",
+        "hsr_sparkle": "Искорка",
+        "hsr_acheron": "Геоцина",
+
+        # NieR Automata
+        "nier_2b": "2B",
+
+        # Spy x Family
+        "spyxfamily_yor_forger": "Йор Форджер",
+
+        # Akame ga Kill
+        "akamegakill_esdeath": "Есдес",
+
+        # Azur Lane
+        "azurlane_formidable": "Formidable",
+
+        # Fate Series
+        "fate_castoria": "Кастория",
+        "fate_saber": "Сейбер",
+        "fate_astolfo": "Астольфо",
+
+        # Resident Evil
+        "residentevil_lady_dimitrescu": "Леди Димитреску",
+
+        # Street Fighter
+        "streetfighter_chun_li": "Чун Ли",
+
+        # Atomic Heart
+        "atomicheart_twins": "Близняшки",
+
+        # Bleach
+        "bleach_yoruichi_shihoin": "Шихоин Йориичи",
+
+        # Danmachi
+        "danmachi_hestia": "Гестия",
+        "danmachi_freya": "Фрея",
+
+        # Повесть о конце света (Record of Ragnarok)
+        "ragnarok_aphrodite": "Афродита",
+
+        # Naruto
+        "naruto_hinata": "Хината",
+        "naruto_tsunade": "Цунаде",
+
+        # Overlord
+        "overlord_albedo": "Альбедо",
+        "overlord_shalltear": "Шалтир",
+
+        # Безумный азарт (Kakegurui)
+        "kakegurui_yumeko": "Юмеко Джабами",
+        "kakegurui_kirari": "Кирари Момобами",
+        "kakegurui_mary": "Мэри Саотомэ",
+
+        # Магическая битва (Jujutsu Kaisen)
+        "jujutsukaisen_mei_mei": "Мэй Мэй",
+
+        # Герой Щита (The Rising of the Shield Hero)
+        "shieldhero_mirelia_melromarc": "Мирелия К. Мелромарк",
+        "shieldhero_malty_melromarc": "Малти С. Мелромарк",
+        
+        # Helltaker
+        "helltaker_lucifer": "Люцифер",
+
+        # Zenless Zone Zero
+        "zzz_ellen_joe": "Эллен Джо",
+        
+        # Pokémon (персонажи-люди)
+        "pokemon_jessie": "Джесси",
+        "pokemon_lusamine": "Лусамине"
     }
+}
+
+# Категории для персонажей (для вкладок)
+CHARACTER_CATEGORIES = {
+    "dxd": "📺 Демоны старшей школы",
+    "genshin": "🎮 Genshin Impact",
+    "hsr": "🎮 Honkai Star Rail",
+    "nier": "🎮 NieR Automata",
+    "spyxfamily": "📺 Spy x Family",
+    "akamegakill": "📺 Akame ga Kill",
+    "azurlane": "🎮 Azur Lane",
+    "fate": "📺 Fate Series",
+    "residentevil": "🎮 Resident Evil",
+    "streetfighter": "🎮 Street Fighter",
+    "atomicheart": "🎮 Atomic Heart",
+    "bleach": "📺 Bleach",
+    "danmachi": "📺 Danmachi",
+    "ragnarok": "📺 Повесть о конце света",
+    "naruto": "📺 Naruto",
+    "overlord": "📺 Overlord",
+    "kakegurui": "📺 Безумный азарт",
+    "jujutsukaisen": "📺 Магическая битва",
+    "shieldhero": "📺 Герой Щита",
+    "helltaker": "🎮 Helltaker",
+    "zzz": "🎮 Zenless Zone Zero",
+    "pokemon_chars": "📺 Pokémon (персонажи)" # Для Джесси и Лусамине
 }
 
 # --- Промпты для модели ---
 CHARACTER_EXTRA = {
-    "rias": "rias gremory, red long hair, blue eyes, pale skin, large breasts, highschool dxd",
-    "akeno": "akeno himejima, long black hair, purple eyes, large breasts, highschool dxd",
-    "kafka": "kafka, purple wavy hair, cold expression, honkai star rail",
-    "eula": "eula, light blue hair, fair skin, genshin impact",
-    "fu_xuan": "fu xuan, pink hair, honkai star rail",
-    "yor_forger": "yor forger, spy x family, black hair, red dress",
-    "2b_nier": "2b, nier automata, white hair, black dress",
-    "esdeath": "esdeath, akame ga kill, blue hair, military uniform, high heels",
-    "formidable": "formidable, azur lane, long white hair, dress",
-    "sparkle": "sparkle, honkai star rail, pink hair, elegant dress, theatrical",
-    "acheron": "acheron, honkai star rail, purple hair, long coat, samurai",
-    "castoria": "castoria, fate grand order, white hair, dress, long sleeves",
-    "lady_dimitrescu": "lady dimitrescu, resident evil, tall female, white dress, elegant hat, sharp claws, mature female",
-    "chun_li": "chun li, street fighter, muscular thighs, qipao, hair buns",
-    "atomic_heart_twins": "robot, twin sisters, black bodysuit, black hair, white hair, atomic heart",
-    "yoruichi_shihoin": "yoruichi shihoin, bleach, dark skin, purple hair",
-    "saber": "saber, artoria pendragon, fate series, blonde hair, blue dress",
-    "mona": "mona, genshin impact, black hair, leotard, golden headdress",
-    "klee": "klee, genshin impact, blonde hair, red dress, explosive",
-    "raiden_shogun": "raiden shogun, genshin impact, purple hair, kimono, electro archon",
-    "astolfo": "astolfo, fate series, pink hair, femboy, androgynous",
-    "hestia": "hestia, danmachi, black hair, blue ribbons, white dress",
-    "lucifer_helltaker": "lucifer, helltaker, long black hair, business suit",
-    "freya_danmachi": "freya, danmachi, long silver hair, purple eyes, elegant dress",
-    "aphrodite_ragnarok": "aphrodite, record of ragnarok, large breasts, blonde hair, revealing outfit",
-    "hinata_naruto": "hinata hyuga, naruto, long dark blue hair, byakugan, shy, large breasts",
-    "tsunade_naruto": "tsunade, naruto, blonde hair, large breasts, strong, medical ninja",
-    "albedo_overlord": "albedo, overlord, succubus, black wings, white dress, long black hair",
-    "shalltear_overlord": "shalltear bloodfallen, overlord, vampire, short blonde hair, frilly dress, parasol",
-    "yumeko_kakegurui": "yumeko jabami, kakegurui, long black hair, red eyes, school uniform, insane smile",
-    "kirari_kakegurui": "kirari momobami, kakegurui, white hair, blue lips, school uniform, student council president",
-    "mary_kakegurui": "mary saotome, kakegurui, blonde hair, school uniform, twin tails",
-    "mei_mei_jujutsu": "mei mei, jujutsu kaisen, long black hair, axe, confident expression",
-    # --- Новые персонажи с промптами ---
-    "jessie_pokemon": "jessie, pokemon, team rocket, red hair, long hair, ponytail",
-    "lusamine_pokemon": "lusamine, pokemon, aether foundation, blonde hair, long hair, dress",
-    "umbreon_pokemon": "umbreon, pokemon, dark type, quadruped, black fur, yellow rings",
-    "lugia_pokemon": "lugia, pokemon, legendary pokemon, psychic type, flying type, white body, blue fins",
-    "shadow_lugia_pokemon": "shadow lugia, pokemon, legendary pokemon, dark type, flying type, corrupted, dark aura",
-    "lopunny_pokemon": "lopunny, pokemon, normal type, fighting type, rabbit, furry, long ears, fluffy tail",
-    "goodra_pokemon": "goodra, pokemon, dragon type, gooey, slimy skin, soft body",
-    "paimon_genshin": "paimon, genshin impact, floating companion, small body, white hair, crown, emergency food",
-    "ellen_joe_zzz": "ellen joe, zenless zone zero, long blonde hair, school uniform, glasses, student",
-    "mirelia_melromarc": "mirelia q melromarc, the rising of the shield hero, queen, blonde hair, elegant dress",
-    "malty_melromarc": "malty s melromarc, the rising of the shield hero, bitch, cruel smile, red hair, blonde hair, princess, villainess",
-    "xenovia_quarta": "xenovia quarta, highschool dxd, blue hair, short hair, sword, holy sword, devil wings, nun uniform",
-    "serafall_leviathan": "serafall leviathan, highschool dxd, magical girl outfit, pink hair, magical wand, devil, large breasts",
-    "asia_argento": "asia argento, highschool dxd, blonde hair, long hair, nun, innocent, healing magic, dragon slayer, devil wings",
-    "koneko_toujou": "koneko toujou, highschool dxd, white hair, cat ears, cat tail, small breasts, stoic expression",
-    "shidou_irina": "shidou irina, highschool dxd, blonde hair, twin tails, energetic, holy sword, angel wings, exorcist",
-    "gasper_vladi": "gasper vladi, highschool dxd, male, trap, feminine clothing, long blonde hair, shy, vampire, crossdresser",
-    "rossweisse_dxd": "rossweisse, highschool dxd, valkyrie, long silver hair, glasses, mature, large breasts",
-    "yasaka_dxd": "yasaka, highschool dxd, kitsune, nine tails, fox ears, kimono, mature woman",
-    "grayfia_lucifuge": "grayfia lucifuge, highschool dxd, maid outfit, long silver hair, red eyes, ice magic, sexy maid"
+    "dxd_rias": "rias gremory, red long hair, blue eyes, pale skin, large breasts, highschool dxd",
+    "dxd_akeno": "akeno himejima, long black hair, purple eyes, large breasts, highschool dxd",
+    "dxd_xenovia_quarta": "xenovia quarta, highschool dxd, blue hair, short hair, sword, holy sword, devil wings, nun uniform",
+    "dxd_serafall_leviathan": "serafall leviathan, highschool dxd, magical girl outfit, pink hair, magical wand, devil, large breasts",
+    "dxd_asia_argento": "asia argento, highschool dxd, blonde hair, long hair, nun, innocent, healing magic, dragon slayer, devil wings",
+    "dxd_koneko_toujou": "koneko toujou, highschool dxd, white hair, cat ears, cat tail, small breasts, stoic expression",
+    "dxd_shidou_irina": "shidou irina, highschool dxd, blonde hair, twin tails, energetic, holy sword, angel wings, exorcist",
+    "dxd_gasper_vladi": "gasper vladi, highschool dxd, male, trap, feminine clothing, long blonde hair, shy, vampire, crossdresser",
+    "dxd_rossweisse": "rossweisse, highschool dxd, valkyrie, long silver hair, glasses, mature, large breasts",
+    "dxd_yasaka": "yasaka, highschool dxd, kitsune, nine tails, fox ears, kimono, mature woman",
+    "dxd_grayfia_lucifuge": "grayfia lucifuge, highschool dxd, maid outfit, long silver hair, red eyes, ice magic, sexy maid",
+    
+    "genshin_eula": "eula, light blue hair, fair skin, genshin impact",
+    "genshin_mona": "mona, genshin impact, black hair, leotard, golden headdress",
+    "genshin_klee": "klee, genshin impact, blonde hair, red dress, explosive",
+    "genshin_raiden_shogun": "raiden shogun, genshin impact, purple hair, kimono, electro archon",
+    "genshin_paimon": "paimon, genshin impact, floating companion, small body, white hair, crown, emergency food",
+
+    "hsr_kafka": "kafka, purple wavy hair, cold expression, honkai star rail",
+    "hsr_fu_xuan": "fu xuan, pink hair, honkai star rail",
+    "hsr_sparkle": "sparkle, honkai star rail, pink hair, elegant dress, theatrical",
+    "hsr_acheron": "acheron, honkai star rail, purple hair, long coat, samurai",
+
+    "nier_2b": "2b, nier automata, white hair, black dress",
+
+    "spyxfamily_yor_forger": "yor forger, spy x family, black hair, red dress",
+
+    "akamegakill_esdeath": "esdeath, akame ga kill, blue hair, military uniform, high heels",
+
+    "azurlane_formidable": "formidable, azur lane, long white hair, dress",
+
+    "fate_castoria": "castoria, fate grand order, white hair, dress, long sleeves",
+    "fate_saber": "saber, artoria pendragon, fate series, blonde hair, blue dress",
+    "fate_astolfo": "astolfo, fate series, pink hair, femboy, androgynous",
+
+    "residentevil_lady_dimitrescu": "lady dimitrescu, resident evil, tall female, white dress, elegant hat, sharp claws, mature female",
+
+    "streetfighter_chun_li": "chun li, street fighter, muscular thighs, qipao, hair buns",
+
+    "atomicheart_twins": "robot, twin sisters, black bodysuit, black hair, white hair, atomic heart",
+
+    "bleach_yoruichi_shihoin": "yoruichi shihoin, bleach, dark skin, purple hair",
+
+    "danmachi_hestia": "hestia, danmachi, black hair, blue ribbons, white dress",
+    "danmachi_freya": "freya, danmachi, long silver hair, purple eyes, elegant dress",
+
+    "ragnarok_aphrodite": "aphrodite, record of ragnarok, large breasts, blonde hair, revealing outfit",
+
+    "naruto_hinata": "hinata hyuga, naruto, long dark blue hair, byakugan, shy, large breasts",
+    "naruto_tsunade": "tsunade, naruto, blonde hair, large breasts, strong, medical ninja",
+
+    "overlord_albedo": "albedo, overlord, succubus, black wings, white dress, long black hair",
+    "overlord_shalltear": "shalltear bloodfallen, overlord, vampire, short blonde hair, frilly dress, parasol",
+
+    "kakegurui_yumeko": "yumeko jabami, kakegurui, long black hair, red eyes, school uniform, insane smile",
+    "kakegurui_kirari": "kirari momobami, kakegurui, white hair, blue lips, school uniform, student council president",
+    "kakegurui_mary": "mary saotome, kakegurui, blonde hair, school uniform, twin tails",
+
+    "jujutsukaisen_mei_mei": "mei mei, jujutsu kaisen, long black hair, axe, confident expression",
+
+    "shieldhero_mirelia_melromarc": "mirelia q melromarc, the rising of the shield hero, queen, blonde hair, elegant dress",
+    "shieldhero_malty_melromarc": "malty s melromarc, the rising of the shield hero, bitch, cruel smile, red hair, blonde hair, princess, villainess",
+    
+    "helltaker_lucifer": "lucifer, helltaker, long black hair, business suit",
+
+    "zzz_ellen_joe": "ellen joe, zenless zone zero, long blonde hair, school uniform, glasses, student",
+
+    "pokemon_jessie": "jessie, pokemon, team rocket, red hair, long hair, ponytail",
+    "pokemon_lusamine": "lusamine, pokemon, aether foundation, blonde hair, long hair, dress"
 }
 
+
 TAG_PROMPTS = {
-    **CHARACTER_EXTRA,
+    **CHARACTER_EXTRA, # Включаем промпты персонажей
     "vagina": "spread pussy",
     "anus": "spread anus",
     "both": "spread pussy and anus",
@@ -312,7 +397,12 @@ TAG_PROMPTS = {
     "reshiram": "reshiram, pokemon",
     "mew": "mew, pokemon",
     "mewtwo": "mewtwo, pokemon",
-    "gardevoir": "gardevoir, pokemon"
+    "gardevoir": "gardevoir, pokemon",
+    "umbreon": "umbreon, pokemon",
+    "lugia": "lugia, pokemon",
+    "shadow_lugia": "shadow lugia, pokemon",
+    "lopunny": "lopunny, pokemon",
+    "goodra": "goodra, pokemon"
 }
 
 # --- Функции для создания клавиатур ---
@@ -320,6 +410,7 @@ def main_menu():
     """Создает главное меню бота."""
     kb = types.InlineKeyboardMarkup()
     kb.add(types.InlineKeyboardButton("🧩 Выбрать теги", callback_data="choose_tags"))
+    kb.add(types.InlineKeyboardButton("⚙️ Настройки", callback_data="settings")) # Новая кнопка для настроек
     kb.add(types.InlineKeyboardButton("🎨 Генерировать", callback_data="generate"))
     return kb
 
@@ -331,13 +422,47 @@ def category_menu():
     kb.add(types.InlineKeyboardButton("✅ Готово", callback_data="done_tags"))
     return kb
 
-def tag_menu(category, selected_tags):
+def character_subcategory_menu(selected_tags):
+    """Создает меню выбора подкатегорий персонажей."""
+    kb = types.InlineKeyboardMarkup(row_width=2)
+    for key, name in CHARACTER_CATEGORIES.items():
+        kb.add(types.InlineKeyboardButton(name, callback_data=f"char_sub_{key}"))
+    kb.add(types.InlineKeyboardButton("⬅ Назад", callback_data="back_to_cat"))
+    return kb
+
+def tag_menu(category, selected_tags, char_subcategory=None):
     """Создает меню выбора тегов внутри определенной категории."""
     kb = types.InlineKeyboardMarkup(row_width=2)
-    for tag_key, tag_name in TAGS[category].items():
+    
+    tags_to_display = {}
+    if category == "characters" and char_subcategory:
+        # Фильтруем теги персонажей по выбранной подкатегории
+        for tag_key, tag_name in TAGS[category].items():
+            # Префикс подкатегории должен соответствовать началу ключа тега
+            if tag_key.startswith(char_subcategory + "_"):
+                tags_to_display[tag_key] = tag_name
+    else:
+        tags_to_display = TAGS[category]
+
+    for tag_key, tag_name in tags_to_display.items():
         label = f"✅ {tag_name}" if tag_key in selected_tags else tag_name
         kb.add(types.InlineKeyboardButton(label, callback_data=f"tag_{category}_{tag_key}"))
-    kb.add(types.InlineKeyboardButton("⬅ Назад", callback_data="back_to_cat"))
+    
+    if category == "characters":
+        kb.add(types.InlineKeyboardButton("⬅ К подкатегориям", callback_data="back_to_char_sub"))
+    else:
+        kb.add(types.InlineKeyboardButton("⬅ Назад", callback_data="back_to_cat"))
+    return kb
+
+def settings_menu(current_num_images):
+    """Создает меню настроек."""
+    kb = types.InlineKeyboardMarkup(row_width=2)
+    kb.add(types.InlineKeyboardButton(f"Количество изображений: {current_num_images}", callback_data="ignore"))
+    kb.add(types.InlineKeyboardButton("1", callback_data="set_num_images_1"))
+    kb.add(types.InlineKeyboardButton("2", callback_data="set_num_images_2"))
+    kb.add(types.InlineKeyboardButton("3", callback_data="set_num_images_3"))
+    kb.add(types.InlineKeyboardButton("4", callback_data="set_num_images_4"))
+    kb.add(types.InlineKeyboardButton("⬅ Назад", callback_data="back_to_main"))
     return kb
 
 # --- Обработчики сообщений и колбэков ---
@@ -345,28 +470,41 @@ def tag_menu(category, selected_tags):
 def start(msg):
     """Обработчик команды /start."""
     cid = msg.chat.id
-    user_settings[cid] = {"tags": [], "last_cat": None}
-    bot.send_message(cid, "Привет! Что делаем?", reply_markup=main_menu())
+    user_settings[cid] = {"tags": [], "last_cat": None, "last_char_sub": None, "num_images": 1} # Добавлено num_images
+    bot.send_message(cid, "Привет Шеф!", reply_markup=main_menu())
 
 @bot.callback_query_handler(func=lambda call: True)
 def callback(call):
     """Общий обработчик для всех кнопок колбэка."""
     cid = call.message.chat.id
+    message_id = call.message.message_id
     if cid not in user_settings:
-        user_settings[cid] = {"tags": [], "last_cat": None}
+        user_settings[cid] = {"tags": [], "last_cat": None, "last_char_sub": None, "num_images": 1}
 
     data = call.data
 
     if data == "choose_tags":
-        bot.edit_message_text("Выбери категорию тегов:", cid, call.message.message_id, reply_markup=category_menu())
+        bot.edit_message_text("Выбери категорию тегов:", cid, message_id, reply_markup=category_menu())
 
     elif data.startswith("cat_"):
         cat = data[4:]
         user_settings[cid]["last_cat"] = cat
         selected = user_settings[cid]["tags"]
-        # Убедитесь, что название категории отображается со смайликом
-        category_display_name = CATEGORY_NAMES.get(cat, cat)
-        bot.edit_message_text(f"Категория: {category_display_name}", cid, call.message.message_id, reply_markup=tag_menu(cat, selected))
+        
+        if cat == "characters":
+            # Сбрасываем last_char_sub при входе в основную категорию персонажей
+            user_settings[cid]["last_char_sub"] = None 
+            bot.edit_message_text("Выбери подкатегорию персонажей:", cid, message_id, reply_markup=character_subcategory_menu(selected))
+        else:
+            category_display_name = CATEGORY_NAMES.get(cat, cat)
+            bot.edit_message_text(f"Категория: {category_display_name}", cid, message_id, reply_markup=tag_menu(cat, selected))
+
+    elif data.startswith("char_sub_"):
+        char_sub = data[9:]
+        user_settings[cid]["last_char_sub"] = char_sub
+        selected = user_settings[cid]["tags"]
+        subcategory_display_name = CHARACTER_CATEGORIES.get(char_sub, char_sub)
+        bot.edit_message_text(f"Подкатегория: {subcategory_display_name}", cid, message_id, reply_markup=tag_menu("characters", selected, char_sub))
 
     elif data.startswith("tag_"):
         _, cat, tag = data.split("_", 2)
@@ -375,13 +513,37 @@ def callback(call):
             tags.remove(tag)
         else:
             tags.append(tag)
-        bot.edit_message_reply_markup(cid, call.message.message_id, reply_markup=tag_menu(cat, tags))
+        
+        current_char_sub = user_settings[cid].get("last_char_sub") if cat == "characters" else None
+        bot.edit_message_reply_markup(cid, message_id, reply_markup=tag_menu(cat, tags, current_char_sub))
 
     elif data == "done_tags":
-        bot.edit_message_text("Теги сохранены.", cid, call.message.message_id, reply_markup=main_menu())
+        bot.edit_message_text("Теги сохранены.", cid, message_id, reply_markup=main_menu())
 
     elif data == "back_to_cat":
-        bot.edit_message_text("Выбери категорию:", cid, call.message.message_id, reply_markup=category_menu())
+        # Если возвращаемся из подкатегории персонажей, то сначала в меню подкатегорий
+        if user_settings[cid].get("last_cat") == "characters" and user_settings[cid].get("last_char_sub"):
+            user_settings[cid]["last_char_sub"] = None # Сбрасываем подкатегорию при возврате
+            bot.edit_message_text("Выбери подкатегорию персонажей:", cid, message_id, reply_markup=character_subcategory_menu(user_settings[cid]["tags"]))
+        else:
+            bot.edit_message_text("Выбери категорию:", cid, message_id, reply_markup=category_menu())
+    
+    elif data == "back_to_char_sub":
+        user_settings[cid]["last_char_sub"] = None # Сбрасываем подкатегорию при возврате
+        bot.edit_message_text("Выбери подкатегорию персонажей:", cid, message_id, reply_markup=character_subcategory_menu(user_settings[cid]["tags"]))
+
+    elif data == "settings":
+        current_num_images = user_settings[cid].get("num_images", 1)
+        bot.edit_message_text(f"Настройки генерации:", cid, message_id, reply_markup=settings_menu(current_num_images))
+    
+    elif data.startswith("set_num_images_"):
+        num = int(data.split("_")[-1])
+        user_settings[cid]["num_images"] = num
+        current_num_images = user_settings[cid].get("num_images", 1)
+        bot.edit_message_text(f"Настройки генерации: количество изображений установлено на {num}.", cid, message_id, reply_markup=settings_menu(current_num_images))
+
+    elif data == "back_to_main":
+        bot.edit_message_text("Главное меню:", cid, message_id, reply_markup=main_menu())
 
     elif data == "generate":
         tags = user_settings[cid]["tags"]
@@ -392,19 +554,26 @@ def callback(call):
         prompt_info = build_prompt(tags)
         positive_prompt = prompt_info["positive_prompt"]
         negative_prompt = prompt_info["negative_prompt"]
+        num_images = user_settings[cid].get("num_images", 1)
         
         user_settings[cid]["last_prompt_tags"] = tags.copy()
 
-        bot.send_message(cid, "⏳ Генерация изображения...")
-        url = replicate_generate(positive_prompt, negative_prompt)
-        if url:
+        bot.send_message(cid, "Принято Шеф, приступаю!") # Сообщение перед генерацией
+
+        generated_urls = replicate_generate(positive_prompt, negative_prompt, num_images)
+        if generated_urls:
+            media_group = []
+            for url in generated_urls:
+                media_group.append(types.InputMediaPhoto(url))
+            
             kb = types.InlineKeyboardMarkup()
             kb.add(
                 types.InlineKeyboardButton("🔁 Начать заново", callback_data="start"),
                 types.InlineKeyboardButton("🔧 Изменить теги", callback_data="edit_tags"),
                 types.InlineKeyboardButton("➡ Продолжить с этими", callback_data="generate")
             )
-            bot.send_photo(cid, url, caption="✅ Готово!", reply_markup=kb)
+            bot.send_media_group(cid, media_group)
+            bot.send_message(cid, "✅ Готово!", reply_markup=kb)
         else:
             bot.send_message(cid, "❌ Ошибка генерации. Пожалуйста, попробуйте еще раз.")
 
@@ -416,15 +585,18 @@ def callback(call):
             bot.send_message(cid, "Нет сохранённых тегов с предыдущей генерации. Сначала сделай генерацию.")
 
     elif data == "start":
-        user_settings[cid] = {"tags": [], "last_cat": None}
+        user_settings[cid] = {"tags": [], "last_cat": None, "last_char_sub": None, "num_images": 1}
         bot.send_message(cid, "Настройки сброшены. Начнем заново!", reply_markup=main_menu())
+    
+    elif data == "ignore":
+        bot.answer_callback_query(call.id) # Просто игнорируем нажатие на текст-кнопку
 
 # --- Функция для определения категории тега ---
 def tag_category(tag):
     """Определяет категорию, к которой относится тег."""
     for cat, items in TAGS.items():
         if tag in items:
-            if cat in ["body", "ethnos"]: # Объединяем "body" и "ethnos" в одну категорию "body" для приоритетов
+            if cat in ["body", "ethnos"]:
                 return "body"
             if cat == "poses":
                 return "pose"
@@ -436,12 +608,16 @@ def tag_category(tag):
                 return "clothes"
             if cat == "fetish":
                 return "fetish"
-            if cat == "head": # "head" для лица
+            if cat == "head":
                 return "face"
             if cat == "pokemon":
                 return "pokemon"
-            if cat == "characters": # Добавлено для распознавания категории персонажей
-                return "character"
+            
+            # Для персонажей определяем категорию "character"
+            # Проверяем, начинается ли тег с какого-либо ключа из CHARACTER_CATEGORIES
+            for char_cat_key in CHARACTER_CATEGORIES.keys():
+                if tag.startswith(char_cat_key + "_"):
+                    return "character"
     return None
 
 # --- Оптимизированная функция для построения промпта ---
@@ -474,7 +650,7 @@ def build_prompt(tags):
         "blurry, cropped, worst quality, low quality, text, error, mutated, censored, "
         "hands on chest, hands covering breasts, clothing covering genitals, shirt, bra, bikini, "
         "vagina not visible, anus not visible, penis not visible, bad proportions, "
-        "all clothes, all clothing" # Добавлено для усиления удаления одежды
+        "all clothes, all clothing"
     )
 
     # Уникальные теги и спец. обработка конфликтов
@@ -514,59 +690,68 @@ def build_prompt(tags):
     } 
 
 # --- Функция для генерации изображения через Replicate ---
-def replicate_generate(positive_prompt, negative_prompt):
+def replicate_generate(positive_prompt, negative_prompt, num_images=1):
     """
     Отправляет запрос на генерацию изображения в Replicate API,
     используя оптимальные настройки для достижения максимальной точности.
     """
-    url = "https://api.replicate.com/v1/predictions"
-    headers = {
-        "Authorization": f"Token {REPLICATE_TOKEN}",
-        "Content-Type": "application/json"
-    }
-    json_data = {
-        "version": REPLICATE_MODEL,
-        "input": {
-            "prompt": positive_prompt,
-            "negative_prompt": negative_prompt,
-            "prepend_preprompt": False,
-            "width": 1024,
-            "height": 1024,
-            "steps": 75,
-            "guidance_scale": 18,
-            "scheduler": "DPM++ 2M SDE Karras",
-            "adetailer_face": True,
-            "adetailer_hand": True,
-            "seed": -1
+    urls = []
+    for _ in range(num_images):
+        url = "https://api.replicate.com/v1/predictions"
+        headers = {
+            "Authorization": f"Token {REPLICATE_TOKEN}",
+            "Content-Type": "application/json"
         }
-    }
+        json_data = {
+            "version": REPLICATE_MODEL,
+            "input": {
+                "prompt": positive_prompt,
+                "negative_prompt": negative_prompt,
+                "prepend_preprompt": False,
+                "width": 1024,
+                "height": 1024,
+                "steps": 75,
+                "guidance_scale": 18,
+                "scheduler": "DPM++ 2M SDE Karras",
+                "adetailer_face": True,
+                "adetailer_hand": True,
+                "seed": -1 # Генерировать новый сид для каждого изображения
+            }
+        }
 
-    # Отправка запроса на создание предсказания
-    r = requests.post(url, headers=headers, json=json_data)
-    if r.status_code != 201:
-        print(f"Ошибка при отправке предсказания: {r.status_code} - {r.text}")
-        print(f"Request JSON: {json_data}")
-        return None
-
-    status_url = r.json()["urls"]["get"]
-
-    # Ожидание завершения генерации (до 3 минут)
-    for i in range(90):
-        time.sleep(2)
-        r = requests.get(status_url, headers=headers)
-        if r.status_code != 200:
-            print(f"Ошибка при получении статуса предсказания: {r.status_code} - {r.text}")
-            return None
-        data = r.json()
-        if data["status"] == "succeeded":
-            return data["output"][0] if isinstance(data["output"], list) and data["output"] else None
-        elif data["status"] == "failed":
-            print(f"Предсказание не удалось: {data.get('error', 'Сообщение об ошибке не предоставлено')}")
+        # Отправка запроса на создание предсказания
+        r = requests.post(url, headers=headers, json=json_data)
+        if r.status_code != 201:
+            print(f"Ошибка при отправке предсказания: {r.status_code} - {r.text}")
             print(f"Request JSON: {json_data}")
             return None
 
-    print("Время ожидания предсказания истекло.")
-    return None
+        status_url = r.json()["urls"]["get"]
+
+        # Ожидание завершения генерации (до 3 минут)
+        for i in range(90):
+            time.sleep(2)
+            r = requests.get(status_url, headers=headers)
+            if r.status_code != 200:
+                print(f"Ошибка при получении статуса предсказания: {r.status_code} - {r.text}")
+                return None
+            data = r.json()
+            if data["status"] == "succeeded":
+                if isinstance(data["output"], list) and data["output"]:
+                    urls.append(data["output"][0])
+                    break # Выходим из внутреннего цикла после успешной генерации
+                else:
+                    print("Получен пустой или некорректный 'output' от Replicate.")
+                    return None
+            elif data["status"] == "failed":
+                print(f"Предсказание не удалось: {data.get('error', 'Сообщение об ошибке не предоставлено')}")
+                print(f"Request JSON: {json_data}")
+                return None
+        else: # Если цикл завершился без break
+            print("Время ожидания предсказания истекло для одного изображения.")
+            return None # Возвращаем None, если хотя бы одно изображение не сгенерировалось
+
+    return urls # Возвращаем список URL-ов всех сгенерированных изображений
 
 # --- Настройка вебхука Flask ---
 @app.route("/", methods=["POST"])
@@ -574,6 +759,13 @@ def webhook():
     """Обрабатывает входящие обновления от Telegram."""
     json_str = request.stream.read().decode("utf-8")
     update = telebot.types.Update.de_json(json_str)
+    
+    # Автоматическая отправка /start при первом запуске (если это не колбэк)
+    # Проверяем, что это новое сообщение и пользователь еще не в user_settings
+    if update.message and update.message.chat.id not in user_settings:
+        bot.send_message(update.message.chat.id, "Привет Шеф!", reply_markup=main_menu())
+        user_settings[update.message.chat.id] = {"tags": [], "last_cat": None, "last_char_sub": None, "num_images": 1}
+
     bot.process_new_updates([update])
     return "ok", 200
 
