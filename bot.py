@@ -21,17 +21,17 @@ user_settings = {} # Словарь для хранения настроек п�
 
 # --- Категории для меню ---
 CATEGORY_NAMES = {
-    "holes": "Отверстия",
-    "toys": "Игрушки",
-    "poses": "Позы",
-    "clothes": "Одежда",
-    "body": "Тело",
-    "ethnos": "Этнос",
-    "furry": "Фури",
-    "characters": "Персонажи",
-    "head": "Голова",
-    "fetish": "Фетиши",
-    "pokemon": "Покемоны"
+    "holes": "🕳️ Отверстия",
+    "toys": "🧸 Игрушки",
+    "poses": "🧘 Позы",
+    "clothes": "👗 Одежда",
+    "body": "💪 Тело",
+    "ethnos": "🌍 Этнос",
+    "furry": "🐾 Фури",
+    "characters": "🦸 Персонажи",
+    "head": "🤯 Голова",
+    "fetish": "🔗 Фетиши",
+    "pokemon": "⚡ Покемоны"
 }
 
 # --- Теги с новыми добавлениями ---
@@ -87,7 +87,7 @@ TAGS = {
         "age_milf": "Милфа",
         "age_21": "21 год",
         "cum": "Вся в сперме",
-        "belly_bloat": "Вздутие живота(похоже на беременность)",
+        "belly_bloat": "Вздутие живота (похоже на беременность)",
         "succubus_tattoo": "Татуировка суккуба"
     },
     "ethnos": {
@@ -158,7 +158,27 @@ TAGS = {
         "yumeko_kakegurui": "Юмеко Джабами (Безумный азарт)",
         "kirari_kakegurui": "Кирари Момобами (Безумный азарт)",
         "mary_kakegurui": "Мэри Саотомэ (Безумный азарт)",
-        "mei_mei_jujutsu": "Мэй Мэй (Магическая битва)"
+        "mei_mei_jujutsu": "Мэй Мэй (Магическая битва)",
+        "jessie_pokemon": "Джесси (Покемоны)",
+        "lusamine_pokemon": "Лусамине (Покемоны)",
+        "umbreon_pokemon": "Эмбреон (Покемоны)",
+        "lugia_pokemon": "Лугия (Покемоны)",
+        "shadow_lugia_pokemon": "Шадоу Лугия (Покемоны)",
+        "lopunny_pokemon": "Лопанни (Покемоны)",
+        "goodra_pokemon": "Гудра (Покемоны)",
+        "paimon_genshin": "Паймон (Genshin Impact)",
+        "ellen_joe_zzz": "Эллен Джо (Zenless Zone Zero)",
+        "mirelia_melromarc": "Мирелия К. Мелромарк (Герой Щита)",
+        "malty_melromarc": "Малти С. Мелромарк (Герой Щита)",
+        "xenovia_quarta": "Ксеновия Кварта (Демоны старшей школы)",
+        "serafall_leviathan": "Серафалл Левиафан (Демоны старшей школы)",
+        "asia_argento": "Азия Ардженто (Демоны старшей школы)",
+        "koneko_toujou": "Конеко Тодзё (Демоны старшей школы)",
+        "shidou_irina": "Шидо Ирина (Демоны старшей школы)",
+        "gasper_vladi": "Гаспер Влади (Демоны старшей школы)",
+        "rossweisse_dxd": "Россвайссе (Демоны старшей школы)",
+        "yasaka_dxd": "Ясака (High School DxD)",
+        "grayfia_lucifuge": "Грейфия Люцифуг (Демоны старшей школы)"
     }
 }
 
@@ -196,7 +216,28 @@ CHARACTER_EXTRA = {
     "yumeko_kakegurui": "yumeko jabami, kakegurui, long black hair, red eyes, school uniform, insane smile",
     "kirari_kakegurui": "kirari momobami, kakegurui, white hair, blue lips, school uniform, student council president",
     "mary_kakegurui": "mary saotome, kakegurui, blonde hair, school uniform, twin tails",
-    "mei_mei_jujutsu": "mei mei, jujutsu kaisen, long black hair, axe, confident expression"
+    "mei_mei_jujutsu": "mei mei, jujutsu kaisen, long black hair, axe, confident expression",
+    # --- Новые персонажи с промптами ---
+    "jessie_pokemon": "jessie, pokemon, team rocket, red hair, long hair, ponytail",
+    "lusamine_pokemon": "lusamine, pokemon, aether foundation, blonde hair, long hair, dress",
+    "umbreon_pokemon": "umbreon, pokemon, dark type, quadruped, black fur, yellow rings",
+    "lugia_pokemon": "lugia, pokemon, legendary pokemon, psychic type, flying type, white body, blue fins",
+    "shadow_lugia_pokemon": "shadow lugia, pokemon, legendary pokemon, dark type, flying type, corrupted, dark aura",
+    "lopunny_pokemon": "lopunny, pokemon, normal type, fighting type, rabbit, furry, long ears, fluffy tail",
+    "goodra_pokemon": "goodra, pokemon, dragon type, gooey, slimy skin, soft body",
+    "paimon_genshin": "paimon, genshin impact, floating companion, small body, white hair, crown, emergency food",
+    "ellen_joe_zzz": "ellen joe, zenless zone zero, long blonde hair, school uniform, glasses, student",
+    "mirelia_melromarc": "mirelia q melromarc, the rising of the shield hero, queen, blonde hair, elegant dress",
+    "malty_melromarc": "malty s melromarc, the rising of the shield hero, bitch, cruel smile, red hair, blonde hair, princess, villainess",
+    "xenovia_quarta": "xenovia quarta, highschool dxd, blue hair, short hair, sword, holy sword, devil wings, nun uniform",
+    "serafall_leviathan": "serafall leviathan, highschool dxd, magical girl outfit, pink hair, magical wand, devil, large breasts",
+    "asia_argento": "asia argento, highschool dxd, blonde hair, long hair, nun, innocent, healing magic, dragon slayer, devil wings",
+    "koneko_toujou": "koneko toujou, highschool dxd, white hair, cat ears, cat tail, small breasts, stoic expression",
+    "shidou_irina": "shidou irina, highschool dxd, blonde hair, twin tails, energetic, holy sword, angel wings, exorcist",
+    "gasper_vladi": "gasper vladi, highschool dxd, male, trap, feminine clothing, long blonde hair, shy, vampire, crossdresser",
+    "rossweisse_dxd": "rossweisse, highschool dxd, valkyrie, long silver hair, glasses, mature, large breasts",
+    "yasaka_dxd": "yasaka, highschool dxd, kitsune, nine tails, fox ears, kimono, mature woman",
+    "grayfia_lucifuge": "grayfia lucifuge, highschool dxd, maid outfit, long silver hair, red eyes, ice magic, sexy maid"
 }
 
 TAG_PROMPTS = {
@@ -323,7 +364,9 @@ def callback(call):
         cat = data[4:]
         user_settings[cid]["last_cat"] = cat
         selected = user_settings[cid]["tags"]
-        bot.edit_message_text(f"Категория: {CATEGORY_NAMES[cat]}", cid, call.message.message_id, reply_markup=tag_menu(cat, selected))
+        # Убедитесь, что название категории отображается со смайликом
+        category_display_name = CATEGORY_NAMES.get(cat, cat)
+        bot.edit_message_text(f"Категория: {category_display_name}", cid, call.message.message_id, reply_markup=tag_menu(cat, selected))
 
     elif data.startswith("tag_"):
         _, cat, tag = data.split("_", 2)
@@ -395,8 +438,10 @@ def tag_category(tag):
                 return "fetish"
             if cat == "head": # "head" для лица
                 return "face"
-            if cat == "pokemon": # Добавлено для распознавания категории покемонов
+            if cat == "pokemon":
                 return "pokemon"
+            if cat == "characters": # Добавлено для распознавания категории персонажей
+                return "character"
     return None
 
 # --- Оптимизированная функция для построения промпта ---
@@ -420,7 +465,7 @@ def build_prompt(tags):
         "clothes": [],
         "fetish": [],
         "face": [],
-        "pokemon": [] # Добавлено для хранения тегов покемонов
+        "pokemon": []
     }
     
     base_negative = (
@@ -456,7 +501,7 @@ def build_prompt(tags):
 
     prompt_parts = base[:]
     # Порядок добавления важен: персонажи, фури, покемоны, тело, позы, отверстия, игрушки, одежда, фетиши, лицо
-    for section in ["character", "furry", "pokemon", "body", "pose", "holes", "toys", "clothes", "fetish", "face"]: # Добавлен "pokemon"
+    for section in ["character", "furry", "pokemon", "body", "pose", "holes", "toys", "clothes", "fetish", "face"]:
         prompt_parts.extend(priority[section])
 
     # Танлайны убирают купальник из негативного промпта
