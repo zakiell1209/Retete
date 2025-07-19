@@ -219,9 +219,30 @@ TAGS = {
         # Zenless Zone Zero
         "zzz_ellen_joe": "Эллен Джо",
         
-        # Pokémon (персонажи-люди)
+        # Pokémon (персонажи-люди) - ИСПРАВЛЕНО
         "pokemon_jessie": "Джесси",
-        "pokemon_lusamine": "Лусамине"
+        "pokemon_lusamine": "Лусамине",
+
+        # League of Legends - ДОБАВЛЕНО
+        "lol_qiyana": "Киана",
+        "lol_aurora": "Аврора",
+        "lol_katarina": "Катарина",
+        "lol_akali": "Акали",
+        "lol_irelia": "Ирелия",
+        "lol_caitlyn": "Кейтлин",
+        "lol_briar": "Брайер",
+        "lol_kaisa": "Кай'Са",
+        "lol_evelynn": "Эвелинн",
+        "lol_ahri": "Ари",
+        "lol_belveth": "Бел'Вет",
+        "lol_fiora": "Фиора",
+        "lol_gwen": "Гвен",
+        "lol_zoe": "Зои",
+        "lol_missfortune": "Мисс Фортуна",
+        "lol_neeko": "Нико",
+        "lol_samira": "Самира",
+        "lol_sona": "Сона",
+        "lol_elise": "Элиза"
     }
 }
 
@@ -248,7 +269,8 @@ CHARACTER_CATEGORIES = {
     "shieldhero": "📺 Герой Щита",
     "helltaker": "🎮 Helltaker",
     "zzz": "🎮 Zenless Zone Zero",
-    "pokemon_chars": "📺 Pokémon (персонажи)" # Для Джесси и Лусамине
+    "pokemon_chars": "📺 Pokémon (персонажи)", # ИСПРАВЛЕНО - теперь отображается
+    "lol": "🎮 League of Legends" # ДОБАВЛЕНО
 }
 
 # --- Промпты для модели ---
@@ -321,7 +343,28 @@ CHARACTER_EXTRA = {
     "zzz_ellen_joe": "ellen joe, zenless zone zero, long blonde hair, school uniform, glasses, student",
 
     "pokemon_jessie": "jessie, pokemon, team rocket, red hair, long hair, ponytail",
-    "pokemon_lusamine": "lusamine, pokemon, aether foundation, blonde hair, long hair, dress"
+    "pokemon_lusamine": "lusamine, pokemon, aether foundation, blonde hair, long hair, dress",
+
+    # League of Legends - ДОБАВЛЕНО
+    "lol_qiyana": "qiyana, league of legends",
+    "lol_aurora": "aurora, league of legends",
+    "lol_katarina": "katarina, league of legends",
+    "lol_akali": "akali, league of legends",
+    "lol_irelia": "irelia, league of legends",
+    "lol_caitlyn": "caitlyn, league of legends",
+    "lol_briar": "briar, league of legends",
+    "lol_kaisa": "kaisa, league of legends",
+    "lol_evelynn": "evelynn, league of legends",
+    "lol_ahri": "ahri, league of legends",
+    "lol_belveth": "belveth, league of legends",
+    "lol_fiora": "fiora, league of legends",
+    "lol_gwen": "gwen, league of legends",
+    "lol_zoe": "zoe, league of legends",
+    "lol_missfortune": "miss fortune, league of legends",
+    "lol_neeko": "neeko, league of legends",
+    "lol_samira": "samira, league of legends",
+    "lol_sona": "sona, league of legends",
+    "lol_elise": "elise, league of legends"
 }
 
 
