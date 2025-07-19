@@ -1127,4 +1127,139 @@ def build_prompt(tags):
     
     base_negative = (
         "lowres, bad anatomy, bad hands, bad face, deformed, disfigured, poorly drawn, "
-        "missing limbs, extra limbs, fused fingers, jpeg artifacts, signature, watermark
+        "missing limbs, extra limbs, fused fingers, jpeg artifacts, signature, watermark", # <-- Исправлено здесь
+        "blurry, cropped, worst quality, low quality, text, error, mutated, censored, "
+        "hands on chest, hands covering breasts, clothing covering genitals, shirt, bra, bikini, "
+        "vagina not visible, anus not visible, penis not visible, bad proportions, "
+        "all clothes, all clothing"
+    )
+    # Присоединяем части кортежа base_negative в одну строку
+    base_negative = "".join(base_negative)
+
+
+    # Уникальные теги и спец. обработка конфликтов
+    unique = set(tags)
+    
+    # Приоритет большим грудям
+    if "big_breasts" in unique and "small_breasts" in unique:
+        unique.remove("small_breasts") 
+    
+    # Костюм коровы уже включён в furry_cow
+    if "furry_cow" in unique:
+        unique.discard("cow_costume") 
+
+    # Группировка по категориям
+    for tag in unique:
+        if tag in CHARACTER_EXTRA:
+            priority["character"].append(TAG_PROMPTS.get(tag, tag)) # Use TAG_PROMPTS as it contains CHARACTER_EXTRA
+        elif tag.startswith("furry_"):
+            priority["furry"].append(TAG_PROMPTS.get(tag, tag))
+        elif tag in TAG_PROMPTS:
+            key = tag_category(tag)
+            if key:
+                priority[key].append(TAG_PROMPTS[tag])
+
+    prompt_parts = base[:]
+    # Порядок добавления важен: персонажи, фури, покемоны, тело, позы, отверстия, игрушки, одежда, фетиши, лицо
+    for section in ["character", "furry", "pokemon", "body", "pose", "holes", "toys", "clothes", "fetish", "face"]:
+        prompt_parts.extend(priority[section])
+
+    # Танлайны убирают купальник из негативного промпта
+    if "bikini_tan_lines" in unique:
+        base_negative += ", bikini"
+
+    return {
+        "positive_prompt": ", ".join(prompt_parts),
+        "negative_prompt": base_negative
+    } 
+
+# --- Функция для генерации изображения через Replicate ---
+def replicate_generate(positive_prompt, negative_prompt, num_images=1):
+    """
+    Отправляет запрос на генерацию изображения в Replicate API,
+    используя оптимальные настройки для достижения максимальной точности.
+    """
+    urls = []
+    for _ in range(num_images):
+        url = "https://api.replicate.com/v1/predictions"
+        headers = {
+            "Authorization": f"Token {REPLICATE_TOKEN}",
+            "Content-Type": "application/json"
+        }
+        json_data = {
+            "version": REPLICATE_MODEL,
+            "input": {
+                "prompt": positive_prompt,
+                "negative_prompt": negative_prompt,
+                "prepend_preprompt": False,
+                "width": 1024,
+                "height": 1024,
+                "steps": 75,
+                "guidance_scale": 18,
+                "scheduler": "DPM++ 2M SDE Karras",
+                "adetailer_face": True,
+                "adetailer_hand": True,
+                "seed": -1 # Генерировать новый сид для каждого изображения
+            }
+        }
+
+        # Отправка запроса на создание предсказания
+        r = requests.post(url, headers=headers, json=json_data)
+        if r.status_code != 201:
+            print(f"Ошибка при отправке предсказания: {r.status_code} - {r.text}")
+            print(f"Request JSON: {json_data}")
+            return None
+
+        status_url = r.json()["urls"]["get"]
+
+        # Ожидание завершения генерации (до 3 минут)
+        for i in range(90):
+            time.sleep(2)
+            r = requests.get(status_url, headers=headers)
+            if r.status_code != 200:
+                print(f"Ошибка при получении статуса предсказания: {r.status_code} - {r.text}")
+                return None
+            data = r.json()
+            if data["status"] == "succeeded":
+                if isinstance(data["output"], list) and data["output"]:
+                    urls.append(data["output"][0])
+                    break # Выходим из внутреннего цикла после успешной генерации
+                else:
+                    print("Получен пустой или некорректный 'output' от Replicate.")
+                    return None
+            elif data["status"] == "failed":
+                print(f"Предсказание не удалось: {data.get('error', 'Сообщение об ошибке не предоставлено')}")
+                print(f"Request JSON: {json_data}")
+                return None
+        else: # Если цикл завершился без break
+            print("Время ожидания предсказания истекло для одного изображения.")
+            return None # Возвращаем None, если хотя бы одно изображение не сгенерировалось
+
+    return urls # Возвращаем список URL-ов всех сгенерированных изображений
+
+# --- Настройка вебхука Flask ---
+@app.route("/", methods=["POST"])
+def webhook():
+    """Обрабатывает входящие обновления от Telegram."""
+    json_str = request.stream.read().decode("utf-8")
+    update = telebot.types.Update.de_json(json_str)
+    
+    # Автоматическая отправка /start при первом запуске (если это не колбэк)
+    # Проверяем, что это новое сообщение и пользователь еще не в user_settings
+    if update.message and update.message.chat.id not in user_settings:
+        bot.send_message(update.message.chat.id, "Привет Шеф!", reply_markup=main_menu())
+        user_settings[update.message.chat.id] = {"tags": [], "last_cat": None, "last_char_sub": None, "num_images": 1}
+
+    bot.process_new_updates([update])
+    return "ok", 200
+
+@app.route("/", methods=["GET"])
+def home():
+    """Простой маршрут для проверки работы приложения."""
+    return "бот работает", 200
+
+# --- Запуск бота ---
+if __name__ == "__main__":
+    bot.remove_webhook()
+    bot.set_webhook(url=WEBHOOK_URL)
+    app.run(host="0.0.0.0", port=PORT)
