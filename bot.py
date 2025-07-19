@@ -261,8 +261,28 @@ TAGS = {
         # Atomic Heart
         "atomicheart_twins": "Близняшки",
 
-        # Bleach
-        "bleach_yoruichi_shihoin": "Шихоин Йориичи",
+        # Bleach - НОВЫЕ ПЕРСОНАЖИ
+        "bleach_renji_f": "Ренджи Абарай (F)",
+        "bleach_rukia_kuchiki": "Рукия Кучики",
+        "bleach_orihime_inoue": "Орихиме Иноуэ",
+        "bleach_yoruichi_shihoin": "Йоруичи Шихоин",
+        "bleach_rangiku_matsumoto": "Рангику Мацумото",
+        "bleach_nemu_kurotsuchi": "Нему Куроцучи",
+        "bleach_nelliel_tu_odelschwanck": "Неллиэль Ту Одельшванк",
+        "bleach_tier_harribel": "Тиа Харрибел",
+        "bleach_retsu_unohana": "Ретсу Унохана",
+        "bleach_soi_fon": "Сой Фон",
+        "bleach_hiyori_sarugaki": "Хиёри Саругаки",
+        "bleach_lisa_yadomaru": "Лиза Ядомару",
+        "bleach_mashiro_kuna": "Маширо Куна",
+        "bleach_nanao_ise": "Нанао Исе",
+        "bleach_isane_kotetsu": "Исане Котецу",
+        "bleach_momo_hinamori": "Момо Хинамири",
+        "bleach_candice_catnipp": "Кэндис Катнипп",
+        "bleach_bambietta_basterbine": "Бамбиетта Бастербайн",
+        "bleach_giselle_gewelle": "Гизель Жевелль",
+        "bleach_meninas_mcallon": "Менинас МакАллон",
+        "bleach_liltotto_lamperd": "Лилттото Ламперд",
 
         # Danmachi
         "danmachi_hestia": "Гестия",
@@ -354,7 +374,7 @@ TAGS = {
         "mlp_scootaloo": "Скуталу",
         "mlp_sweetie_belle": "Крошка Бель",
 
-        # Dislyte - НОВЫЕ ПЕРСОНАЖИ
+        # Dislyte
         "dislyte_li_ling_f": "Ли Лин (F)", # Female Li Ling
         "dislyte_sally": "Салли",
         "dislyte_clara": "Клара",
@@ -364,8 +384,8 @@ TAGS = {
         "dislyte_meredith": "Мередит",
         "dislyte_jiang_man": "Цзян Мань",
         "dislyte_eira": "Эйра",
-        "dislyte_drew": "Дрю (F)", # Female Drew
-        "dislyte_pritzker": "Притцкер (F)", # Female Pritzker
+        "dislyte_drew": "Дрю",
+        "dislyte_pritzker_f": "Притцкер (F)", # Female Pritzker
         "dislyte_fatima": "Фатима",
         "dislyte_brewster_f": "Брюстер (F)", # Female Brewster
         "dislyte_yun_chuan_f": "Юнь Чуань (F)", # Female Yun Chuan
@@ -390,7 +410,6 @@ TAGS = {
         "dislyte_dhalia": "Далия",
         "dislyte_elaine": "Элейн",
         "dislyte_cecilia": "Сесилия",
-        "dislyte_yun_chuan": "Юнь Чуань",
         "dislyte_intisar": "Интисар",
         "dislyte_kaylee": "Кейли",
         "dislyte_layla": "Лейла",
@@ -412,103 +431,25 @@ TAGS = {
         "dislyte_brynn": "Бринн",
         "dislyte_catherine": "Катерина",
         "dislyte_chang_pu": "Чан Пу",
-        "dislyte_drew_f": "Дрю (F)",
-        "dislyte_eugene_f": "Юджин (F)",
-        "dislyte_freddy_f": "Фредди (F)",
-        "dislyte_hall": "Холл (F)",
-        "dislyte_helena": "Хелена",
-        "dislyte_jacob_f": "Джейкоб (F)",
-        "dislyte_jeanne": "Жанна",
-        "dislyte_layla_f": "Лейла (F)",
-        "dislyte_li_ao_f": "Ли Ао (F)",
-        "dislyte_lu_yi_f": "Лу И (F)",
-        "dislyte_mark_f": "Марк (F)",
-        "dislyte_melanie_f": "Мелани (F)",
-        "dislyte_nicole_f": "Николь (F)",
-        "dislyte_olivia": "Оливия",
-        "dislyte_q_f": "Кью (F)",
-        "dislyte_ren_si_f": "Жэнь Си (F)",
-        "dislyte_sander_f": "Сандер (F)",
-        "dislyte_stewart": "Стюарт",
-        "dislyte_tang_xuan": "Тан Сюань",
-        "dislyte_unaky_f": "Унаки (F)",
-        "dislyte_victoria_f": "Виктория (F)",
-        "dislyte_xiao_yin_f": "Сяо Инь (F)",
-        "dislyte_ye_suhua_f": "Е Сухуа (F)",
-        "dislyte_zhong_nan_f": "Чжун Нань (F)",
-        "dislyte_anadora_f": "Анадора (F)",
-        "dislyte_bernice_f": "Бернис (F)",
-        "dislyte_brynn_f": "Бринн (F)",
-        "dislyte_catherine_f": "Катерина (F)",
-        "dislyte_chang_pu_f": "Чан Пу (F)",
-        "dislyte_helena_f": "Хелена (F)",
-        "dislyte_jeanne_f": "Жанна (F)",
-        "dislyte_olivia_f": "Оливия (F)",
-        "dislyte_stella": "Стелла",
-        "dislyte_alice": "Алиса",
-        "dislyte_arcana": "Аркана",
-        "dislyte_aurelius": "Аурелиус (F)",
-        "dislyte_bette": "Бетте",
-        "dislyte_bonnie": "Бонни",
-        "dislyte_celine": "Селин",
-        "dislyte_corbin": "Корбин (F)",
-        "dislyte_drew": "Дрю",
-        "dislyte_eugene": "Юджин",
-        "dislyte_freddy": "Фредди",
-        "dislyte_hall": "Холл",
-        "dislyte_jacob": "Джейкоб",
-        "dislyte_li_ao": "Ли Ао",
-        "dislyte_lu_yi": "Лу И",
-        "dislyte_mark": "Марк",
-        "dislyte_sander": "Сандер",
-        "dislyte_stewart": "Стюарт",
-        "dislyte_tang_xuan": "Тан Сюань",
-        "dislyte_unaky": "Унаки",
-        "dislyte_victoria": "Виктория",
-        "dislyte_xiao_yin": "Сяо Инь",
-        "dislyte_ye_suhua": "Е Сухуа",
-        "dislyte_zhong_nan": "Чжун Нань",
-        "dislyte_anadora": "Анадора",
-        "dislyte_bernice": "Бернис",
-        "dislyte_brynn": "Бринн",
-        "dislyte_catherine": "Катерина",
-        "dislyte_chang_pu": "Чан Пу",
-        "dislyte_helena": "Хелена",
-        "dislyte_jeanne": "Жанна",
-        "dislyte_olivia": "Оливия",
-        "dislyte_stella_f": "Стелла (F)",
-        "dislyte_alice_f": "Алиса (F)",
-        "dislyte_arcana_f": "Аркана (F)",
-        "dislyte_aurelius_f": "Аурелиус (F)",
-        "dislyte_bette_f": "Бетте (F)",
-        "dislyte_bonnie_f": "Бонни (F)",
-        "dislyte_celine_f": "Селин (F)",
-        "dislyte_corbin_f": "Корбин (F)",
-        "dislyte_drew_f": "Дрю (F)",
         "dislyte_eugene_f": "Юджин (F)",
         "dislyte_freddy_f": "Фредди (F)",
         "dislyte_hall_f": "Холл (F)",
+        "dislyte_helena": "Хелена",
         "dislyte_jacob_f": "Джейкоб (F)",
+        "dislyte_jeanne": "Жанна",
         "dislyte_li_ao_f": "Ли Ао (F)",
         "dislyte_lu_yi_f": "Лу И (F)",
         "dislyte_mark_f": "Марк (F)",
+        "dislyte_olivia": "Оливия",
         "dislyte_sander_f": "Сандер (F)",
-        "dislyte_stewart_f": "Стюарт (F)",
-        "dislyte_tang_xuan_f": "Тан Сюань (F)",
-        "dislyte_unaky_f": "Унаки (F)",
-        "dislyte_victoria_f": "Виктория (F)",
-        "dislyte_xiao_yin_f": "Сяо Инь (F)",
-        "dislyte_ye_suhua_f": "Е Сухуа (F)",
-        "dislyte_zhong_nan_f": "Чжун Нань (F)",
-        "dislyte_anadora_f": "Анадора (F)",
-        "dislyte_bernice_f": "Бернис (F)",
-        "dislyte_brynn_f": "Бринн (F)",
-        "dislyte_catherine_f": "Катерина (F)",
-        "dislyte_chang_pu_f": "Чан Пу (F)",
-        "dislyte_helena_f": "Хелена (F)",
-        "dislyte_jeanne_f": "Жанна (F)",
-        "dislyte_olivia_f": "Оливия (F)",
-        "dislyte_stella_f": "Стелла (F)",
+        "dislyte_stella": "Стелла",
+        "dislyte_alice": "Алиса",
+        "dislyte_arcana": "Аркана",
+        "dislyte_aurelius_f": "Аурелиус (F)",
+        "dislyte_bette": "Бетте",
+        "dislyte_bonnie": "Бонни",
+        "dislyte_celine": "Селин",
+        "dislyte_corbin_f": "Корбин (F)",
     }
 }
 
@@ -525,7 +466,7 @@ CHARACTER_CATEGORIES = {
     "residentevil": "🎮 Resident Evil",
     "streetfighter": "🎮 Street Fighter",
     "atomicheart": "🎮 Atomic Heart",
-    "bleach": "📺 Bleach",
+    "bleach": "📺 Bleach", # НОВАЯ КАТЕГОРИЯ
     "danmachi": "📺 Danmachi",
     "ragnarok": "📺 Повесть о конце света",
     "naruto": "📺 Naruto",
@@ -538,7 +479,7 @@ CHARACTER_CATEGORIES = {
     "pokemon_chars": "📺 Pokémon (персонажи)",
     "lol": "🎮 League of Legends",
     "mlp": "📺 My Little Pony",
-    "dislyte": "🎮 Dislyte" # НОВАЯ КАТЕГОРИЯ
+    "dislyte": "🎮 Dislyte"
 }
 
 # --- Промпты для модели ---
@@ -673,8 +614,29 @@ CHARACTER_EXTRA = {
     # Atomic Heart
     "atomicheart_twins": "robot, twin sisters, black bodysuit, black hair, white hair, atomic heart",
 
-    # Bleach
-    "bleach_yoruichi_shihoin": "yoruichi shihoin, bleach, dark skin, purple hair",
+    # Bleach - НОВЫЕ ПЕРСОНАЖИ И ИСПРАВЛЕННЫЙ ПРОМПТ ДЛЯ YORUICHI
+    "bleach_renji_f": "renji abarai, female, bleach, red hair, tattoos, shinigami, zanpakuto",
+    "bleach_rukia_kuchiki": "rukia kuchiki, bleach, short black hair, shinigami, zanpakuto, noble family",
+    "bleach_orihime_inoue": "orihime inoue, bleach, long orange hair, hairpin, school uniform, healer",
+    "bleach_yoruichi_shihoin": "yoruichi shihoin, bleach, dark skin, purple short hair, cat form, thunder god, shinigami",
+    "bleach_rangiku_matsumoto": "rangiku matsumoto, bleach, blonde wavy hair, large breasts, shinigami, haori, vice-captain",
+    "bleach_nemu_kurotsuchi": "nemu kurotsuchi, bleach, short black hair, maid outfit, emotionless, artificial soul, lieutenant",
+    "bleach_nelliel_tu_odelschwanck": "nelliel tu odelschwanck, bleach, arrancar, green hair, mask fragment, revealing outfit, childlike form, adult form, espada",
+    "bleach_tier_harribel": "tier harribel, bleach, arrancar, shark-like mask, tanned skin, revealing coat, espada",
+    "bleach_retsu_unohana": "retsu unohana, bleach, black braided hair, calm expression, shinigami captain, kimono, healing powers, fierce past",
+    "bleach_soi_fon": "soi fon, bleach, short black hair, shinigami captain, uniform, assassin, strict, high speed",
+    "bleach_hiyori_sarugaki": "hiyori sarugaki, bleach, blonde pigtails, visored, school uniform, aggressive, short temper",
+    "bleach_lisa_yadomaru": "lisa yadomaru, bleach, long black hair, glasses, school uniform, shinigami, visored, lewd librarian",
+    "bleach_mashiro_kuna": "mashiro kuna, bleach, green hair, energetic, visored, goggles, eccentric",
+    "bleach_nanao_ise": "nanao ise, bleach, short black hair, glasses, shinigami vice-captain, serious, intellectual",
+    "bleach_isane_kotetsu": "isane kotetsu, bleach, long silver hair, shinigami vice-captain, gentle, healer",
+    "bleach_momo_hinamori": "momo hinamori, bleach, brown hair, shinigami, loyal, innocent, prone to distress",
+    "bleach_candice_catnipp": "candice catnipp, bleach, quincy, blonde spiky hair, lightning powers, sternritter, aggressive",
+    "bleach_bambietta_basterbine": "bambietta basterbine, bleach, quincy, short black hair, explosive powers, sternritter, volatile",
+    "bleach_giselle_gewelle": "giselle gewelle, bleach, quincy, blonde hair, zombie powers, sternritter, crossdresser, creepy",
+    "bleach_meninas_mcallon": "meninas mcallon, bleach, quincy, pink hair, muscular, sternritter, strong",
+    "bleach_liltotto_lamperd": "liltotto lamperd, bleach, quincy, blonde pigtails, childlike, sternritter, cannibalistic",
+
 
     # Danmachi
     "danmachi_hestia": "hestia, danmachi, black hair, blue ribbons, white dress",
@@ -766,7 +728,7 @@ CHARACTER_EXTRA = {
     "mlp_scootaloo": "scootaloo, my little pony, pegasus, orange body, purple mane, cutie mark crusader, scooter",
     "mlp_sweetie_belle": "sweetie belle, my little pony, unicorn, white body, pink and purple mane, cutie mark crusader",
 
-    # Dislyte - НОВЫЕ ПЕРСОНАЖИ
+    # Dislyte
     "dislyte_li_ling_f": "li ling, female, dislyte, red hair, dragon, elegant outfit",
     "dislyte_sally": "sally, dislyte, siren, blue hair, mermaid tail, elegant dress",
     "dislyte_clara": "clara, dislyte, valkyrie, blonde hair, armor, wings",
@@ -776,8 +738,8 @@ CHARACTER_EXTRA = {
     "dislyte_meredith": "meredith, dislyte, medusa, snake hair, green skin, revealing outfit",
     "dislyte_jiang_man": "jiang man, dislyte, black hair, traditional chinese dress, elegant",
     "dislyte_eira": "eira, dislyte, ice queen, white hair, blue dress, cold expression",
-    "dislyte_drew": "drew, female, dislyte, dark hair, casual outfit, energetic",
-    "dislyte_pritzker": "pritzker, female, dislyte, blonde hair, glasses, scientist",
+    "dislyte_drew": "drew, dislyte, dark hair, casual outfit, energetic",
+    "dislyte_pritzker_f": "pritzker, female, dislyte, blonde hair, glasses, scientist",
     "dislyte_fatima": "fatima, dislyte, desert warrior, tanned skin, veil, sword",
     "dislyte_brewster_f": "brewster, female, dislyte, red hair, punk outfit, guitar",
     "dislyte_yun_chuan_f": "yun chuan, female, dislyte, traditional chinese outfit, long hair",
@@ -802,7 +764,6 @@ CHARACTER_EXTRA = {
     "dislyte_dhalia": "dhalia, dislyte, flower girl, colorful dress, innocent",
     "dislyte_elaine": "elaine, dislyte, knight, armor, sword, determined",
     "dislyte_cecilia": "cecilia, dislyte, nun, white habit, serene expression",
-    "dislyte_yun_chuan": "yun chuan, dislyte, traditional chinese outfit, long hair",
     "dislyte_intisar": "intisar, dislyte, desert dancer, revealing outfit, veil",
     "dislyte_kaylee": "kaylee, dislyte, pop star, colorful hair, stage outfit",
     "dislyte_layla": "layla, dislyte, street fighter, casual outfit, tough",
@@ -824,39 +785,25 @@ CHARACTER_EXTRA = {
     "dislyte_brynn": "brynn, dislyte, archer, forest outfit, focused",
     "dislyte_catherine": "catherine, dislyte, noble, elegant dress, blonde hair",
     "dislyte_chang_pu": "chang pu, dislyte, traditional chinese healer, gentle",
-    "dislyte_drew_f": "drew, female, dislyte, dark hair, casual outfit, energetic",
     "dislyte_eugene_f": "eugene, female, dislyte, short hair, sporty outfit",
     "dislyte_freddy_f": "freddy, female, dislyte, punk rock, guitar, wild hair",
-    "dislyte_hall": "hall, dislyte, elegant, long dress, mysterious",
+    "dislyte_hall_f": "hall, female, dislyte, elegant, long dress, mysterious",
     "dislyte_helena": "helena, dislyte, archer, forest outfit, determined",
     "dislyte_jacob_f": "jacob, female, dislyte, casual outfit, short hair",
     "dislyte_jeanne": "jeanne, dislyte, knight, armor, sword, brave",
-    "dislyte_layla_f": "layla, female, dislyte, street fighter, tough",
     "dislyte_li_ao_f": "li ao, female, dislyte, traditional chinese warrior, armored",
     "dislyte_lu_yi_f": "lu yi, female, dislyte, traditional chinese dancer, elegant",
     "dislyte_mark_f": "mark, female, dislyte, casual outfit, short hair",
-    "dislyte_melanie_f": "melanie, female, dislyte, gothic lolita, dark dress",
-    "dislyte_nicole_f": "nicole, female, dislyte, spy, black suit",
     "dislyte_olivia": "olivia, dislyte, elegant, long dress, mysterious",
-    "dislyte_q_f": "q, female, dislyte, hacker, futuristic outfit",
-    "dislyte_ren_si_f": "ren si, female, dislyte, traditional chinese outfit",
     "dislyte_sander_f": "sander, female, dislyte, casual outfit, short hair",
-    "dislyte_stewart": "stewart, dislyte, punk, guitar, casual outfit",
-    "dislyte_tang_xuan": "tang xuan, dislyte, monkey king, staff, energetic",
-    "dislyte_unaky_f": "unaky, female, dislyte, tribal warrior, wild",
-    "dislyte_victoria_f": "victoria, female, dislyte, steampunk, goggles",
-    "dislyte_xiao_yin_f": "xiao yin, female, dislyte, traditional chinese dancer",
-    "dislyte_ye_suhua_f": "ye suhua, female, dislyte, healer, gentle",
-    "dislyte_zhong_nan_f": "zhong nan, female, dislyte, traditional chinese warrior",
-    "dislyte_anadora_f": "anadora, female, dislyte, siren, blue hair",
-    "dislyte_bernice_f": "bernice, female, dislyte, street dancer",
-    "dislyte_brynn_f": "brynn, female, dislyte, archer, forest outfit",
-    "dislyte_catherine_f": "catherine, female, dislyte, noble, elegant dress",
-    "dislyte_chang_pu_f": "chang pu, female, dislyte, traditional chinese healer",
-    "dislyte_helena_f": "helena, female, dislyte, archer, forest outfit",
-    "dislyte_jeanne_f": "jeanne, female, dislyte, knight, armor",
-    "dislyte_olivia_f": "olivia, female, dislyte, elegant, long dress",
-    "dislyte_stella_f": "stella, female, dislyte, pop star, colorful hair",
+    "dislyte_stella": "stella, dislyte, pop star, colorful hair",
+    "dislyte_alice": "alice, dislyte, elegant, formal dress",
+    "dislyte_arcana": "arcana, dislyte, mystic, flowing robes",
+    "dislyte_aurelius_f": "aurelius, female, dislyte, powerful, leader, golden armor",
+    "dislyte_bette": "bette, dislyte, spy, sleek outfit, mysterious",
+    "dislyte_bonnie": "bonnie, dislyte, cowgirl, western wear, confident",
+    "dislyte_celine": "celine, dislyte, singer, stage outfit, microphone",
+    "dislyte_corbin_f": "corbin, female, dislyte, mercenary, combat gear, tough",
 }
 
 TAG_PROMPTS = {
@@ -903,7 +850,7 @@ TAG_PROMPTS = {
     "body_muscular": "muscular body",
     "age_loli": "loli",
     "age_milf": "milf",
-    "age_21": "age 21",
+    "age_21": "21 год",
     "cum": "cum covered",
     "belly_bloat": "belly bulge, pregnant looking belly",
     "succubus_tattoo": "succubus tattoo on lower abdomen",
@@ -1180,73 +1127,4 @@ def build_prompt(tags):
     
     base_negative = (
         "lowres, bad anatomy, bad hands, bad face, deformed, disfigured, poorly drawn, "
-        "missing limbs, extra limbs, fused fingers, jpeg artifacts, signature, watermark, "
-        "blurry, cropped, worst quality, low quality, text, error, mutated, censored, "
-        "hands on chest, hands covering breasts, clothing covering genitals, shirt, bra, bikini, "
-        "vagina not visible, anus not visible, penis not visible, bad proportions, "
-        "all clothes, all clothing"
-    )
-
-    # Уникальные теги и спец. обработка конфликтов
-    unique = set(tags)
-    
-    # Приоритет большим грудям
-    if "big_breasts" in unique and "small_breasts" in unique:
-        unique.remove("small_breasts") 
-    
-    # Костюм коровы уже включён в furry_cow
-    if "furry_cow" in unique:
-        unique.discard("cow_costume") 
-
-    # Группировка по категориям
-    for tag in unique:
-        if tag in CHARACTER_EXTRA:
-            priority["character"].append(TAG_PROMPTS.get(tag, tag)) # Use TAG_PROMPTS as it contains CHARACTER_EXTRA
-        elif tag.startswith("furry_"):
-            priority["furry"].append(TAG_PROMPTS.get(tag, tag))
-        elif tag in TAG_PROMPTS:
-            key = tag_category(tag)
-            if key:
-                priority[key].append(TAG_PROMPTS[tag])
-
-    prompt_parts = base[:]
-    # Порядок добавления важен: персонажи, фури, покемоны, тело, позы, отверстия, игрушки, одежда, фетиши, лицо
-    for section in ["character", "furry", "pokemon", "body", "pose", "holes", "toys", "clothes", "fetish", "face"]:
-        prompt_parts.extend(priority[section])
-
-    # Танлайны убирают купальник из негативного промпта
-    if "bikini_tan_lines" in unique:
-        base_negative += ", bikini"
-
-    return {
-        "positive_prompt": ", ".join(prompt_parts),
-        "negative_prompt": base_negative
-    } 
-
-# --- Функция для генерации изображения через Replicate ---
-def replicate_generate(positive_prompt, negative_prompt, num_images=1):
-    """
-    Отправляет запрос на генерацию изображения в Replicate API,
-    используя оптимальные настройки для достижения максимальной точности.
-    """
-    urls = []
-    for _ in range(num_images):
-        url = "https://api.replicate.com/v1/predictions"
-        headers = {
-            "Authorization": f"Token {REPLICATE_TOKEN}",
-            "Content-Type": "application/json"
-        }
-        json_data = {
-            "version": REPLICATE_MODEL,
-            "input": {
-                "prompt": positive_prompt,
-                "negative_prompt": negative_prompt,
-                "prepend_preprompt": False,
-                "width": 1024,
-                "height": 1024,
-                "steps": 75,
-                "guidance_scale": 18,
-                "scheduler": "DPM++ 2M SDE Karras",
-                "adetailer_face": True,
-                "adetailer_hand": True,
-                "seed": -1 # Генерировать новый
+        "missing limbs, extra limbs, fused fingers, jpeg artifacts, signature, watermark
