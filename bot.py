@@ -44,7 +44,10 @@ TAGS = {
         "dilated_vagina": "Расширенная киска",
         "prolapsed_uterus": "Выпавшая матка",
         "prolapsed_anus": "Выпавший анус",
-        "two_dildos_one_hole": "Два дилдо в одно отверстие"
+        "two_dildos_one_hole": "Два дилдо в одно отверстие",
+        "dilated_nipples": "Расширенные соски", # NEW
+        "anus_spreader_ring": "Расширительное кольцо в анусе", # NEW
+        "vagina_spreader_ring": "Расширительное кольцо в вагине" # NEW
     },
     "toys": {
         "dildo": "Дилдо",
@@ -52,7 +55,9 @@ TAGS = {
         "horse_dildo": "Конский дилдо",
         "anal_beads": "Анальные шарики",
         "anal_plug": "Анальная пробка",
-        "long_dildo_path": "Дилдо сквозь все тело"
+        "long_dildo_path": "Дилдо сквозь все тело",
+        "urethral_dildo": "Дилдо в уретре", # NEW
+        "two_dildos_anus_vagina": "Дилдо в анусе и вагине" # NEW (renamed for clarity)
     },
     "poses": {
         "doggy": "На четвереньках",
@@ -71,7 +76,11 @@ TAGS = {
         "hands_spreading_vagina": "Руки раздвигают влагалище"
     },
     "clothes": {
-        "stockings": "Чулки обычные",
+        "stockings_white": "Белые чулки", # MODIFIED
+        "stockings_black": "Черные чулки", # MODIFIED
+        "stockings_red": "Красные чулки", # MODIFIED
+        "stockings_pink": "Розовые чулки", # MODIFIED
+        "stockings_gold": "Золотые чулки", # MODIFIED
         "stockings_fishnet": "Чулки сеточкой",
         "bikini_tan_lines": "Линии от загара в бикини",
         "shibari": "Шибари",
@@ -117,7 +126,12 @@ TAGS = {
         "clitoral_piercing": "Пирсинг клитора",
         "foot_fetish": "Футфетиш",
         "footjob": "Футджоб",
-        "mouth_nipples": "Вместо сосков рты"
+        "mouth_nipples": "Вместо сосков рты",
+        "nipple_hole": "Отверстие в сосках", # NEW
+        "anus_piercing": "Пирсинг ануса", # NEW
+        "vagina_piercing": "Пирсинг вагины", # NEW
+        "gag": "Кляп", # NEW
+        "blindfold": "Повязка на глаза" # NEW
     },
     "pokemon": {
         "reshiram": "Реширам",
@@ -806,6 +820,7 @@ CHARACTER_EXTRA = {
     "dislyte_corbin_f": "corbin, female, dislyte, mercenary, combat gear, tough",
 }
 
+# --- Промпты для модели ---
 TAG_PROMPTS = {
     **CHARACTER_EXTRA, # Включаем промпты персонажей
     "vagina": "spread pussy",
@@ -825,6 +840,8 @@ TAG_PROMPTS = {
         "dildo inserted into anus, pushing visibly through intestines with clear belly bulge, "
         "exiting from mouth, seamless and continuous dildo, consistent texture, realistic rubber"
     ),
+    "urethral_dildo": "urethral dildo, dildo in urethra, dildo inserted into urethra", # NEW
+    "two_dildos_anus_vagina": "one dildo inserted into anus, one dildo inserted into vagina", # NEW and specific
     "doggy": "doggy style, on all fours, hands on floor",
     "squat": "squatting pose, hands behind head",
     "lying": "lying down",
@@ -838,7 +855,11 @@ TAG_PROMPTS = {
     "top_down_view": "shot from above, top-down view",
     "bottom_up_view": "shot from below, bottom-up view",
     "hands_spreading_vagina": "hands spreading vagina",
-    "stockings": "wearing stockings only",
+    "stockings_white": "white stockings only", # MODIFIED
+    "stockings_black": "black stockings only", # MODIFIED
+    "stockings_red": "red stockings only", # MODIFIED
+    "stockings_pink": "pink stockings only", # MODIFIED
+    "stockings_gold": "gold stockings only", # MODIFIED
     "stockings_fishnet": "fishnet stockings",
     "bikini_tan_lines": "bikini tan lines",
     "shibari": "shibari ropes",
@@ -875,6 +896,14 @@ TAG_PROMPTS = {
     "foot_fetish": "foot fetish",
     "footjob": "footjob",
     "mouth_nipples": "mouths instead of nipples",
+    "nipple_hole": "nipple hole, hole in nipple", # NEW
+    "anus_piercing": "anus piercing", # NEW
+    "vagina_piercing": "vagina piercing", # NEW
+    "gag": "gag, mouth gag", # NEW
+    "blindfold": "blindfold", # NEW
+    "dilated_nipples": "dilated nipples, stretched nipple holes, open nipple holes", # NEW
+    "anus_spreader_ring": "anus spreader ring, ring holding anus open, anal ring, anus gaping ring", # NEW
+    "vagina_spreader_ring": "vagina spreader ring, ring holding vagina open, vaginal ring, vagina gaping ring", # NEW
     "reshiram": "reshiram, pokemon",
     "mew": "mew, pokemon",
     "mewtwo": "mewtwo, pokemon",
@@ -1127,7 +1156,7 @@ def build_prompt(tags):
     
     base_negative = (
         "lowres, bad anatomy, bad hands, bad face, deformed, disfigured, poorly drawn, "
-        "missing limbs, extra limbs, fused fingers, jpeg artifacts, signature, watermark", # <-- Исправлено здесь
+        "missing limbs, extra limbs, fused fingers, jpeg artifacts, signature, watermark",
         "blurry, cropped, worst quality, low quality, text, error, mutated, censored, "
         "hands on chest, hands covering breasts, clothing covering genitals, shirt, bra, bikini, "
         "vagina not visible, anus not visible, penis not visible, bad proportions, "
