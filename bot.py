@@ -807,7 +807,7 @@ CHARACTER_PROMPTS = {
     "dislyte_bonnie": "Бонни",
     "dislyte_celine": "Селин",
     "dislyte_corbin_f": "Корбин (F)",
-    },
+    }, # <-- Здесь был лишний отступ
     "head": {
         "ahegao": "Ахегао",
         "pain_face": "Лицо в боли",
@@ -1505,4 +1505,3 @@ if __name__ == "__main__":
     bot.remove_webhook()
     bot.set_webhook(url=WEBHOOK_URL)
     app.run(host="0.0.0.0", port=PORT)
-
