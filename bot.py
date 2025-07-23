@@ -44,7 +44,6 @@ TAGS = {
         "dilated_vagina": "Расширенная киска",
         "prolapsed_uterus": "Выпавшая матка",
         "prolapsed_anus": "Выпавший анус",
-        # "two_dildos_one_hole": "Два дилдо в одно отверстие", # Перенесен в toys для логики
         "dilated_nipples": "Расширенные соски",
         "anus_spreader_ring": "Расширительное кольцо в анусе",
         "vagina_spreader_ring": "Расширительное кольцо в вагине"
@@ -58,7 +57,7 @@ TAGS = {
         "long_dildo_path": "Дилдо сквозь все тело",
         "urethral_dildo": "Дилдо в уретре",
         "two_dildos_anus_vagina": "Дилдо в анусе и вагине",
-        "two_dildos_one_hole": "Два дилдо в одно отверстие", # Теперь здесь
+        "two_dildos_one_hole": "Два дилдо в одно отверстие",
     },
     "poses": {
         "doggy": "На четвереньках",
@@ -84,7 +83,14 @@ TAGS = {
         "deep_sumo_squat": "Глубокий присед (сумо-поза)",
         "standing_horizontal_split_balanced": "Горизонтальный шпагат стоя с балансом",
         "classic_bridge": "Мостик",
-        "sitting_horizontal_split_supported": "Горизонтальный шпагат сидя с опорой"
+        "sitting_horizontal_split_supported": "Горизонтальный шпагат сидя с опорой",
+        # Новые позы
+        "prone_frog_stretch": "Пролёт вперёд, плечевой растяг",
+        "standing_deep_forward_bend": "Стоячий глубокий прогиб с опорой на руки",
+        "forward_bow_forearms_clasped": "Наклон со сведёнными предплечьями",
+        "top_down_voluminous_bow": "Объёмный поклон сверху (вид сверху)",
+        "inverted_leg_over_shoulder": "Перевёрнутый сгиб с коленом над плечом",
+        "casual_seated_open_knees": "Лёгкая поза сидя, колени разведены",
     },
     "clothes": {
         "stockings": "Чулки", # Subcategory trigger
@@ -619,7 +625,7 @@ CHARACTER_PROMPTS = {
     "streetfighter_laura": "Laura Matsuda, Street Fighter, brazilian fighter, green and yellow outfit, electric powers",
     "streetfighter_poison": "Poison, Street Fighter, crossdresser, pink hair, short shorts, handcuffs",
     "streetfighter_maki": "Maki Genryusai, Street Fighter, ninja, black uniform, short hair",
-    "streetfighter_rose": "Rose, Street Fighter, fortune teller, red scarf, elegant dress",
+    "streetfighter_rose": "Rose, Street Fighter, red scarf, elegant dress",
     "streetfighter_r_mika": "R. Mika, Street Fighter, wrestler, blue leotard, energetic",
     "streetfighter_ibuki": "Ibuki, Street Fighter, ninja, school uniform, mask",
     "streetfighter_karin": "Karin Kanzuki, Street Fighter, rich girl, elegant dress, blonde hair",
@@ -814,7 +820,6 @@ TAG_PROMPTS = {
     "dilated_vagina": "dilated vagina, vagina stretched, open pussy, internal view of vagina, vagina gaping, spread pussy, labia spread, realistic, detailed, high focus",
     "prolapsed_uterus": "prolapsed uterus, uterus exposed, visible uterus",
     "prolapsed_anus": "prolapsed anus, anus exposed, visible anus",
-    # "two_dildos_one_hole": "two dildos, one hole, multiple dildos in one orifice, dildos inserted into same hole", # Логика перемещена в build_prompt
     "dildo": "dildo inserted",
     "huge_dildo": "huge dildo",
     "horse_dildo": "horse dildo, belly bulge, stomach distended",
@@ -832,8 +837,19 @@ TAG_PROMPTS = {
     "two_dildos_anus_vagina": "one dildo inserted into anus, one dildo inserted into vagina",
     "horse_sex": "horse sex, mare, horse cock, equine, intercourse with horse",
     "doggy": "doggy style, on all fours, hands on floor",
+    "standing": "standing pose",
     "squat": "squatting pose, hands behind head",
-    "lying": "lying down",
+    "lying": "lying down, prone",
+    "hor_split": "horizontal split, legs spread wide, extreme flexibility",
+    "ver_split": "vertical split, one leg raised high, extreme flexibility",
+    "on_back_legs_behind_head": "on back, legs behind head, extreme flexibility, arched back",
+    "on_side_leg_up": "on side, one leg straight up, leg lifted high",
+    "suspended": "suspended, hanging pose, body floating",
+    "front_facing": "front facing, facing viewer, full front view",
+    "back_facing": "back facing, from behind, full back view, ass shot",
+    "top_down_view": "top down view, from above",
+    "bottom_up_view": "bottom up view, from below, looking up at crotch",
+    "hands_spreading_vagina": "hands spreading vagina, labia spread by hands, fingers stretching pussy",
     "lotus_pose": "lotus pose, legs crossed, sitting position",
     "scissors_pose": "scissors pose, two girls, legs intertwined, scissoring",
     "inverted_extreme_bridge": "extreme acrobatic pose, deep inversion, bridge pose, shoulder stand, hand support, head touching floor, side-turned head, loose hair on floor, shoulders on surface, elbows bent, hands in front of face, palms on floor, stabilizing hands, extremely arched back, deep back bend, emphasized lumbar curve, high elevated buttocks, buttocks near head level, buttocks facing viewer, legs spread wide, acute angle legs, slightly bent knees, feet touching floor, pointed toes, arched body, flexible, acrobatic",
@@ -864,8 +880,8 @@ TAG_PROMPTS = {
     "body_muscular": "muscular body",
     "age_loli": "loli",
     "age_milf": "milf",
-    "age_21": "21 год",
-    "cum": "cum covered",
+    "age_21": "21 year old",
+    "cum": "cum covered, messy",
     "belly_bloat": "belly bulge, pregnant looking belly",
     "succubus_tattoo": "succubus tattoo on lower abdomen",
     "futanari": "futanari",
@@ -889,12 +905,12 @@ TAG_PROMPTS = {
     "furry_snake": "furry snake girl, snake scales, snake tail, snake eyes",
     "furry_lizard": "furry lizard girl, lizard scales, lizard tail",
     "ahegao": "ahegao face",
-    "pain_face": "face in pain",
-    "ecstasy_face": "ecstasy face",
+    "pain_face": "pain face, grimace",
+    "ecstasy_face": "ecstasy face, flushed face, half-closed eyes, open mouth",
     "gold_lipstick": "gold lipstick",
     "nipple_piercing": "nipple piercing",
     "clitoral_piercing": "clitoral piercing",
-    "foot_fetish": "foot fetish",
+    "foot_fetish": "foot fetish, detailed feet",
     "footjob": "footjob",
     "mouth_nipples": "mouths instead of nipples",
     "nipple_hole": "nipple hole, hole in nipple",
@@ -916,6 +932,13 @@ TAG_PROMPTS = {
     "goodra": "goodra, pokemon",
     "pokemon_jessie": "jessie, pokemon, team rocket, red hair, long hair, ponytail",
     "pokemon_lusamine": "lusamine, pokemon, aether foundation, blonde hair, long hair, dress",
+    # Новые промпты для поз
+    "prone_frog_stretch": "prone frog stretch, chest to floor, hips wide open, splayed thighs, exposed genitals, deep groin stretch, extreme flexibility, inviting pose",
+    "standing_deep_forward_bend": "standing deep forward bend, legs wide apart, hands on floor, head dropped between legs, exposed crotch, emphasizing butt, flexible pose",
+    "forward_bow_forearms_clasped": "standing deep forward bow, feet close, forearms clasped in front of crotch, hips lifted high, arched back, emphasizing buttocks, submissive pose",
+    "top_down_voluminous_bow": "top-down view, deep forward bend, arms forming diamond/heart shape below torso, foreshortened perspective, emphasizes round buttocks, exposed back, inviting from above",
+    "inverted_leg_over_shoulder": "supine inverted leg fold, hips lifted high, one leg over shoulder, other leg splayed to side, extreme flexibility, twisted body, exposed vulva/anus, acrobatic",
+    "casual_seated_open_knees": "casual seated on floor, knees bent and wide open, legs spread, hands resting on inner thighs, exposed crotch, relaxed and inviting, direct gaze",
 }
 
 
@@ -1198,7 +1221,7 @@ def tag_category(tag):
 def build_prompt(tags):
     """
     Строит промпт для модели Replicate на основе выбранных тегов,
-    используя новую логику группировки и обработки конфликтов.
+    используя оптимальные настройки для достижения максимальной точности.
     """
     base = [
         "masterpiece", "best quality", "ultra detailed", "anime style", "highly detailed",
@@ -1287,4 +1310,109 @@ def build_prompt(tags):
             priority["toys"].remove("two dildos, one hole, multiple dildos in one orifice, dildos inserted into same hole")
 
         hole_prompts = []
-        for hole_tag in ["vagina", "anus", "dilated_vagina", "dilated_anus", "both"]: # Add other relevant hole
+        for hole_tag in ["vagina", "anus", "dilated_vagina", "dilated_anus", "both"]: # Add other relevant hole tags
+            if hole_tag in unique:
+                # Add specific prompt for two dildos in this hole
+                if hole_tag == "vagina":
+                    hole_prompts.append("two dildos in vagina")
+                elif hole_tag == "anus":
+                    hole_prompts.append("two dildos in anus")
+                elif hole_tag == "both":
+                    hole_prompts.append("two dildos in vagina, two dildos in anus")
+                elif hole_tag == "dilated_vagina":
+                    hole_prompts.append("two dildos in dilated vagina")
+                elif hole_tag == "dilated_anus":
+                    hole_prompts.append("two dildos in dilated anus")
+                # Add a generic "two dildos" if no specific hole is selected with two_dildos_one_hole
+        if not hole_prompts:
+            priority["toys"].append("two dildos, one hole, multiple dildos inserted")
+        else:
+            priority["toys"].extend(hole_prompts)
+    # --- Конец новой логики ---
+
+    prompt_parts = base[:]
+    # Порядок добавления важен: количество девушек, персонажи, фури, покемоны, тело, позы, отверстия, игрушки, одежда, фетиши, лицо
+    for section in ["character", "furry", "pokemon", "body", "pose", "holes", "toys", "clothes", "fetish", "face"]:
+        prompt_parts.extend(priority[section])
+
+    # Танлайны убирают купальник из негативного промпта
+    if "bikini_tan_lines" in unique:
+        base_negative += ", bikini"
+
+    return {
+        "positive_prompt": ", ".join(prompt_parts),
+        "negative_prompt": base_negative
+    } 
+
+# --- Функция для генерации изображения через Replicate ---
+def replicate_generate(positive_prompt, negative_prompt, num_images=1):
+    """
+    Отправляет запрос на генерацию изображения в Replicate API,
+    используя оптимальные настройки для достижения максимальной точности.
+    """
+    urls = []
+    for _ in range(num_images):
+        url = "https://api.replicate.com/v1/predictions"
+        headers = {
+            "Authorization": f"Token {REPLICATE_TOKEN}",
+            "Content-Type": "application/json"
+        }
+        json_data = {
+            "version": REPLICATE_MODEL,
+            "input": {
+                "prompt": positive_prompt,
+                "negative_prompt": negative_prompt,
+                "prepend_preprompt": False,
+                "width": 1024,
+                "height": 1024,
+                "steps": 75,
+                "guidance_scale": 18,
+                "scheduler": "DPM++ 2M SDE Karras",
+                "adetailer_face": True,
+                "adetailer_hand": True,
+                "seed": -1 # Генерировать новый сид для каждого изображения
+            }
+        }
+
+        # Отправка запроса на создание предсказания
+        r = requests.post(url, headers=headers, json=json_data)
+        if r.status_code != 201:
+            print(f"Ошибка при отправке предсказания: {r.status_code} - {r.text}")
+            print(f"Request JSON: {json_data}")
+            return None
+
+        status_url = r.json()["urls"]["get"]
+
+        # Ожидание завершения генерации (до 3 минут)
+        for i in range(90):
+            time.sleep(2)
+            r = requests.get(status_url, headers=headers)
+            if r.status_code != 200:
+                print(f"Ошибка при получении статуса предсказания: {r.status_code} - {r.text}")
+                return None
+            data = r.json()
+            if data["status"] == "succeeded":
+                if isinstance(data["output"], list) and data["output"]:
+                    urls.append(data["output"][0])
+                    break
+                else:
+                    print("Получен пустой или некорректный 'output' от Replicate.")
+                    return None
+            elif data["status"] == "failed":
+                print(f"Предсказание не удалось: {data.get('error', 'Сообщение об ошибке не предоставлено')}")
+                print(f"Request JSON: {json_data}")
+                return None
+        else:
+            print("Время ожидания предсказания истекло для одного изображения.")
+            return None
+
+    return urls
+
+# --- Настройка вебхука Flask ---
+@app.route("/", methods=["POST"])
+def webhook():
+    """Обрабатывает входящие обновления от Telegram."""
+    json_str = request.stream.read().decode("utf-8")
+    update = telebot.types.Update.de_json(json_str)
+    
+    if update.message
