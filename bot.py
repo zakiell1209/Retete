@@ -45,9 +45,9 @@ TAGS = {
         "prolapsed_uterus": "Выпавшая матка",
         "prolapsed_anus": "Выпавший анус",
         "two_dildos_one_hole": "Два дилдо в одно отверстие",
-        "dilated_nipples": "Расширенные соски", # NEW
-        "anus_spreader_ring": "Расширительное кольцо в анусе", # NEW
-        "vagina_spreader_ring": "Расширительное кольцо в вагине" # NEW
+        "dilated_nipples": "Расширенные соски",
+        "anus_spreader_ring": "Расширительное кольцо в анусе",
+        "vagina_spreader_ring": "Расширительное кольцо в вагине"
     },
     "toys": {
         "dildo": "Дилдо",
@@ -56,8 +56,8 @@ TAGS = {
         "anal_beads": "Анальные шарики",
         "anal_plug": "Анальная пробка",
         "long_dildo_path": "Дилдо сквозь все тело",
-        "urethral_dildo": "Дилдо в уретре", # NEW
-        "two_dildos_anus_vagina": "Дилдо в анусе и вагине" # NEW (renamed for clarity)
+        "urethral_dildo": "Дилдо в уретре",
+        "two_dildos_anus_vagina": "Дилдо в анусе и вагине"
     },
     "poses": {
         "doggy": "На четвереньках",
@@ -73,15 +73,26 @@ TAGS = {
         "back_facing": "Вид сзади",
         "top_down_view": "Вид сверху",
         "bottom_up_view": "Вид снизу",
-        "hands_spreading_vagina": "Руки раздвигают влагалище"
+        "hands_spreading_vagina": "Руки раздвигают влагалище",
+        "lotus_pose": "Поза лотоса",
+        "scissors_pose": "Поза ножницы (две девушки)",
+        "inverted_extreme_bridge": "Экстремальный мост/стойка на плечах с инверсией",
+        "leaning_forward_wall": "Наклон вперёд у стены",
+        "standing_vertical_split_supported": "Вертикальный шпагат стоя с поддержкой",
+        "boat_pose_double_split_up": "Поза лодки / двойной шпагат вверх",
+        "deep_sumo_squat": "Глубокий присед (сумо-поза)",
+        "standing_horizontal_split_balanced": "Горизонтальный шпагат стоя с балансом",
+        "classic_bridge": "Мостик",
+        "sitting_horizontal_split_supported": "Горизонтальный шпагат сидя с опорой",
+        "prone_frog_stretch": "Пролёт вперёд, плечевой растяг",
+        "standing_deep_forward_bend": "Стоячий глубокий прогиб с опорой на руки",
+        "forward_bow_forearms_clasped": "Наклон со сведёнными предплечьями",
+        "top_down_voluminous_bow": "Объёмный поклон сверху (вид сверху)",
+        "inverted_leg_over_shoulder": "Перевёрнутый сгиб с коленом над плечом",
+        "casual_seated_open_knees": "Лёгкая поза сидя, колени разведены"
     },
     "clothes": {
-        "stockings_white": "Белые чулки", # MODIFIED
-        "stockings_black": "Черные чулки", # MODIFIED
-        "stockings_red": "Красные чулки", # MODIFIED
-        "stockings_pink": "Розовые чулки", # MODIFIED
-        "stockings_gold": "Золотые чулки", # MODIFIED
-        "stockings_fishnet": "Чулки сеточкой",
+        "stockings": "Чулки",
         "bikini_tan_lines": "Линии от загара в бикини",
         "shibari": "Шибари",
         "cow_costume": "Костюм коровы"
@@ -113,7 +124,15 @@ TAGS = {
         "furry_sylveon": "Фури сильвеон",
         "furry_fox": "Фури лисица",
         "furry_bunny": "Фури кролик",
-        "furry_wolf": "Фури волчица"
+        "furry_wolf": "Фури волчица",
+        "furry_bear": "Фури медведь",
+        "furry_bird": "Фури птица",
+        "furry_mouse": "Фури мышь",
+        "furry_deer": "Фури олень",
+        "furry_tiger": "Фури тигр",
+        "furry_lion": "Фури лев",
+        "furry_snake": "Фури змея",
+        "furry_lizard": "Фури ящерица"
     },
     "head": {
         "ahegao": "Ахегао",
@@ -126,12 +145,13 @@ TAGS = {
         "clitoral_piercing": "Пирсинг клитора",
         "foot_fetish": "Футфетиш",
         "footjob": "Футджоб",
-        "mouth_nipples": "Вместо сосков рты",
-        "nipple_hole": "Отверстие в сосках", # NEW
-        "anus_piercing": "Пирсинг ануса", # NEW
-        "vagina_piercing": "Пирсинг вагины", # NEW
-        "gag": "Кляп", # NEW
-        "blindfold": "Повязка на глаза" # NEW
+        "mouth_nipples": "Рты вместо сосков",
+        "nipple_hole": "Отверстие в соске",
+        "anus_piercing": "Пирсинг ануса",
+        "vagina_piercing": "Пирсинг вагины",
+        "gag": "Кляп",
+        "blindfold": "Повязка на глаза",
+        "horse_sex": "Секс с конем"
     },
     "pokemon": {
         "reshiram": "Реширам",
@@ -142,7 +162,9 @@ TAGS = {
         "lugia": "Лугия",
         "shadow_lugia": "Шадоу Лугия",
         "lopunny": "Лопанни",
-        "goodra": "Гудра"
+        "goodra": "Гудра",
+        "pokemon_jessie": "Джесси",
+        "pokemon_lusamine": "Лусамине"
     },
     "characters": {
         # Демоны старшей школы
@@ -199,11 +221,11 @@ TAGS = {
         "genshin_navia": "Навия",
         "genshin_chevreuse": "Шеврёз",
         "genshin_clorinde": "Клоринда",
-        "genshin_ar_traveler_f": "Аether (F)", # Female Traveler (Aether)
-        "genshin_lumine": "Люмин", # Lumine (Female Traveler)
+        "genshin_ar_traveler_f": "Аether (F)",
+        "genshin_lumine": "Люмин",
         "genshin_signora": "Синьора",
         "genshin_arlecchino": "Арлекино",
-        "genshin_snezhnaya_fatui_harbinger": "Предвестник Фатуи", # Generic female Fatui Harbinger
+        "genshin_snezhnaya_fatui_harbinger": "Предвестник Фатуи",
 
         # Honkai Star Rail
         "hsr_kafka": "Кафка",
@@ -215,7 +237,7 @@ TAGS = {
         "hsr_bronya": "Броня",
         "hsr_seele": "Зеле",
         "hsr_jingliu": "Цзинлю",
-        "hsr_stelle": "Стелла (F)", # Female Trailblazer
+        "hsr_stelle": "Стелла (F)",
         "hsr_herta": "Герта",
         "hsr_silver_wolf": "Серебряный Волк",
         "hsr_tingyun": "Тинъюнь",
@@ -231,9 +253,9 @@ TAGS = {
         "hsr_guinaifen": "Гуйнайфэнь",
         "hsr_huohuo": "Хохо",
         "hsr_xueyi": "Сюэи",
-        "hsr_hanabi": "Ханами", # Sparkle alternative name
+        "hsr_hanabi": "Ханами",
         "hsr_robin": "Робин",
-        "hsr_aventurine_f": "Авантюрин (F)", # Female Aventurine
+        "hsr_aventurine_f": "Авантюрин (F)",
 
         # NieR Automata
         "nier_2b": "2B",
@@ -275,7 +297,7 @@ TAGS = {
         # Atomic Heart
         "atomicheart_twins": "Близняшки",
 
-        # Bleach - НОВЫЕ ПЕРСОНАЖИ
+        # Bleach
         "bleach_renji_f": "Ренджи Абарай (F)",
         "bleach_rukia_kuchiki": "Рукия Кучики",
         "bleach_orihime_inoue": "Орихиме Иноуэ",
@@ -331,7 +353,7 @@ TAGS = {
         # Zenless Zone Zero
         "zzz_ellen_joe": "Эллен Джо",
         "zzz_koleda": "Коледа",
-        "zzz_lycaon": "Ликаон (F)", # Female Lycaon
+        "zzz_lycaon": "Ликаон (F)",
         "zzz_nicole": "Николь",
         "zzz_anby": "Энби",
         "zzz_nekomiya": "Нэкомия",
@@ -387,83 +409,6 @@ TAGS = {
         "mlp_apple_bloom": "Эппл Блум",
         "mlp_scootaloo": "Скуталу",
         "mlp_sweetie_belle": "Крошка Бель",
-
-        # Dislyte
-        "dislyte_li_ling_f": "Ли Лин (F)", # Female Li Ling
-        "dislyte_sally": "Салли",
-        "dislyte_clara": "Клара",
-        "dislyte_gabrielle": "Габриэль",
-        "dislyte_chloe": "Хлоя",
-        "dislyte_odette": "Одетта",
-        "dislyte_meredith": "Мередит",
-        "dislyte_jiang_man": "Цзян Мань",
-        "dislyte_eira": "Эйра",
-        "dislyte_drew": "Дрю",
-        "dislyte_pritzker_f": "Притцкер (F)", # Female Pritzker
-        "dislyte_fatima": "Фатима",
-        "dislyte_brewster_f": "Брюстер (F)", # Female Brewster
-        "dislyte_yun_chuan_f": "Юнь Чуань (F)", # Female Yun Chuan
-        "dislyte_hyde_f": "Хайд (F)", # Female Hyde
-        "dislyte_leora": "Леора",
-        "dislyte_tevor_f": "Тевор (F)", # Female Tevor
-        "dislyte_zora": "Зора",
-        "dislyte_embla": "Эмбла",
-        "dislyte_ophilia": "Офелия",
-        "dislyte_ahmed_f": "Ахмед (F)", # Female Ahmed
-        "dislyte_everett_f": "Эверетт (F)", # Female Everett
-        "dislyte_ollie_f": "Олли (F)", # Female Ollie
-        "dislyte_jin_hee": "Джин Хи",
-        "dislyte_ifrit_f": "Ифрит (F)", # Female Ifrit
-        "dislyte_sienna": "Сиенна",
-        "dislyte_valeria": "Валерия",
-        "dislyte_ashley": "Эшли",
-        "dislyte_triki_f": "Трики (F)", # Female Triki
-        "dislyte_narmer_f": "Нармер (F)", # Female Narmer
-        "dislyte_tye": "Тай",
-        "dislyte_biondina": "Биондина",
-        "dislyte_dhalia": "Далия",
-        "dislyte_elaine": "Элейн",
-        "dislyte_cecilia": "Сесилия",
-        "dislyte_intisar": "Интисар",
-        "dislyte_kaylee": "Кейли",
-        "dislyte_layla": "Лейла",
-        "dislyte_lynn": "Линн",
-        "dislyte_melanie": "Мелани",
-        "dislyte_mona": "Мона",
-        "dislyte_nicole": "Николь",
-        "dislyte_q": "Кью",
-        "dislyte_ren_si": "Жэнь Си",
-        "dislyte_stewart_f": "Стюарт (F)", # Female Stewart
-        "dislyte_tang_xuan_f": "Тан Сюань (F)", # Female Tang Xuan
-        "dislyte_unaky": "Унаки",
-        "dislyte_victoria": "Виктория",
-        "dislyte_xiao_yin": "Сяо Инь",
-        "dislyte_ye_suhua": "Е Сухуа",
-        "dislyte_zhong_nan": "Чжун Нань",
-        "dislyte_anadora": "Анадора",
-        "dislyte_bernice": "Бернис",
-        "dislyte_brynn": "Бринн",
-        "dislyte_catherine": "Катерина",
-        "dislyte_chang_pu": "Чан Пу",
-        "dislyte_eugene_f": "Юджин (F)",
-        "dislyte_freddy_f": "Фредди (F)",
-        "dislyte_hall_f": "Холл (F)",
-        "dislyte_helena": "Хелена",
-        "dislyte_jacob_f": "Джейкоб (F)",
-        "dislyte_jeanne": "Жанна",
-        "dislyte_li_ao_f": "Ли Ао (F)",
-        "dislyte_lu_yi_f": "Лу И (F)",
-        "dislyte_mark_f": "Марк (F)",
-        "dislyte_olivia": "Оливия",
-        "dislyte_sander_f": "Сандер (F)",
-        "dislyte_stella": "Стелла",
-        "dislyte_alice": "Алиса",
-        "dislyte_arcana": "Аркана",
-        "dislyte_aurelius_f": "Аурелиус (F)",
-        "dislyte_bette": "Бетте",
-        "dislyte_bonnie": "Бонни",
-        "dislyte_celine": "Селин",
-        "dislyte_corbin_f": "Корбин (F)",
     }
 }
 
@@ -480,7 +425,7 @@ CHARACTER_CATEGORIES = {
     "residentevil": "🎮 Resident Evil",
     "streetfighter": "🎮 Street Fighter",
     "atomicheart": "🎮 Atomic Heart",
-    "bleach": "📺 Bleach", # НОВАЯ КАТЕГОРИЯ
+    "bleach": "📺 Bleach",
     "danmachi": "📺 Danmachi",
     "ragnarok": "📺 Повесть о конце света",
     "naruto": "📺 Naruto",
@@ -493,7 +438,6 @@ CHARACTER_CATEGORIES = {
     "pokemon_chars": "📺 Pokémon (персонажи)",
     "lol": "🎮 League of Legends",
     "mlp": "📺 My Little Pony",
-    "dislyte": "🎮 Dislyte"
 }
 
 # --- Промпты для модели ---
@@ -621,14 +565,14 @@ CHARACTER_EXTRA = {
     "streetfighter_r_mika": "rainbow mika, street fighter, wrestler, blue wrestling suit, blonde hair, muscular",
     "streetfighter_ibuki": "ibuki, street fighter, ninja, school uniform, kunai",
     "streetfighter_karin": "karin kanzuki, street fighter, rich girl, blonde hair, school uniform, ojou-sama",
-    "streetfighter_ed": "ed, street fighter, female, boxer, psychic powers, blonde hair", # Предполагаем женскую версию
-    "streetfighter_fang": "f.a.n.g, female, street fighter, poison, long clothes", # Предполагаем женскую версию
-    "streetfighter_e_honda_f": "e. honda, female, street fighter, sumo wrestler, large body", # Предполагаем женскую версию, промпт для соответствия
+    "streetfighter_ed": "ed, street fighter, female, boxer, psychic powers, blonde hair",
+    "streetfighter_fang": "f.a.n.g, female, street fighter, poison, long clothes",
+    "streetfighter_e_honda_f": "e. honda, female, street fighter, sumo wrestler, large body",
 
     # Atomic Heart
     "atomicheart_twins": "robot, twin sisters, black bodysuit, black hair, white hair, atomic heart",
 
-    # Bleach - НОВЫЕ ПЕРСОНАЖИ И ИСПРАВЛЕННЫЙ ПРОМПТ ДЛЯ YORUICHI
+    # Bleach
     "bleach_renji_f": "renji abarai, female, bleach, red hair, tattoos, shinigami, zanpakuto",
     "bleach_rukia_kuchiki": "rukia kuchiki, bleach, short black hair, shinigami, zanpakuto, noble family",
     "bleach_orihime_inoue": "orihime inoue, bleach, long orange hair, hairpin, school uniform, healer",
@@ -741,112 +685,6 @@ CHARACTER_EXTRA = {
     "mlp_apple_bloom": "apple bloom, my little pony, earth pony, yellow body, red mane, cutie mark crusader",
     "mlp_scootaloo": "scootaloo, my little pony, pegasus, orange body, purple mane, cutie mark crusader, scooter",
     "mlp_sweetie_belle": "sweetie belle, my little pony, unicorn, white body, pink and purple mane, cutie mark crusader",
-
-    # Dislyte
-    "dislyte_li_ling_f": "li ling, female, dislyte, red hair, dragon, elegant outfit",
-    "dislyte_sally": "sally, dislyte, siren, blue hair, mermaid tail, elegant dress",
-    "dislyte_clara": "clara, dislyte, valkyrie, blonde hair, armor, wings",
-    "dislyte_gabrielle": "gabrielle, dislyte, archangel, white wings, blonde hair, elegant dress",
-    "dislyte_chloe": "chloe, dislyte, griffin, blonde hair, short hair, casual outfit",
-    "dislyte_odette": "odette, dislyte, swan, elegant dress, graceful, long hair",
-    "dislyte_meredith": "meredith, dislyte, medusa, snake hair, green skin, revealing outfit",
-    "dislyte_jiang_man": "jiang man, dislyte, black hair, traditional chinese dress, elegant",
-    "dislyte_eira": "eira, dislyte, ice queen, white hair, blue dress, cold expression",
-    "dislyte_drew": "drew, dislyte, dark hair, casual outfit, energetic",
-    "dislyte_pritzker_f": "pritzker, female, dislyte, blonde hair, glasses, scientist",
-    "dislyte_fatima": "fatima, dislyte, desert warrior, tanned skin, veil, sword",
-    "dislyte_brewster_f": "brewster, female, dislyte, red hair, punk outfit, guitar",
-    "dislyte_yun_chuan_f": "yun chuan, female, dislyte, traditional chinese outfit, long hair",
-    "dislyte_hyde_f": "hyde, female, dislyte, dark hair, gothic outfit, mysterious",
-    "dislyte_leora": "leora, dislyte, lioness, blonde hair, armored, fierce",
-    "dislyte_tevor_f": "tevor, female, dislyte, blonde hair, casual outfit, energetic",
-    "dislyte_zora": "zora, dislyte, desert wanderer, dark skin, tribal outfit",
-    "dislyte_embla": "embla, dislyte, raven, black wings, dark outfit, mysterious",
-    "dislyte_ophilia": "ophelia, dislyte, fairy, green hair, light dress, nature",
-    "dislyte_ahmed_f": "ahmed, female, dislyte, desert prince, traditional outfit, elegant",
-    "dislyte_everett_f": "everett, female, dislyte, dark hair, casual outfit, confident",
-    "dislyte_ollie_f": "ollie, female, dislyte, short hair, sporty outfit, cheerful",
-    "dislyte_jin_hee": "jin hee, dislyte, korean traditional dress, elegant, long hair",
-    "dislyte_ifrit_f": "ifrit, female, dislyte, fiery hair, demonic, powerful",
-    "dislyte_sienna": "sienna, dislyte, nature spirit, green hair, leafy outfit",
-    "dislyte_valeria": "valeria, dislyte, gladiator, armored, strong, short hair",
-    "dislyte_ashley": "ashley, dislyte, pop star, pink hair, stage outfit, microphone",
-    "dislyte_triki_f": "triki, female, dislyte, mischievous, clown outfit, colorful hair",
-    "dislyte_narmer_f": "narmer, female, dislyte, egyptian pharaoh, golden armor, elegant",
-    "dislyte_tye": "tye, dislyte, archer, green hair, forest outfit",
-    "dislyte_biondina": "biondina, dislyte, water spirit, blue hair, flowing dress",
-    "dislyte_dhalia": "dhalia, dislyte, flower girl, colorful dress, innocent",
-    "dislyte_elaine": "elaine, dislyte, knight, armor, sword, determined",
-    "dislyte_cecilia": "cecilia, dislyte, nun, white habit, serene expression",
-    "dislyte_intisar": "intisar, dislyte, desert dancer, revealing outfit, veil",
-    "dislyte_kaylee": "kaylee, dislyte, pop star, colorful hair, stage outfit",
-    "dislyte_layla": "layla, dislyte, street fighter, casual outfit, tough",
-    "dislyte_lynn": "lynn, dislyte, archer, green outfit, forest",
-    "dislyte_melanie": "melanie, dislyte, gothic lolita, dark dress, elegant",
-    "dislyte_mona": "mona, dislyte, pop star, pink hair, stage outfit",
-    "dislyte_nicole": "nicole, dislyte, spy, black suit, mysterious",
-    "dislyte_q": "q, dislyte, hacker, futuristic outfit, short hair",
-    "dislyte_ren_si": "ren si, dislyte, traditional chinese outfit, elegant",
-    "dislyte_stewart_f": "stewart, female, dislyte, punk, guitar, casual outfit",
-    "dislyte_tang_xuan_f": "tang xuan, female, dislyte, monkey king, staff, energetic",
-    "dislyte_unaky": "unaky, dislyte, tribal warrior, wild, animalistic",
-    "dislyte_victoria": "victoria, dislyte, steampunk, goggles, mechanical parts",
-    "dislyte_xiao_yin": "xiao yin, dislyte, traditional chinese dancer, elegant",
-    "dislyte_ye_suhua": "ye suhua, dislyte, healer, gentle, flowing dress",
-    "dislyte_zhong_nan": "zhong nan, dislyte, traditional chinese warrior, armored",
-    "dislyte_anadora": "anadora, dislyte, siren, blue hair, elegant dress",
-    "dislyte_bernice": "bernice, dislyte, street dancer, casual outfit, energetic",
-    "dislyte_brynn": "brynn, dislyte, archer, forest outfit, focused",
-    "dislyte_catherine": "catherine, dislyte, noble, elegant dress, blonde hair",
-    "dislyte_chang_pu": "chang pu, dislyte, traditional chinese healer, gentle",
-    "dislyte_eugene_f": "eugene, female, dislyte, short hair, sporty outfit",
-    "dislyte_freddy_f": "freddy, female, dislyte, punk rock, guitar, wild hair",
-    "dislyte_hall_f": "hall, female, dislyte, elegant, long dress, mysterious",
-    "dislyte_helena": "helena, dislyte, archer, forest outfit, determined",
-    "dislyte_jacob_f": "jacob, female, dislyte, casual outfit, short hair",
-    "dislyte_jeanne": "jeanne, dislyte, knight, armor, sword, brave",
-    "dislyte_li_ao_f": "li ao, female, dislyte, traditional chinese warrior, armored",
-    "dislyte_lu_yi_f": "lu yi, female, dislyte, traditional chinese dancer, elegant",
-    "dislyte_mark_f": "mark, female, dislyte, casual outfit, short hair",
-    "dislyte_olivia": "olivia, dislyte, elegant, long dress, mysterious",
-    "dislyte_sander_f": "sander, female, dislyte, casual outfit, short hair",
-    "dislyte_stella": "stella, dislyte, pop star, colorful hair",
-    "dislyte_alice": "alice, dislyte, elegant, formal dress",
-    "dislyte_arcana": "arcana, dislyte, mystic, flowing robes",
-    "dislyte_aurelius_f": "aurelius, female, dislyte, powerful, leader, golden armor",
-    "dislyte_bette": "bette, dislyte, spy, sleek outfit, mysterious",
-    "dislyte_bonnie": "bonnie, dislyte, cowgirl, western wear, confident",
-    "dislyte_celine": "celine, dislyte, singer, stage outfit, microphone",
-    "dislyte_corbin_f": "corbin, female, dislyte, mercenary, combat gear, tough",
-}
-
-# Категории для персонажей (для вкладок)
-CHARACTER_CATEGORIES = {
-    "dxd": "📺 Демоны старшей школы",
-    "genshin": "🎮 Genshin Impact",
-    "hsr": "🎮 Honkai Star Rail",
-    "nier": "🎮 NieR Automata",
-    "spyxfamily": "📺 Spy x Family",
-    "akamegakill": "📺 Akame ga Kill",
-    "azurlane": "🎮 Azur Lane",
-    "fate": "📺 Fate Series",
-    "residentevil": "🎮 Resident Evil",
-    "streetfighter": "🎮 Street Fighter",
-    "atomicheart": "🎮 Atomic Heart",
-    "bleach": "📺 Bleach", # НОВАЯ КАТЕГОРИЯ
-    "danmachi": "📺 Danmachi",
-    "ragnarok": "📺 Повесть о конце света",
-    "naruto": "📺 Naruto",
-    "overlord": "📺 Overlord",
-    "kakegurui": "📺 Безумный азарт",
-    "jujutsukaisen": "📺 Магическая битва",
-    "shieldhero": "📺 Герой Щита",
-    "helltaker": "🎮 Helltaker",
-    "zzz": "🎮 Zenless Zone Zero",
-    "pokemon_chars": "📺 Pokémon (персонажи)",
-    "lol": "🎮 League of Legends",
-    "mlp": "📺 My Little Pony",
-    "dislyte": "🎮 Dislyte"
 }
 
 # --- Промпты для модели ---
@@ -869,10 +707,11 @@ TAG_PROMPTS = {
         "dildo inserted into anus, pushing visibly through intestines with clear belly bulge, "
         "exiting from mouth, seamless and continuous dildo, consistent texture, realistic rubber"
     ),
-    "urethral_dildo": "urethral dildo, dildo in urethra, dildo inserted into urethra", # NEW
-    "two_dildos_anus_vagina": "one dildo inserted into anus, one dildo inserted into vagina", # NEW and specific
+    "urethral_dildo": "urethral dildo, dildo in urethra, dildo inserted into urethra",
+    "two_dildos_anus_vagina": "one dildo inserted into anus, one dildo inserted into vagina",
     "doggy": "doggy style, on all fours, hands on floor",
     "squat": "squatting pose, hands behind head",
+    "standing": "standing",
     "lying": "lying down",
     "hor_split": "horizontal split, legs stretched fully to sides, pelvis on floor, inner thighs visible",
     "ver_split": "vertical split, holding own raised leg",
@@ -884,12 +723,23 @@ TAG_PROMPTS = {
     "top_down_view": "shot from above, top-down view",
     "bottom_up_view": "shot from below, bottom-up view",
     "hands_spreading_vagina": "hands spreading vagina",
-    "stockings_white": "white stockings only", # MODIFIED
-    "stockings_black": "black stockings only", # MODIFIED
-    "stockings_red": "red stockings only", # MODIFIED
-    "stockings_pink": "pink stockings only", # MODIFIED
-    "stockings_gold": "gold stockings only", # MODIFIED
-    "stockings_fishnet": "fishnet stockings",
+    "lotus_pose": "lotus pose",
+    "scissors_pose": "scissors pose, two girls, legs interlocked",
+    "inverted_extreme_bridge": "inverted extreme bridge, shoulders stand, inversion",
+    "leaning_forward_wall": "leaning forward against wall",
+    "standing_vertical_split_supported": "standing vertical split, supported",
+    "boat_pose_double_split_up": "boat pose, double split up",
+    "deep_sumo_squat": "deep sumo squat, wide stance squat",
+    "standing_horizontal_split_balanced": "standing horizontal split, balanced",
+    "classic_bridge": "classic bridge pose",
+    "sitting_horizontal_split_supported": "sitting horizontal split, supported",
+    "prone_frog_stretch": "prone frog stretch, shoulder stretch",
+    "standing_deep_forward_bend": "standing deep forward bend, hands on floor",
+    "forward_bow_forearms_clasped": "forward bow, forearms clasped",
+    "top_down_voluminous_bow": "voluminous bow, top-down view",
+    "inverted_leg_over_shoulder": "inverted leg over shoulder",
+    "casual_seated_open_knees": "casual seated pose, open knees",
+    "stockings": "stockings",
     "bikini_tan_lines": "bikini tan lines",
     "shibari": "shibari ropes",
     "cow_costume": "cow costume, cow ears, cow horns, cow tail, wearing stockings only",
@@ -900,7 +750,7 @@ TAG_PROMPTS = {
     "body_muscular": "muscular body",
     "age_loli": "loli",
     "age_milf": "milf",
-    "age_21": "21 год",
+    "age_21": "21 year old",
     "cum": "cum covered",
     "belly_bloat": "belly bulge, pregnant looking belly",
     "succubus_tattoo": "succubus tattoo on lower abdomen",
@@ -916,6 +766,14 @@ TAG_PROMPTS = {
     "furry_fox": "furry fox girl, fox costume",
     "furry_bunny": "furry bunny girl, bunny costume",
     "furry_wolf": "furry wolf girl, wolf costume",
+    "furry_bear": "furry bear girl, bear costume",
+    "furry_bird": "furry bird girl, bird costume",
+    "furry_mouse": "furry mouse girl, mouse costume",
+    "furry_deer": "furry deer girl, deer costume",
+    "furry_tiger": "furry tiger girl, tiger costume",
+    "furry_lion": "furry lion girl, lion costume",
+    "furry_snake": "furry snake girl, snake costume",
+    "furry_lizard": "furry lizard girl, lizard costume",
     "ahegao": "ahegao face",
     "pain_face": "face in pain",
     "ecstasy_face": "ecstasy face",
@@ -925,14 +783,15 @@ TAG_PROMPTS = {
     "foot_fetish": "foot fetish",
     "footjob": "footjob",
     "mouth_nipples": "mouths instead of nipples",
-    "nipple_hole": "nipple hole, hole in nipple", # NEW
-    "anus_piercing": "anus piercing", # NEW
-    "vagina_piercing": "vagina piercing", # NEW
-    "gag": "gag, mouth gag", # NEW
-    "blindfold": "blindfold", # NEW
-    "dilated_nipples": "dilated nipples, stretched nipple holes, open nipple holes", # NEW
-    "anus_spreader_ring": "anus spreader ring, ring holding anus open, anal ring, anus gaping ring", # NEW
-    "vagina_spreader_ring": "vagina spreader ring, ring holding vagina open, vaginal ring, vagina gaping ring", # NEW
+    "nipple_hole": "nipple hole, hole in nipple",
+    "anus_piercing": "anus piercing",
+    "vagina_piercing": "vagina piercing",
+    "gag": "gag, mouth gag",
+    "blindfold": "blindfold",
+    "horse_sex": "horse sex, mare sex, horse fucking, human riding horse, horse penis",
+    "dilated_nipples": "dilated nipples, stretched nipple holes, open nipple holes",
+    "anus_spreader_ring": "anus spreader ring, ring holding anus open, anal ring, anus gaping ring",
+    "vagina_spreader_ring": "vagina spreader ring, ring holding vagina open, vaginal ring, vagina gaping ring",
     "reshiram": "reshiram, pokemon",
     "mew": "mew, pokemon",
     "mewtwo": "mewtwo, pokemon",
@@ -1149,13 +1008,13 @@ def tag_category(tag):
                 return "fetish"
             if cat == "head":
                 return "face"
-            if cat == "pokemon":
+            if cat == "pokemon" and not tag.startswith("pokemon_"): # Для покемонов, не персонажей
                 return "pokemon"
             
             # Для персонажей определяем категорию "character"
             # Проверяем, начинается ли тег с какого-либо ключа из CHARACTER_CATEGORIES
             for char_cat_key in CHARACTER_CATEGORIES.keys():
-                if tag.startswith(char_cat_key + "_"):
+                if tag.startswith(char_cat_key + "_") or tag.startswith("pokemon_"): # Добавлено pokemon_ для персонажей покемонов
                     return "character"
     return None
 
@@ -1198,31 +1057,45 @@ def build_prompt(tags):
     # Уникальные теги и спец. обработка конфликтов
     unique = set(tags)
     
-    # Приоритет большим грудям
+    # Приоритет большим грудям, если обе выбраны
     if "big_breasts" in unique and "small_breasts" in unique:
         unique.remove("small_breasts") 
     
-    # Костюм коровы уже включён в furry_cow
+    # Костюм коровы уже включён в furry_cow, если выбрана furry_cow
     if "furry_cow" in unique:
         unique.discard("cow_costume") 
+
+    # Обработка тега "stockings"
+    if "stockings" in unique:
+        # Удаляем старые теги чулков, если они есть
+        for stocking_type in ["stockings_white", "stockings_black", "stockings_red", "stockings_pink", "stockings_gold", "stockings_fishnet"]:
+            unique.discard(stocking_type)
+        # Добавляем "stockings" в положительный промпт, чтобы общая фраза была
+        # Точное влияние "stockings" без цвета будет зависеть от модели,
+        # но это соответствует запросу на "чулки" в общем.
+        # Если нужно, можно добавить промпт "stockings" в TAG_PROMPTS
+        # и здесь он просто добавится в clothes
+        pass # Просто оставляем "stockings" как есть, его промпт будет ниже
+    else: # Если "stockings" не выбран, но выбраны конкретные чулки
+        # Проверяем, если есть старые чулки, но "stockings" не выбран,
+        # то они остаются, так как они были перенесены в основной TAGS
+        pass
 
     # --- ИСПРАВЛЕНИЕ ДЛЯ ФЕМБОЯ ---
     # Если выбран тег "femboy", удаляем конфликтующие теги груди
     if "femboy" in unique:
         unique.discard("big_breasts")
         unique.discard("small_breasts")
+        # Добавляем специфический негативный промпт для фембоя
+        base_negative += ", breasts, female breasts"
     # --- КОНЕЦ ИСПРАВЛЕНИЯ ---
+
 
     # Группировка по категориям
     for tag in unique:
-        if tag in CHARACTER_EXTRA:
-            priority["character"].append(TAG_PROMPTS.get(tag, tag)) # Use TAG_PROMPTS as it contains CHARACTER_EXTRA
-        elif tag.startswith("furry_"):
-            priority["furry"].append(TAG_PROMPTS.get(tag, tag))
-        elif tag in TAG_PROMPTS:
-            key = tag_category(tag)
-            if key:
-                priority[key].append(TAG_PROMPTS[tag])
+        key = tag_category(tag)
+        if key:
+            priority[key].append(TAG_PROMPTS.get(tag, tag)) # Используем TAG_PROMPTS для получения промпта
 
     prompt_parts = base[:]
     # Порядок добавления важен: персонажи, фури, покемоны, тело, позы, отверстия, игрушки, одежда, фетиши, лицо
@@ -1328,3 +1201,4 @@ if __name__ == "__main__":
     bot.remove_webhook()
     bot.set_webhook(url=WEBHOOK_URL)
     app.run(host="0.0.0.0", port=PORT)
+
