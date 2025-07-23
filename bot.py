@@ -450,7 +450,7 @@ TAGS = {
         "dislyte_bette": "Бетте",
         "dislyte_bonnie": "Бонни",
         "dislyte_celine": "Селин",
-        "dislyte_corbin_f": "Корбин (F)",
+        "dislyte_corbin_f": "Корин (F)",
     },
     "head": {
         "ahegao": "Ахегао",
@@ -806,7 +806,7 @@ CHARACTER_PROMPTS = {
     "dislyte_bette": "Бетте",
     "dislyte_bonnie": "Бонни",
     "dislyte_celine": "Селин",
-    "dislyte_corbin_f": "Корбин (F)",
+    "dislyte_corbin_f": "Корин (F)",
 }
 
 # --- Промпты для модели ---
@@ -1299,12 +1299,14 @@ def build_prompt(tags):
                 character_tags_count += 1
                 break
     
-    if character_tags_count > 1:
-        base.insert(0, f"{character_tags_count}girls")
-    elif character_tags_count == 1:
-        base.insert(0, "1girl")
-    elif not any(tag_category(t) in ["furry", "pokemon"] for t in unique): # Add 1girl if no specific character or furry/pokemon
-         base.insert(0, "1girl")
+    # ИЗМЕНЕНИЕ: Убираем "1girl", "2girl" и т.д., если выбраны "femboy" или "futanari"
+    if "femboy" not in unique and "futanari" not in unique:
+        if character_tags_count > 1:
+            base.insert(0, f"{character_tags_count}girls")
+        elif character_tags_count == 1:
+            base.insert(0, "1girl")
+        elif not any(tag_category(t) in ["furry", "pokemon"] for t in unique): # Add 1girl if no specific character or furry/pokemon
+            base.insert(0, "1girl")
 
     # Группировка по категориям
     for tag in unique:
