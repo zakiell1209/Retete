@@ -1155,4 +1155,47 @@ def replicate_generate(positive_prompt, negative_prompt, num_images=1):
             time.sleep(2)
             r = requests.get(status_url, headers=headers)
             if r.status_code != 200:
-                print(f"
+                print(f"Ошибка при получении статуса предсказания: {r.status_code} - {r.text}")
+                return None
+            data = r.json()
+            if data["status"] == "succeeded":
+                if isinstance(data["output"], list) and data["output"]:
+                    urls.append(data["output"][0])
+                    break
+                else:
+                    print("Получен пустой или некорректный 'output' от Replicate.")
+                    return None
+            elif data["status"] == "failed":
+                print(f"Предсказание не удалось: {data.get('error', 'Сообщение об ошибке не предоставлено')}")
+                print(f"Request JSON: {json_data}")
+                return None
+        else:
+            print("Время ожидания предсказания истекло для одного изображения.")
+            return None
+
+    return urls
+
+# --- Настройка вебхука Flask ---
+@app.route("/", methods=["POST"])
+def webhook():
+    """Обрабатывает входящие обновления от Telegram."""
+    json_str = request.stream.read().decode("utf-8")
+    update = telebot.types.Update.de_json(json_str)
+    
+    if update.message and update.message.chat.id not in user_settings:
+        bot.send_message(update.message.chat.id, "Привет Шеф!", reply_markup=main_menu())
+        user_settings[update.message.chat.id] = {"tags": [], "last_cat": None, "last_char_sub": None, "num_images": 1}
+
+    bot.process_new_updates([update])
+    return "ok", 200
+
+@app.route("/", methods=["GET"])
+def home():
+    """Простой маршрут для проверки работы приложения."""
+    return "бот работает", 200
+
+# --- Запуск бота ---
+if __name__ == "__main__":
+    bot.remove_webhook()
+    bot.set_webhook(url=WEBHOOK_URL)
+    app.run(host="0.0.0.0", port=PORT)
