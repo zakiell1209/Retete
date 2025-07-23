@@ -29,8 +29,8 @@ CATEGORY_NAMES = {
     "ethnos": "🌍 Этнос",
     "furry": "🐾 Фури",
     "characters": "🦸 Персонажи",
-    "head": "🤯 Голова", # Добавлено
-    "fetish": "🔗 Фетиши", # Добавлено
+    "head": "🤯 Голова",
+    "fetish": "🔗 Фетиши",
     "pokemon": "⚡ Покемоны"
 }
 
@@ -44,7 +44,7 @@ TAGS = {
         "dilated_vagina": "Расширенная киска",
         "prolapsed_uterus": "Выпавшая матка",
         "prolapsed_anus": "Выпавший анус",
-        "two_dildos_one_hole": "Два дилдо в одно отверстие",
+        # "two_dildos_one_hole": "Два дилдо в одно отверстие", # Перенесен в toys для логики
         "dilated_nipples": "Расширенные соски",
         "anus_spreader_ring": "Расширительное кольцо в анусе",
         "vagina_spreader_ring": "Расширительное кольцо в вагине"
@@ -57,7 +57,8 @@ TAGS = {
         "anal_plug": "Анальная пробка",
         "long_dildo_path": "Дилдо сквозь все тело",
         "urethral_dildo": "Дилдо в уретре",
-        "two_dildos_anus_vagina": "Дилдо в анусе и вагине"
+        "two_dildos_anus_vagina": "Дилдо в анусе и вагине",
+        "two_dildos_one_hole": "Два дилдо в одно отверстие", # Теперь здесь
     },
     "poses": {
         "doggy": "На четвереньках",
@@ -76,14 +77,14 @@ TAGS = {
         "hands_spreading_vagina": "Руки раздвигают влагалище",
         "lotus_pose": "Поза лотоса",
         "scissors_pose": "Поза ножницы (две девушки)",
-        "inverted_extreme_bridge": "Экстремальный мост/стойка на плечах с инверсией", # NEW POSE
-        "leaning_forward_wall": "Наклон вперёд у стены", # NEW POSE
-        "standing_vertical_split_supported": "Вертикальный шпагат стоя с поддержкой", # NEW POSE
-        "boat_pose_double_split_up": "Поза лодки / двойной шпагат вверх", # NEW POSE
-        "deep_sumo_squat": "Глубокий присед (сумо-поза)", # NEW POSE
-        "standing_horizontal_split_balanced": "Горизонтальный шпагат стоя с балансом", # NEW POSE
-        "classic_bridge": "Мостик", # NEW POSE
-        "sitting_horizontal_split_supported": "Горизонтальный шпагат сидя с опорой" # NEW POSE
+        "inverted_extreme_bridge": "Экстремальный мост/стойка на плечах с инверсией",
+        "leaning_forward_wall": "Наклон вперёд у стены",
+        "standing_vertical_split_supported": "Вертикальный шпагат стоя с поддержкой",
+        "boat_pose_double_split_up": "Поза лодки / двойной шпагат вверх",
+        "deep_sumo_squat": "Глубокий присед (сумо-поза)",
+        "standing_horizontal_split_balanced": "Горизонтальный шпагат стоя с балансом",
+        "classic_bridge": "Мостик",
+        "sitting_horizontal_split_supported": "Горизонтальный шпагат сидя с опорой"
     },
     "clothes": {
         "stockings": "Чулки", # Subcategory trigger
@@ -183,11 +184,11 @@ TAGS = {
         "genshin_navia": "Навия",
         "genshin_chevreuse": "Шеврёз",
         "genshin_clorinde": "Клоринда",
-        "genshin_ar_traveler_f": "Аether (F)", # Female Traveler (Aether)
-        "genshin_lumine": "Люмин", # Lumine (Female Traveler)
+        "genshin_ar_traveler_f": "Аether (F)",
+        "genshin_lumine": "Люмин",
         "genshin_signora": "Синьора",
         "genshin_arlecchino": "Арлекино",
-        "genshin_snezhnaya_fatui_harbinger": "Предвестник Фатуи", # Generic female Fatui Harbinger
+        "genshin_snezhnaya_fatui_harbinger": "Предвестник Фатуи",
 
         # Honkai Star Rail
         "hsr_kafka": "Кафка",
@@ -199,7 +200,7 @@ TAGS = {
         "hsr_bronya": "Броня",
         "hsr_seele": "Зеле",
         "hsr_jingliu": "Цзинлю",
-        "hsr_stelle": "Стелла (F)", # Female Trailblazer
+        "hsr_stelle": "Стелла (F)",
         "hsr_herta": "Герта",
         "hsr_silver_wolf": "Серебряный Волк",
         "hsr_tingyun": "Тинъюнь",
@@ -215,9 +216,9 @@ TAGS = {
         "hsr_guinaifen": "Гуйнайфэнь",
         "hsr_huohuo": "Хохо",
         "hsr_xueyi": "Сюэи",
-        "hsr_hanabi": "Ханами", # Sparkle alternative name
+        "hsr_hanabi": "Ханами",
         "hsr_robin": "Робин",
-        "hsr_aventurine_f": "Авантюрин (F)", # Female Aventurine
+        "hsr_aventurine_f": "Авантюрин (F)",
 
         # NieR Automata
         "nier_2b": "2B",
@@ -315,7 +316,7 @@ TAGS = {
         # Zenless Zone Zero
         "zzz_ellen_joe": "Эллен Джо",
         "zzz_koleda": "Коледа",
-        "zzz_lycaon": "Ликаон (F)", # Female Lycaon
+        "zzz_lycaon": "Ликаон (F)",
         "zzz_nicole": "Николь",
         "zzz_anby": "Энби",
         "zzz_nekomiya": "Нэкомия",
@@ -369,7 +370,7 @@ TAGS = {
         "mlp_sweetie_belle": "Крошка Бель",
 
         # Dislyte
-        "dislyte_li_ling_f": "Ли Лин (F)", # Female Li Ling
+        "dislyte_li_ling_f": "Ли Лин (F)",
         "dislyte_sally": "Салли",
         "dislyte_clara": "Клара",
         "dislyte_gabrielle": "Габриэль",
@@ -379,26 +380,26 @@ TAGS = {
         "dislyte_jiang_man": "Цзян Мань",
         "dislyte_eira": "Эйра",
         "dislyte_drew": "Дрю",
-        "dislyte_pritzker_f": "Притцкер (F)", # Female Pritzker
+        "dislyte_pritzker_f": "Притцкер (F)",
         "dislyte_fatima": "Фатима",
-        "dislyte_brewster_f": "Брюстер (F)", # Female Brewster
-        "dislyte_yun_chuan_f": "Юнь Чуань (F)", # Female Yun Chuan
-        "dislyte_hyde_f": "Хайд (F)", # Female Hyde
+        "dislyte_brewster_f": "Брюстер (F)",
+        "dislyte_yun_chuan_f": "Юнь Чуань (F)",
+        "dislyte_hyde_f": "Хайд (F)",
         "dislyte_leora": "Леора",
-        "dislyte_tevor_f": "Тевор (F)", # Female Tevor
+        "dislyte_tevor_f": "Тевор (F)",
         "dislyte_zora": "Зора",
         "dislyte_embla": "Эмбла",
         "dislyte_ophilia": "Офелия",
-        "dislyte_ahmed_f": "Ахмед (F)", # Female Ahmed
-        "dislyte_everett_f": "Эверетт (F)", # Female Everett
-        "dislyte_ollie_f": "Олли (F)", # Female Ollie
+        "dislyte_ahmed_f": "Ахмед (F)",
+        "dislyte_everett_f": "Эверетт (F)",
+        "dislyte_ollie_f": "Олли (F)",
         "dislyte_jin_hee": "Джин Хи",
-        "dislyte_ifrit_f": "Ифрит (F)", # Female Ifrit
+        "dislyte_ifrit_f": "Ифрит (F)",
         "dislyte_sienna": "Сиенна",
         "dislyte_valeria": "Валерия",
         "dislyte_ashley": "Эшли",
-        "dislyte_triki_f": "Трики (F)", # Female Triki
-        "dislyte_narmer_f": "Нармер (F)", # Female Narmer
+        "dislyte_triki_f": "Трики (F)",
+        "dislyte_narmer_f": "Нармер (F)",
         "dislyte_tye": "Тай",
         "dislyte_biondina": "Биондина",
         "dislyte_dhalia": "Далия",
@@ -413,8 +414,8 @@ TAGS = {
         "dislyte_nicole": "Николь",
         "dislyte_q": "Кью",
         "dislyte_ren_si": "Жэнь Си",
-        "dislyte_stewart_f": "Стюарт (F)", # Female Stewart
-        "dislyte_tang_xuan_f": "Тан Сюань (F)", # Female Tang Xuan
+        "dislyte_stewart_f": "Стюарт (F)",
+        "dislyte_tang_xuan_f": "Тан Сюань (F)",
         "dislyte_unaky": "Унаки",
         "dislyte_victoria": "Виктория",
         "dislyte_xiao_yin": "Сяо Инь",
@@ -445,13 +446,13 @@ TAGS = {
         "dislyte_celine": "Селин",
         "dislyte_corbin_f": "Корбин (F)",
     },
-    "head": { # Category added earlier, ensuring it's in TAGS
+    "head": {
         "ahegao": "Ахегао",
         "pain_face": "Лицо в боли",
         "ecstasy_face": "Лицо в экстазе",
         "gold_lipstick": "Золотая помада"
     },
-    "fetish": { # Category added earlier, ensuring it's in TAGS
+    "fetish": {
         "nipple_piercing": "Пирсинг сосков",
         "clitoral_piercing": "Пирсинг клитора",
         "foot_fetish": "Фетиш стоп",
@@ -461,9 +462,10 @@ TAGS = {
         "anus_piercing": "Пирсинг ануса",
         "vagina_piercing": "Пирсинг вагины",
         "gag": "Кляп",
-        "blindfold": "Повязка на глаза"
+        "blindfold": "Повязка на глаза",
+        "horse_sex": "Секс с конем"
     },
-    "pokemon": { # Перенесено из characters
+    "pokemon": {
         "reshiram": "Реширам",
         "mew": "Мю",
         "mewtwo": "Мюту",
@@ -473,8 +475,8 @@ TAGS = {
         "shadow_lugia": "Шадоу Лугия",
         "lopunny": "Лопанни",
         "goodra": "Гудра",
-        "pokemon_jessie": "Джесси", # Moved from characters
-        "pokemon_lusamine": "Лусамине", # Moved from characters
+        "pokemon_jessie": "Джесси",
+        "pokemon_lusamine": "Лусамине",
     }
 }
 
@@ -507,8 +509,6 @@ CHARACTER_CATEGORIES = {
 }
 
 # --- Промпты для персонажей (если они требуют специфичных описаний, отличных от их имен) ---
-# Если для персонажа достаточно его имени (например, "eula, genshin impact"), то его не нужно здесь указывать.
-# Это только для тех персонажей, где промпт должен быть более детальным или специфичным.
 CHARACTER_PROMPTS = {
     "dxd_rias": "Rias Gremory, long red hair, large breasts, demon, school uniform, cleavage",
     "dxd_akeno": "Akeno Himejima, black hair, large breasts, demon, school uniform, glasses",
@@ -593,7 +593,7 @@ CHARACTER_PROMPTS = {
     "hsr_guinaifen": "Guinaifen, Honkai Star Rail, street performer, red hair, fire cracker",
     "hsr_huohuo": "Huohuo, Honkai Star Rail, ghost, green hair, tail, timid",
     "hsr_xueyi": "Xueyi, Honkai Star Rail, puppet, pink hair, elegant dress, cold",
-    "hsr_hanabi": "Sparkle, Honkai Star Rail, mask, pink hair, playful, jester", # Duplicate but for clarity
+    "hsr_hanabi": "Sparkle, Honkai Star Rail, mask, pink hair, playful, jester",
     "hsr_robin": "Robin, Honkai Star Rail, singer, elegant white dress, wings, blonde hair",
     "hsr_aventurine_f": "Aventurine (female), Honkai Star Rail, female version of Aventurine, gambler, confident",
 
@@ -757,50 +757,50 @@ CHARACTER_PROMPTS = {
     "dislyte_triki_f": "Triki (female), Dislyte, female version of Triki, mischievous, joker",
     "dislyte_narmer_f": "Narmer (female), Dislyte, female version of Narmer, egyptian theme, powerful",
     "dislyte_tye": "Tye, Dislyte, martial artist, casual outfit",
-    "dislyte_biondina": "Biondina, Dislyte, siren, water powers, elegant",
-    "dislyte_dhalia": "Dhalia, Dislyte, dancer, flowing dress, graceful",
-    "dislyte_elaine": "Elaine, Dislyte, archer, green outfit",
-    "dislyte_cecilia": "Cecilia, Dislyte, elegant, musical theme",
-    "dislyte_intisar": "Intisar, Dislyte, desert warrior, strong",
-    "dislyte_kaylee": "Kaylee, Dislyte, energetic, casual",
-    "dislyte_layla": "Layla, Dislyte, dark magic, mysterious",
-    "dislyte_lynn": "Lynn, Dislyte, feline, agile",
-    "dislyte_melanie": "Melanie, Dislyte, playful, bright",
-    "dislyte_mona": "Mona, Dislyte, archer, brave",
-    "dislyte_nicole": "Nicole, Dislyte, researcher, smart",
-    "dislyte_q": "Q, Dislyte, small, cute",
-    "dislyte_ren_si": "Ren Si, Dislyte, male, powerful, protector", # male example
-    "dislyte_stewart_f": "Stewart (female), Dislyte, female version of Stewart, scientist",
-    "dislyte_tang_xuan_f": "Tang Xuan (female), Dislyte, female version of Tang Xuan, monkey king",
-    "dislyte_unaky": "Unaky, Dislyte, unique, mysterious",
-    "dislyte_victoria": "Victoria, Dislyte, elegant, regal",
-    "dislyte_xiao_yin": "Xiao Yin, Dislyte, shadow, ninja",
-    "dislyte_ye_suhua": "Ye Suhua, Dislyte, traditional, calm",
-    "dislyte_zhong_nan": "Zhong Nan, Dislyte, male, wise, ancient", # male example
-    "dislyte_anadora": "Anadora, Dislyte, elegant, serene",
-    "dislyte_bernice": "Bernice, Dislyte, nature, green outfit",
-    "dislyte_brynn": "Brynn, Dislyte, warrior, shield",
-    "dislyte_catherine": "Catherine, Dislyte, elegant, graceful",
-    "dislyte_chang_pu": "Chang Pu, Dislyte, traditional, calm",
-    "dislyte_eugene_f": "Eugene (female), Dislyte, female version of Eugene, energetic",
-    "dislyte_freddy_f": "Freddy (female), Dislyte, female version of Freddy, strong",
-    "dislyte_hall_f": "Hall (female), Dislyte, female version of Hall, mysterious",
-    "dislyte_helena": "Helena, Dislyte, elegant, regal",
-    "dislyte_jacob_f": "Jacob (female), Dislyte, female version of Jacob, guardian",
-    "dislyte_jeanne": "Jeanne, Dislyte, warrior, swordswoman",
-    "dislyte_li_ao_f": "Li Ao (female), Dislyte, female version of Li Ao, martial artist",
-    "dislyte_lu_yi_f": "Lu Yi (female), Dislyte, female version of Lu Yi, archer",
-    "dislyte_mark_f": "Mark (female), Dislyte, female version of Mark, tech expert",
-    "dislyte_olivia": "Olivia, Dislyte, elegant, graceful",
-    "dislyte_sander_f": "Sander (female), Dislyte, female version of Sander, fast",
-    "dislyte_stella": "Stella, Dislyte, star themed, radiant",
-    "dislyte_alice": "Alice, Dislyte, magical, curious",
-    "dislyte_arcana": "Arcana, Dislyte, mysterious, powerful",
-    "dislyte_aurelius_f": "Aurelius (female), Dislyte, female version of Aurelius, golden, radiant",
-    "dislyte_bette": "Bette, Dislyte, elegant, calm",
-    "dislyte_bonnie": "Bonnie, Dislyte, playful, cheerful",
-    "dislyte_celine": "Celine, Dislyte, musical, graceful",
-    "dislyte_corbin_f": "Corbin (female), Dislyte, female version of Corbin, strong, protective",
+    "dislyte_biondina": "Биондина",
+    "dislyte_dhalia": "Далия",
+    "dislyte_elaine": "Элейн",
+    "dislyte_cecilia": "Сесилия",
+    "dislyte_intisar": "Интисар",
+    "dislyte_kaylee": "Кейли",
+    "dislyte_layla": "Лейла",
+    "dislyte_lynn": "Линн",
+    "dislyte_melanie": "Мелани",
+    "dislyte_mona": "Мона",
+    "dislyte_nicole": "Николь",
+    "dislyte_q": "Кью",
+    "dislyte_ren_si": "Жэнь Си",
+    "dislyte_stewart_f": "Стюарт (F)",
+    "dislyte_tang_xuan_f": "Тан Сюань (F)",
+    "dislyte_unaky": "Унаки",
+    "dislyte_victoria": "Виктория",
+    "dislyte_xiao_yin": "Сяо Инь",
+    "dislyte_ye_suhua": "Е Сухуа",
+    "dislyte_zhong_nan": "Чжун Нань",
+    "dislyte_anadora": "Анадора",
+    "dislyte_bernice": "Бернис",
+    "dislyte_brynn": "Бринн",
+    "dislyte_catherine": "Катерина",
+    "dislyte_chang_pu": "Чан Пу",
+    "dislyte_eugene_f": "Юджин (F)",
+    "dislyte_freddy_f": "Фредди (F)",
+    "dislyte_hall_f": "Холл (F)",
+    "dislyte_helena": "Хелена",
+    "dislyte_jacob_f": "Джейкоб (F)",
+    "dislyte_jeanne": "Жанна",
+    "dislyte_li_ao_f": "Ли Ао (F)",
+    "dislyte_lu_yi_f": "Лу И (F)",
+    "dislyte_mark_f": "Марк (F)",
+    "dislyte_olivia": "Оливия",
+    "dislyte_sander_f": "Сандер (F)",
+    "dislyte_stella": "Стелла",
+    "dislyte_alice": "Алиса",
+    "dislyte_arcana": "Аркана",
+    "dislyte_aurelius_f": "Аурелиус (F)",
+    "dislyte_bette": "Бетте",
+    "dislyte_bonnie": "Бонни",
+    "dislyte_celine": "Селин",
+    "dislyte_corbin_f": "Корбин (F)",
 }
 
 
@@ -814,7 +814,7 @@ TAG_PROMPTS = {
     "dilated_vagina": "dilated vagina, vagina stretched, open pussy, internal view of vagina, vagina gaping, spread pussy, labia spread, realistic, detailed, high focus",
     "prolapsed_uterus": "prolapsed uterus, uterus exposed, visible uterus",
     "prolapsed_anus": "prolapsed anus, anus exposed, visible anus",
-    "two_dildos_one_hole": "two dildos, one hole, multiple dildos in one orifice, dildos inserted into same hole",
+    # "two_dildos_one_hole": "two dildos, one hole, multiple dildos in one orifice, dildos inserted into same hole", # Логика перемещена в build_prompt
     "dildo": "dildo inserted",
     "huge_dildo": "huge dildo",
     "horse_dildo": "horse dildo, belly bulge, stomach distended",
@@ -822,7 +822,11 @@ TAG_PROMPTS = {
     "anal_plug": "anal plug",
     "long_dildo_path": (
         "dildo inserted into anus, dildo visibly pushing through intestines, belly bulge, stomach distended, "
-        "dildo exiting from mouth, seamless and continuous dildo, consistent texture, realistic rubber"
+        "dildo exiting from mouth, seamless and continuous dildo, consistent texture, realistic rubber, "
+        "abdomen with noticeable internal deformation, contours of a large object or tentacle pressing through the skin, "
+        "strong tension on the abdominal skin, protruding shapes under the skin, "
+        "skin stretched and glistening from tension, internal pressure effect, "
+        "abdomen visibly bulging and pulsating from internal penetration, emphasized internal shapes"
     ),
     "urethral_dildo": "urethral dildo, dildo in urethra, dildo inserted into urethra",
     "two_dildos_anus_vagina": "one dildo inserted into anus, one dildo inserted into vagina",
@@ -835,7 +839,7 @@ TAG_PROMPTS = {
     "inverted_extreme_bridge": "extreme acrobatic pose, deep inversion, bridge pose, shoulder stand, hand support, head touching floor, side-turned head, loose hair on floor, shoulders on surface, elbows bent, hands in front of face, palms on floor, stabilizing hands, extremely arched back, deep back bend, emphasized lumbar curve, high elevated buttocks, buttocks near head level, buttocks facing viewer, legs spread wide, acute angle legs, slightly bent knees, feet touching floor, pointed toes, arched body, flexible, acrobatic",
     "leaning_forward_wall": "half-undressed, leaning forward, hands supporting, head slightly tilted, head turned back to viewer, looking over shoulder, hands on wall, hands on vertical surface, raised shoulders, tense trapezius, straight back, back almost parallel to floor, slight back arch, pushed out buttocks, emphasized buttocks, legs shoulder-width apart, thighs tilted forward, bent knees, relaxed stance",
     "standing_vertical_split_supported": "standing, one leg on floor, other leg extended vertically up, leg almost touching head, both hands supporting raised leg, holding ankle, straight back, tense core muscles, open pelvis, maximum stretch, flexible, acrobatic",
-    "boat_pose_double_split_up": "sitting pose, both legs raised up 90+ degrees, hands holding both feet, torso leaned back, tense back, balancing, stable pose, static, requires strength, flexible",
+    "boat_pose_double_split_up": "boat pose, both legs raised up 90+ degrees, hands holding both feet, torso leaned back, tense back, balancing, stable pose, static, requires strength, flexible",
     "deep_sumo_squat": "deep squat, knees spread wide, heels on floor, pelvis deep down, hands down for balance, hands on floor for balance, straight spine, raised chest",
     "standing_horizontal_split_balanced": "standing, one leg to side horizontally, hands spread for balance, body strictly vertical, open pelvis, strong balance control, flexible, acrobatic",
     "classic_bridge": "bridge pose, support on palms and feet, body arched upwards, full back arch, stomach facing up, head tilted back, stretched neck, fingers and toes pointed forward",
@@ -1276,106 +1280,11 @@ def build_prompt(tags):
             if not found_in_tags:
                 print(f"Warning: Tag '{tag}' found in selected_tags but not in TAG_PROMPTS or TAGS dictionary.")
 
+    # --- Новая логика для "two_dildos_one_hole" ---
+    if "two_dildos_one_hole" in unique:
+        # Remove the generic "two_dildos_one_hole" from prompt parts initially
+        if "two dildos, one hole, multiple dildos in one orifice, dildos inserted into same hole" in priority["toys"]:
+            priority["toys"].remove("two dildos, one hole, multiple dildos in one orifice, dildos inserted into same hole")
 
-    prompt_parts = base[:]
-    # Порядок добавления важен: количество девушек, персонажи, фури, покемоны, тело, позы, отверстия, игрушки, одежда, фетиши, лицо
-    for section in ["character", "furry", "pokemon", "body", "pose", "holes", "toys", "clothes", "fetish", "face"]:
-        prompt_parts.extend(priority[section])
-
-    # Танлайны убирают купальник из негативного промпта
-    if "bikini_tan_lines" in unique:
-        base_negative += ", bikini"
-
-    return {
-        "positive_prompt": ", ".join(prompt_parts),
-        "negative_prompt": base_negative
-    } 
-
-# --- Функция для генерации изображения через Replicate ---
-def replicate_generate(positive_prompt, negative_prompt, num_images=1):
-    """
-    Отправляет запрос на генерацию изображения в Replicate API,
-    используя оптимальные настройки для достижения максимальной точности.
-    """
-    urls = []
-    for _ in range(num_images):
-        url = "https://api.replicate.com/v1/predictions"
-        headers = {
-            "Authorization": f"Token {REPLICATE_TOKEN}",
-            "Content-Type": "application/json"
-        }
-        json_data = {
-            "version": REPLICATE_MODEL,
-            "input": {
-                "prompt": positive_prompt,
-                "negative_prompt": negative_prompt,
-                "prepend_preprompt": False,
-                "width": 1024,
-                "height": 1024,
-                "steps": 75,
-                "guidance_scale": 18,
-                "scheduler": "DPM++ 2M SDE Karras",
-                "adetailer_face": True,
-                "adetailer_hand": True,
-                "seed": -1 # Генерировать новый сид для каждого изображения
-            }
-        }
-
-        # Отправка запроса на создание предсказания
-        r = requests.post(url, headers=headers, json=json_data)
-        if r.status_code != 201:
-            print(f"Ошибка при отправке предсказания: {r.status_code} - {r.text}")
-            print(f"Request JSON: {json_data}")
-            return None
-
-        status_url = r.json()["urls"]["get"]
-
-        # Ожидание завершения генерации (до 3 минут)
-        for i in range(90):
-            time.sleep(2)
-            r = requests.get(status_url, headers=headers)
-            if r.status_code != 200:
-                print(f"Ошибка при получении статуса предсказания: {r.status_code} - {r.text}")
-                return None
-            data = r.json()
-            if data["status"] == "succeeded":
-                if isinstance(data["output"], list) and data["output"]:
-                    urls.append(data["output"][0])
-                    break
-                else:
-                    print("Получен пустой или некорректный 'output' от Replicate.")
-                    return None
-            elif data["status"] == "failed":
-                print(f"Предсказание не удалось: {data.get('error', 'Сообщение об ошибке не предоставлено')}")
-                print(f"Request JSON: {json_data}")
-                return None
-        else:
-            print("Время ожидания предсказания истекло для одного изображения.")
-            return None
-
-    return urls
-
-# --- Настройка вебхука Flask ---
-@app.route("/", methods=["POST"])
-def webhook():
-    """Обрабатывает входящие обновления от Telegram."""
-    json_str = request.stream.read().decode("utf-8")
-    update = telebot.types.Update.de_json(json_str)
-    
-    if update.message and update.message.chat.id not in user_settings:
-        bot.send_message(update.message.chat.id, "Привет Шеф!", reply_markup=main_menu())
-        user_settings[update.message.chat.id] = {"tags": [], "last_cat": None, "last_char_sub": None, "stockings_type": None, "num_images": 1}
-
-    bot.process_new_updates([update])
-    return "ok", 200
-
-@app.route("/", methods=["GET"])
-def home():
-    """Простой маршрут для проверки работы приложения."""
-    return "бот работает", 200
-
-# --- Запуск бота ---
-if __name__ == "__main__":
-    bot.remove_webhook()
-    bot.set_webhook(url=WEBHOOK_URL)
-    app.run(host="0.0.0.0", port=PORT)
+        hole_prompts = []
+        for hole_tag in ["vagina", "anus", "dilated_vagina", "dilated_anus", "both"]: # Add other relevant hole
