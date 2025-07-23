@@ -757,56 +757,56 @@ CHARACTER_PROMPTS = {
     "dislyte_ollie_f": "Ollie (female), Dislyte, female version of Ollie, playful, skater",
     "dislyte_jin_hee": "Jin Hee, Dislyte, martial artist, red and black outfit",
     "dislyte_ifrit_f": "Ifrit (female), Dislyte, female version of Ifrit, fire demon, powerful",
-    "dislyte_sienna": "Sienna, Dislyte, elegant, long hair, light powers",
-    "dislyte_valeria": "Valeria, Dislyte, warrior, short hair, strong",
-    "dislyte_ashley": "Ashley, Dislyte, elegant, long hair, light powers",
-    "dislyte_triki_f": "Triki (female), Dislyte, female version of Triki, jester, playful",
-    "dislyte_narmer_f": "Narmer (female), Dislyte, female version of Narmer, pharaoh, powerful",
-    "dislyte_tye": "Tye, Dislyte, martial artist, short hair, energetic",
-    "dislyte_biondina": "Biondina, Dislyte, elegant, long blue hair, water powers",
-    "dislyte_dhalia": "Dhalia, Dislyte, archer, green outfit, nature theme",
-    "dislyte_elaine": "Elaine, Dislyte, elegant, long hair, light powers",
-    "dislyte_cecilia": "Cecilia, Dislyte, healer, elegant white dress, serene",
-    "dislyte_intisar": "Intisar, Dislyte, warrior, dark armor, strong",
-    "dislyte_kaylee": "Kaylee, Dislyte, fighter, short hair, energetic",
-    "dislyte_layla": "Layla, Dislyte, elegant, long hair, light powers",
-    "dislyte_lynn": "Lynn, Dislyte, fighter, short hair, energetic",
-    "dislyte_melanie": "Melanie, Dislyte, elegant, long hair, light powers",
-    "dislyte_mona": "Mona, Dislyte, elegant, long hair, light powers",
-    "dislyte_nicole": "Nicole, Dislyte, elegant, long hair, light powers",
-    "dislyte_q": "Q, Dislyte, fighter, short hair, energetic",
-    "dislyte_ren_si": "Ren Si, Dislyte, fighter, short hair, energetic",
-    "dislyte_stewart_f": "Stewart (female), Dislyte, female version of Stewart, strong, protector",
-    "dislyte_tang_xuan_f": "Tang Xuan (female), Dislyte, female version of Tang Xuan, elegant, traditional clothes",
-    "dislyte_unaky": "Unaky, Dislyte, elegant, long hair, light powers",
-    "dislyte_victoria": "Victoria, Dislyte, elegant, long hair, light powers",
-    "dislyte_xiao_yin": "Xiao Yin, Dislyte, fighter, short hair, energetic",
-    "dislyte_ye_suhua": "Ye Suhua, Dislyte, healer, elegant white dress, serene",
-    "dislyte_zhong_nan": "Zhong Nan, Dislyte, fighter, short hair, energetic",
-    "dislyte_anadora": "Anadora, Dislyte, elegant, long hair, light powers",
-    "dislyte_bernice": "Bernice, Dislyte, elegant, long hair, light powers",
-    "dislyte_brynn": "Brynn, Dislyte, elegant, long hair, light powers",
-    "dislyte_catherine": "Catherine, Dislyte, elegant, long hair, light powers",
-    "dislyte_chang_pu": "Chang Pu, Dislyte, elegant, long hair, light powers",
-    "dislyte_eugene_f": "Eugene (female), Dislyte, female version of Eugene, strong, protector",
-    "dislyte_freddy_f": "Freddy (female), Dislyte, female version of Freddy, fighter, short hair",
-    "dislyte_hall_f": "Hall (female), Dislyte, female version of Hall, strong, protector",
-    "dislyte_helena": "Helena, Dislyte, elegant, long hair, light powers",
-    "dislyte_jacob_f": "Jacob (female), Dislyte, female version of Jacob, strong, protector",
-    "dislyte_jeanne": "Jeanne, Dislyte, elegant, long hair, light powers",
-    "dislyte_li_ao_f": "Li Ao (female), Dislyte, female version of Li Ao, fighter, short hair",
-    "dislyte_lu_yi_f": "Lu Yi (female), Dislyte, female version of Lu Yi, fighter, short hair",
-    "dislyte_mark_f": "Mark (female), Dislyte, female version of Mark, strong, protector",
-    "dislyte_olivia": "Olivia, Dislyte, elegant, long hair, light powers",
-    "dislyte_sander_f": "Sander (female), Dislyte, female version of Sander, fighter, short hair",
-    "dislyte_stella": "Stella, Dislyte, elegant, long hair, light powers",
-    "dislyte_alice": "Alice, Dislyte, elegant, long hair, light powers",
-    "dislyte_arcana": "Arcana, Dislyte, elegant, long hair, light powers",
-    "dislyte_aurelius_f": "Aurelius (female), Dislyte, female version of Aurelius, strong, protector",
-    "dislyte_bette": "Bette, Dislyte, elegant, long hair, light powers",
-    "dislyte_bonnie": "Bonnie, Dislyte, elegant, long hair, light powers",
-    "dislyte_celine": "Celine, Dislyte, elegant, long hair, light powers",
-    "dislyte_corbin_f": "Corbin (female), Dislyte, female version of Corbin, strong, protector",
+    "dislyte_sienna": "Сиенна",
+    "dislyte_valeria": "Валерия",
+    "dislyte_ashley": "Эшли",
+    "dislyte_triki_f": "Трики (F)",
+    "dislyte_narmer_f": "Нармер (F)",
+    "dislyte_tye": "Тай",
+    "dislyte_biondina": "Биондина",
+    "dislyte_dhalia": "Далия",
+    "dislyte_elaine": "Элейн",
+    "dislyte_cecilia": "Сесилия",
+    "dislyte_intisar": "Интисар",
+    "dislyte_kaylee": "Кейли",
+    "dislyte_layla": "Лейла",
+    "dislyte_lynn": "Линн",
+    "dislyte_melanie": "Мелани",
+    "dislyte_mona": "Мона",
+    "dislyte_nicole": "Николь",
+    "dislyte_q": "Кью",
+    "dislyte_ren_si": "Жэнь Си",
+    "dislyte_stewart_f": "Стюарт (F)",
+    "dislyte_tang_xuan_f": "Тан Сюань (F)",
+    "dislyte_unaky": "Унаки",
+    "dislyte_victoria": "Виктория",
+    "dislyte_xiao_yin": "Сяо Инь",
+    "dislyte_ye_suhua": "Е Сухуа",
+    "dislyte_zhong_nan": "Чжун Нань",
+    "dislyte_anadora": "Анадора",
+    "dislyte_bernice": "Бернис",
+    "dislyte_brynn": "Бринн",
+    "dislyte_catherine": "Катерина",
+    "dislyte_chang_pu": "Чан Пу",
+    "dislyte_eugene_f": "Юджин (F)",
+    "dislyte_freddy_f": "Фредди (F)",
+    "dislyte_hall_f": "Холл (F)",
+    "dislyte_helena": "Хелена",
+    "dislyte_jacob_f": "Джейкоб (F)",
+    "dislyte_jeanne": "Жанна",
+    "dislyte_li_ao_f": "Ли Ао (F)",
+    "dislyte_lu_yi_f": "Лу И (F)",
+    "dislyte_mark_f": "Марк (F)",
+    "dislyte_olivia": "Оливия",
+    "dislyte_sander_f": "Сандер (F)",
+    "dislyte_stella": "Стелла",
+    "dislyte_alice": "Алиса",
+    "dislyte_arcana": "Аркана",
+    "dislyte_aurelius_f": "Аурелиус (F)",
+    "dislyte_bette": "Бетте",
+    "dislyte_bonnie": "Бонни",
+    "dislyte_celine": "Селин",
+    "dislyte_corbin_f": "Корбин (F)",
 }
 
 # --- Промпты для модели ---
@@ -857,11 +857,11 @@ TAG_PROMPTS = {
     "standing_horizontal_split_balanced": "standing, one leg to side horizontally, hands spread for balance, body strictly vertical, open pelvis, strong balance control, flexible, acrobatic",
     "classic_bridge": "bridge pose, support on palms and feet, body arched upwards, full back arch, stomach facing up, head tilted back, stretched neck, fingers and toes pointed forward",
     "sitting_horizontal_split_supported": "sitting, one leg forward, one leg back, horizontal split, hands on floor for support, torso slightly raised, pelvis low to floor, straight back, elongated neck, flexible",
-    "stockings_normal_white": "white stockings only", # Updated to match stockings_type_color format
-    "stockings_normal_black": "black stockings only",
-    "stockings_normal_red": "red stockings only",
-    "stockings_normal_pink": "pink stockings only",
-    "stockings_normal_gold": "gold stockings only",
+    "stockings_white": "white stockings only",
+    "stockings_black": "black stockings only",
+    "stockings_red": "red stockings only",
+    "stockings_pink": "pink stockings only",
+    "stockings_gold": "gold stockings only",
     "stockings_fishnet_white": "white fishnet stockings",
     "stockings_fishnet_black": "black fishnet stockings",
     "stockings_fishnet_red": "red fishnet stockings",
@@ -1092,10 +1092,7 @@ def callback_handler(call):
         # Если это тег чулок, удаляем все остальные теги чулок перед добавлением нового
         if tag_key.startswith("stockings_"):
             current_tags[:] = [t for t in current_tags if not t.startswith("stockings_")]
-            if tag_key in current_tags: # Allow deselecting the stocking color
-                current_tags.remove(tag_key)
-            else:
-                current_tags.append(tag_key)
+            current_tags.append(tag_key)
             
             # Обновляем клавиатуру выбора цвета чулок
             stockings_type = user_settings[uid].get("current_stockings_type")
@@ -1265,14 +1262,17 @@ def build_prompt(tags):
         "pokemon": []
     }
     
-    base_negative_parts = [
-        "lowres", "bad anatomy", "bad hands", "bad face", "deformed", "disfigured", "poorly drawn",
-        "missing limbs", "extra limbs", "fused fingers", "jpeg artifacts", "signature", "watermark",
-        "blurry", "cropped", "worst quality", "low quality", "text", "error", "mutated", "censored",
-        "hands on chest", "hands covering breasts", "clothing covering genitals", "shirt", "bra", "bikini",
-        "vagina not visible", "anus not visible", "penis not visible", "bad proportions",
-        "all clothes", "all clothing"
-    ]
+    base_negative = (
+        "lowres, bad anatomy, bad hands, bad face, deformed, disfigured, poorly drawn, "
+        "missing limbs, extra limbs, fused fingers, jpeg artifacts, signature, watermark",
+        "blurry, cropped, worst quality, low quality, text, error, mutated, censored, "
+        "hands on chest, hands covering breasts, clothing covering genitals, shirt, bra, bikini, "
+        "vagina not visible, anus not visible, penis not visible, bad proportions, "
+        "all clothes, all clothing"
+    )
+    # Объединяем негативные промпты в одну строку
+    base_negative = "".join(base_negative)
+
 
     # Уникальные теги и спец. обработка конфликтов
     unique = set(tags)
@@ -1327,23 +1327,29 @@ def build_prompt(tags):
 
     # --- Новая логика для "two_dildos_one_hole" ---
     if "two_dildos_one_hole" in unique:
+        # Remove the generic "two_dildos_one_hole" from prompt parts initially
+        if "two dildos, one hole, multiple dildos in one orifice, dildos inserted into same hole" in priority["toys"]:
+            priority["toys"].remove("two dildos, one hole, multiple dildos in one orifice, dildos inserted into same hole")
+
         hole_prompts = []
-        # Check for specific hole tags and add appropriate two dildos prompt
-        if "vagina" in unique or "dilated_vagina" in unique:
-            hole_prompts.append("two dildos in vagina")
-        if "anus" in unique or "dilated_anus" in unique:
-            hole_prompts.append("two dildos in anus")
-        if "both" in unique:
-            hole_prompts.append("two dildos in vagina, two dildos in anus")
-        
-        # If two_dildos_one_hole is selected but no specific hole, add a generic prompt
+        for hole_tag in ["vagina", "anus", "dilated_vagina", "dilated_anus", "both"]: # Add other relevant hole tags
+            if hole_tag in unique:
+                # Add specific prompt for two dildos in this hole
+                if hole_tag == "vagina":
+                    hole_prompts.append("two dildos in vagina")
+                elif hole_tag == "anus":
+                    hole_prompts.append("two dildos in anus")
+                elif hole_tag == "both":
+                    hole_prompts.append("two dildos in vagina, two dildos in anus")
+                elif hole_tag == "dilated_vagina":
+                    hole_prompts.append("two dildos in dilated vagina")
+                elif hole_tag == "dilated_anus":
+                    hole_prompts.append("two dildos in dilated anus")
+                # Add a generic "two dildos" if no specific hole is selected with two_dildos_one_hole
         if not hole_prompts:
             priority["toys"].append("two dildos, one hole, multiple dildos inserted")
         else:
             priority["toys"].extend(hole_prompts)
-        
-        # Ensure generic dildo tags are not duplicated if specific two dildo prompts are added
-        priority["toys"] = [p for p in priority["toys"] if "dildo inserted" not in p or "two dildos" in p]
     # --- Конец новой логики ---
 
     prompt_parts = base[:]
@@ -1353,12 +1359,11 @@ def build_prompt(tags):
 
     # Танлайны убирают купальник из негативного промпта
     if "bikini_tan_lines" in unique:
-        if "bikini" in base_negative_parts:
-            base_negative_parts.remove("bikini")
+        base_negative += ", bikini"
 
     return {
         "positive_prompt": ", ".join(prompt_parts),
-        "negative_prompt": ", ".join(base_negative_parts)
+        "negative_prompt": base_negative
     } 
 
 # --- Функция для генерации изображения через Replicate ---
@@ -1440,12 +1445,9 @@ def webhook():
     update = telebot.types.Update.de_json(json_str)
     
     # Инициализация user_settings для нового пользователя, если его нет
-    # Это может быть избыточным, если /start всегда используется, но не повредит.
-    # Если бот получает update до команды /start, это предотвратит ошибку KeyError.
     if update.message and update.message.chat.id not in user_settings:
         user_settings[update.message.chat.id] = {"tags": [], "current_category": None, "current_char_subcategory": None, "current_stockings_type": None, "num_images": 1}
-        # Не отправляем здесь сообщение, чтобы избежать дублирования с /start
-        # bot.send_message(update.message.chat.id, "Привет Шеф!", reply_markup=main_menu())
+        bot.send_message(update.message.chat.id, "Привет Шеф!", reply_markup=main_menu())
 
 
     bot.process_new_updates([update])
@@ -1461,3 +1463,4 @@ if __name__ == "__main__":
     bot.remove_webhook()
     bot.set_webhook(url=WEBHOOK_URL)
     app.run(host="0.0.0.0", port=PORT)
+
