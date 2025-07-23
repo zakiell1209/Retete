@@ -12,7 +12,7 @@ WEBHOOK_URL = os.getenv("WEBHOOK_URL")
 PORT = int(os.environ.get("PORT", 5000))
 
 # ID новой модели Replicate, которую вы используете
-REPLICATE_MODEL = "80441e2c32a55f2fcf9b77fa0a74c6c86ad7deac51eed722b9faedb253265cb1"
+REPLICATE_MODEL = "80441e2c32a55f2fcf9b77fa0a74c6c86ad7deac51eed722b9faedb253265cb1" # Убедился, что это строка
 
 # Инициализация бота и Flask приложения
 bot = telebot.TeleBot(API_TOKEN)
@@ -807,6 +807,39 @@ CHARACTER_PROMPTS = {
     "dislyte_bonnie": "Бонни",
     "dislyte_celine": "Селин",
     "dislyte_corbin_f": "Корбин (F)",
+    },
+    "head": {
+        "ahegao": "Ахегао",
+        "pain_face": "Лицо в боли",
+        "ecstasy_face": "Лицо в экстазе",
+        "gold_lipstick": "Золотая помада"
+    },
+    "fetish": {
+        "nipple_piercing": "Пирсинг сосков",
+        "clitoral_piercing": "Пирсинг клитора",
+        "foot_fetish": "Фетиш стоп",
+        "footjob": "Футджоб",
+        "mouth_nipples": "Рты вместо сосков",
+        "nipple_hole": "Отверстие в соске",
+        "anus_piercing": "Пирсинг ануса",
+        "vagina_piercing": "Пирсинг вагины",
+        "gag": "Кляп",
+        "blindfold": "Повязка на глаза",
+        "horse_sex": "Секс с конем"
+    },
+    "pokemon": {
+        "reshiram": "Реширам",
+        "mew": "Мю",
+        "mewtwo": "Мюту",
+        "gardevoir": "Гардевуар",
+        "umbreon": "Эмбреон",
+        "lugia": "Лугия",
+        "shadow_lugia": "Шадоу Лугия",
+        "lopunny": "Лопанни",
+        "goodra": "Гудра",
+        "pokemon_jessie": "Джесси",
+        "pokemon_lusamine": "Лусамине",
+    }
 }
 
 # --- Промпты для модели ---
@@ -955,31 +988,14 @@ def tag_selection_keyboard(category, uid):
     kb = types.InlineKeyboardMarkup(row_width=2)
     current_tags = user_settings.get(uid, {}).get("tags", [])
     
-    # Проверяем, существует ли категория в TAGS
     if category not in TAGS:
         print(f"Error: Category '{category}' not found in TAGS.")
-        return kb # Возвращаем пустую клавиатуру или обрабатываем ошибку
+        return kb 
         
     sorted_tags = sorted(TAGS[category].items(), key=lambda item: item[1])
 
     for tag_key, tag_name_ru in sorted_tags:
-        # Для персонажей, если это подкатегория, отображаем её как кнопку для перехода
-        if category == "characters" and tag_key in CHARACTER_CATEGORIES:
-            # Эта логика была немного запутанной. CHARACTER_CATEGORIES содержит префиксы,
-            # а не полные теги. Мы хотим отображать подкатегории только если это
-            # действительно кнопка для перехода к подкатегориям.
-            # Если tag_key является ключом подкатегории (например, "dxd"),
-            # то мы должны создать кнопку для перехода к этой подкатегории.
-            # Если tag_key - это уже конкретный персонаж (например, "dxd_rias"),
-            # то это обычный тег.
-            if tag_key in CHARACTER_CATEGORIES: # Это будет всегда False, так как tag_key это тег персонажа, а не ключ категории.
-                # Это условие никогда не срабатывало так, как задумано,
-                # потому что `tag_key` из `TAGS[category].items()` будет чем-то вроде "dxd_rias",
-                # а не ключом категории вроде "dxd".
-                # Нам нужно обрабатывать это через `character_subcategory_menu_keyboard`
-                # и показывать персонажей уже внутри выбранной подкатегории.
-                pass # Пропускаем, так как персонажи отображаются в отдельном меню подкатегорий
-        elif category == "clothes" and tag_key == "stockings":
+        if category == "clothes" and tag_key == "stockings":
             # Специальная кнопка для выбора типа чулок
             kb.add(types.InlineKeyboardButton("Чулки", callback_data="stockings_type_select"))
         else:
@@ -1002,13 +1018,22 @@ def category_menu_keyboard():
 def character_subcategory_menu_keyboard(uid):
     """Создает меню выбора подкатегорий персонажей."""
     kb = types.InlineKeyboardMarkup(row_width=2)
-    current_char_sub = user_settings.get(uid, {}).get("current_char_subcategory")
     
     # Сортируем подкатегории по русскоязычному названию
     sorted_char_categories = sorted(CHARACTER_CATEGORIES.items(), key=lambda item: item[1])
 
+    # Определяем, какая подкатегория выбрана, чтобы пометить её
+    selected_char_sub_prefix = None
+    for tag_key in user_settings.get(uid, {}).get("tags", []):
+        for char_prefix in CHARACTER_CATEGORIES.keys():
+            if tag_key.startswith(char_prefix + "_"):
+                selected_char_sub_prefix = char_prefix
+                break
+        if selected_char_sub_prefix:
+            break
+
     for key, name in sorted_char_categories:
-        label = f"✅ {name}" if current_char_sub == key else name
+        label = f"✅ {name}" if selected_char_sub_prefix == key else name
         kb.add(types.InlineKeyboardButton(label, callback_data=f"char_sub|{key}"))
     kb.add(types.InlineKeyboardButton("⬅️ Назад к категориям", callback_data="choose_tags"))
     return kb
@@ -1068,6 +1093,7 @@ def callback_handler(call):
     message_id = call.message.message_id
     data = call.data
 
+    # Инициализация настроек пользователя, если их нет
     user_settings.setdefault(uid, {"tags": [], "current_category": None, "current_char_subcategory": None, "current_stockings_type": None, "num_images": 1})
 
     if data == "main_menu":
@@ -1086,10 +1112,6 @@ def callback_handler(call):
         if category == "characters":
             bot.edit_message_text("Выбери подкатегорию персонажей:", uid, message_id, reply_markup=character_subcategory_menu_keyboard(uid))
         elif category == "clothes":
-            # Специальная обработка для одежды - сначала предложить выбор чулок
-            # если в категории "Одежда" есть только "Чулки" как первая опция
-            # или если мы хотим всегда переходить к выбору чулок из этой категории.
-            # Здесь предполагается, что "Чулки" - это подменю.
             bot.edit_message_text("Выбери тип чулок:", uid, message_id, reply_markup=stockings_type_menu_keyboard(uid))
         else:
             bot.edit_message_text(f"Категория: {CATEGORY_NAMES.get(category, category)}", uid, message_id, reply_markup=tag_selection_keyboard(category, uid))
@@ -1103,6 +1125,8 @@ def callback_handler(call):
         
         kb = types.InlineKeyboardMarkup(row_width=2)
         current_tags = user_settings.get(uid, {}).get("tags", [])
+        
+        # Сначала добавляем теги выбранной подкатегории персонажей
         for tag_key, tag_name_ru in sorted(filtered_tags.items(), key=lambda item: item[1]):
             selected = tag_key in current_tags
             prefix = "✅ " if selected else ""
@@ -1121,16 +1145,21 @@ def callback_handler(call):
         tag_key = data.split("|")[1]
         current_tags = user_settings[uid]["tags"]
 
-        # Если это тег чулок, удаляем все другие теги чулок перед добавлением нового
         if tag_key.startswith("stockings_"):
-            # Удаляем все существующие теги чулок любого типа/цвета
-            current_tags[:] = [t for t in current_tags if not t.startswith("stockings_")]
-            current_tags.append(tag_key)
+            # Удаляем все _другие_ теги чулок перед добавлением/удалением текущего
+            current_tags[:] = [t for t in current_tags if not t.startswith("stockings_") or t == tag_key]
             
-            # Обновляем клавиатуру для выбора цвета чулок
+            if tag_key in current_tags:
+                current_tags.remove(tag_key)
+            else:
+                current_tags.append(tag_key)
+            
             stockings_type = user_settings[uid].get("current_stockings_type")
-            bot.edit_message_reply_markup(chat_id=uid, message_id=message_id, reply_markup=stockings_color_menu_keyboard(stockings_type, uid))
-        else:
+            if stockings_type:
+                bot.edit_message_reply_markup(chat_id=uid, message_id=message_id, reply_markup=stockings_color_menu_keyboard(stockings_type, uid))
+            else: # Fallback to stockings type select if type is somehow lost
+                bot.edit_message_reply_markup(chat_id=uid, message_id=message_id, reply_markup=stockings_type_menu_keyboard(uid))
+        else: # Для обычных тегов
             if tag_key in current_tags:
                 current_tags.remove(tag_key)
             else:
@@ -1139,9 +1168,9 @@ def callback_handler(call):
             # Обновляем клавиатуру, показывая выбранные/невыбранные теги
             current_cat = user_settings[uid].get("current_category")
             current_char_sub = user_settings[uid].get("current_char_subcategory")
-            current_stockings_type = user_settings[uid].get("current_stockings_type")
 
             if current_cat == "characters" and current_char_sub:
+                # Пересоздаем клавиатуру для подкатегории персонажей
                 filtered_tags = {k: v for k, v in TAGS["characters"].items() if k.startswith(current_char_sub + "_")}
                 kb = types.InlineKeyboardMarkup(row_width=2)
                 for tk, tn in sorted(filtered_tags.items(), key=lambda item: item[1]):
@@ -1151,11 +1180,14 @@ def callback_handler(call):
                 kb.add(types.InlineKeyboardButton("⬅️ К подкатегориям", callback_data="category|characters"))
                 kb.add(types.InlineKeyboardButton("🏠 Главное меню", callback_data="main_menu"))
                 bot.edit_message_reply_markup(chat_id=uid, message_id=message_id, reply_markup=kb)
-            elif current_cat == "clothes" and current_stockings_type:
-                bot.edit_message_reply_markup(chat_id=uid, message_id=message_id, reply_markup=stockings_color_menu_keyboard(current_stockings_type, uid))
-            elif current_cat: # Обновляем для обычной категории
+            elif current_cat and current_cat != "characters" and current_cat != "clothes":
+                 # Обновляем для обычной категории (кроме персонажей и одежды, т.к. они имеют подменю)
                 bot.edit_message_reply_markup(chat_id=uid, message_id=message_id, reply_markup=tag_selection_keyboard(current_cat, uid))
-            
+            elif current_cat == "clothes" and not user_settings[uid].get("current_stockings_type"):
+                # Если вдруг мы в одежде, но не в чулках, то возвращаемся к меню одежды
+                bot.edit_message_reply_markup(chat_id=uid, message_id=message_id, reply_markup=tag_selection_keyboard("clothes", uid))
+
+
     elif data == "done_tags":
         selected_tags = user_settings.get(uid, {}).get("tags", [])
         if not selected_tags:
@@ -1163,33 +1195,26 @@ def callback_handler(call):
             bot.edit_message_text("Главное меню:", uid, message_id, reply_markup=main_menu())
             return
         
-        # Преобразуем ключи тегов в их читаемые названия для отображения
         display_tags = []
         for tag_key in selected_tags:
             found = False
-            # Проверяем в основном словаре TAGS
             for cat_tags in TAGS.values():
                 if tag_key in cat_tags:
                     display_tags.append(cat_tags[tag_key])
                     found = True
                     break
-            # Обработка тегов чулок (если не найдены напрямую в TAGS)
+            
             if not found and tag_key.startswith("stockings_"):
                 parts = tag_key.split('_')
-                if len(parts) == 3: # stockings_type_color
+                if len(parts) == 3: 
                     sock_type_name = "Обычные чулки" if parts[1] == "normal" else "Чулки в сеточку"
                     color_name = {"white": "Белые", "black": "Черные", "red": "Красные", "pink": "Розовые", "gold": "Золотые"}.get(parts[2], parts[2])
                     display_tags.append(f"{sock_type_name} {color_name}")
                 else:
-                    display_tags.append(tag_key) # Запасной вариант
-                found = True # Отметить как найденный, чтобы не переходить к следующему условию
-            elif not found and tag_key in CHARACTER_PROMPTS: # Для тегов персонажей, которые являются просто именем персонажа
-                 # Ищем читаемое название из TAGS["characters"]
-                if tag_key in TAGS["characters"]:
-                    display_tags.append(TAGS["characters"][tag_key])
-                    found = True
+                    display_tags.append(tag_key) 
+                found = True 
             elif not found:
-                display_tags.append(tag_key) # Запасной вариант, если не найден
+                display_tags.append(tag_key) 
         
         tag_list = "\n".join(f"• {tag}" for tag in display_tags)
         bot.edit_message_text(f"Вы выбрали:\n\n{tag_list}\n\nТеперь можно сгенерировать изображение.", uid, message_id, reply_markup=types.InlineKeyboardMarkup([
@@ -1203,14 +1228,12 @@ def callback_handler(call):
             bot.send_message(uid, "Сначала выбери теги!")
             return
 
-        # Сохраняем теги последней генерации для кнопки "Продолжить с этими"
         user_settings[uid]["last_prompt_tags"] = selected_tags.copy()
 
-        # Построение промптов для Replicate API
         prompt_info = build_prompt(selected_tags)
         positive_prompt = prompt_info["positive_prompt"]
         negative_prompt = prompt_info["negative_prompt"]
-        num_images = user_settings[uid].get("num_images", 1) # Получаем количество изображений из настроек
+        num_images = user_settings[uid].get("num_images", 1)
 
         bot.edit_message_text("Принято Шеф, приступаю к генерации! Это может занять до минуты...", uid, message_id)
 
@@ -1254,11 +1277,9 @@ def tag_category(tag):
     """Определяет категорию, к которой относится тег."""
     for cat, items in TAGS.items():
         if tag in items:
-            return cat # Возвращаем ключ категории напрямую
-    # Специальная обработка для чулок, которые динамически формируются
+            return cat 
     if tag.startswith("stockings_"):
         return "clothes"
-    # Для персонажей, проверяем, начинается ли тег с префикса подкатегории персонажей
     for char_cat_prefix in CHARACTER_CATEGORIES.keys():
         if tag.startswith(char_cat_prefix + "_"):
             return "characters"
@@ -1276,7 +1297,6 @@ def build_prompt(tags):
         "expressive eyes", "perfect lighting", "volumetric lighting", "fully nude", "solo"
     ]
 
-    # Инициализируем словарь приоритетов для лучшей организации промптов
     priority = {
         "characters": [],
         "furry": [],
@@ -1299,83 +1319,71 @@ def build_prompt(tags):
         "vagina not visible, anus not visible, penis not visible, bad proportions, ",
         "all clothes, all clothing"
     ]
-    # Объединяем негативные промпты в одну строку
     negative_prompt_str = "".join(base_negative)
 
 
-    # Используем set для эффективной проверки уникальности и манипуляции тегами
     unique_tags = set(tags) 
     
-    # Приоритет для большой груди (если выбраны и большая, и маленькая, оставляем только большую)
     if "big_breasts" in unique_tags and "small_breasts" in unique_tags:
         unique_tags.remove("small_breasts") 
     
-    # Костюм коровы уже включен в промпт furry_cow, избегаем избыточности
     if "furry_cow" in unique_tags:
         unique_tags.discard("cow_costume") 
 
-    # Обработка количества персонажей
     character_tags_count = 0
+    # Проверяем количество выбранных персонажей
     for tag in unique_tags:
-        # Проверяем, является ли тег конкретным персонажем (например, "dxd_rias")
-        for char_cat_prefix in CHARACTER_CATEGORIES.keys():
-            if tag.startswith(char_cat_prefix + "_") and tag in CHARACTER_PROMPTS:
-                character_tags_count += 1
-                break
+        if tag_category(tag) == "characters" and tag in CHARACTER_PROMPTS:
+            character_tags_count += 1
     
     if character_tags_count > 1:
         base.insert(0, f"{character_tags_count}girls")
     elif character_tags_count == 1:
         base.insert(0, "1girl")
-    # Добавляем "1girl", если нет специфичного персонажа, фури или покемона, и если нет "femboy" (который подразумевает мужчину)
-    elif not any(tag_category(t) in ["furry", "pokemon"] for t in unique_tags) and "femboy" not in unique_tags:
+    # Добавляем "1girl" только если нет персонажей, фури, покемонов и не выбран "femboy"
+    elif not any(tag_category(t) in ["characters", "furry", "pokemon"] for t in unique_tags) and "femboy" not in unique_tags:
          base.insert(0, "1girl")
 
-    # Группировка по категориям и построение промптов
+
     for tag in unique_tags:
-        # Получаем соответствующий промпт из TAG_PROMPTS
         prompt_value = TAG_PROMPTS.get(tag)
         if prompt_value:
             cat = tag_category(tag)
             if cat in priority:
                 priority[cat].append(prompt_value)
             else:
-                # Если категория не указана явно в приоритете, добавляем к базовому промпту
-                if cat is None: # Для тегов, не категоризированных явно, но имеющих промпт
-                    base.append(prompt_value)
+                base.append(prompt_value)
         else:
-            # Если тег не найден в TAG_PROMPTS, проверяем, есть ли он в TAGS, и используем его ключ как промпт
-            found_in_tags = False
+            found_in_tags_dict = False
             for cat_key, cat_items in TAGS.items():
                 if tag in cat_items:
                     cat = tag_category(tag)
                     if cat in priority:
-                        priority[cat].append(tag) # Используем ключ тега как промпт
+                        priority[cat].append(tag) 
                     else:
                         base.append(tag)
-                    found_in_tags = True
+                    found_in_tags_dict = True
                     break
-            if not found_in_tags:
+            if not found_in_tags_dict:
                 print(f"Warning: Tag '{tag}' found in selected_tags but no prompt defined for it and not found as a direct key in TAGS.")
 
 
     # --- Логика для "two_dildos_one_hole" ---
     if "two_dildos_one_hole" in unique_tags:
         # Убедимся, что общий промпт "two dildos, one hole..." добавлен только один раз
-        if "two dildos, one hole, multiple dildos in one orifice, dildos inserted into same hole" not in priority["toys"]:
-            priority["toys"].append("two dildos, one hole, multiple dildos in one orifice, dildos inserted into same hole")
+        if TAG_PROMPTS["two_dildos_one_hole"] not in priority["toys"]: # Используем прямо TAG_PROMPTS
+            priority["toys"].append(TAG_PROMPTS["two_dildos_one_hole"])
 
-        # Приоритизируем специфичные промпты для отверстий, если выбраны вместе с "two_dildos_one_hole"
         hole_specific_prompts = []
         if "vagina" in unique_tags:
             hole_specific_prompts.append("two dildos in vagina")
-            priority["holes"] = [p for p in priority["holes"] if p != TAG_PROMPTS["vagina"]] # Удаляем общий промпт вагины
+            priority["holes"] = [p for p in priority["holes"] if p != TAG_PROMPTS["vagina"]] 
         if "anus" in unique_tags:
             hole_specific_prompts.append("two dildos in anus")
-            priority["holes"] = [p for p in priority["holes"] if p != TAG_PROMPTS["anus"]] # Удаляем общий промпт ануса
+            priority["holes"] = [p for p in priority["holes"] if p != TAG_PROMPTS["anus"]] 
         if "both" in unique_tags:
             hole_specific_prompts.append("two dildos in vagina, two dildos in anus")
-            priority["holes"] = [p for p in priority["holes"] if p != TAG_PROMPTS["both"]] # Удаляем общий промпт "both"
+            priority["holes"] = [p for p in priority["holes"] if p != TAG_PROMPTS["both"]] 
         if "dilated_vagina" in unique_tags:
             hole_specific_prompts.append("two dildos in dilated vagina")
             priority["holes"] = [p for p in priority["holes"] if p != TAG_PROMPTS["dilated_vagina"]]
@@ -1383,30 +1391,27 @@ def build_prompt(tags):
             hole_specific_prompts.append("two dildos in dilated anus")
             priority["holes"] = [p for p in priority["holes"] if p != TAG_PROMPTS["dilated_anus"]]
         
-        # Добавляем специфичные промпты для отверстий в категорию игрушек
         priority["toys"].extend(hole_specific_prompts)
-    # --- Конец логики для "two_dildos_one_hole" ---
+
 
     prompt_parts = base[:]
-    # Порядок добавления важен: количество персонажей, персонажи, фури, покемоны, тело, позы, отверстия, игрушки, одежда, фетиши, голова, этнос
     for section in ["characters", "furry", "pokemon", "body", "poses", "holes", "toys", "clothes", "fetish", "head", "ethnos"]:
         prompt_parts.extend(priority[section])
 
-    # Если выбраны "bikini_tan_lines", удаляем "bikini" из негативного промпта
     if "bikini_tan_lines" in unique_tags:
         negative_prompt_str = negative_prompt_str.replace("bikini, ", "").replace("bikini", "")
 
     return {
-        "positive_prompt": ", ".join(filter(None, prompt_parts)), # Фильтруем None, чтобы удалить пустые строки
+        "positive_prompt": ", ".join(filter(None, prompt_parts)), 
         "negative_prompt": negative_prompt_str
     } 
 
 # --- Функция для генерации изображения через Replicate ---
-class Model: # Заглушка для model.predict, если вы используете свой враппер
+class Model: 
     def predict(self, prompt, negative_prompt, num_images):
         return replicate_generate(prompt, negative_prompt, num_images)
 
-model = Model() # Инициализируем заглушку модели
+model = Model() 
 
 def replicate_generate(positive_prompt, negative_prompt, num_images=1):
     """
@@ -1433,17 +1438,71 @@ def replicate_generate(positive_prompt, negative_prompt, num_images=1):
                 "scheduler": "DPM++ 2M SDE Karras",
                 "adetailer_face": True,
                 "adetailer_hand": True,
-                "seed": -1 # Генерировать новый сид для каждого изображения
+                "seed": -1 
             }
         }
 
         # Отправка запроса на создание предсказания
-        r = requests.post(url, headers=headers, json=json_data)
-        if r.status_code != 201:
-            print(f"Error sending prediction request: {r.status_code} - {r.text}")
+        try:
+            r = requests.post(url, headers=headers, json=json_data)
+            r.raise_for_status() # Вызовет исключение для статусов 4xx/5xx
+        except requests.exceptions.RequestException as e:
+            print(f"Error sending prediction request: {e}")
             print(f"Request JSON: {json_data}")
             return None
 
         status_url = r.json()["urls"]["get"]
 
-        # Ожидание завершения генерации
+        for i in range(90):
+            time.sleep(2)
+            try:
+                r = requests.get(status_url, headers=headers)
+                r.raise_for_status()
+            except requests.exceptions.RequestException as e:
+                print(f"Error getting prediction status: {e}")
+                return None
+            
+            data = r.json()
+            if data["status"] == "succeeded":
+                if isinstance(data["output"], list) and data["output"]:
+                    urls.append(data["output"][0])
+                    break
+                else:
+                    print("Received empty or invalid 'output' from Replicate.")
+                    return None
+            elif data["status"] == "failed":
+                print(f"Prediction failed: {data.get('error', 'Error message not provided')}")
+                print(f"Request JSON: {json_data}")
+                return None
+        else:
+            print("Prediction timed out for one image.")
+            return None
+
+    return urls
+
+
+# --- Настройка Flask webhook ---
+@app.route("/", methods=["POST"])
+def webhook():
+    """Обрабатывает входящие обновления от Telegram."""
+    json_str = request.stream.read().decode("utf-8")
+    update = telebot.types.Update.de_json(json_str)
+    
+    # Инициализируем user_settings для нового пользователя, если он отсутствует
+    if update.message and update.message.chat.id not in user_settings:
+        user_settings[update.message.chat.id] = {"tags": [], "current_category": None, "current_char_subcategory": None, "current_stockings_type": None, "num_images": 1}
+
+    bot.process_new_updates([update])
+    return "ok", 200
+
+@app.route("/", methods=["GET"])
+def home():
+    """Простой маршрут для проверки работы приложения."""
+    return "бот работает", 200
+
+# --- Запуск бота ---
+if __name__ == "__main__":
+    bot.remove_webhook()
+    bot.set_webhook(url=WEBHOOK_URL)
+    app.run(host="0.0.0.0", port=PORT)
+
