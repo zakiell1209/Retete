@@ -1059,9 +1059,8 @@ def callback_handler(call):
 
         if category == "characters":
             bot.edit_message_text("Выбери подкатегорию персонажей:", uid, message_id, reply_markup=character_subcategory_menu_keyboard(uid))
-        elif category == "clothes" and "stockings" in TAGS["clothes"]:
-            bot.edit_message_text("Выбери тип чулок:", uid, message_id, reply_markup=stockings_type_menu_keyboard(uid))
-        else:
+        # ИЗМЕНЕНИЕ: Убран специфический переход для "clothes", теперь он обрабатывается общим "else"
+        else: 
             bot.edit_message_text(f"Категория: {CATEGORY_NAMES.get(category, category)}", uid, message_id, reply_markup=tag_selection_keyboard(category, uid))
     elif data.startswith("char_sub|"):
         char_sub = data.split("|")[1]
@@ -1248,6 +1247,13 @@ def build_prompt(tags):
         "masterpiece", "best quality", "ultra detailed", "anime style", "highly detailed",
         "expressive eyes", "perfect lighting", "volumetric lighting", "fully nude", "solo"
     ]
+
+    # ИЗМЕНЕНИЕ: Добавляем "futanari" или "femboy" в начало base с усилением
+    if "futanari" in tags:
+        base.insert(0, "(futanari:1.2)") # Усиление веса
+    if "femboy" in tags:
+        base.insert(0, "(femboy:1.2)") # Усиление веса
+
 
     priority = {
         "character": [],
@@ -1463,4 +1469,3 @@ if __name__ == "__main__":
     bot.remove_webhook()
     bot.set_webhook(url=WEBHOOK_URL)
     app.run(host="0.0.0.0", port=PORT)
-
