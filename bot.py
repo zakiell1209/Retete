@@ -218,7 +218,7 @@ TAGS = {
         "genshin_sucrose": "Сахароза",
         "genshin_venti_f": "Венти (F)",
         "genshin_xiangling": "Сян Лин",
-        "genshin_xinyan": "Синь Янь", # Исправлено
+        "genshin_xinyan": "Синь Янь",
         "genshin_yaemiko": "Яэ Мико",
         "genshin_yanfei": "Янь Фэй",
         "genshin_yoimiya": "Ёимия",
@@ -604,7 +604,7 @@ TAG_PROMPTS = { # Переименовано для ясности, чтобы �
     "succubus_tattoo": "succubus tattoo",
 
     "futanari": "futanari",
-    "femboy": "femboy",
+    "femboy": "femboy", # Убедимся, что это здесь
     "ethnicity_asian": "asian ethnicity",
     "ethnicity_european": "european ethnicity",
 
@@ -1165,7 +1165,10 @@ def tag_category(tag):
     """Определяет категорию, к которой относится тег."""
     for cat, items in TAGS.items():
         if tag in items:
-            if cat in ["body", "ethnos"]:
+            # Для "femboy" и "futanari" и других тегов из "ethnos" теперь будет возвращаться "ethnos"
+            if cat == "ethnos":
+                return "ethnos" 
+            if cat in ["body"]: # "body" уже обрабатывается
                 return "body"
             if cat == "poses":
                 return "pose"
@@ -1210,6 +1213,7 @@ def build_prompt(tags):
         "clothes": [],
         "fetish": [],
         "face": [],
+        "ethnos": [], # Добавил категорию "ethnos" для корректной обработки "femboy"
         "pokemon": []
     }
     
@@ -1244,8 +1248,8 @@ def build_prompt(tags):
                 priority[key].append(TAG_PROMPTS[tag])
 
     prompt_parts = base[:]
-    # Порядок добавления важен: персонажи, фури, покемоны, тело, позы, отверстия, игрушки, одежда, фетиши, лицо
-    for section in ["character", "furry", "pokemon", "body", "pose", "holes", "toys", "clothes", "fetish", "face"]:
+    # Порядок добавления важен: персонажи, фури, покемоны, тело, этнос (для фембоя), позы, отверстия, игрушки, одежда, фетиши, лицо
+    for section in ["character", "furry", "pokemon", "body", "ethnos", "pose", "holes", "toys", "clothes", "fetish", "face"]: # Изменил порядок, чтобы "ethnos" был
         prompt_parts.extend(priority[section])
 
     # Танлайны убирают купальник из негативного промпта
@@ -1317,33 +1321,4 @@ def replicate_generate(positive_prompt, negative_prompt, num_images=1):
                 return None
         else: # Если цикл завершился без break
             print("Время ожидания предсказания истекло для одного изображения.")
-            return None # Возвращаем None, если хотя бы одно изображение не сгенерировалось
-
-    return urls # Возвращаем список URL-ов всех сгенерированных изображений
-
-# --- Настройка вебхука Flask ---
-@app.route("/", methods=["POST"])
-def webhook():
-    """Обрабатывает входящие обновления от Telegram."""
-    json_str = request.stream.read().decode("utf-8")
-    update = telebot.types.Update.de_json(json_str)
-    
-    # Автоматическая отправка /start при первом запуске (если это не колбэк)
-    # Проверяем, что это новое сообщение и пользователь еще не в user_settings
-    if update.message and update.message.chat.id not in user_settings:
-        bot.send_message(update.message.chat.id, "Привет Шеф!", reply_markup=main_menu())
-        user_settings[update.message.chat.id] = {"tags": [], "last_cat": None, "last_char_sub": None, "num_images": 1}
-
-    bot.process_new_updates([update])
-    return "ok", 200
-
-@app.route("/", methods=["GET"])
-def home():
-    """Простой маршрут для проверки работы приложения."""
-    return "бот работает", 200
-
-# --- Запуск бота ---
-if __name__ == "__main__":
-    bot.remove_webhook()
-    bot.set_webhook(url=WEBHOOK_URL)
-    app.run(host="0.0.0.0", port=PORT)
+            return None # Возвращаем None, если хотя
