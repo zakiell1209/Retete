@@ -5,7 +5,7 @@ from flask import Flask, request
 import telebot
 from telebot import types
 
-# --- Глобальные переменные и конфигурация ---
+# Получение токенов и URL из переменных окружения
 API_TOKEN = os.getenv("TELEGRAM_TOKEN")
 REPLICATE_TOKEN = os.getenv("REPLICATE_API_TOKEN")
 WEBHOOK_URL = os.getenv("WEBHOOK_URL")
@@ -17,7 +17,7 @@ REPLICATE_MODEL = "80441e2c32a55f2fcf9b77fa0a74c6c86ad7deac51eed722b9faedb253265
 # Инициализация бота и Flask приложения
 bot = telebot.TeleBot(API_TOKEN)
 app = Flask(__name__)
-user_settings = {} # Словарь для хранения настроек пользователей, включая выбранные теги
+user_settings = {} # Словарь для хранения настроек пользователей
 
 # --- Категории для меню ---
 CATEGORY_NAMES = {
@@ -44,9 +44,10 @@ TAGS = {
         "dilated_vagina": "Расширенная киска",
         "prolapsed_uterus": "Выпавшая матка",
         "prolapsed_anus": "Выпавший анус",
-        "dilated_nipples": "Расширенные соски",
-        "anus_spreader_ring": "Расширительное кольцо в анусе",
-        "vagina_spreader_ring": "Расширительное кольцо в вагине"
+        "two_dildos_one_hole": "Два дилдо в одно отверстие",
+        "dilated_nipples": "Расширенные соски", # NEW
+        "anus_spreader_ring": "Расширительное кольцо в анусе", # NEW
+        "vagina_spreader_ring": "Расширительное кольцо в вагине" # NEW
     },
     "toys": {
         "dildo": "Дилдо",
@@ -55,9 +56,8 @@ TAGS = {
         "anal_beads": "Анальные шарики",
         "anal_plug": "Анальная пробка",
         "long_dildo_path": "Дилдо сквозь все тело",
-        "urethral_dildo": "Дилдо в уретре",
-        "two_dildos_anus_vagina": "Дилдо в анусе и вагине",
-        "two_dildos_one_hole": "Два дилдо в одно отверстие",
+        "urethral_dildo": "Дилдо в уретре", # NEW
+        "two_dildos_anus_vagina": "Дилдо в анусе и вагине" # NEW (renamed for clarity)
     },
     "poses": {
         "doggy": "На четвереньках",
@@ -73,27 +73,15 @@ TAGS = {
         "back_facing": "Вид сзади",
         "top_down_view": "Вид сверху",
         "bottom_up_view": "Вид снизу",
-        "hands_spreading_vagina": "Руки раздвигают влагалище",
-        "lotus_pose": "Поза лотоса",
-        "scissors_pose": "Поза ножницы (две девушки)",
-        "inverted_extreme_bridge": "Экстремальный мост/стойка на плечах с инверсией",
-        "leaning_forward_wall": "Наклон вперёд у стены",
-        "standing_vertical_split_supported": "Вертикальный шпагат стоя с поддержкой",
-        "boat_pose_double_split_up": "Поза лодки / двойной шпагат вверх",
-        "deep_sumo_squat": "Глубокий присед (сумо-поза)",
-        "standing_horizontal_split_balanced": "Горизонтальный шпагат стоя с балансом",
-        "classic_bridge": "Мостик",
-        "sitting_horizontal_split_supported": "Горизонтальный шпагат сидя с опорой",
-        # Новые позы
-        "prone_frog_stretch": "Пролёт вперёд, плечевой растяг",
-        "standing_deep_forward_bend": "Стоячий глубокий прогиб с опорой на руки",
-        "forward_bow_forearms_clasped": "Наклон со сведёнными предплечьями",
-        "top_down_voluminous_bow": "Объёмный поклон сверху (вид сверху)",
-        "inverted_leg_over_shoulder": "Перевёрнутый сгиб с коленом над плечом",
-        "casual_seated_open_knees": "Лёгкая поза сидя, колени разведены",
+        "hands_spreading_vagina": "Руки раздвигают влагалище"
     },
     "clothes": {
-        "stockings": "Чулки", # Subcategory trigger
+        "stockings_white": "Белые чулки", # MODIFIED
+        "stockings_black": "Черные чулки", # MODIFIED
+        "stockings_red": "Красные чулки", # MODIFIED
+        "stockings_pink": "Розовые чулки", # MODIFIED
+        "stockings_gold": "Золотые чулки", # MODIFIED
+        "stockings_fishnet": "Чулки сеточкой",
         "bikini_tan_lines": "Линии от загара в бикини",
         "shibari": "Шибари",
         "cow_costume": "Костюм коровы"
@@ -125,15 +113,36 @@ TAGS = {
         "furry_sylveon": "Фури сильвеон",
         "furry_fox": "Фури лисица",
         "furry_bunny": "Фури кролик",
-        "furry_wolf": "Фури волчица",
-        "furry_bear": "Фури медведь",
-        "furry_bird": "Фури птица",
-        "furry_mouse": "Фури мышь",
-        "furry_deer": "Фури олень",
-        "furry_tiger": "Фури тигр",
-        "furry_lion": "Фури лев",
-        "furry_snake": "Фури змея",
-        "furry_lizard": "Фури ящерица"
+        "furry_wolf": "Фури волчица"
+    },
+    "head": {
+        "ahegao": "Ахегао",
+        "pain_face": "Лицо в боли",
+        "ecstasy_face": "Лицо в экстазе",
+        "gold_lipstick": "Золотая помада"
+    },
+    "fetish": {
+        "nipple_piercing": "Пирсинг сосков",
+        "clitoral_piercing": "Пирсинг клитора",
+        "foot_fetish": "Футфетиш",
+        "footjob": "Футджоб",
+        "mouth_nipples": "Вместо сосков рты",
+        "nipple_hole": "Отверстие в сосках", # NEW
+        "anus_piercing": "Пирсинг ануса", # NEW
+        "vagina_piercing": "Пирсинг вагины", # NEW
+        "gag": "Кляп", # NEW
+        "blindfold": "Повязка на глаза" # NEW
+    },
+    "pokemon": {
+        "reshiram": "Реширам",
+        "mew": "Мю",
+        "mewtwo": "Мюту",
+        "gardevoir": "Гардевуар",
+        "umbreon": "Эмбреон",
+        "lugia": "Лугия",
+        "shadow_lugia": "Шадоу Лугия",
+        "lopunny": "Лопанни",
+        "goodra": "Гудра"
     },
     "characters": {
         # Демоны старшей школы
@@ -190,11 +199,11 @@ TAGS = {
         "genshin_navia": "Навия",
         "genshin_chevreuse": "Шеврёз",
         "genshin_clorinde": "Клоринда",
-        "genshin_ar_traveler_f": "Аether (F)",
-        "genshin_lumine": "Люмин",
+        "genshin_ar_traveler_f": "Аether (F)", # Female Traveler (Aether)
+        "genshin_lumine": "Люмин", # Lumine (Female Traveler)
         "genshin_signora": "Синьора",
         "genshin_arlecchino": "Арлекино",
-        "genshin_snezhnaya_fatui_harbinger": "Предвестник Фатуи",
+        "genshin_snezhnaya_fatui_harbinger": "Предвестник Фатуи", # Generic female Fatui Harbinger
 
         # Honkai Star Rail
         "hsr_kafka": "Кафка",
@@ -206,7 +215,7 @@ TAGS = {
         "hsr_bronya": "Броня",
         "hsr_seele": "Зеле",
         "hsr_jingliu": "Цзинлю",
-        "hsr_stelle": "Стелла (F)",
+        "hsr_stelle": "Стелла (F)", # Female Trailblazer
         "hsr_herta": "Герта",
         "hsr_silver_wolf": "Серебряный Волк",
         "hsr_tingyun": "Тинъюнь",
@@ -222,9 +231,9 @@ TAGS = {
         "hsr_guinaifen": "Гуйнайфэнь",
         "hsr_huohuo": "Хохо",
         "hsr_xueyi": "Сюэи",
-        "hsr_hanabi": "Ханами",
+        "hsr_hanabi": "Ханами", # Sparkle alternative name
         "hsr_robin": "Робин",
-        "hsr_aventurine_f": "Авантюрин (F)",
+        "hsr_aventurine_f": "Авантюрин (F)", # Female Aventurine
 
         # NieR Automata
         "nier_2b": "2B",
@@ -322,7 +331,7 @@ TAGS = {
         # Zenless Zone Zero
         "zzz_ellen_joe": "Эллен Джо",
         "zzz_koleda": "Коледа",
-        "zzz_lycaon": "Ликаон (F)",
+        "zzz_lycaon": "Ликаон (F)", # Female Lycaon
         "zzz_nicole": "Николь",
         "zzz_anby": "Энби",
         "zzz_nekomiya": "Нэкомия",
@@ -338,6 +347,10 @@ TAGS = {
         "zzz_sana": "Сана",
         "zzz_yuki": "Юки",
         
+        # Pokémon (персонажи-люди)
+        "pokemon_jessie": "Джесси",
+        "pokemon_lusamine": "Лусамине",
+
         # League of Legends
         "lol_qiyana": "Киана",
         "lol_aurora": "Аврора",
@@ -376,7 +389,7 @@ TAGS = {
         "mlp_sweetie_belle": "Крошка Бель",
 
         # Dislyte
-        "dislyte_li_ling_f": "Ли Лин (F)",
+        "dislyte_li_ling_f": "Ли Лин (F)", # Female Li Ling
         "dislyte_sally": "Салли",
         "dislyte_clara": "Клара",
         "dislyte_gabrielle": "Габриэль",
@@ -386,26 +399,26 @@ TAGS = {
         "dislyte_jiang_man": "Цзян Мань",
         "dislyte_eira": "Эйра",
         "dislyte_drew": "Дрю",
-        "dislyte_pritzker_f": "Притцкер (F)",
+        "dislyte_pritzker_f": "Притцкер (F)", # Female Pritzker
         "dislyte_fatima": "Фатима",
-        "dislyte_brewster_f": "Брюстер (F)",
-        "dislyte_yun_chuan_f": "Юнь Чуань (F)",
-        "dislyte_hyde_f": "Хайд (F)",
+        "dislyte_brewster_f": "Брюстер (F)", # Female Brewster
+        "dislyte_yun_chuan_f": "Юнь Чуань (F)", # Female Yun Chuan
+        "dislyte_hyde_f": "Хайд (F)", # Female Hyde
         "dislyte_leora": "Леора",
-        "dislyte_tevor_f": "Тевор (F)",
+        "dislyte_tevor_f": "Тевор (F)", # Female Tevor
         "dislyte_zora": "Зора",
         "dislyte_embla": "Эмбла",
         "dislyte_ophilia": "Офелия",
-        "dislyte_ahmed_f": "Ахмед (F)",
-        "dislyte_everett_f": "Эверетт (F)",
-        "dislyte_ollie_f": "Олли (F)",
+        "dislyte_ahmed_f": "Ахмед (F)", # Female Ahmed
+        "dislyte_everett_f": "Эверетт (F)", # Female Everett
+        "dislyte_ollie_f": "Олли (F)", # Female Ollie
         "dislyte_jin_hee": "Джин Хи",
-        "dislyte_ifrit_f": "Ифрит (F)",
+        "dislyte_ifrit_f": "Ифрит (F)", # Female Ifrit
         "dislyte_sienna": "Сиенна",
         "dislyte_valeria": "Валерия",
         "dislyte_ashley": "Эшли",
-        "dislyte_triki_f": "Трики (F)",
-        "dislyte_narmer_f": "Нармер (F)",
+        "dislyte_triki_f": "Трики (F)", # Female Triki
+        "dislyte_narmer_f": "Нармер (F)", # Female Narmer
         "dislyte_tye": "Тай",
         "dislyte_biondina": "Биондина",
         "dislyte_dhalia": "Далия",
@@ -420,8 +433,8 @@ TAGS = {
         "dislyte_nicole": "Николь",
         "dislyte_q": "Кью",
         "dislyte_ren_si": "Жэнь Си",
-        "dislyte_stewart_f": "Стюарт (F)",
-        "dislyte_tang_xuan_f": "Тан Сюань (F)",
+        "dislyte_stewart_f": "Стюарт (F)", # Female Stewart
+        "dislyte_tang_xuan_f": "Тан Сюань (F)", # Female Tang Xuan
         "dislyte_unaky": "Унаки",
         "dislyte_victoria": "Виктория",
         "dislyte_xiao_yin": "Сяо Инь",
@@ -450,39 +463,7 @@ TAGS = {
         "dislyte_bette": "Бетте",
         "dislyte_bonnie": "Бонни",
         "dislyte_celine": "Селин",
-        "dislyte_corbin_f": "Корин (F)",
-    },
-    "head": {
-        "ahegao": "Ахегао",
-        "pain_face": "Лицо в боли",
-        "ecstasy_face": "Лицо в экстазе",
-        "gold_lipstick": "Золотая помада"
-    },
-    "fetish": {
-        "nipple_piercing": "Пирсинг сосков",
-        "clitoral_piercing": "Пирсинг клитора",
-        "foot_fetish": "Фетиш стоп",
-        "footjob": "Футджоб",
-        "mouth_nipples": "Рты вместо сосков",
-        "nipple_hole": "Отверстие в соске",
-        "anus_piercing": "Пирсинг ануса",
-        "vagina_piercing": "Пирсинг вагины",
-        "gag": "Кляп",
-        "blindfold": "Повязка на глаза",
-        "horse_sex": "Секс с конем"
-    },
-    "pokemon": {
-        "reshiram": "Реширам",
-        "mew": "Мю",
-        "mewtwo": "Мюту",
-        "gardevoir": "Гардевуар",
-        "umbreon": "Эмбреон",
-        "lugia": "Лугия",
-        "shadow_lugia": "Шадоу Лугия",
-        "lopunny": "Лопанни",
-        "goodra": "Гудра",
-        "pokemon_jessie": "Джесси",
-        "pokemon_lusamine": "Лусамине",
+        "dislyte_corbin_f": "Корбин (F)",
     }
 }
 
@@ -499,7 +480,7 @@ CHARACTER_CATEGORIES = {
     "residentevil": "🎮 Resident Evil",
     "streetfighter": "🎮 Street Fighter",
     "atomicheart": "🎮 Atomic Heart",
-    "bleach": "📺 Bleach",
+    "bleach": "📺 Bleach", # НОВАЯ КАТЕГОРИЯ
     "danmachi": "📺 Danmachi",
     "ragnarok": "📺 Повесть о конце света",
     "naruto": "📺 Naruto",
@@ -509,309 +490,339 @@ CHARACTER_CATEGORIES = {
     "shieldhero": "📺 Герой Щита",
     "helltaker": "🎮 Helltaker",
     "zzz": "🎮 Zenless Zone Zero",
+    "pokemon_chars": "📺 Pokémon (персонажи)",
     "lol": "🎮 League of Legends",
     "mlp": "📺 My Little Pony",
     "dislyte": "🎮 Dislyte"
 }
 
-# --- Промпты для персонажей (если они требуют специфичных описаний, отличных от их имен) ---
-CHARACTER_PROMPTS = {
-    "dxd_rias": "Rias Gremory, long red hair, large breasts, demon, school uniform, cleavage",
-    "dxd_akeno": "Akeno Himejima, black hair, large breasts, demon, school uniform, glasses",
-    "dxd_xenovia_quarta": "Xenovia Quarta, blue hair, church uniform, sword",
-    "dxd_serafall_leviathan": "Serafall Leviathan, pink hair, maid outfit, playful",
-    "dxd_asia_argento": "Asia Argento, blonde hair, nun outfit, innocent",
-    "dxd_koneko_toujou": "Koneko Toujou, white hair, small body, school uniform, neko ears",
-    "dxd_shidou_irina": "Shidou Irina, blonde pigtails, angel, church uniform",
-    "dxd_gasper_vladi": "Gasper Vladi, male, femboy, vampire, crossdresser, gothic lolita",
-    "dxd_rossweisse": "Rossweisse, valkyrie, long silver hair, glasses",
-    "dxd_yasaka": "Yasaka, nine-tailed fox, kimono, mature woman",
-    "dxd_grayfia_lucifuge": "Grayfia Lucifuge, maid, silver hair, powerful",
-
-    "genshin_eula": "Eula, Genshin Impact, pale skin, blue hair, noble, icy, elegant dress",
-    "genshin_mona": "Mona Megistus, Genshin Impact, astrologist, dark leotard, hat, long dark hair",
-    "genshin_klee": "Klee, Genshin Impact, small girl, blonde hair, red dress, bombs, elf ears",
-    "genshin_raiden_shogun": "Raiden Shogun, Genshin Impact, purple kimono, long purple hair, electro archon",
-    "genshin_paimon": "Paimon, Genshin Impact, fairy, small size, white hair",
-    "genshin_amber": "Amber, Genshin Impact, outrider, bow, red scarf, brown hair",
-    "genshin_barbara": "Barbara, Genshin Impact, idol, healer, blue dress, blonde hair",
-    "genshin_beidou": "Beidou, Genshin Impact, pirate captain, dark clothes, eyepatch, strong woman",
-    "genshin_collei": "Collei, Genshin Impact, forest ranger, green outfit, short green hair",
-    "genshin_dehya": "Dehya, Genshin Impact, mercenary, desert warrior, dark skin, red hair",
-    "genshin_diluc_f": "Diluc (female), Genshin Impact, female version of Diluc, red hair, elegant dress, noble",
-    "genshin_diona": "Diona, Genshin Impact, cat girl, bartender, twin tails, cat ears, cat tail",
-    "genshin_fischl": "Fischl, Genshin Impact, princess, gothic lolita, eyepatch, raven companion",
-    "genshin_ganyu": "Ganyu, Genshin Impact, qilin, blue hair, horns, tight suit, ice powers",
-    "genshin_hutao": "Hu Tao, Genshin Impact, funeral parlor director, brown hair, flower in hair, ghost companion",
-    "genshin_jean": "Jean Gunnhildr, Genshin Impact, acting grand master, blonde hair, blue uniform",
-    "genshin_kazuha_f": "Kaedehara Kazuha (female), Genshin Impact, female version of Kazuha, red streak in hair, samurai",
-    "genshin_keqing": "Keqing, Genshin Impact, electro, purple hair, cat ear-like buns",
-    "genshin_kuki_shinobu": "Kuki Shinobu, Genshin Impact, ninja, mask, green hair",
-    "genshin_lisa": "Lisa Minci, Genshin Impact, librarian, purple dress, witch hat",
-    "genshin_nahida": "Nahida, Genshin Impact, dendro archon, small girl, white hair, green dress",
-    "genshin_ningguang": "Ningguang, Genshin Impact, geo, elegant dress, long white hair, floating jade screen",
-    "genshin_noelle": "Noelle, Genshin Impact, maid, knight, blonde hair, armor",
-    "genshin_rosaria": "Rosaria, Genshin Impact, nun, dark clothing, fishnets, pale skin, red eyes",
-    "genshin_sara": "Kujou Sara, Genshin Impact, tengu, black wings, dark uniform",
-    "genshin_sayu": "Sayu, Genshin Impact, ninja, small, tanuki hoodie",
-    "genshin_shenhe": "Shenhe, Genshin Impact, adepti disciple, white hair, long sleeves, frosty",
-    "genshin_sucrose": "Sucrose, Genshin Impact, alchemist, glasses, green hair, cat ears",
-    "genshin_venti_f": "Venti (female), Genshin Impact, female version of Venti, green clothes, bard",
-    "genshin_xiangling": "Xiangling, Genshin Impact, chef, panda companion, braided hair",
-    "genshin_xinyan": "Xinyan, Genshin Impact, rock 'n' roll musician, dark skin, punk outfit",
-    "genshin_yaemiko": "Yae Miko, Genshin Impact, kitsune, pink hair, fox ears, shrine maiden",
-    "genshin_yanfei": "Yanfei, Genshin Impact, legal advisor, deer horns, red and white outfit",
-    "genshin_yoimiya": "Yoimiya, Genshin Impact, fireworks master, blonde hair, summer outfit, playful",
-    "genshin_yelan": "Yelan, Genshin Impact, spy, short blue hair, dark suit, confident",
-    "genshin_zhongli_f": "Zhongli (female), Genshin Impact, female version of Zhongli, brown hair, geo archon",
-    "genshin_furina": "Furina, Genshin Impact, hydro archon, elegant white and blue dress, long white hair",
-    "genshin_navia": "Navia, Genshin Impact, elegant yellow dress, large hat, blonde hair, umbrella",
-    "genshin_chevreuse": "Chevreuse, Genshin Impact, police officer, red uniform, short dark hair",
-    "genshin_clorinde": "Clorinde, Genshin Impact, duelist, dark uniform, long dark hair, elegant",
-    "genshin_ar_traveler_f": "Aether (female), Genshin Impact, blonde hair, white and brown outfit",
-    "genshin_lumine": "Lumine, Genshin Impact, blonde hair, white and gold outfit",
-    "genshin_signora": "Signora, Genshin Impact, Fatui Harbinger, elegant gothic dress, masked",
-    "genshin_arlecchino": "Arlecchino, Genshin Impact, Fatui Harbinger, black and white outfit, serious, long dark hair",
-    "genshin_snezhnaya_fatui_harbinger": "Snezhnaya Fatui Harbinger, Genshin Impact, masked, dark uniform",
-
-    "hsr_kafka": "Kafka, Honkai Star Rail, long pink hair, elegant dark clothes, seductive",
-    "hsr_fu_xuan": "Fu Xuan, Honkai Star Rail, pink hair, traditional outfit, small body, wise",
-    "hsr_sparkle": "Sparkle, Honkai Star Rail, mask, pink hair, playful, jester",
-    "hsr_acheron": "Acheron, Honkai Star Rail, purple hair, dark uniform, samurai, elegant",
-    "hsr_march_7th": "March 7th, Honkai Star Rail, pink and blue hair, camera, cheerful, winter jacket",
-    "hsr_himeko": "Himeko, Honkai Star Rail, long red hair, elegant red dress, coffee",
-    "hsr_bronya": "Bronya Zaychik, Honkai Star Rail, silver hair, elegant military uniform",
-    "hsr_seele": "Seele, Honkai Star Rail, blue hair, butterfly motif, scythe",
-    "hsr_jingliu": "Jingliu, Honkai Star Rail, blindfolded, white hair, elegant swordswoman",
-    "hsr_stelle": "Stelle, Honkai Star Rail, female Trailblazer, short brown hair, unique outfit",
-    "hsr_herta": "Herta, Honkai Star Rail, scientist, puppet, blue hair",
-    "hsr_silver_wolf": "Silver Wolf, Honkai Star Rail, hacker, short blue hair, gamer headset",
-    "hsr_tingyun": "Tingyun, Honkai Star Rail, foxian, elegant dress, fox ears, fan",
-    "hsr_asta": "Asta, Honkai Star Rail, researcher, red hair, glasses, cheerful",
-    "hsr_clara": "Clara, Honkai Star Rail, small girl, robot companion, red hood",
-    "hsr_peia": "Pela, Honkai Star Rail, researcher, glasses, uniform, short blue hair",
-    "hsr_sushang": "Sushang, Honkai Star Rail, martial artist, long brown hair, bird companion",
-    "hsr_natasha": "Natasha, Honkai Star Rail, doctor, blonde hair, medical uniform",
-    "hsr_hook": "Hook, Honkai Star Rail, small girl, mining outfit, pickaxe",
-    "hsr_pela": "Pela, Honkai Star Rail, glasses, dark uniform, short blue hair",
-    "hsr_qingque": "Qingque, Honkai Star Rail, mahjong player, green hair, casual outfit",
-    "hsr_yukong": "Yukong, Honkai Star Rail, foxian, pilot, elegant uniform, long dark hair",
-    "hsr_guinaifen": "Guinaifen, Honkai Star Rail, street performer, red hair, fire cracker",
-    "hsr_huohuo": "Huohuo, Honkai Star Rail, ghost, green hair, tail, timid",
-    "hsr_xueyi": "Xueyi, Honkai Star Rail, puppet, pink hair, elegant dress, cold",
-    "hsr_hanabi": "Sparkle, Honkai Star Rail, mask, pink hair, playful, jester",
-    "hsr_robin": "Robin, Honkai Star Rail, singer, elegant white dress, wings, blonde hair",
-    "hsr_aventurine_f": "Aventurine (female), Honkai Star Rail, female version of Aventurine, gambler, confident",
-
-    "nier_2b": "2B, Nier Automata, white hair, blindfold, black gothic dress, sword",
-
-    "spyxfamily_yor_forger": "Yor Forger, Spy x Family, assassin, black dress, long black hair, elegant",
-
-    "akamegakill_esdeath": "Esdeath, Akame ga Kill, ice powers, military uniform, long blue hair, sadistic",
-
-    "azurlane_formidable": "Formidable, Azur Lane, aircraft carrier, long blonde hair, elegant dress, large breasts",
-
-    "fate_castoria": "Castoria, Fate Grand Order, Saber, long blonde hair, blue dress, a bit shy",
-    "fate_saber": "Saber, Fate Series, blonde hair, blue and white armor, sword, brave",
-    "fate_astolfo": "Astolfo, Fate Grand Order, male, femboy, pink hair, rider, school uniform",
-
-    "residentevil_lady_dimitrescu": "Lady Dimitrescu, Resident Evil Village, tall, vampire, white dress, large hat, seductive",
-
-    "streetfighter_chun_li": "Chun-Li, Street Fighter, strong legs, blue qipao, spike bracelets, buns hair",
-    "streetfighter_cammy": "Cammy White, Street Fighter, braided blonde hair, green leotard, muscular legs",
-    "streetfighter_balrog_f": "Balrog (female), Street Fighter, female version of Balrog, boxer, muscular body",
-    "streetfighter_juri": "Juri Han, Street Fighter, purple hair, sadistic, martial artist, unique eyes",
-    "streetfighter_menat": "Menat, Street Fighter, fortune teller, egyptian outfit, orb",
-    "streetfighter_laura": "Laura Matsuda, Street Fighter, brazilian fighter, green and yellow outfit, electric powers",
-    "streetfighter_poison": "Poison, Street Fighter, crossdresser, pink hair, short shorts, handcuffs",
-    "streetfighter_maki": "Maki Genryusai, Street Fighter, ninja, black uniform, short hair",
-    "streetfighter_rose": "Rose, Street Fighter, red scarf, elegant dress",
-    "streetfighter_r_mika": "R. Mika, Street Fighter, wrestler, blue leotard, energetic",
-    "streetfighter_ibuki": "Ibuki, Street Fighter, ninja, school uniform, mask",
-    "streetfighter_karin": "Karin Kanzuki, Street Fighter, rich girl, elegant dress, blonde hair",
-    "streetfighter_ed": "Ed (female), Street Fighter, female version of Ed, boxer, psychic powers",
-    "streetfighter_fang": "F.A.N.G. (female), Street Fighter, female version of F.A.N.G., poisonous attacks",
-    "streetfighter_e_honda_f": "E. Honda (female), Street Fighter, female version of E. Honda, sumo wrestler, large body",
-
-    "atomicheart_twins": "Atomic Heart Twins, robot, ballet dancer, red suit, metallic body, seductive",
-
-    "bleach_renji_f": "Renji Abarai (female), Bleach, female version of Renji, red hair, tattoos, zanpakuto",
-    "bleach_rukia_kuchiki": "Rukia Kuchiki, Bleach, small, black hair, shinigami uniform",
-    "bleach_orihime_inoue": "Orihime Inoue, Bleach, long orange hair, cheerful, healing powers",
-    "bleach_yoruichi_shihoin": "Yoruichi Shihouin, Bleach, dark skin, purple hair, cat form, agile",
-    "bleach_rangiku_matsumoto": "Rangiku Matsumoto, Bleach, large breasts, blonde hair, shinigami uniform",
-    "bleach_nemu_kurotsuchi": "Nemu Kurotsuchi, Bleach, artificial human, dark hair, quiet",
-    "bleach_nelliel_tu_odelschwanck": "Nelliel Tu Odelschwanck, Bleach, green hair, mask fragments, child form, adult form",
-    "bleach_tier_harribel": "Tier Harribel, Bleach, arrancar, blonde hair, shark-like features, serious",
-    "bleach_retsu_unohana": "Retsu Unohana, Bleach, long black hair, kind appearance, secretly strong",
-    "bleach_soi_fon": "Soi Fon, Bleach, short dark hair, assassin, shinigami uniform",
-    "bleach_hiyori_sarugaki": "Hiyori Sarugaki, Bleach, blonde pigtails, foul-mouthed, hollow mask",
-    "bleach_lisa_yadomaru": "Lisa Yadomaru, Bleach, glasses, long dark hair, vizored",
-    "bleach_mashiro_kuna": "Mashiro Kuna, Bleach, green hair, energetic, vizored",
-    "bleach_nanao_ise": "Nanao Ise, Bleach, glasses, dark hair, vice-captain",
-    "bleach_isane_kotetsu": "Isane Kotetsu, Bleach, tall, blue hair, healer",
-    "bleach_momo_hinamori": "Momo Hinamori, Bleach, brown hair, kind, shinigami uniform",
-    "bleach_candice_catnipp": "Candice Catnipp, Bleach, sternritter, blonde pigtails, lightning powers",
-    "bleach_bambietta_basterbine": "Bambietta Basterbine, Bleach, sternritter, short dark hair, explosive powers",
-    "bleach_giselle_gewelle": "Giselle Gewelle, Bleach, sternritter, zombie, pink hair",
-    "bleach_meninas_mcallon": "Meninas Mcallon, Bleach, sternritter, muscular, blonde hair",
-    "bleach_liltotto_lamperd": "Liltotto Lamperd, Bleach, sternritter, small girl, dark hair, glasses",
-
-    "danmachi_hestia": "Hestia, Danmachi, small breasts, blue ribbons, goddess, black hair",
-    "danmachi_freya": "Freya, Danmachi, goddess, long blonde hair, seductive, elegant dress",
-
-    "ragnarok_aphrodite": "Aphrodite, Record of Ragnarok, goddess, large breasts, two small attendants on shoulders",
-
-    "naruto_hinata": "Hinata Hyuga, Naruto, long dark hair, gentle, byakugan, shy",
-    "naruto_tsunade": "Tsunade, Naruto, large breasts, blonde hair, strong, medic ninja",
-
-    "overlord_albedo": "Albedo, Overlord, succubus, black wings, white dress, horns, devoted",
-    "overlord_shalltear": "Shalltear Bloodfallen, Overlord, vampire, gothic lolita dress, blonde hair",
-
-    "kakegurui_yumeko": "Yumeko Jabami, Kakegurui, crazy smile, black hair, school uniform, gambling addict",
-    "kakegurui_kirari": "Kirari Momobami, Kakegurui, student council president, white hair, unique eyes",
-    "kakegurui_mary": "Mary Saotome, Kakegurui, blonde hair, school uniform, ambitious",
-
-    "jujutsukaisen_mei_mei": "Mei Mei, Jujutsu Kaisen, black hair, braid, axe user, confident",
-
-    "shieldhero_mirelia_melromarc": "Mirelia Q. Melromarc, The Rising of the Shield Hero, queen, elegant dress, blonde hair",
-    "shieldhero_malty_melromarc": "Malty S. Melromarc, The Rising of the Shield Hero, red hair, princess, evil smile",
+# --- Промпты для модели ---
+CHARACTER_EXTRA = {
+    "dxd_rias": "rias gremory, red long hair, blue eyes, pale skin, large breasts, highschool dxd",
+    "dxd_akeno": "akeno himejima, long black hair, purple eyes, large breasts, highschool dxd",
+    "dxd_xenovia_quarta": "xenovia quarta, highschool dxd, blue hair, short hair, sword, holy sword, devil wings, nun uniform",
+    "dxd_serafall_leviathan": "serafall leviathan, highschool dxd, magical girl outfit, pink hair, magical wand, devil, large breasts",
+    "dxd_asia_argento": "asia argento, highschool dxd, blonde hair, long hair, nun, innocent, healing magic, dragon slayer, devil wings",
+    "dxd_koneko_toujou": "koneko toujou, highschool dxd, white hair, cat ears, cat tail, small breasts, stoic expression",
+    "dxd_shidou_irina": "shidou irina, highschool dxd, blonde hair, twin tails, energetic, holy sword, angel wings, exorcist",
+    "dxd_gasper_vladi": "gasper vladi, highschool dxd, male, trap, feminine clothing, long blonde hair, shy, vampire, crossdresser",
+    "dxd_rossweisse": "rossweisse, highschool dxd, valkyrie, long silver hair, glasses, mature, large breasts",
+    "dxd_yasaka": "yasaka, highschool dxd, kitsune, nine tails, fox ears, kimono, mature woman",
+    "dxd_grayfia_lucifuge": "grayfia lucifuge, highschool dxd, maid outfit, long silver hair, red eyes, ice magic, sexy maid",
     
-    "helltaker_lucifer": "Lucifer, Helltaker, demon, suit, queen of hell, elegant",
+    # Genshin Impact
+    "genshin_eula": "eula, light blue hair, fair skin, genshin impact",
+    "genshin_mona": "mona, genshin impact, black hair, leotard, golden headdress",
+    "genshin_klee": "klee, genshin impact, blonde hair, red dress, explosive",
+    "genshin_raiden_shogun": "raiden shogun, genshin impact, purple hair, kimono, electro archon",
+    "genshin_paimon": "paimon, genshin impact, floating companion, small body, white hair, crown, emergency food",
+    "genshin_amber": "amber, genshin impact, knight of favonius, long brown hair, red bow, goggles",
+    "genshin_barbara": "barbara, genshin impact, idol, blue dress, blonde hair, deaconess",
+    "genshin_beidou": "beidou, genshin impact, black hair, red outfit, eyepatch, captain",
+    "genshin_collei": "collei, genshin impact, green hair, dendro, forest ranger, bandages",
+    "genshin_dehya": "dehya, genshin impact, tanned skin, red hair, muscular, mercenary",
+    "genshin_diluc_f": "diluc, female, genshin impact, red hair, elegant dress, pyro",
+    "genshin_diona": "diona, genshin impact, cat girl, pink hair, bartender, cryo",
+    "genshin_fischl": "fischl, genshin impact, prinzessin der verurteilung, gothic dress, blonde hair, oz",
+    "genshin_ganyu": "ganyu, genshin impact, qilin, blue hair, horns, long dress, cryo",
+    "genshin_hutao": "hutao, genshin impact, funeral parlor director, brown hair, twin tails, ghost, pyro",
+    "genshin_jean": "jean gunnhildr, genshin impact, acting grand master, blonde hair, knight uniform",
+    "genshin_kazuha_f": "kaedehara kazuha, female, genshin impact, anemo, red leaves, kimono, white hair",
+    "genshin_keqing": "keqing, genshin impact, purple hair, cat ears, electro, yuheng",
+    "genshin_kuki_shinobu": "kuki shinobu, genshin impact, ninja, green hair, mask, electro",
+    "genshin_lisa": "lisa minci, genshin impact, librarian, purple dress, electro, witch",
+    "genshin_nahida": "nahida, genshin impact, dendro archon, white hair, green dress, loli",
+    "genshin_ningguang": "ningguang, genshin impact, rich, elegant dress, long white hair, geo, jade chamber",
+    "genshin_noelle": "noelle, genshin impact, maid, knight, blonde hair, heavy armor",
+    "genshin_rosaria": "rosaria, genshin impact, nun, dark outfit, red hair, cryo, cynical",
+    "genshin_sara": "kujou sara, genshin impact, tengu, black wings, kimono, electro, general",
+    "genshin_sayu": "sayu, genshin impact, ninja, tanuki, anemo, sleepy",
+    "genshin_shenhe": "shenhe, genshin impact, white hair, long dress, cryo, exorcist",
+    "genshin_sucrose": "sucrose, genshin impact, alchemist, green hair, glasses, anemo",
+    "genshin_venti_f": "venti, female, genshin impact, anemo archon, bard, green outfit",
+    "genshin_xiangling": "xiangling, genshin impact, chef, brown hair, panda, pyro",
+    "genshin_xinyan": "xinyan, genshin impact, rockstar, dark skin, red hair, pyro, lute",
+    "genshin_yaemiko": "yae miko, genshin impact, fox ears, pink hair, miko, electro",
+    "genshin_yanfei": "yanfei, genshin impact, legal advisor, white hair, deer horns, pyro",
+    "genshin_yoimiya": "yoimiya, genshin impact, fireworks, blonde hair, kimono, pyro",
+    "genshin_yelan": "yelan, genshin impact, blue hair, black bodysuit, hydro, secret agent",
+    "genshin_zhongli_f": "zhongli, female, genshin impact, geo archon, elegant, brown hair, long coat",
+    "genshin_furina": "furina, genshin impact, hydro archon, twin tails, white hair, elegant dress, dramatic",
+    "genshin_navia": "navia, genshin impact, blonde hair, yellow dress, umbrella, elegant",
+    "genshin_chevreuse": "chevreuse, genshin impact, red hair, military uniform, eyepatch, musket",
+    "genshin_clorinde": "clorinde, genshin impact, purple hair, fencer, elegant hat, duelist",
+    "genshin_ar_traveler_f": "aether, female, genshin impact, blonde hair, traveler outfit, sword",
+    "genshin_lumine": "lumine, genshin impact, blonde hair, traveler outfit, sword",
+    "genshin_signora": "signora, genshin impact, fatui harbinger, elegant mask, white hair, cryo",
+    "genshin_arlecchino": "arlecchino, genshin impact, fatui harbinger, black outfit, twin tails, pyro",
+    "genshin_snezhnaya_fatui_harbinger": "snezhnaya fatui harbinger, female, genshin impact, mask, uniform",
 
-    "zzz_ellen_joe": "Ellen Joe, Zenless Zone Zero, silver hair, dual guns, mercenary",
-    "zzz_koleda": "Koleda, Zenless Zone Zero, ice axe, strong, red hair",
-    "zzz_lycaon": "Lycaon (female), Zenless Zone Zero, female version of Lycaon, wolf ears, claws",
-    "zzz_nicole": "Nicole Demara, Zenless Zone Zero, fox ears, stylish outfit, tech expert",
-    "zzz_anby": "Anby Demara, Zenless Zone Zero, short white hair, black hoodie, casual",
-    "zzz_nekomiya": "Nekomya, Zenless Zone Zero, cat girl, maid outfit, cute",
-    "zzz_aisha": "Aisha, Zenless Zone Zero, short dark hair, casual outfit",
-    "zzz_haruka": "Haruka, Zenless Zone Zero, long blonde hair, school uniform",
-    "zzz_corin": "Corin, Zenless Zone Zero, police uniform, short blonde hair",
-    "zzz_grace": "Grace, Zenless Zone Zero, elegant black dress, mysterious",
-    "zzz_hoshimi": "Hoshimi, Zenless Zone Zero, idol, pink hair, stage outfit",
-    "zzz_rory": "Rory, Zenless Zone Zero, punk style, green hair",
-    "zzz_bonnie": "Bonnie, Zenless Zone Zero, casual, short brown hair",
-    "zzz_elize": "Elize, Zenless Zone Zero, glasses, elegant, long hair",
-    "zzz_fubuki": "Fubuki, Zenless Zone Zero, swordswoman, white kimono",
-    "zzz_sana": "Sana, Zenless Zone Zero, small girl, animal ears, playful",
-    "zzz_yuki": "Yuki, Zenless Zone Zero, short blue hair, innocent",
+
+    # Honkai Star Rail
+    "hsr_kafka": "kafka, purple wavy hair, cold expression, honkai star rail",
+    "hsr_fu_xuan": "fu xuan, pink hair, honkai star rail, diviner, short hair, glasses",
+    "hsr_sparkle": "sparkle, honkai star rail, pink hair, elegant dress, theatrical",
+    "hsr_acheron": "acheron, honkai star rail, purple hair, long coat, samurai",
+    "hsr_march_7th": "march 7th, honkai star rail, pink hair, camera, ice powers, archer",
+    "hsr_himeko": "himeko, honkai star rail, red hair, red coat, coffee, train conductor",
+    "hsr_bronya": "bronya rand, honkai star rail, silver hair, elegant uniform, queen, spear",
+    "hsr_seele": "seele, honkai star rail, blue hair, scythe, butterfly, quantum",
+    "hsr_jingliu": "jingliu, honkai star rail, white hair, blindfold, sword, ice",
+    "hsr_stelle": "stelle, honkai star rail, female trailblazer, brown hair, baseball bat",
+    "hsr_herta": "herta, honkai star rail, doll, purple hair, genius, space station",
+    "hsr_silver_wolf": "silver wolf, honkai star rail, hacker, blue hair, short hair, cyber punk",
+    "hsr_tingyun": "tingyun, honkai star rail, fox ears, kimono, fan, lightning",
+    "hsr_asta": "asta, honkai star rail, red hair, space station, rich girl",
+    "hsr_clara": "clara, honkai star rail, child, robot, pink hair, shy",
+    "hsr_peia": "peia, honkai star rail, foxian, healer, long hair", # Placeholder, adjust if specific design available
+    "hsr_sushang": "sushang, honkai star rail, sword, knight, chicken, red hair",
+    "hsr_natasha": "natasha, honkai star rail, doctor, blonde hair, medical coat",
+    "hsr_hook": "hook, honkai star rail, child, red hair, big hat, destruction",
+    "hsr_pela": "pela, honkai star rail, glasses, detective, blue hair, short hair",
+    "hsr_qingque": "qingque, honkai star rail, mahjong, green hair, lazy",
+    "hsr_yukong": "yukong, honkai star rail, foxian, pilot, mature, elegant",
+    "hsr_guinaifen": "guinaifen, honkai star rail, streamer, fire performer, pink hair",
+    "hsr_huohuo": "huohuo, honkai star rail, green hair, fox girl, exorcist, ghost",
+    "hsr_xueyi": "xueyi, honkai star rail, puppet, pink hair, executioner, mask",
+    "hsr_hanabi": "hanabi, honkai star rail, pink hair, elegant dress, theatrical", # Sparkle
+    "hsr_robin": "robin, honkai star rail, idol, blonde hair, singer, elegant dress",
+    "hsr_aventurine_f": "aventurine, female, honkai star rail, blonde hair, gambler, suit", # Female Aventurine
+
+    # NieR Automata
+    "nier_2b": "2b, nier automata, white hair, black dress",
+
+    # Spy x Family
+    "spyxfamily_yor_forger": "yor forger, spy x family, black hair, red dress",
+
+    # Akame ga Kill
+    "akamegakill_esdeath": "esdeath, akame ga kill, blue hair, military uniform, high heels",
+
+    # Azur Lane
+    "azurlane_formidable": "formidable, azur lane, long white hair, dress",
+
+    # Fate Series
+    "fate_castoria": "castoria, fate grand order, white hair, dress, long sleeves",
+    "fate_saber": "saber, artoria pendragon, fate series, blonde hair, blue dress",
+    "fate_astolfo": "astolfo, fate series, pink hair, femboy, androgynous",
+
+    # Resident Evil
+    "residentevil_lady_dimitrescu": "lady dimitrescu, resident evil, tall female, white dress, elegant hat, sharp claws, mature female",
+
+    # Street Fighter
+    "streetfighter_chun_li": "chun li, street fighter, muscular thighs, qipao, hair buns",
+    "streetfighter_cammy": "cammy white, street fighter, blonde hair, green leotard, muscular, braid",
+    "streetfighter_balrog_f": "balrog, female, street fighter, boxer, muscular female, braids",
+    "streetfighter_juri": "juri han, street fighter, purple hair, taekwondo, spider lily, evil smile",
+    "streetfighter_menat": "menat, street fighter, fortune teller, blue hair, sphere, egyptian",
+    "streetfighter_laura": "laura matsuda, street fighter, brazilian, green clothes, long hair, electric powers",
+    "streetfighter_poison": "poison, street fighter, trans, pink hair, short shorts, crop top",
+    "streetfighter_maki": "maki genryusai, street fighter, kunoichi, short hair, ninja outfit",
+    "streetfighter_rose": "rose, street fighter, fortune teller, red scarf, mystical powers",
+    "streetfighter_r_mika": "rainbow mika, street fighter, wrestler, blue wrestling suit, blonde hair, muscular",
+    "streetfighter_ibuki": "ibuki, street fighter, ninja, school uniform, kunai",
+    "streetfighter_karin": "karin kanzuki, street fighter, rich girl, blonde hair, school uniform, ojou-sama",
+    "streetfighter_ed": "ed, street fighter, female, boxer, psychic powers, blonde hair", # Предполагаем женскую версию
+    "streetfighter_fang": "f.a.n.g, female, street fighter, poison, long clothes", # Предполагаем женскую версию
+    "streetfighter_e_honda_f": "e. honda, female, street fighter, sumo wrestler, large body", # Предполагаем женскую версию, промпт для соответствия
+
+    # Atomic Heart
+    "atomicheart_twins": "robot, twin sisters, black bodysuit, black hair, white hair, atomic heart",
+
+    # Bleach - НОВЫЕ ПЕРСОНАЖИ И ИСПРАВЛЕННЫЙ ПРОМПТ ДЛЯ YORUICHI
+    "bleach_renji_f": "renji abarai, female, bleach, red hair, tattoos, shinigami, zanpakuto",
+    "bleach_rukia_kuchiki": "rukia kuchiki, bleach, short black hair, shinigami, zanpakuto, noble family",
+    "bleach_orihime_inoue": "orihime inoue, bleach, long orange hair, hairpin, school uniform, healer",
+    "bleach_yoruichi_shihoin": "yoruichi shihoin, bleach, dark skin, purple short hair, cat form, thunder god, shinigami",
+    "bleach_rangiku_matsumoto": "rangiku matsumoto, bleach, blonde wavy hair, large breasts, shinigami, haori, vice-captain",
+    "bleach_nemu_kurotsuchi": "nemu kurotsuchi, bleach, short black hair, maid outfit, emotionless, artificial soul, lieutenant",
+    "bleach_nelliel_tu_odelschwanck": "nelliel tu odelschwanck, bleach, arrancar, green hair, mask fragment, revealing outfit, childlike form, adult form, espada",
+    "bleach_tier_harribel": "tier harribel, bleach, arrancar, shark-like mask, tanned skin, revealing coat, espada",
+    "bleach_retsu_unohana": "retsu unohana, bleach, black braided hair, calm expression, shinigami captain, kimono, healing powers, fierce past",
+    "bleach_soi_fon": "soi fon, bleach, short black hair, shinigami captain, uniform, assassin, strict, high speed",
+    "bleach_hiyori_sarugaki": "hiyori sarugaki, bleach, blonde pigtails, visored, school uniform, aggressive, short temper",
+    "bleach_lisa_yadomaru": "lisa yadomaru, bleach, long black hair, glasses, school uniform, shinigami, visored, lewd librarian",
+    "bleach_mashiro_kuna": "mashiro kuna, bleach, green hair, energetic, visored, goggles, eccentric",
+    "bleach_nanao_ise": "nanao ise, bleach, short black hair, glasses, shinigami vice-captain, serious, intellectual",
+    "bleach_isane_kotetsu": "isane kotetsu, bleach, long silver hair, shinigami vice-captain, gentle, healer",
+    "bleach_momo_hinamori": "momo hinamori, bleach, brown hair, shinigami, loyal, innocent, prone to distress",
+    "bleach_candice_catnipp": "candice catnipp, bleach, quincy, blonde spiky hair, lightning powers, sternritter, aggressive",
+    "bleach_bambietta_basterbine": "bambietta basterbine, bleach, quincy, short black hair, explosive powers, sternritter, volatile",
+    "bleach_giselle_gewelle": "giselle gewelle, bleach, quincy, blonde hair, zombie powers, sternritter, crossdresser, creepy",
+    "bleach_meninas_mcallon": "meninas mcallon, bleach, quincy, pink hair, muscular, sternritter, strong",
+    "bleach_liltotto_lamperd": "liltotto lamperd, bleach, quincy, blonde pigtails, childlike, sternritter, cannibalistic",
+
+
+    # Danmachi
+    "danmachi_hestia": "hestia, danmachi, black hair, blue ribbons, white dress",
+    "danmachi_freya": "freya, danmachi, long silver hair, purple eyes, elegant dress",
+
+    # Повесть о конце света (Record of Ragnarok)
+    "ragnarok_aphrodite": "aphrodite, record of ragnarok, large breasts, blonde hair, revealing outfit",
+
+    # Naruto
+    "naruto_hinata": "hinata hyuga, naruto, long dark blue hair, byakugan, shy, large breasts",
+    "naruto_tsunade": "tsunade, naruto, blonde hair, large breasts, strong, medical ninja",
+
+    # Overlord
+    "overlord_albedo": "albedo, overlord, succubus, black wings, white dress, long black hair",
+    "overlord_shalltear": "shalltear bloodfallen, overlord, vampire, short blonde hair, frilly dress, parasol",
+
+    # Безумный азарт (Kakegurui)
+    "kakegurui_yumeko": "yumeko jabami, kakegurui, long black hair, red eyes, school uniform, insane smile",
+    "kakegurui_kirari": "kirari momobami, kakegurui, white hair, blue lips, school uniform, student council president",
+    "kakegurui_mary": "mary saotome, kakegurui, blonde hair, school uniform, twin tails",
+
+    # Магическая битва (Jujutsu Kaisen)
+    "jujutsukaisen_mei_mei": "mei mei, jujutsu kaisen, long black hair, axe, confident expression",
+
+    # Герой Щита (The Rising of the Shield Hero)
+    "shieldhero_mirelia_melromarc": "mirelia q melromarc, the rising of the shield hero, queen, blonde hair, elegant dress",
+    "shieldhero_malty_melromarc": "malty s melromarc, the rising of the shield hero, bitch, cruel smile, red hair, blonde hair, princess, villainess",
     
-    "lol_qiyana": "Qiyana, League of Legends, elementalist, large golden weapon, confident",
-    "lol_aurora": "Aurora, League of Legends, spirit walker, blue hair, elegant, mystical",
-    "lol_katarina": "Katarina, League of Legends, assassin, red hair, daggers",
-    "lol_akali": "Akali, League of Legends, ninja, mask, tattoos, agile",
-    "lol_irelia": "Irelia, League of Legends, dancer, floating blades, elegant",
-    "lol_caitlyn": "Caitlyn, League of Legends, sheriff, sniper, long blue hair, hat",
-    "lol_briar": "Briar, League of Legends, berserker, straitjacket, red eyes, sharp teeth",
-    "lol_kaisa": "Kai'Sa, League of Legends, void, purple suit, cannons on shoulders",
-    "lol_evelynn": "Evelynn, League of Legends, demon, succubus, shadow powers, seductive",
-    "lol_ahri": "Ahri, League of Legends, vastaya, nine-tailed fox, charming",
-    "lol_belveth": "Bel'Veth, League of Legends, empress of the void, manta ray form",
-    "lol_fiora": "Fiora, League of Legends, duelist, elegant, swordswoman",
-    "lol_gwen": "Gwen, League of Legends, doll, scissors, cheerful",
-    "lol_zoe": "Zoe, League of Legends, aspect of twilight, playful, colorful hair",
-    "lol_missfortune": "Miss Fortune, League of Legends, bounty hunter, red hair, guns",
-    "lol_neeko": "Neeko, League of Legends, chameleon, shapeshifter",
-    "lol_samira": "Samira, League of Legends, mercenary, stylish, gunslinger",
-    "lol_sona": "Sona, League of Legends, mute musician, ethereal instrument",
-    "lol_elise": "Elise, League of Legends, spider queen, dark, seductive",
+    # Helltaker
+    "helltaker_lucifer": "lucifer, helltaker, long black hair, business suit",
 
-    "mlp_twilight_sparkle": "Twilight Sparkle, My Little Pony, alicorn, purple body, dark purple mane, star cutie mark",
-    "mlp_applejack": "Applejack, My Little Pony, earth pony, orange body, blonde mane, apple cutie mark, cowboy hat",
-    "mlp_rainbow_dash": "Rainbow Dash, My Little Pony, pegasus, blue body, rainbow mane, cloud cutie mark, athletic",
-    "mlp_rarity": "Rarity, My Little Pony, unicorn, white body, purple mane, diamond cutie mark, fashionista",
-    "mlp_fluttershy": "Fluttershy, My Little Pony, pegasus, yellow body, pink mane, butterfly cutie mark, shy",
-    "mlp_pinkie_pie": "Pinkie Pie, My Little Pony, earth pony, pink body, dark pink curly mane, balloons cutie mark, cheerful",
-    "mlp_spike": "Spike, My Little Pony, dragon, small, purple and green",
-    "mlp_princess_celestia": "Princess Celestia, My Little Pony, alicorn, white body, long rainbow mane, sun cutie mark, ruler",
-    "mlp_princess_luna": "Princess Luna, My Little Pony, alicorn, dark blue body, translucent mane, moon cutie mark, night ruler",
-    "mlp_princess_cadence": "Princess Cadence, My Little Pony, alicorn, pink body, yellow and pink mane, heart cutie mark, love ruler",
-    "mlp_discord": "Discord, My Little Pony, draconequus, chaotic, unpredictable",
-    "mlp_apple_bloom": "Apple Bloom, My Little Pony, small earth pony, orange body, red bow",
-    "mlp_scootaloo": "Scootaloo, My Little Pony, small pegasus, orange body, purple mane",
-    "mlp_sweetie_belle": "Sweetie Belle, My Little Pony, small unicorn, white body, pink and purple mane",
+    # Zenless Zone Zero
+    "zzz_ellen_joe": "ellen joe, zenless zone zero, long blonde hair, school uniform, glasses, student",
+    "zzz_koleda": "koleda, zenless zone zero, bear ears, blonde hair, maid uniform",
+    "zzz_lycaon": "lycaon, female, zenless zone zero, wolf girl, black hair, combat outfit",
+    "zzz_nicole": "nicole demara, zenless zone zero, short blue hair, business suit, glasses",
+    "zzz_anby": "anby demara, zenless zone zero, white hair, casual clothes, electric powers",
+    "zzz_nekomiya": "nekomiya mana, zenless zone zero, cat girl, ninja, black hair, agile",
+    "zzz_aisha": "aisha, zenless zone zero, bunny girl, white hair, cute dress",
+    "zzz_haruka": "haruka, zenless zone zero, pink hair, schoolgirl, cheerful",
+    "zzz_corin": "corin, zenless zone zero, detective, blonde hair, trench coat",
+    "zzz_grace": "grace, zenless zone zero, elegant dress, mature, long hair",
+    "zzz_hoshimi": "hoshimi, zenless zone zero, idol, pink hair, stage outfit",
+    "zzz_rory": "rory, zenless zone zero, mechanic, short hair, overalls",
+    "zzz_bonnie": "bonnie, zenless zone zero, cowgirl, hat, red hair",
+    "zzz_elize": "elize, zenless zone zero, maid, long blonde hair",
+    "zzz_fubuki": "fubuki, zenless zone zero, samurai, white hair, kimono",
+    "zzz_sana": "sana, zenless zone zero, cyborg, blue hair, futuristic outfit",
+    "zzz_yuki": "yuki, zenless zone zero, school uniform, black hair, shy",
+        
+    # Pokémon (персонажи-люди)
+    "pokemon_jessie": "jessie, pokemon, team rocket, red hair, long hair, ponytail",
+    "pokemon_lusamine": "lusamine, pokemon, aether foundation, blonde hair, long hair, dress",
 
-    "dislyte_li_ling_f": "Li Ling (female), Dislyte, female version of Li Ling, lightning powers, yellow outfit",
-    "dislyte_sally": "Sally, Dislyte, healer, elegant white dress, serene",
-    "dislyte_clara": "Clara, Dislyte, healer, bunny ears, cute dress",
-    "dislyte_gabrielle": "Gabrielle, Dislyte, warrior, dark armor, wings",
-    "dislyte_chloe": "Chloe, Dislyte, fighter, purple hair, casual outfit",
-    "dislyte_odette": "Odette, Dislyte, elegant, long hair, musical theme",
-    "dislyte_meredith": "Meredith, Dislyte, archer, green outfit, nature theme",
-    "dislyte_jiang_man": "Jiang Man, Dislyte, ghost, traditional dress, floating",
-    "dislyte_eira": "Eira, Dislyte, ice powers, blue and white outfit",
-    "dislyte_drew": "Drew, Dislyte, vampire, dark clothing, seductive",
-    "dislyte_pritzker_f": "Pritzker (female), Dislyte, female version of Pritzker, military uniform",
-    "dislyte_fatima": "Fatima, Dislyte, fire powers, dancer, vibrant outfit",
-    "dislyte_brewster_f": "Brewster (female), Dislyte, female version of Brewster, bounty hunter, guns",
-    "dislyte_yun_chuan_f": "Yun Chuan (female), Dislyte, female version of Yun Chuan, elegant, traditional clothes",
-    "dislyte_hyde_f": "Hyde (female), Dislyte, female version of Hyde, gothic, dark powers",
-    "dislyte_leora": "Leora, Dislyte, sun powers, golden outfit, radiant",
-    "dislyte_tevor_f": "Tevor (female), Dislyte, female version of Tevor, archer, wild look",
-    "dislyte_zora": "Zora, Dislyte, fire dancer, vibrant red outfit",
-    "dislyte_embla": "Embla, Dislyte, dark magic, mysterious, long black hair",
-    "dislyte_ophilia": "Ophilia, Dislyte, elegant, light powers, white dress",
-    "dislyte_ahmed_f": "Ahmed (female), Dislyte, female version of Ahmed, healer, gentle",
-    "dislyte_everett_f": "Everett (female), Dislyte, female version of Everett, strong, protector",
-    "dislyte_ollie_f": "Ollie (female), Dislyte, female version of Ollie, playful, skater",
-    "dislyte_jin_hee": "Jin Hee, Dislyte, martial artist, red and black outfit",
-    "dislyte_ifrit_f": "Ifrit (female), Dislyte, female version of Ifrit, fire demon, powerful",
-    "dislyte_sienna": "Сиенна",
-    "dislyte_valeria": "Валерия",
-    "dislyte_ashley": "Эшли",
-    "dislyte_triki_f": "Трики (F)",
-    "dislyte_narmer_f": "Нармер (F)",
-    "dislyte_tye": "Тай",
-    "dislyte_biondina": "Биондина",
-    "dislyte_dhalia": "Далия",
-    "dislyte_elaine": "Элейн",
-    "dislyte_cecilia": "Сесилия",
-    "dislyte_intisar": "Интисар",
-    "dislyte_kaylee": "Кейли",
-    "dislyte_layla": "Лейла",
-    "dislyte_lynn": "Линн",
-    "dislyte_melanie": "Мелани",
-    "dislyte_mona": "Мона",
-    "dislyte_nicole": "Николь",
-    "dislyte_q": "Кью",
-    "dislyte_ren_si": "Жэнь Си",
-    "dislyte_stewart_f": "Стюарт (F)",
-    "dislyte_tang_xuan_f": "Тан Сюань (F)",
-    "dislyte_unaky": "Унаки",
-    "dislyte_victoria": "Виктория",
-    "dislyte_xiao_yin": "Сяо Инь",
-    "dislyte_ye_suhua": "Е Сухуа",
-    "dislyte_zhong_nan": "Чжун Нань",
-    "dislyte_anadora": "Анадора",
-    "dislyte_bernice": "Бернис",
-    "dislyte_brynn": "Бринн",
-    "dislyte_catherine": "Катерина",
-    "dislyte_chang_pu": "Чан Пу",
-    "dislyte_eugene_f": "Юджин (F)",
-    "dislyte_freddy_f": "Фредди (F)",
-    "dislyte_hall_f": "Холл (F)",
-    "dislyte_helena": "Хелена",
-    "dislyte_jacob_f": "Джейкоб (F)",
-    "dislyte_jeanne": "Жанна",
-    "dislyte_li_ao_f": "Ли Ао (F)",
-    "dislyte_lu_yi_f": "Лу И (F)",
-    "dislyte_mark_f": "Марк (F)",
-    "dislyte_olivia": "Оливия",
-    "dislyte_sander_f": "Сандер (F)",
-    "dislyte_stella": "Стелла",
-    "dislyte_alice": "Алиса",
-    "dislyte_arcana": "Аркана",
-    "dislyte_aurelius_f": "Аурелиус (F)",
-    "dislyte_bette": "Бетте",
-    "dislyte_bonnie": "Бонни",
-    "dislyte_celine": "Селин",
-    "dislyte_corbin_f": "Корин (F)",
+    # League of Legends
+    "lol_qiyana": "qiyana, league of legends",
+    "lol_aurora": "aurora, league of legends",
+    "lol_katarina": "katarina, league of legends",
+    "lol_akali": "akali, league of legends",
+    "lol_irelia": "irelia, league of legends",
+    "lol_caitlyn": "caitlyn, league of legends",
+    "lol_briar": "briar, league of legends",
+    "lol_kaisa": "kaisa, league of legends",
+    "lol_evelynn": "evelynn, league of legends",
+    "lol_ahri": "ahri, league of legends",
+    "lol_belveth": "belveth, league of legends",
+    "lol_fiora": "fiora, league of legends",
+    "lol_gwen": "gwen, league of legends",
+    "lol_zoe": "zoe, league of legends",
+    "lol_missfortune": "miss fortune, league of legends",
+    "lol_neeko": "neeko, league of legends",
+    "lol_samira": "samira, league of legends",
+    "lol_sona": "sona, league of legends",
+    "lol_elise": "elise, league of legends",
+
+    # My Little Pony
+    "mlp_twilight_sparkle": "twilight sparkle, my little pony, alicorn, purple body, dark blue mane, magic aura",
+    "mlp_applejack": "applejack, my little pony, earth pony, orange body, blonde mane, cowboy hat",
+    "mlp_rainbow_dash": "rainbow dash, my little pony, pegasus, light blue body, rainbow mane, cloud, lightning bolt",
+    "mlp_rarity": "rarity, my little pony, unicorn, white body, purple mane, diamonds, fashionista",
+    "mlp_fluttershy": "fluttershy, my little pony, pegasus, yellow body, pink mane, butterflies, shy, animal lover",
+    "mlp_pinkie_pie": "pinkie pie, my little pony, earth pony, pink body, pink curly mane, balloons, cheerful, party",
+    "mlp_spike": "spike, my little pony, dragon, green scales, purple spikes, loyal, baby dragon",
+    "mlp_princess_celestia": "princess celestia, my little pony, alicorn, white body, rainbow mane, sun, royalty",
+    "mlp_princess_luna": "princess luna, my little pony, alicorn, dark blue body, flowing mane, moon, royalty",
+    "mlp_princess_cadence": "princess cadence, my little pony, alicorn, pink body, purple and yellow mane, crystal heart, royalty",
+    "mlp_discord": "discord, my little pony, draconequus, chaotic, mischievous, master of chaos",
+    "mlp_apple_bloom": "apple bloom, my little pony, earth pony, yellow body, red mane, cutie mark crusader",
+    "mlp_scootaloo": "scootaloo, my little pony, pegasus, orange body, purple mane, cutie mark crusader, scooter",
+    "mlp_sweetie_belle": "sweetie belle, my little pony, unicorn, white body, pink and purple mane, cutie mark crusader",
+
+    # Dislyte
+    "dislyte_li_ling_f": "li ling, female, dislyte, red hair, dragon, elegant outfit",
+    "dislyte_sally": "sally, dislyte, siren, blue hair, mermaid tail, elegant dress",
+    "dislyte_clara": "clara, dislyte, valkyrie, blonde hair, armor, wings",
+    "dislyte_gabrielle": "gabrielle, dislyte, archangel, white wings, blonde hair, elegant dress",
+    "dislyte_chloe": "chloe, dislyte, griffin, blonde hair, short hair, casual outfit",
+    "dislyte_odette": "odette, dislyte, swan, elegant dress, graceful, long hair",
+    "dislyte_meredith": "meredith, dislyte, medusa, snake hair, green skin, revealing outfit",
+    "dislyte_jiang_man": "jiang man, dislyte, black hair, traditional chinese dress, elegant",
+    "dislyte_eira": "eira, dislyte, ice queen, white hair, blue dress, cold expression",
+    "dislyte_drew": "drew, dislyte, dark hair, casual outfit, energetic",
+    "dislyte_pritzker_f": "pritzker, female, dislyte, blonde hair, glasses, scientist",
+    "dislyte_fatima": "fatima, dislyte, desert warrior, tanned skin, veil, sword",
+    "dislyte_brewster_f": "brewster, female, dislyte, red hair, punk outfit, guitar",
+    "dislyte_yun_chuan_f": "yun chuan, female, dislyte, traditional chinese outfit, long hair",
+    "dislyte_hyde_f": "hyde, female, dislyte, dark hair, gothic outfit, mysterious",
+    "dislyte_leora": "leora, dislyte, lioness, blonde hair, armored, fierce",
+    "dislyte_tevor_f": "tevor, female, dislyte, blonde hair, casual outfit, energetic",
+    "dislyte_zora": "zora, dislyte, desert wanderer, dark skin, tribal outfit",
+    "dislyte_embla": "embla, dislyte, raven, black wings, dark outfit, mysterious",
+    "dislyte_ophilia": "ophilia, dislyte, fairy, green hair, light dress, nature",
+    "dislyte_ahmed_f": "ahmed, female, dislyte, desert prince, traditional outfit, elegant",
+    "dislyte_everett_f": "everett, female, dislyte, dark hair, casual outfit, confident",
+    "dislyte_ollie_f": "ollie, female, dislyte, short hair, sporty outfit, cheerful",
+    "dislyte_jin_hee": "jin hee, dislyte, korean traditional dress, elegant, long hair",
+    "dislyte_ifrit_f": "ifrit, female, dislyte, fiery hair, demonic, powerful",
+    "dislyte_sienna": "sienna, dislyte, nature spirit, green hair, leafy outfit",
+    "dislyte_valeria": "valeria, dislyte, gladiator, armored, strong, short hair",
+    "dislyte_ashley": "ashley, dislyte, pop star, pink hair, stage outfit, microphone",
+    "dislyte_triki_f": "triki, female, dislyte, mischievous, clown outfit, colorful hair",
+    "dislyte_narmer_f": "narmer, female, dislyte, egyptian pharaoh, golden armor, elegant",
+    "dislyte_tye": "tye, dislyte, archer, green hair, forest outfit",
+    "dislyte_biondina": "biondina, dislyte, water spirit, blue hair, flowing dress",
+    "dislyte_dhalia": "dhalia, dislyte, flower girl, colorful dress, innocent",
+    "dislyte_elaine": "elaine, dislyte, knight, armor, sword, determined",
+    "dislyte_cecilia": "cecilia, dislyte, nun, white habit, serene expression",
+    "dislyte_intisar": "intisar, dislyte, desert dancer, revealing outfit, veil",
+    "dislyte_kaylee": "kaylee, dislyte, pop star, colorful hair, stage outfit",
+    "dislyte_layla": "layla, dislyte, street fighter, casual outfit, tough",
+    "dislyte_lynn": "lynn, dislyte, archer, green outfit, forest",
+    "dislyte_melanie": "melanie, dislyte, gothic lolita, dark dress, elegant",
+    "dislyte_mona": "mona, dislyte, pop star, pink hair, stage outfit",
+    "dislyte_nicole": "nicole, dislyte, spy, black suit, mysterious",
+    "dislyte_q": "q, dislyte, hacker, futuristic outfit, short hair",
+    "dislyte_ren_si": "ren si, dislyte, traditional chinese outfit, elegant",
+    "dislyte_stewart_f": "stewart, female, dislyte, punk, guitar, casual outfit",
+    "dislyte_tang_xuan_f": "tang xuan, female, dislyte, monkey king, staff, energetic",
+    "dislyte_unaky": "unaky, dislyte, tribal warrior, wild, animalistic",
+    "dislyte_victoria": "victoria, dislyte, steampunk, goggles, mechanical parts",
+    "dislyte_xiao_yin": "xiao yin, dislyte, traditional chinese dancer, elegant",
+    "dislyte_ye_suhua": "ye suhua, dislyte, healer, gentle, flowing dress",
+    "dislyte_zhong_nan": "zhong nan, dislyte, traditional chinese warrior, armored",
+    "dislyte_anadora": "anadora, dislyte, siren, blue hair, elegant dress",
+    "dislyte_bernice": "bernice, dislyte, street dancer, casual outfit, energetic",
+    "dislyte_brynn": "brynn, dislyte, archer, forest outfit, focused",
+    "dislyte_catherine": "catherine, dislyte, noble, elegant dress, blonde hair",
+    "dislyte_chang_pu": "chang pu, dislyte, traditional chinese healer, gentle",
+    "dislyte_eugene_f": "eugene, female, dislyte, short hair, sporty outfit",
+    "dislyte_freddy_f": "freddy, female, dislyte, punk rock, guitar, wild hair",
+    "dislyte_hall_f": "hall, female, dislyte, elegant, long dress, mysterious",
+    "dislyte_helena": "helena, dislyte, archer, forest outfit, determined",
+    "dislyte_jacob_f": "jacob, female, dislyte, casual outfit, short hair",
+    "dislyte_jeanne": "jeanne, dislyte, knight, armor, sword, brave",
+    "dislyte_li_ao_f": "li ao, female, dislyte, traditional chinese warrior, armored",
+    "dislyte_lu_yi_f": "lu yi, female, dislyte, traditional chinese dancer, elegant",
+    "dislyte_mark_f": "mark, female, dislyte, casual outfit, short hair",
+    "dislyte_olivia": "olivia, dislyte, elegant, long dress, mysterious",
+    "dislyte_sander_f": "sander, female, dislyte, casual outfit, short hair",
+    "dislyte_stella": "stella, dislyte, pop star, colorful hair",
+    "dislyte_alice": "alice, dislyte, elegant, formal dress",
+    "dislyte_arcana": "arcana, dislyte, mystic, flowing robes",
+    "dislyte_aurelius_f": "aurelius, female, dislyte, powerful, leader, golden armor",
+    "dislyte_bette": "bette, dislyte, spy, sleek outfit, mysterious",
+    "dislyte_bonnie": "bonnie, dislyte, cowgirl, western wear, confident",
+    "dislyte_celine": "celine, dislyte, singer, stage outfit, microphone",
+    "dislyte_corbin_f": "corbin, female, dislyte, mercenary, combat gear, tough",
 }
 
 # --- Промпты для модели ---
 TAG_PROMPTS = {
-    **CHARACTER_PROMPTS, # Включаем промпты персонажей
+    **CHARACTER_EXTRA, # Включаем промпты персонажей
     "vagina": "spread pussy",
     "anus": "spread anus",
     "both": "spread pussy and anus",
@@ -819,54 +830,37 @@ TAG_PROMPTS = {
     "dilated_vagina": "dilated vagina, vagina stretched, open pussy, internal view of vagina, vagina gaping, spread pussy, labia spread, realistic, detailed, high focus",
     "prolapsed_uterus": "prolapsed uterus, uterus exposed, visible uterus",
     "prolapsed_anus": "prolapsed anus, anus exposed, visible anus",
+    "two_dildos_one_hole": "two dildos inserted, two dildos into one orifice",
     "dildo": "dildo inserted",
     "huge_dildo": "huge dildo",
-    "horse_dildo": "horse dildo, belly bulge, stomach distended",
+    "horse_dildo": "horse dildo",
     "anal_beads": "anal beads inserted",
     "anal_plug": "anal plug",
     "long_dildo_path": (
-        "dildo inserted into anus, seamless and continuous dildo, dildo visibly exiting from mouth, "
-        "realistic rubber texture, abdomen with a raised, snake-like pattern running along the surface, "
-        "or a smooth, continuous raised stripe indicating the dildo's path internally, "
-        "skin taut over the shape, subtle undulation suggesting the form beneath the skin"
+        "dildo inserted into anus, pushing visibly through intestines with clear belly bulge, "
+        "exiting from mouth, seamless and continuous dildo, consistent texture, realistic rubber"
     ),
-    "urethral_dildo": "urethral dildo, dildo in urethra, dildo inserted into urethra",
-    "two_dildos_anus_vagina": "one dildo inserted into anus, one dildo inserted into vagina",
-    "horse_sex": "horse sex, mare, horse cock, equine, intercourse with horse",
+    "urethral_dildo": "urethral dildo, dildo in urethra, dildo inserted into urethra", # NEW
+    "two_dildos_anus_vagina": "one dildo inserted into anus, one dildo inserted into vagina", # NEW and specific
     "doggy": "doggy style, on all fours, hands on floor",
-    "standing": "standing pose",
     "squat": "squatting pose, hands behind head",
-    "lying": "lying down, prone",
-    "hor_split": "horizontal split, legs spread wide, extreme flexibility",
-    "ver_split": "vertical split, one leg raised high, extreme flexibility",
-    "on_back_legs_behind_head": "on back, legs behind head, extreme flexibility, arched back",
-    "on_side_leg_up": "on side, one leg straight up, leg lifted high",
-    "suspended": "suspended, hanging pose, body floating",
-    "front_facing": "front facing, facing viewer, full front view",
-    "back_facing": "back facing, from behind, full back view, ass shot",
-    "top_down_view": "top down view, from above",
-    "bottom_up_view": "bottom up view, from below, looking up at crotch",
-    "hands_spreading_vagina": "hands spreading vagina, labia spread by hands, fingers stretching pussy",
-    "lotus_pose": "lotus pose, legs crossed, sitting position",
-    "scissors_pose": "scissors pose, two girls, legs intertwined, scissoring",
-    "inverted_extreme_bridge": "extreme acrobatic pose, deep inversion, bridge pose, shoulder stand, hand support, head touching floor, side-turned head, loose hair on floor, shoulders on surface, elbows bent, hands in front of face, palms on floor, stabilizing hands, extremely arched back, deep back bend, emphasized lumbar curve, high elevated buttocks, buttocks near head level, buttocks facing viewer, legs spread wide, acute angle legs, slightly bent knees, feet touching floor, pointed toes, arched body, flexible, acrobatic",
-    "leaning_forward_wall": "half-undressed, leaning forward, hands supporting, head slightly tilted, head turned back to viewer, looking over shoulder, hands on wall, hands on vertical surface, raised shoulders, tense trapezius, straight back, back almost parallel to floor, slight back arch, pushed out buttocks, emphasized buttocks, legs shoulder-width apart, thighs tilted forward, bent knees, relaxed stance",
-    "standing_vertical_split_supported": "standing, one leg on floor, other leg extended vertically up, leg almost touching head, both hands supporting raised leg, holding ankle, straight back, tense core muscles, open pelvis, maximum stretch, flexible, acrobatic",
-    "boat_pose_double_split_up": "boat pose, both legs raised up 90+ degrees, hands holding both feet, torso leaned back, tense back, balancing, stable pose, static, requires strength, flexible",
-    "deep_sumo_squat": "deep squat, knees spread wide, heels on floor, pelvis deep down, hands down for balance, hands on floor for balance, straight spine, raised chest",
-    "standing_horizontal_split_balanced": "standing, one leg to side horizontally, hands spread for balance, body strictly vertical, open pelvis, strong balance control, flexible, acrobatic",
-    "classic_bridge": "bridge pose, support on palms and feet, body arched upwards, full back arch, stomach facing up, head tilted back, stretched neck, fingers and toes pointed forward",
-    "sitting_horizontal_split_supported": "sitting, one leg forward, one leg back, horizontal split, hands on floor for support, torso slightly raised, pelvis low to floor, straight back, elongated neck, flexible",
-    "stockings_white": "white stockings only",
-    "stockings_black": "black stockings only",
-    "stockings_red": "red stockings only",
-    "stockings_pink": "pink stockings only",
-    "stockings_gold": "gold stockings only",
-    "stockings_fishnet_white": "white fishnet stockings",
-    "stockings_fishnet_black": "black fishnet stockings",
-    "stockings_fishnet_red": "red fishnet stockings",
-    "stockings_fishnet_pink": "pink fishnet stockings",
-    "stockings_fishnet_gold": "gold fishnet stockings",
+    "lying": "lying down",
+    "hor_split": "horizontal split, legs stretched fully to sides, pelvis on floor, inner thighs visible",
+    "ver_split": "vertical split, holding own raised leg",
+    "on_back_legs_behind_head": "on back, legs behind head",
+    "on_side_leg_up": "on side with leg raised",
+    "suspended": "suspended",
+    "front_facing": "front to viewer",
+    "back_facing": "back to viewer",
+    "top_down_view": "shot from above, top-down view",
+    "bottom_up_view": "shot from below, bottom-up view",
+    "hands_spreading_vagina": "hands spreading vagina",
+    "stockings_white": "white stockings only", # MODIFIED
+    "stockings_black": "black stockings only", # MODIFIED
+    "stockings_red": "red stockings only", # MODIFIED
+    "stockings_pink": "pink stockings only", # MODIFIED
+    "stockings_gold": "gold stockings only", # MODIFIED
+    "stockings_fishnet": "fishnet stockings",
     "bikini_tan_lines": "bikini tan lines",
     "shibari": "shibari ropes",
     "cow_costume": "cow costume, cow ears, cow horns, cow tail, wearing stockings only",
@@ -877,8 +871,8 @@ TAG_PROMPTS = {
     "body_muscular": "muscular body",
     "age_loli": "loli",
     "age_milf": "milf",
-    "age_21": "21 year old",
-    "cum": "cum covered, messy",
+    "age_21": "21 год",
+    "cum": "cum covered",
     "belly_bloat": "belly bulge, pregnant looking belly",
     "succubus_tattoo": "succubus tattoo on lower abdomen",
     "futanari": "futanari",
@@ -893,31 +887,23 @@ TAG_PROMPTS = {
     "furry_fox": "furry fox girl, fox costume",
     "furry_bunny": "furry bunny girl, bunny costume",
     "furry_wolf": "furry wolf girl, wolf costume",
-    "furry_bear": "furry bear girl, bear ears, bear tail",
-    "furry_bird": "furry bird girl, bird wings, bird feathers",
-    "furry_mouse": "furry mouse girl, mouse ears, mouse tail",
-    "furry_deer": "furry deer girl, deer antlers, deer ears, deer tail",
-    "furry_tiger": "furry tiger girl, tiger stripes, tiger ears, tiger tail",
-    "furry_lion": "furry lion girl, lion mane, lion ears, lion tail",
-    "furry_snake": "furry snake girl, snake scales, snake tail, snake eyes",
-    "furry_lizard": "furry lizard girl, lizard scales, lizard tail",
     "ahegao": "ahegao face",
-    "pain_face": "pain face, grimace",
-    "ecstasy_face": "ecstasy face, flushed face, half-closed eyes, open mouth",
+    "pain_face": "face in pain",
+    "ecstasy_face": "ecstasy face",
     "gold_lipstick": "gold lipstick",
     "nipple_piercing": "nipple piercing",
     "clitoral_piercing": "clitoral piercing",
-    "foot_fetish": "foot fetish, detailed feet",
+    "foot_fetish": "foot fetish",
     "footjob": "footjob",
     "mouth_nipples": "mouths instead of nipples",
-    "nipple_hole": "nipple hole, hole in nipple",
-    "anus_piercing": "anus piercing",
-    "vagina_piercing": "vagina piercing",
-    "gag": "gag, mouth gag",
-    "blindfold": "blindfold",
-    "dilated_nipples": "dilated nipples, stretched nipple holes, open nipple holes",
-    "anus_spreader_ring": "anus spreader ring, ring holding anus open, anal ring, anus gaping ring",
-    "vagina_spreader_ring": "vagina spreader ring, ring holding vagina open, vaginal ring, vagina gaping ring",
+    "nipple_hole": "nipple hole, hole in nipple", # NEW
+    "anus_piercing": "anus piercing", # NEW
+    "vagina_piercing": "vagina piercing", # NEW
+    "gag": "gag, mouth gag", # NEW
+    "blindfold": "blindfold", # NEW
+    "dilated_nipples": "dilated nipples, stretched nipple holes, open nipple holes", # NEW
+    "anus_spreader_ring": "anus spreader ring, ring holding anus open, anal ring, anus gaping ring", # NEW
+    "vagina_spreader_ring": "vagina spreader ring, ring holding vagina open, vaginal ring, vagina gaping ring", # NEW
     "reshiram": "reshiram, pokemon",
     "mew": "mew, pokemon",
     "mewtwo": "mewtwo, pokemon",
@@ -926,294 +912,201 @@ TAG_PROMPTS = {
     "lugia": "lugia, pokemon",
     "shadow_lugia": "shadow lugia, pokemon",
     "lopunny": "lopunny, pokemon",
-    "goodra": "goodra, pokemon",
-    "pokemon_jessie": "jessie, pokemon, team rocket, red hair, long hair, ponytail",
-    "pokemon_lusamine": "lusamine, pokemon, aether foundation, blonde hair, long hair, dress",
-    # Новые промпты для поз
-    "prone_frog_stretch": "prone frog stretch, chest to floor, hips wide open, splayed thighs, exposed genitals, deep groin stretch, extreme flexibility, inviting pose",
-    "standing_deep_forward_bend": "standing deep forward bend, legs wide apart, hands on floor, head dropped between legs, exposed crotch, emphasizing butt, flexible pose",
-    "forward_bow_forearms_clasped": "standing deep forward bow, feet close, forearms clasped in front of crotch, hips lifted high, arched back, emphasizing buttocks, submissive pose",
-    "top_down_voluminous_bow": "top-down view, deep forward bend, arms forming diamond/heart shape below torso, foreshortened perspective, emphasizes round buttocks, exposed back, inviting from above",
-    "inverted_leg_over_shoulder": "supine inverted leg fold, hips lifted high, one leg over shoulder, other leg splayed to side, extreme flexibility, twisted body, exposed vulva/anus, acrobatic",
-    "casual_seated_open_knees": "casual seated on floor, knees bent and wide open, legs spread, hands resting on inner thighs, exposed crotch, relaxed and inviting, direct gaze",
+    "goodra": "goodra, pokemon"
 }
 
-
 # --- Функции для создания клавиатур ---
-
 def main_menu():
     """Создает главное меню бота."""
     kb = types.InlineKeyboardMarkup()
     kb.add(types.InlineKeyboardButton("🧩 Выбрать теги", callback_data="choose_tags"))
-    kb.add(types.InlineKeyboardButton("⚙️ Настройки", callback_data="settings"))
+    kb.add(types.InlineKeyboardButton("⚙️ Настройки", callback_data="settings")) # Новая кнопка для настроек
     kb.add(types.InlineKeyboardButton("🎨 Генерировать", callback_data="generate"))
     return kb
 
-def tag_selection_keyboard(category, uid):
-    """Создает клавиатуру для выбора тегов в категории."""
-    kb = types.InlineKeyboardMarkup(row_width=2)
-    current_tags = user_settings.get(uid, {}).get("tags", [])
-    
-    # Сортируем теги по русскоязычному названию для удобства
-    sorted_tags = sorted(TAGS[category].items(), key=lambda item: item[1])
-
-    for tag_key, tag_name_ru in sorted_tags:
-        # Для персонажей, если это подкатегория, отображаем её как кнопку для перехода
-        if category == "characters" and tag_key.split('_')[0] in CHARACTER_CATEGORIES and len(tag_key.split('_')) == 1:
-            kb.add(types.InlineKeyboardButton(f"{tag_name_ru}", callback_data=f"char_sub|{tag_key}"))
-        elif category == "clothes" and tag_key == "stockings":
-            # Специальная кнопка для выбора типа чулок
-            kb.add(types.InlineKeyboardButton("Чулки", callback_data="stockings_type_select"))
-        else:
-            selected = tag_key in current_tags
-            prefix = "✅ " if selected else ""
-            kb.add(types.InlineKeyboardButton(f"{prefix}{tag_name_ru}", callback_data=f"tag|{tag_key}"))
-
-    kb.add(types.InlineKeyboardButton("⬅️ Назад к категориям", callback_data="choose_tags"))
-    kb.add(types.InlineKeyboardButton("🏠 Главное меню", callback_data="main_menu"))
-    return kb
-
-def category_menu_keyboard():
+def category_menu():
     """Создает меню выбора категорий тегов."""
     kb = types.InlineKeyboardMarkup(row_width=2)
     for key, name in CATEGORY_NAMES.items():
-        kb.add(types.InlineKeyboardButton(name, callback_data=f"category|{key}"))
+        kb.add(types.InlineKeyboardButton(name, callback_data=f"cat_{key}"))
     kb.add(types.InlineKeyboardButton("✅ Готово", callback_data="done_tags"))
     return kb
 
-def character_subcategory_menu_keyboard(uid):
+def character_subcategory_menu(selected_tags):
     """Создает меню выбора подкатегорий персонажей."""
     kb = types.InlineKeyboardMarkup(row_width=2)
     for key, name in CHARACTER_CATEGORIES.items():
-        # Отметить подкатегорию, если она выбрана
-        label = f"✅ {name}" if user_settings.get(uid, {}).get("current_char_subcategory") == key else name
-        kb.add(types.InlineKeyboardButton(label, callback_data=f"char_sub|{key}"))
-    kb.add(types.InlineKeyboardButton("⬅️ Назад к категориям", callback_data="choose_tags"))
+        kb.add(types.InlineKeyboardButton(name, callback_data=f"char_sub_{key}"))
+    kb.add(types.InlineKeyboardButton("⬅ Назад", callback_data="back_to_cat"))
     return kb
 
-def stockings_type_menu_keyboard(uid):
-    """Создает меню выбора типа чулок."""
+def tag_menu(category, selected_tags, char_subcategory=None):
+    """Создает меню выбора тегов внутри определенной категории."""
     kb = types.InlineKeyboardMarkup(row_width=2)
-    types_map = {"normal": "Обычные", "fishnet": "В сеточку"}
-    for type_key, type_name in types_map.items():
-        label = f"✅ {type_name}" if user_settings.get(uid, {}).get("current_stockings_type") == type_key else type_name
-        kb.add(types.InlineKeyboardButton(label, callback_data=f"stockings_type|{type_key}"))
-    kb.add(types.InlineKeyboardButton("⬅️ Назад к категории 'Одежда'", callback_data="category|clothes"))
-    return kb
-
-def stockings_color_menu_keyboard(stockings_type, uid):
-    """Создает меню выбора цвета чулок."""
-    kb = types.InlineKeyboardMarkup(row_width=2)
-    colors = {"white": "Белые", "black": "Черные", "red": "Красные", "pink": "Розовые", "gold": "Золотые"}
-    current_tags = user_settings.get(uid, {}).get("tags", [])
-
-    for color_key, color_name in colors.items():
-        tag_key = f"stockings_{stockings_type}_{color_key}"
-        label = f"✅ {color_name}" if tag_key in current_tags else color_name
-        kb.add(types.InlineKeyboardButton(label, callback_data=f"tag|{tag_key}"))
     
-    kb.add(types.InlineKeyboardButton("⬅️ Назад к типам чулок", callback_data="stockings_type_select"))
+    tags_to_display = {}
+    if category == "characters" and char_subcategory:
+        # Фильтруем теги персонажей по выбранной подкатегории
+        for tag_key, tag_name in TAGS[category].items():
+            # Префикс подкатегории должен соответствовать началу ключа тега
+            if tag_key.startswith(char_subcategory + "_"):
+                tags_to_display[tag_key] = tag_name
+    else:
+        tags_to_display = TAGS[category]
+
+    for tag_key, tag_name in tags_to_display.items():
+        label = f"✅ {tag_name}" if tag_key in selected_tags else tag_name
+        kb.add(types.InlineKeyboardButton(label, callback_data=f"tag_{category}_{tag_key}"))
+    
+    if category == "characters":
+        kb.add(types.InlineKeyboardButton("⬅ К подкатегориям", callback_data="back_to_char_sub"))
+    else:
+        kb.add(types.InlineKeyboardButton("⬅ Назад", callback_data="back_to_cat"))
     return kb
 
-def settings_menu_keyboard(current_num_images):
+def settings_menu(current_num_images):
     """Создает меню настроек."""
     kb = types.InlineKeyboardMarkup(row_width=2)
     kb.add(types.InlineKeyboardButton(f"Количество изображений: {current_num_images}", callback_data="ignore"))
-    kb.add(types.InlineKeyboardButton("1", callback_data="set_num_images|1"))
-    kb.add(types.InlineKeyboardButton("2", callback_data="set_num_images|2"))
-    kb.add(types.InlineKeyboardButton("3", callback_data="set_num_images|3"))
-    kb.add(types.InlineKeyboardButton("4", callback_data="set_num_images|4"))
-    kb.add(types.InlineKeyboardButton("⬅️ Назад", callback_data="main_menu"))
+    kb.add(types.InlineKeyboardButton("1", callback_data="set_num_images_1"))
+    kb.add(types.InlineKeyboardButton("2", callback_data="set_num_images_2"))
+    kb.add(types.InlineKeyboardButton("3", callback_data="set_num_images_3"))
+    kb.add(types.InlineKeyboardButton("4", callback_data="set_num_images_4"))
+    kb.add(types.InlineKeyboardButton("⬅ Назад", callback_data="back_to_main"))
     return kb
 
 # --- Обработчики сообщений и колбэков ---
-
 @bot.message_handler(commands=["start"])
-def start_command_handler(msg):
+def start(msg):
     """Обработчик команды /start."""
-    uid = msg.chat.id
-    user_settings[uid] = {"tags": [], "current_category": None, "current_char_subcategory": None, "current_stockings_type": None, "num_images": 1}
-    bot.send_message(uid, "Привет, Шеф! Я готов к работе. Что будем генерировать?", reply_markup=main_menu())
+    cid = msg.chat.id
+    user_settings[cid] = {"tags": [], "last_cat": None, "last_char_sub": None, "num_images": 1} # Добавлено num_images
+    bot.send_message(cid, "Привет Шеф!", reply_markup=main_menu())
 
 @bot.callback_query_handler(func=lambda call: True)
-def callback_handler(call):
-    """Обработчик всех кнопок колбэка."""
-    uid = call.message.chat.id
+def callback(call):
+    """Общий обработчик для всех кнопок колбэка."""
+    cid = call.message.chat.id
     message_id = call.message.message_id
+    if cid not in user_settings:
+        user_settings[cid] = {"tags": [], "last_cat": None, "last_char_sub": None, "num_images": 1}
+
     data = call.data
 
-    user_settings.setdefault(uid, {"tags": [], "current_category": None, "current_char_subcategory": None, "current_stockings_type": None, "num_images": 1})
+    if data == "choose_tags":
+        bot.edit_message_text("Выбери категорию тегов:", cid, message_id, reply_markup=category_menu())
 
-    if data == "main_menu":
-        bot.edit_message_text("Главное меню:", uid, message_id, reply_markup=main_menu())
-        user_settings[uid]["current_category"] = None
-        user_settings[uid]["current_char_subcategory"] = None
-        user_settings[uid]["current_stockings_type"] = None
-    elif data == "choose_tags":
-        bot.edit_message_text("Выбери категорию тегов:", uid, message_id, reply_markup=category_menu_keyboard())
-    elif data.startswith("category|"):
-        category = data.split("|")[1]
-        user_settings[uid]["current_category"] = category
-        user_settings[uid]["current_char_subcategory"] = None # Сбрасываем подкатегорию персонажей
-        user_settings[uid]["current_stockings_type"] = None # Сбрасываем тип чулок
-
-        if category == "characters":
-            bot.edit_message_text("Выбери подкатегорию персонажей:", uid, message_id, reply_markup=character_subcategory_menu_keyboard(uid))
-        # ИЗМЕНЕНИЕ: Убран специфический переход для "clothes", теперь он обрабатывается общим "else"
-        else: 
-            bot.edit_message_text(f"Категория: {CATEGORY_NAMES.get(category, category)}", uid, message_id, reply_markup=tag_selection_keyboard(category, uid))
-    elif data.startswith("char_sub|"):
-        char_sub = data.split("|")[1]
-        user_settings[uid]["current_char_subcategory"] = char_sub
-        # Фильтруем теги, чтобы отображать только теги этой подкатегории
-        filtered_tags = {k: v for k, v in TAGS["characters"].items() if k.startswith(char_sub + "_")}
+    elif data.startswith("cat_"):
+        cat = data[4:]
+        user_settings[cid]["last_cat"] = cat
+        selected = user_settings[cid]["tags"]
         
-        kb = types.InlineKeyboardMarkup(row_width=2)
-        current_tags = user_settings.get(uid, {}).get("tags", [])
-        for tag_key, tag_name_ru in sorted(filtered_tags.items(), key=lambda item: item[1]):
-            selected = tag_key in current_tags
-            prefix = "✅ " if selected else ""
-            kb.add(types.InlineKeyboardButton(f"{prefix}{tag_name_ru}", callback_data=f"tag|{tag_key}"))
-        
-        kb.add(types.InlineKeyboardButton("⬅️ К подкатегориям", callback_data="category|characters"))
-        kb.add(types.InlineKeyboardButton("🏠 Главное меню", callback_data="main_menu"))
-        bot.edit_message_text(f"Подкатегория: {CHARACTER_CATEGORIES.get(char_sub, char_sub)}", uid, message_id, reply_markup=kb)
-    elif data == "stockings_type_select":
-        bot.edit_message_text("Выбери тип чулок:", uid, message_id, reply_markup=stockings_type_menu_keyboard(uid))
-    elif data.startswith("stockings_type|"):
-        st_type = data.split("|")[1]
-        user_settings[uid]["current_stockings_type"] = st_type
-        bot.edit_message_text("Выбери цвет чулок:", uid, message_id, reply_markup=stockings_color_menu_keyboard(st_type, uid))
-    elif data.startswith("tag|"):
-        tag_key = data.split("|")[1]
-        current_tags = user_settings[uid]["tags"]
-
-        # Если это тег чулок, удаляем все остальные теги чулок перед добавлением нового
-        if tag_key.startswith("stockings_"):
-            current_tags[:] = [t for t in current_tags if not t.startswith("stockings_")]
-            current_tags.append(tag_key)
-            
-            # Обновляем клавиатуру выбора цвета чулок
-            stockings_type = user_settings[uid].get("current_stockings_type")
-            bot.edit_message_reply_markup(chat_id=uid, message_id=message_id, reply_markup=stockings_color_menu_keyboard(stockings_type, uid))
+        if cat == "characters":
+            # Сбрасываем last_char_sub при входе в основную категорию персонажей
+            user_settings[cid]["last_char_sub"] = None 
+            bot.edit_message_text("Выбери подкатегорию персонажей:", cid, message_id, reply_markup=character_subcategory_menu(selected))
         else:
-            if tag_key in current_tags:
-                current_tags.remove(tag_key)
-            else:
-                current_tags.append(tag_key)
-            
-            # Обновляем клавиатуру, показывая выбранные/невыбранные теги
-            current_cat = user_settings[uid].get("current_category")
-            current_char_sub = user_settings[uid].get("current_char_subcategory")
-            current_stockings_type = user_settings[uid].get("current_stockings_type")
+            category_display_name = CATEGORY_NAMES.get(cat, cat)
+            bot.edit_message_text(f"Категория: {category_display_name}", cid, message_id, reply_markup=tag_menu(cat, selected))
 
-            if current_cat == "characters" and current_char_sub:
-                filtered_tags = {k: v for k, v in TAGS["characters"].items() if k.startswith(current_char_sub + "_")}
-                kb = types.InlineKeyboardMarkup(row_width=2)
-                for tk, tn in sorted(filtered_tags.items(), key=lambda item: item[1]):
-                    selected = tk in current_tags
-                    prefix = "✅ " if selected else ""
-                    kb.add(types.InlineKeyboardButton(f"{prefix}{tn}", callback_data=f"tag|{tk}"))
-                kb.add(types.InlineKeyboardButton("⬅️ К подкатегориям", callback_data="category|characters"))
-                kb.add(types.InlineKeyboardButton("🏠 Главное меню", callback_data="main_menu"))
-                bot.edit_message_reply_markup(chat_id=uid, message_id=message_id, reply_markup=kb)
-            elif current_cat == "clothes" and current_stockings_type:
-                bot.edit_message_reply_markup(chat_id=uid, message_id=message_id, reply_markup=stockings_color_menu_keyboard(current_stockings_type, uid))
-            elif current_cat: # Обновление для обычной категории
-                bot.edit_message_reply_markup(chat_id=uid, message_id=message_id, reply_markup=tag_selection_keyboard(current_cat, uid))
-            
-    elif data == "done_tags":
-        selected_tags = user_settings.get(uid, {}).get("tags", [])
-        if not selected_tags:
-            bot.send_message(uid, "Вы не выбрали ни одного тега.")
-            bot.edit_message_text("Главное меню:", uid, message_id, reply_markup=main_menu())
-            return
+    elif data.startswith("char_sub_"):
+        char_sub = data[9:]
+        user_settings[cid]["last_char_sub"] = char_sub
+        selected = user_settings[cid]["tags"]
+        subcategory_display_name = CHARACTER_CATEGORIES.get(char_sub, char_sub)
+        bot.edit_message_text(f"Подкатегория: {subcategory_display_name}", cid, message_id, reply_markup=tag_menu("characters", selected, char_sub))
+
+    elif data.startswith("tag_"):
+        _, cat, tag = data.split("_", 2)
+        tags = user_settings[cid]["tags"]
+        if tag in tags:
+            tags.remove(tag)
+        else:
+            tags.append(tag)
         
-        # Преобразуем ключи тегов в их читаемые названия для отображения
-        display_tags = []
-        for tag_key in selected_tags:
-            found = False
-            for cat_tags in TAGS.values():
-                if tag_key in cat_tags:
-                    display_tags.append(cat_tags[tag_key])
-                    found = True
-                    break
-            if not found and tag_key.startswith("stockings_"):
-                # Для чулок, которых нет в TAGS напрямую (только их цвета)
-                parts = tag_key.split('_')
-                if len(parts) == 3: # stockings_type_color
-                    sock_type = "Обычные" if parts[1] == "normal" else "В сеточку"
-                    color = {"white": "Белые", "black": "Черные", "red": "Красные", "pink": "Розовые", "gold": "Золотые"}.get(parts[2], parts[2])
-                    display_tags.append(f"{sock_type} {color} чулки")
-                else:
-                    display_tags.append(tag_key) # Fallback
-            elif not found:
-                display_tags.append(tag_key) # Fallback if not found
+        current_char_sub = user_settings[cid].get("last_char_sub") if cat == "characters" else None
+        bot.edit_message_reply_markup(cid, message_id, reply_markup=tag_menu(cat, tags, current_char_sub))
 
-        tag_list = "\n".join(f"• {tag}" for tag in display_tags)
-        bot.edit_message_text(f"Вы выбрали:\n\n{tag_list}\n\nТеперь можно сгенерировать изображение.", uid, message_id, reply_markup=types.InlineKeyboardMarkup([
-            [types.InlineKeyboardButton("🎨 Генерировать", callback_data="generate")],
-            [types.InlineKeyboardButton("⬅️ Изменить теги", callback_data="choose_tags")],
-            [types.InlineKeyboardButton("🏠 Главное меню", callback_data="main_menu")]
-        ]))
-    elif data == "generate":
-        selected_tags = user_settings.get(uid, {}).get("tags", [])
-        if not selected_tags:
-            bot.send_message(uid, "Сначала выбери теги!")
-            return
+    elif data == "done_tags":
+        bot.edit_message_text("Теги сохранены.", cid, message_id, reply_markup=main_menu())
 
-        # Сохраняем теги последней генерации для кнопки "Продолжить с этими"
-        user_settings[uid]["last_prompt_tags"] = selected_tags.copy()
-
-        # Построение промптов для Replicate API
-        prompt_info = build_prompt(selected_tags)
-        positive_prompt = prompt_info["positive_prompt"]
-        negative_prompt = prompt_info["negative_prompt"]
-        num_images = user_settings[uid].get("num_images", 1) # Получаем количество изображений из настроек
-
-        bot.edit_message_text("Принято Шеф, приступаю к генерации! Это может занять до минуты...", uid, message_id)
-
-        try:
-            generated_urls = replicate_generate(positive_prompt, negative_prompt, num_images)
-            if generated_urls:
-                media_group = []
-                for url in generated_urls:
-                    media_group.append(types.InputMediaPhoto(url))
-                
-                kb = types.InlineKeyboardMarkup()
-                kb.add(
-                    types.InlineKeyboardButton("🔁 Начать заново", callback_data="start_new_session"),
-                    types.InlineKeyboardButton("🎨 Новый запрос", callback_data="choose_tags"),
-                    types.InlineKeyboardButton("➡️ Продолжить с этими", callback_data="generate")
-                )
-                bot.send_media_group(uid, media_group)
-                bot.send_message(uid, "✅ Готово!", reply_markup=kb)
-            else:
-                bot.send_message(uid, "❌ Ошибка генерации. Пожалуйста, попробуйте еще раз.")
-        except Exception as e:
-            print(f"Ошибка генерации: {e}")
-            bot.send_message(uid, f"Произошла ошибка во время генерации. Пожалуйста, попробуйте еще раз. Ошибка: {e}")
+    elif data == "back_to_cat":
+        # Если возвращаемся из подкатегории персонажей, то сначала в меню подкатегорий
+        if user_settings[cid].get("last_cat") == "characters" and user_settings[cid].get("last_char_sub"):
+            user_settings[cid]["last_char_sub"] = None # Сбрасываем подкатегорию при возврате
+            bot.edit_message_text("Выбери подкатегорию персонажей:", cid, message_id, reply_markup=character_subcategory_menu(user_settings[cid]["tags"]))
+        else:
+            bot.edit_message_text("Выбери категорию:", cid, message_id, reply_markup=category_menu())
+    
+    elif data == "back_to_char_sub":
+        user_settings[cid]["last_char_sub"] = None # Сбрасываем подкатегорию при возврате
+        bot.edit_message_text("Выбери подкатегорию персонажей:", cid, message_id, reply_markup=character_subcategory_menu(user_settings[cid]["tags"]))
 
     elif data == "settings":
-        current_num_images = user_settings[uid].get("num_images", 1)
-        bot.edit_message_text(f"Настройки генерации:", uid, message_id, reply_markup=settings_menu_keyboard(current_num_images))
-    elif data.startswith("set_num_images|"):
-        num = int(data.split("|")[-1])
-        user_settings[uid]["num_images"] = num
-        current_num_images = user_settings[uid].get("num_images", 1)
-        bot.edit_message_text(f"Настройки генерации: количество изображений установлено на {num}.", uid, message_id, reply_markup=settings_menu_keyboard(current_num_images))
-    elif data == "start_new_session":
-        start_command_handler(call.message)
-    elif data == "ignore":
-        bot.answer_callback_query(call.id)
+        current_num_images = user_settings[cid].get("num_images", 1)
+        bot.edit_message_text(f"Настройки генерации:", cid, message_id, reply_markup=settings_menu(current_num_images))
+    
+    elif data.startswith("set_num_images_"):
+        num = int(data.split("_")[-1])
+        user_settings[cid]["num_images"] = num
+        current_num_images = user_settings[cid].get("num_images", 1)
+        bot.edit_message_text(f"Настройки генерации: количество изображений установлено на {num}.", cid, message_id, reply_markup=settings_menu(current_num_images))
 
+    elif data == "back_to_main":
+        bot.edit_message_text("Главное меню:", cid, message_id, reply_markup=main_menu())
+
+    elif data == "generate":
+        tags = user_settings[cid]["tags"]
+        if not tags:
+            bot.send_message(cid, "Сначала выбери теги!")
+            return
+
+        prompt_info = build_prompt(tags)
+        positive_prompt = prompt_info["positive_prompt"]
+        negative_prompt = prompt_info["negative_prompt"]
+        num_images = user_settings[cid].get("num_images", 1)
+        
+        user_settings[cid]["last_prompt_tags"] = tags.copy()
+
+        bot.send_message(cid, "Принято Шеф, приступаю!") # Сообщение перед генерацией
+
+        generated_urls = replicate_generate(positive_prompt, negative_prompt, num_images)
+        if generated_urls:
+            media_group = []
+            for url in generated_urls:
+                media_group.append(types.InputMediaPhoto(url))
+            
+            kb = types.InlineKeyboardMarkup()
+            kb.add(
+                types.InlineKeyboardButton("🔁 Начать заново", callback_data="start"),
+                types.InlineKeyboardButton("🔧 Изменить теги", callback_data="edit_tags"),
+                types.InlineKeyboardButton("➡ Продолжить с этими", callback_data="generate")
+            )
+            bot.send_media_group(cid, media_group)
+            bot.send_message(cid, "✅ Готово!", reply_markup=kb)
+        else:
+            bot.send_message(cid, "❌ Ошибка генерации. Пожалуйста, попробуйте еще раз.")
+
+    elif data == "edit_tags":
+        if "last_prompt_tags" in user_settings[cid]:
+            user_settings[cid]["tags"] = user_settings[cid]["last_prompt_tags"]
+            bot.send_message(cid, "Изменяем теги, использованные в предыдущей генерации:", reply_markup=category_menu())
+        else:
+            bot.send_message(cid, "Нет сохранённых тегов с предыдущей генерации. Сначала сделай генерацию.")
+
+    elif data == "start":
+        user_settings[cid] = {"tags": [], "last_cat": None, "last_char_sub": None, "num_images": 1}
+        bot.send_message(cid, "Настройки сброшены. Начнем заново!", reply_markup=main_menu())
+    
+    elif data == "ignore":
+        bot.answer_callback_query(call.id) # Просто игнорируем нажатие на текст-кнопку
 
 # --- Функция для определения категории тега ---
 def tag_category(tag):
     """Определяет категорию, к которой относится тег."""
     for cat, items in TAGS.items():
         if tag in items:
-            if cat == "body":
+            if cat in ["body", "ethnos"]:
                 return "body"
             if cat == "poses":
                 return "pose"
@@ -1227,11 +1120,11 @@ def tag_category(tag):
                 return "fetish"
             if cat == "head":
                 return "face"
-            if cat == "furry":
-                return "furry"
             if cat == "pokemon":
                 return "pokemon"
             
+            # Для персонажей определяем категорию "character"
+            # Проверяем, начинается ли тег с какого-либо ключа из CHARACTER_CATEGORIES
             for char_cat_key in CHARACTER_CATEGORIES.keys():
                 if tag.startswith(char_cat_key + "_"):
                     return "character"
@@ -1241,19 +1134,12 @@ def tag_category(tag):
 def build_prompt(tags):
     """
     Строит промпт для модели Replicate на основе выбранных тегов,
-    используя оптимальные настройки для достижения максимальной точности.
+    используя новую логику группировки и обработки конфликтов.
     """
     base = [
         "masterpiece", "best quality", "ultra detailed", "anime style", "highly detailed",
         "expressive eyes", "perfect lighting", "volumetric lighting", "fully nude", "solo"
     ]
-
-    # ИЗМЕНЕНИЕ: Добавляем "futanari" или "femboy" в начало base с усилением
-    if "futanari" in tags:
-        base.insert(0, "(futanari:1.2)") # Усиление веса
-    if "femboy" in tags:
-        base.insert(0, "(femboy:1.2)") # Усиление веса
-
 
     priority = {
         "character": [],
@@ -1276,7 +1162,7 @@ def build_prompt(tags):
         "vagina not visible, anus not visible, penis not visible, bad proportions, "
         "all clothes, all clothing"
     )
-    # Объединяем негативные промпты в одну строку
+    # Присоединяем части кортежа base_negative в одну строку
     base_negative = "".join(base_negative)
 
 
@@ -1291,77 +1177,19 @@ def build_prompt(tags):
     if "furry_cow" in unique:
         unique.discard("cow_costume") 
 
-    # Handle multiple characters
-    character_tags_count = 0
-    for tag in unique:
-        for char_cat_key in CHARACTER_CATEGORIES.keys():
-            if tag.startswith(char_cat_key + "_"):
-                character_tags_count += 1
-                break
-    
-    # ИЗМЕНЕНИЕ: Убираем "1girl", "2girl" и т.д., если выбраны "femboy" или "futanari"
-    if "femboy" not in unique and "futanari" not in unique:
-        if character_tags_count > 1:
-            base.insert(0, f"{character_tags_count}girls")
-        elif character_tags_count == 1:
-            base.insert(0, "1girl")
-        elif not any(tag_category(t) in ["furry", "pokemon"] for t in unique): # Add 1girl if no specific character or furry/pokemon
-            base.insert(0, "1girl")
-
     # Группировка по категориям
     for tag in unique:
-        # Проверяем в CHARACTER_PROMPTS
-        if tag in CHARACTER_PROMPTS:
-            priority["character"].append(CHARACTER_PROMPTS[tag])
-        # Проверяем в TAG_PROMPTS (для общих тегов и фури/покемонов, если их нет в CHARACTER_PROMPTS)
+        if tag in CHARACTER_EXTRA:
+            priority["character"].append(TAG_PROMPTS.get(tag, tag)) # Use TAG_PROMPTS as it contains CHARACTER_EXTRA
+        elif tag.startswith("furry_"):
+            priority["furry"].append(TAG_PROMPTS.get(tag, tag))
         elif tag in TAG_PROMPTS:
             key = tag_category(tag)
             if key:
                 priority[key].append(TAG_PROMPTS[tag])
-        # Если тег есть в TAGS, но не в TAG_PROMPTS, используем сам тег как промпт
-        else: 
-            found_in_tags = False
-            for cat_key, cat_tags in TAGS.items():
-                if tag in cat_tags:
-                    key = tag_category(tag)
-                    if key:
-                        priority[key].append(tag) # Используем сам тег как промпт
-                    found_in_tags = True
-                    break
-            
-            # Если тег не найден нигде, это может быть ошибка, но пока просто игнорируем или логируем
-            if not found_in_tags:
-                print(f"Warning: Tag '{tag}' found in selected_tags but not in TAG_PROMPTS or TAGS dictionary.")
-
-    # --- Новая логика для "two_dildos_one_hole" ---
-    if "two_dildos_one_hole" in unique:
-        # Remove the generic "two_dildos_one_hole" from prompt parts initially
-        if "two dildos, one hole, multiple dildos in one orifice, dildos inserted into same hole" in priority["toys"]:
-            priority["toys"].remove("two dildos, one hole, multiple dildos in one orifice, dildos inserted into same hole")
-
-        hole_prompts = []
-        for hole_tag in ["vagina", "anus", "dilated_vagina", "dilated_anus", "both"]: # Add other relevant hole tags
-            if hole_tag in unique:
-                # Add specific prompt for two dildos in this hole
-                if hole_tag == "vagina":
-                    hole_prompts.append("two dildos in vagina")
-                elif hole_tag == "anus":
-                    hole_prompts.append("two dildos in anus")
-                elif hole_tag == "both":
-                    hole_prompts.append("two dildos in vagina, two dildos in anus")
-                elif hole_tag == "dilated_vagina":
-                    hole_prompts.append("two dildos in dilated vagina")
-                elif hole_tag == "dilated_anus":
-                    hole_prompts.append("two dildos in dilated anus")
-                # Add a generic "two dildos" if no specific hole is selected with two_dildos_one_hole
-        if not hole_prompts:
-            priority["toys"].append("two dildos, one hole, multiple dildos inserted")
-        else:
-            priority["toys"].extend(hole_prompts)
-    # --- Конец новой логики ---
 
     prompt_parts = base[:]
-    # Порядок добавления важен: количество девушек, персонажи, фури, покемоны, тело, позы, отверстия, игрушки, одежда, фетиши, лицо
+    # Порядок добавления важен: персонажи, фури, покемоны, тело, позы, отверстия, игрушки, одежда, фетиши, лицо
     for section in ["character", "furry", "pokemon", "body", "pose", "holes", "toys", "clothes", "fetish", "face"]:
         prompt_parts.extend(priority[section])
 
@@ -1375,12 +1203,6 @@ def build_prompt(tags):
     } 
 
 # --- Функция для генерации изображения через Replicate ---
-class Model: # Заглушка для model.predict, если вы используете свою обертку
-    def predict(self, prompt, negative_prompt, num_images):
-        return replicate_generate(prompt, negative_prompt, num_images)
-
-model = Model() # Инициализируем заглушку модели
-
 def replicate_generate(positive_prompt, negative_prompt, num_images=1):
     """
     Отправляет запрос на генерацию изображения в Replicate API,
@@ -1430,7 +1252,7 @@ def replicate_generate(positive_prompt, negative_prompt, num_images=1):
             if data["status"] == "succeeded":
                 if isinstance(data["output"], list) and data["output"]:
                     urls.append(data["output"][0])
-                    break
+                    break # Выходим из внутреннего цикла после успешной генерации
                 else:
                     print("Получен пустой или некорректный 'output' от Replicate.")
                     return None
@@ -1438,12 +1260,11 @@ def replicate_generate(positive_prompt, negative_prompt, num_images=1):
                 print(f"Предсказание не удалось: {data.get('error', 'Сообщение об ошибке не предоставлено')}")
                 print(f"Request JSON: {json_data}")
                 return None
-        else:
+        else: # Если цикл завершился без break
             print("Время ожидания предсказания истекло для одного изображения.")
-            return None
+            return None # Возвращаем None, если хотя бы одно изображение не сгенерировалось
 
-    return urls
-
+    return urls # Возвращаем список URL-ов всех сгенерированных изображений
 
 # --- Настройка вебхука Flask ---
 @app.route("/", methods=["POST"])
@@ -1452,11 +1273,11 @@ def webhook():
     json_str = request.stream.read().decode("utf-8")
     update = telebot.types.Update.de_json(json_str)
     
-    # Инициализация user_settings для нового пользователя, если его нет
+    # Автоматическая отправка /start при первом запуске (если это не колбэк)
+    # Проверяем, что это новое сообщение и пользователь еще не в user_settings
     if update.message and update.message.chat.id not in user_settings:
-        user_settings[update.message.chat.id] = {"tags": [], "current_category": None, "current_char_subcategory": None, "current_stockings_type": None, "num_images": 1}
         bot.send_message(update.message.chat.id, "Привет Шеф!", reply_markup=main_menu())
-
+        user_settings[update.message.chat.id] = {"tags": [], "last_cat": None, "last_char_sub": None, "num_images": 1}
 
     bot.process_new_updates([update])
     return "ok", 200
