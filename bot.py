@@ -1249,6 +1249,7 @@ def build_prompt(tags):
         "vagina not visible, anus not visible, penis not visible, bad proportions, "
         "all clothes, all clothing"
     )
+    # Объединяем негативные промпты в одну строку
     base_negative = "".join(base_negative)
 
 
@@ -1415,4 +1416,22 @@ def webhook():
     json_str = request.stream.read().decode("utf-8")
     update = telebot.types.Update.de_json(json_str)
     
-    if update.message
+    # Исправленная строка: добавление двоеточия
+    if update.message:
+        if update.message.chat.id not in user_settings:
+            bot.send_message(update.message.chat.id, "Привет Шеф!", reply_markup=main_menu())
+            user_settings[update.message.chat.id] = {"tags": [], "last_cat": None, "last_char_sub": None, "stockings_type": None, "num_images": 1}
+
+    bot.process_new_updates([update])
+    return "ok", 200
+
+@app.route("/", methods=["GET"])
+def home():
+    """Простой маршрут для проверки работы приложения."""
+    return "бот работает", 200
+
+# --- Запуск бота ---
+if __name__ == "__main__":
+    bot.remove_webhook()
+    bot.set_webhook(url=WEBHOOK_URL)
+    app.run(host="0.0.0.0", port=PORT)
