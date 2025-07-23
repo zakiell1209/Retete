@@ -46,7 +46,7 @@ TAGS = {
         "prolapsed_anus": "Выпавший анус",
         "two_dildos_one_hole": "Два дилдо в одно отверстие",
         "dilated_nipples": "Расширенные соски",
-        "nipple_hole": "Отверстие в соске", # Добавлен
+        "nipple_hole": "Отверстие в соске",
         "anus_spreader_ring": "Расширительное кольцо в анусе",
         "vagina_spreader_ring": "Расширительное кольцо в вагине"
     },
@@ -75,22 +75,22 @@ TAGS = {
         "top_down_view": "Вид сверху",
         "bottom_up_view": "Вид снизу",
         "hands_spreading_vagina": "Руки раздвигают влагалище",
-        "lotus_pose": "Поза лотоса", # Добавлен
-        "scissors_pose": "Поза ножницы (две девушки)", # Добавлен
-        "inverted_extreme_bridge": "Экстремальный мост/стойка на плечах с инверсией", # Добавлен
-        "leaning_forward_wall": "Наклон вперёд у стены", # Добавлен
-        "standing_vertical_split_supported": "Вертикальный шпагат стоя с поддержкой", # Добавлен
-        "boat_pose_double_split_up": "Поза лодки / двойной шпагат вверх", # Добавлен
-        "deep_sumo_squat": "Глубокий присед (сумо-поза)", # Добавлен
-        "standing_horizontal_split_balanced": "Горизонтальный шпагат стоя с балансом", # Добавлен
-        "classic_bridge": "Мостик", # Добавлен
-        "sitting_horizontal_split_supported": "Горизонтальный шпагат сидя с опорой", # Добавлен
-        "prone_frog_stretch": "Пролёт вперёд, плечевой растяг", # Добавлен
-        "standing_deep_forward_bend": "Стоячий глубокий прогиб с опорой на руки", # Добавлен
-        "forward_bow_forearms_clasped": "Наклон со сведёнными предплечьями", # Добавлен
-        "top_down_voluminous_bow": "Объёмный поклон сверху (вид сверху)", # Добавлен
-        "inverted_leg_over_shoulder": "Перевёрнутый сгиб с коленом над плечом", # Добавлен
-        "casual_seated_open_knees": "Лёгкая поза сидя, колени разведены" # Добавлен
+        "lotus_pose": "Поза лотоса",
+        "scissors_pose": "Поза ножницы (две девушки)",
+        "inverted_extreme_bridge": "Экстремальный мост/стойка на плечах с инверсией",
+        "leaning_forward_wall": "Наклон вперёд у стены",
+        "standing_vertical_split_supported": "Вертикальный шпагат стоя с поддержкой",
+        "boat_pose_double_split_up": "Поза лодки / двойной шпагат вверх",
+        "deep_sumo_squat": "Глубокий присед (сумо-поза)",
+        "standing_horizontal_split_balanced": "Горизонтальный шпагат стоя с балансом",
+        "classic_bridge": "Мостик",
+        "sitting_horizontal_split_supported": "Горизонтальный шпагат сидя с опорой",
+        "prone_frog_stretch": "Пролёт вперёд, плечевой растяг",
+        "standing_deep_forward_bend": "Стоячий глубокий прогиб с опорой на руки",
+        "forward_bow_forearms_clasped": "Наклон со сведёнными предплечьями",
+        "top_down_voluminous_bow": "Объёмный поклон сверху (вид сверху)",
+        "inverted_leg_over_shoulder": "Перевёрнутый сгиб с коленом над плечом",
+        "casual_seated_open_knees": "Лёгкая поза сидя, колени разведены"
     },
     "clothes": {
         "stockings_white": "Белые чулки",
@@ -131,14 +131,14 @@ TAGS = {
         "furry_fox": "Фури лисица",
         "furry_bunny": "Фури кролик",
         "furry_wolf": "Фури волчица",
-        "furry_bear": "Фури медведь", # Добавлен
-        "furry_bird": "Фури птица", # Добавлен
-        "furry_mouse": "Фури мышь", # Добавлен
-        "furry_deer": "Фури олень", # Добавлен
-        "furry_tiger": "Фури тигр", # Добавлен
-        "furry_lion": "Фури лев", # Добавлен
-        "furry_snake": "Фури змея", # Добавлен
-        "furry_lizard": "Фури ящерица" # Добавлен
+        "furry_bear": "Фури медведь",
+        "furry_bird": "Фури птица",
+        "furry_mouse": "Фури мышь",
+        "furry_deer": "Фури олень",
+        "furry_tiger": "Фури тигр",
+        "furry_lion": "Фури лев",
+        "furry_snake": "Фури змея",
+        "furry_lizard": "Фури ящерица"
     },
     "head": {
         "ahegao": "Ахегао",
@@ -157,7 +157,7 @@ TAGS = {
         "vagina_piercing": "Пирсинг вагины",
         "gag": "Кляп",
         "blindfold": "Повязка на глаза",
-        "horse_sex": "Секс с конем", # Добавлен
+        "horse_sex": "Секс с конем",
         "dilated_nipples": "Расширенные соски",
         "anus_spreader_ring": "Расширительное кольцо в анусе",
         "vagina_spreader_ring": "Расширительное кольцо в вагине"
@@ -218,8 +218,7 @@ TAGS = {
         "genshin_sucrose": "Сахароза",
         "genshin_venti_f": "Венти (F)",
         "genshin_xiangling": "Сян Лин",
-        "genshin_xinyan": "Синь Янь
-        ",
+        "genshin_xinyan": "Синь Янь", # Исправлено
         "genshin_yaemiko": "Яэ Мико",
         "genshin_yanfei": "Янь Фэй",
         "genshin_yoimiya": "Ёимия",
@@ -527,7 +526,133 @@ CHARACTER_CATEGORIES = {
 }
 
 # --- Промпты для модели ---
-CHARACTER_EXTRA = {
+TAG_PROMPTS = { # Переименовано для ясности, чтобы не путать с CHARACTER_EXTRA, который является частью TAG_PROMPTS
+    # Теги из TAGS
+    "vagina": "vagina",
+    "anus": "anus",
+    "both": "vagina, anus",
+    "dilated_anus": "dilated anus",
+    "dilated_vagina": "dilated vagina",
+    "prolapsed_uterus": "prolapsed uterus",
+    "prolapsed_anus": "prolapsed anus",
+    "two_dildos_one_hole": "two dildos one hole",
+    "dilated_nipples": "dilated nipples",
+    "nipple_hole": "nipple hole",
+    "anus_spreader_ring": "anus spreader ring",
+    "vagina_spreader_ring": "vagina spreader ring",
+
+    "dildo": "dildo",
+    "huge_dildo": "huge dildo",
+    "horse_dildo": "horse dildo",
+    "anal_beads": "anal beads",
+    "anal_plug": "anal plug",
+    "long_dildo_path": "long dildo path",
+    "urethral_dildo": "urethral dildo",
+    "two_dildos_anus_vagina": "two dildos anus vagina",
+
+    "doggy": "doggy style",
+    "standing": "standing",
+    "squat": "squatting",
+    "lying": "lying",
+    "hor_split": "horizontal split",
+    "ver_split": "vertical split",
+    "on_back_legs_behind_head": "on back legs behind head",
+    "on_side_leg_up": "on side leg up",
+    "suspended": "suspended",
+    "front_facing": "front facing",
+    "back_facing": "back facing",
+    "top_down_view": "top down view",
+    "bottom_up_view": "bottom up view",
+    "hands_spreading_vagina": "hands spreading vagina",
+    "lotus_pose": "lotus pose",
+    "scissors_pose": "scissors pose, two girls",
+    "inverted_extreme_bridge": "inverted extreme bridge, shoulders stand with inversion",
+    "leaning_forward_wall": "leaning forward wall",
+    "standing_vertical_split_supported": "standing vertical split with support",
+    "boat_pose_double_split_up": "boat pose, double split up",
+    "deep_sumo_squat": "deep sumo squat",
+    "standing_horizontal_split_balanced": "standing horizontal split balanced",
+    "classic_bridge": "classic bridge",
+    "sitting_horizontal_split_supported": "sitting horizontal split supported",
+    "prone_frog_stretch": "prone frog stretch",
+    "standing_deep_forward_bend": "standing deep forward bend, hands support",
+    "forward_bow_forearms_clasped": "forward bow forearms clasped",
+    "top_down_voluminous_bow": "top down voluminous bow",
+    "inverted_leg_over_shoulder": "inverted leg over shoulder",
+    "casual_seated_open_knees": "casual seated open knees",
+
+    "stockings_white": "white stockings",
+    "stockings_black": "black stockings",
+    "stockings_red": "red stockings",
+    "stockings_pink": "pink stockings",
+    "stockings_gold": "gold stockings",
+    "stockings_fishnet": "fishnet stockings",
+    "bikini_tan_lines": "bikini tan lines",
+    "shibari": "shibari",
+    "cow_costume": "cow costume",
+
+    "big_breasts": "big breasts",
+    "small_breasts": "small breasts",
+    "body_fit": "fit body",
+    "body_fat": "fat body",
+    "body_muscular": "muscular body",
+    "age_loli": "loli",
+    "age_milf": "milf",
+    "age_21": "21 year old",
+    "cum": "covered in cum",
+    "belly_bloat": "belly bloat",
+    "succubus_tattoo": "succubus tattoo",
+
+    "futanari": "futanari",
+    "femboy": "femboy",
+    "ethnicity_asian": "asian ethnicity",
+    "ethnicity_european": "european ethnicity",
+
+    "furry_cow": "furry cow",
+    "furry_cat": "furry cat",
+    "furry_dog": "furry dog",
+    "furry_dragon": "furry dragon",
+    "furry_sylveon": "furry sylveon",
+    "furry_fox": "furry fox",
+    "furry_bunny": "furry bunny",
+    "furry_wolf": "furry wolf",
+    "furry_bear": "furry bear",
+    "furry_bird": "furry bird",
+    "furry_mouse": "furry mouse",
+    "furry_deer": "furry deer",
+    "furry_tiger": "furry tiger",
+    "furry_lion": "furry lion",
+    "furry_snake": "furry snake",
+    "furry_lizard": "furry lizard",
+
+    "ahegao": "ahegao",
+    "pain_face": "pain face",
+    "ecstasy_face": "ecstasy face",
+    "gold_lipstick": "gold lipstick",
+
+    "nipple_piercing": "nipple piercing",
+    "clitoral_piercing": "clitoral piercing",
+    "foot_fetish": "foot fetish",
+    "footjob": "footjob",
+    "mouth_nipples": "mouth nipples",
+    "nipple_hole": "nipple hole",
+    "anus_piercing": "anus piercing",
+    "vagina_piercing": "vagina piercing",
+    "gag": "gag",
+    "blindfold": "blindfold",
+    "horse_sex": "horse sex",
+
+    "reshiram": "reshiram pokemon",
+    "mew": "mew pokemon",
+    "mewtwo": "mewtwo pokemon",
+    "gardevoir": "gardevoir pokemon",
+    "umbreon": "umbreon pokemon",
+    "lugia": "lugia pokemon",
+    "shadow_lugia": "shadow lugia pokemon",
+    "lopunny": "lopunny pokemon",
+    "goodra": "goodra pokemon",
+
+    # Демоны старшей школы
     "dxd_rias": "rias gremory, red long hair, blue eyes, pale skin, large breasts, highschool dxd",
     "dxd_akeno": "akeno himejima, long black hair, purple eyes, large breasts, highschool dxd",
     "dxd_xenovia_quarta": "xenovia quarta, highschool dxd, blue hair, short hair, sword, holy sword, devil wings, nun uniform",
@@ -622,584 +747,231 @@ CHARACTER_EXTRA = {
     "nier_2b": "2B",
 
     # Spy x Family
-    "spyxfamily_yor_forger": "Йор Форджер",
+    "spyxfamily_yor_forger": "yor forger",
 
     # Akame ga Kill
-    "akamegakill_esdeath": "Есдес",
+    "akamegakill_esdeath": "esdeath",
 
     # Azur Lane
-    "azurlane_formidable": "Formidable",
+    "azurlane_formidable": "formidable",
 
     # Fate Series
-    "fate_castoria": "Кастория",
-    "fate_saber": "Сейбер",
-    "fate_astolfo": "Астольфо",
+    "fate_castoria": "castoria",
+    "fate_saber": "saber, fate series",
+    "fate_astolfo": "astolfo",
 
     # Resident Evil
-    "residentevil_lady_dimitrescu": "Леди Димитреску",
+    "residentevil_lady_dimitrescu": "lady dimitrescu",
 
     # Street Fighter
-    "streetfighter_chun_li": "Чун Ли",
-    "streetfighter_cammy": "Кэмми",
-    "streetfighter_balrog_f": "Балрог (женская версия)",
-    "streetfighter_juri": "Джури",
-    "streetfighter_menat": "Менат",
-    "streetfighter_laura": "Лаура",
-    "streetfighter_poison": "Пойсон",
-    "streetfighter_maki": "Маки",
-    "streetfighter_rose": "Роуз",
-    "streetfighter_r_mika": "Р. Мика",
-    "streetfighter_ibuki": "Ибуки",
-    "streetfighter_karin": "Карин",
-    "streetfighter_ed": "Эд",
-    "streetfighter_fang": "Фалькон",
-    "streetfighter_e_honda_f": "Иви",
+    "streetfighter_chun_li": "chun li",
+    "streetfighter_cammy": "cammy white",
+    "streetfighter_balrog_f": "balrog, female",
+    "streetfighter_juri": "juri han",
+    "streetfighter_menat": "menat",
+    "streetfighter_laura": "laura matsuda",
+    "streetfighter_poison": "poison, street fighter",
+    "streetfighter_maki": "maki, street fighter",
+    "streetfighter_rose": "rose, street fighter",
+    "streetfighter_r_mika": "r. mika",
+    "streetfighter_ibuki": "ibuki, street fighter",
+    "streetfighter_karin": "karin kanzuki",
+    "streetfighter_ed": "ed, street fighter",
+    "streetfighter_fang": "f.a.n.g, street fighter",
+    "streetfighter_e_honda_f": "e. honda, female",
 
     # Atomic Heart
-    "atomicheart_twins": "Близняшки",
+    "atomicheart_twins": "atomic heart twins",
 
     # Bleach - НОВЫЕ ПЕРСОНАЖИ
-    "bleach_renji_f": "Ренджи Абарай (F)",
-    "bleach_rukia_kuchiki": "Рукия Кучики",
-    "bleach_orihime_inoue": "Орихиме Иноуэ",
-    "bleach_yoruichi_shihoin": "Йоруичи Шихоин",
-    "bleach_rangiku_matsumoto": "Рангику Мацумото",
-    "bleach_nemu_kurotsuchi": "Нему Куроцучи",
-    "bleach_nelliel_tu_odelschwanck": "Неллиэль Ту Одельшванк",
-    "bleach_tier_harribel": "Тиа Харрибел",
-    "bleach_retsu_unohana": "Ретсу Унохана",
-    "bleach_soi_fon": "Сой Фон",
-    "bleach_hiyori_sarugaki": "Хиёри Саругаки",
-    "bleach_lisa_yadomaru": "Лиза Ядомару",
-    "bleach_mashiro_kuna": "Маширо Куна",
-    "bleach_nanao_ise": "Нанао Исе",
-    "bleach_isane_kotetsu": "Исане Котецу",
-    "bleach_momo_hinamori": "Момо Хинамири",
-    "bleach_candice_catnipp": "Кэндис Катнипп",
-    "bleach_bambietta_basterbine": "Бамбиетта Бастербайн",
-    "bleach_giselle_gewelle": "Гизель Жевелль",
-    "bleach_meninas_mcallon": "Менинас МакАллон",
-    "bleach_liltotto_lamperd": "Лилттото Ламперд",
+    "bleach_renji_f": "renji abarai, female",
+    "bleach_rukia_kuchiki": "rukia kuchiki",
+    "bleach_orihime_inoue": "orihime inoue",
+    "bleach_yoruichi_shihoin": "yoruichi shihoin",
+    "bleach_rangiku_matsumoto": "rangiku matsumoto",
+    "bleach_nemu_kurotsuchi": "nemu kurotsuchi",
+    "bleach_nelliel_tu_odelschwanck": "nelliel tu odelschwanck",
+    "bleach_tier_harribel": "tier harribel",
+    "bleach_retsu_unohana": "retsu unohana",
+    "bleach_soi_fon": "soi fon",
+    "bleach_hiyori_sarugaki": "hiyori sarugaki",
+    "bleach_lisa_yadomaru": "lisa yadomaru",
+    "bleach_mashiro_kuna": "mashiro kuna",
+    "bleach_nanao_ise": "nanao ise",
+    "bleach_isane_kotetsu": "isane kotetsu",
+    "bleach_momo_hinamori": "momo hinamori",
+    "bleach_candice_catnipp": "candice catnipp",
+    "bleach_bambietta_basterbine": "bambietta basterbine",
+    "bleach_giselle_gewelle": "giselle gewelle",
+    "bleach_meninas_mcallon": "meninas mcallon",
+    "bleach_liltotto_lamperd": "liltotto lamperd",
 
     # Danmachi
-    "danmachi_hestia": "Гестия",
-    "danmachi_freya": "Фрея",
+    "danmachi_hestia": "hestia, danmachi",
+    "danmachi_freya": "freya, danmachi",
 
     # Повесть о конце света (Record of Ragnarok)
-    "ragnarok_aphrodite": "Афродита",
+    "ragnarok_aphrodite": "aphrodite, record of ragnarok",
 
     # Naruto
-    "naruto_hinata": "Хината",
-    "naruto_tsunade": "Цунаде",
+    "naruto_hinata": "hinata hyuga",
+    "naruto_tsunade": "tsunade",
 
     # Overlord
-    "overlord_albedo": "Альбедо",
-    "overlord_shalltear": "Шалтир",
+    "overlord_albedo": "albedo, overlord",
+    "overlord_shalltear": "shalltear bloodfallen",
 
     # Безумный азарт (Kakegurui)
-    "kakegurui_yumeko": "Юмеко Джабами",
-    "kakegurui_kirari": "Кирари Момобами",
-    "kakegurui_mary": "Мэри Саотомэ",
+    "kakegurui_yumeko": "yumeko jabami",
+    "kakegurui_kirari": "kirari momobami",
+    "kakegurui_mary": "mary saotome",
 
     # Магическая битва (Jujutsu Kaisen)
-    "jujutsukaisen_mei_mei": "Мэй Мэй",
+    "jujutsukaisen_mei_mei": "mei mei, jujutsu kaisen",
 
     # Герой Щита (The Rising of the Shield Hero)
-    "shieldhero_mirelia_melromarc": "Мирелия К. Мелромарк",
-    "shieldhero_malty_melromarc": "Малти С. Мелромарк",
+    "shieldhero_mirelia_melromarc": "mirelia q melromarc",
+    "shieldhero_malty_melromarc": "malty s melromarc",
     
     # Helltaker
-    "helltaker_lucifer": "Люцифер",
+    "helltaker_lucifer": "lucifer, helltaker",
 
     # Zenless Zone Zero
-    "zzz_ellen_joe": "Эллен Джо",
-    "zzz_koleda": "Коледа",
-    "zzz_lycaon": "Ликаон (F)", # Female Lycaon
-    "zzz_nicole": "Николь",
-    "zzz_anby": "Энби",
-    "zzz_nekomiya": "Нэкомия",
-    "zzz_aisha": "Айша",
-    "zzz_haruka": "Харука",
-    "zzz_corin": "Корин",
-    "zzz_grace": "Грейс",
-    "zzz_hoshimi": "Хосими",
-    "zzz_rory": "Рори",
-    "zzz_bonnie": "Бонни",
-    "zzz_elize": "Элиза",
-    "zzz_fubuki": "Фубуки",
-    "zzz_sana": "Сана",
-    "zzz_yuki": "Юки",
+    "zzz_ellen_joe": "ellen joe",
+    "zzz_koleda": "koleda, zenless zone zero",
+    "zzz_lycaon": "lycaon, female, zenless zone zero",
+    "zzz_nicole": "nicole, zenless zone zero",
+    "zzz_anby": "anby, zenless zone zero",
+    "zzz_nekomiya": "nekomiya, zenless zone zero",
+    "zzz_aisha": "aisha, zenless zone zero",
+    "zzz_haruka": "haruka, zenless zone zero",
+    "zzz_corin": "corin, zenless zone zero",
+    "zzz_grace": "grace, zenless zone zero",
+    "zzz_hoshimi": "hoshimi, zenless zone zero",
+    "zzz_rory": "rory, zenless zone zero",
+    "zzz_bonnie": "bonnie, zenless zone zero",
+    "zzz_elize": "elize, zenless zone zero",
+    "zzz_fubuki": "fubuki, zenless zone zero",
+    "zzz_sana": "sana, zenless zone zero",
+    "zzz_yuki": "yuki, zenless zone zero",
     
     # Pokémon (персонажи-люди)
-    "pokemon_jessie": "Джесси",
-    "pokemon_lusamine": "Лусамине",
+    "pokemon_jessie": "jessie, pokemon",
+    "pokemon_lusamine": "lusamine, pokemon",
 
     # League of Legends
-    "lol_qiyana": "Киана",
-    "lol_aurora": "Аврора",
-    "lol_katarina": "Катарина",
-    "lol_akali": "Акали",
-    "lol_irelia": "Ирелия",
-    "lol_caitlyn": "Кейтлин",
-    "lol_briar": "Брайер",
-    "lol_kaisa": "Кай'Са",
-    "lol_evelynn": "Эвелинн",
-    "lol_ahri": "Ари",
-    "lol_belveth": "Бел'Вет",
-    "lol_fiora": "Фиора",
-    "lol_gwen": "Гвен",
-    "lol_zoe": "Зои",
-    "lol_missfortune": "Мисс Фортуна",
-    "lol_neeko": "Нико",
-    "lol_samira": "Самира",
-    "lol_sona": "Сона",
-    "lol_elise": "Элиза",
+    "lol_qiyana": "qiyana",
+    "lol_aurora": "aurora, league of legends",
+    "lol_katarina": "katarina",
+    "lol_akali": "akali",
+    "lol_irelia": "irelia",
+    "lol_caitlyn": "caitlyn",
+    "lol_briar": "briar, league of legends",
+    "lol_kaisa": "kai'sa",
+    "lol_evelynn": "evelynn",
+    "lol_ahri": "ahri",
+    "lol_belveth": "bel'veth",
+    "lol_fiora": "fiora",
+    "lol_gwen": "gwen",
+    "lol_zoe": "zoe",
+    "lol_missfortune": "miss fortune",
+    "lol_neeko": "neeko",
+    "lol_samira": "samira",
+    "lol_sona": "sona",
+    "lol_elise": "elise",
 
     # My Little Pony
-    "mlp_twilight_sparkle": "Сумеречная Искорка",
-    "mlp_applejack": "Эпплджек",
-    "mlp_rainbow_dash": "Радуга Дэш",
-    "mlp_rarity": "Рарити",
-    "mlp_fluttershy": "Флаттершай",
-    "mlp_pinkie_pie": "Пинки Пай",
-    "mlp_spike": "Спайк",
-    "mlp_princess_celestia": "Принцесса Селестия",
-    "mlp_princess_luna": "Принцесса Луна",
-    "mlp_princess_cadence": "Принцесса Каденс",
-    "mlp_discord": "Дискорд",
-    "mlp_apple_bloom": "Эппл Блум",
-    "mlp_scootaloo": "Скуталу",
-    "mlp_sweetie_belle": "Крошка Бель",
+    "mlp_twilight_sparkle": "twilight sparkle, my little pony",
+    "mlp_applejack": "applejack, my little pony",
+    "mlp_rainbow_dash": "rainbow dash, my little pony",
+    "mlp_rarity": "rarity, my little pony",
+    "mlp_fluttershy": "fluttershy, my little pony",
+    "mlp_pinkie_pie": "pinkie pie, my little pony",
+    "mlp_spike": "spike, my little pony",
+    "mlp_princess_celestia": "princess celestia, my little pony",
+    "mlp_princess_luna": "princess luna, my little pony",
+    "mlp_princess_cadence": "princess cadence, my little pony",
+    "mlp_discord": "discord, my little pony",
+    "mlp_apple_bloom": "apple bloom, my little pony",
+    "mlp_scootaloo": "scootaloo, my little pony",
+    "mlp_sweetie_belle": "sweetie belle, my little pony",
 
     # Dislyte
-    "dislyte_li_ling_f": "Ли Лин (F)", # Female Li Ling
-    "dislyte_sally": "Салли",
-    "dislyte_clara": "Клара",
-    "dislyte_gabrielle": "Габриэль",
-    "dislyte_chloe": "Хлоя",
-    "dislyte_odette": "Одетта",
-    "dislyte_meredith": "Мередит",
-    "dislyte_jiang_man": "Цзян Мань",
-    "dislyte_eira": "Эйра",
-    "dislyte_drew": "Дрю",
-    "dislyte_pritzker_f": "Притцкер (F)", # Female Pritzker
-    "dislyte_fatima": "Фатима",
-    "dislyte_brewster_f": "Брюстер (F)", # Female Brewster
-    "dislyte_yun_chuan_f": "Юнь Чуань (F)", # Female Yun Chuan
-    "dislyte_hyde_f": "Хайд (F)", # Female Hyde
-    "dislyte_leora": "Леора",
-    "dislyte_tevor_f": "Тевор (F)", # Female Tevor
-    "dislyte_zora": "Зора",
-    "dislyte_embla": "Эмбла",
-    "dislyte_ophilia": "Офелия",
-    "dislyte_ahmed_f": "Ахмед (F)", # Female Ahmed
-    "dislyte_everett_f": "Эверетт (F)", # Female Everett
-    "dislyte_ollie_f": "Олли (F)", # Female Ollie
-    "dislyte_jin_hee": "Джин Хи",
-    "dislyte_ifrit_f": "Ифрит (F)", # Female Ifrit
-    "dislyte_sienna": "Сиенна",
-    "dislyte_valeria": "Валерия",
-    "dislyte_ashley": "Эшли",
-    "dislyte_triki_f": "Трики (F)", # Female Triki
-    "dislyte_narmer_f": "Нармер (F)", # Female Narmer
-    "dislyte_tye": "Тай",
-    "dislyte_biondina": "Биондина",
-    "dislyte_dhalia": "Далия",
-    "dislyte_elaine": "Элейн",
-    "dislyte_cecilia": "Сесилия",
-    "dislyte_intisar": "Интисар",
-    "dislyte_kaylee": "Кейли",
-    "dislyte_layla": "Лейла",
-    "dislyte_lynn": "Линн",
-    "dislyte_melanie": "Мелани",
-    "dislyte_mona": "Мона",
-    "dislyte_nicole": "Николь",
-    "dislyte_q": "Кью",
-    "dislyte_ren_si": "Жэнь Си",
-    "dislyte_stewart_f": "Стюарт (F)", # Female Stewart
-    "dislyte_tang_xuan_f": "Тан Сюань (F)", # Female Tang Xuan
-    "dislyte_unaky": "Унаки",
-    "dislyte_victoria": "Виктория",
-    "dislyte_xiao_yin": "Сяо Инь",
-    "dislyte_ye_suhua": "Е Сухуа",
-    "dislyte_zhong_nan": "Чжун Нань",
-    "dislyte_anadora": "Анадора",
-    "dislyte_bernice": "Бернис",
-    "dislyte_brynn": "Бринн",
-    "dislyte_catherine": "Катерина",
-    "dislyte_chang_pu": "Чан Пу",
-    "dislyte_eugene_f": "Юджин (F)",
-    "dislyte_freddy_f": "Фредди (F)",
-    "dislyte_hall_f": "Холл (F)",
-    "dislyte_helena": "Хелена",
-    "dislyte_jacob_f": "Джейкоб (F)",
-    "dislyte_jeanne": "Жанна",
-    "dislyte_li_ao_f": "Ли Ао (F)",
-    "dislyte_lu_yi_f": "Лу И (F)",
-    "dislyte_mark_f": "Марк (F)",
-    "dislyte_olivia": "Оливия",
-    "dislyte_sander_f": "Сандер (F)",
-    "dislyte_stella": "Стелла",
-    "dislyte_alice": "Алиса",
-    "dislyte_arcana": "Аркана",
-    "dislyte_aurelius_f": "Аурелиус (F)",
-    "dislyte_bette": "Бетте",
-    "dislyte_bonnie": "Бонни",
-    "dislyte_celine": "Селин",
-    "dislyte_corbin_f": "Корбин (F)",
-    }
-}
-
-# Категории для персонажей (для вкладок)
-CHARACTER_CATEGORIES = {
-    "dxd": "📺 Демоны старшей школы",
-    "genshin": "🎮 Genshin Impact",
-    "hsr": "🎮 Honkai Star Rail",
-    "nier": "🎮 NieR Automata",
-    "spyxfamily": "📺 Spy x Family",
-    "akamegakill": "📺 Akame ga Kill",
-    "azurlane": "🎮 Azur Lane",
-    "fate": "📺 Fate Series",
-    "residentevil": "🎮 Resident Evil",
-    "streetfighter": "🎮 Street Fighter",
-    "atomicheart": "🎮 Atomic Heart",
-    "bleach": "📺 Bleach", # НОВАЯ КАТЕГОРИЯ
-    "danmachi": "📺 Danmachi",
-    "ragnarok": "📺 Повесть о конце света",
-    "naruto": "📺 Naruto",
-    "overlord": "📺 Overlord",
-    "kakegurui": "📺 Безумный азарт",
-    "jujutsukaisen": "📺 Магическая битва",
-    "shieldhero": "📺 Герой Щита",
-    "helltaker": "🎮 Helltaker",
-    "zzz": "🎮 Zenless Zone Zero",
-    "pokemon_chars": "📺 Pokémon (персонажи)",
-    "lol": "🎮 League of Legends",
-    "mlp": "📺 My Little Pony",
-    "dislyte": "🎮 Dislyte"
-}
-
-# --- Промпты для модели ---
-CHARACTER_EXTRA = {
-    "dxd_rias": "rias gremory, red long hair, blue eyes, pale skin, large breasts, highschool dxd",
-    "dxd_akeno": "akeno himejima, long black hair, purple eyes, large breasts, highschool dxd",
-    "dxd_xenovia_quarta": "xenovia quarta, highschool dxd, blue hair, short hair, sword, holy sword, devil wings, nun uniform",
-    "dxd_serafall_leviathan": "serafall leviathan, highschool dxd, magical girl outfit, pink hair, magical wand, devil, large breasts",
-    "dxd_asia_argento": "asia argento, highschool dxd, blonde hair, long hair, nun, innocent, healing magic, dragon slayer, devil wings",
-    "dxd_koneko_toujou": "koneko toujou, highschool dxd, white hair, cat ears, cat tail, small breasts, stoic expression",
-    "dxd_shidou_irina": "shidou irina, highschool dxd, blonde hair, twin tails, energetic, holy sword, angel wings, exorcist",
-    "dxd_gasper_vladi": "gasper vladi, highschool dxd, male, trap, feminine clothing, long blonde hair, shy, vampire, crossdresser",
-    "dxd_rossweisse": "rossweisse, highschool dxd, valkyrie, long silver hair, glasses, mature, large breasts",
-    "dxd_yasaka": "yasaka, highschool dxd, kitsune, nine tails, fox ears, kimono, mature woman",
-    "dxd_grayfia_lucifuge": "grayfia lucifuge, highschool dxd, maid outfit, long silver hair, red eyes, ice magic, sexy maid",
-    
-    # Genshin Impact
-    "genshin_eula": "eula, light blue hair, fair skin, genshin impact",
-    "genshin_mona": "mona, genshin impact, black hair, leotard, golden headdress",
-    "genshin_klee": "klee, genshin impact, blonde hair, red dress, explosive",
-    "genshin_raiden_shogun": "raiden shogun, genshin impact, purple hair, kimono, electro archon",
-    "genshin_paimon": "paimon, genshin impact, floating companion, small body, white hair, crown, emergency food",
-    "genshin_amber": "amber, genshin impact, knight of favonius, long brown hair, red bow, goggles",
-    "genshin_barbara": "barbara, genshin impact, idol, blue dress, blonde hair, deaconess",
-    "genshin_beidou": "beidou, genshin impact, black hair, red outfit, eyepatch, captain",
-    "genshin_collei": "collei, genshin impact, green hair, dendro, forest ranger, bandages",
-    "genshin_dehya": "dehya, genshin impact, tanned skin, red hair, muscular, mercenary",
-    "genshin_diluc_f": "diluc, female, genshin impact, red hair, elegant dress, pyro",
-    "genshin_diona": "diona, genshin impact, cat girl, pink hair, bartender, cryo",
-    "genshin_fischl": "fischl, genshin impact, prinzessin der verurteilung, gothic dress, blonde hair, oz",
-    "genshin_ganyu": "ganyu, genshin impact, qilin, blue hair, horns, long dress, cryo",
-    "genshin_hutao": "hutao, genshin impact, funeral parlor director, brown hair, twin tails, ghost, pyro",
-    "genshin_jean": "jean gunnhildr, genshin impact, acting grand master, blonde hair, knight uniform",
-    "genshin_kazuha_f": "kaedehara kazuha, female, genshin impact, anemo, red leaves, kimono, white hair",
-    "genshin_keqing": "keqing, genshin impact, purple hair, cat ears, electro, yuheng",
-    "genshin_kuki_shinobu": "kuki shinobu, genshin impact, ninja, green hair, mask, electro",
-    "genshin_lisa": "lisa minci, genshin impact, librarian, purple dress, electro, witch",
-    "genshin_nahida": "nahida, genshin impact, dendro archon, white hair, green dress, loli",
-    "genshin_ningguang": "ningguang, genshin impact, rich, elegant dress, long white hair, geo, jade chamber",
-    "genshin_noelle": "noelle, genshin impact, maid, knight, blonde hair, heavy armor",
-    "genshin_rosaria": "rosaria, genshin impact, nun, dark outfit, red hair, cryo, cynical",
-    "genshin_sara": "kujou sara, genshin impact, tengu, black wings, kimono, electro, general",
-    "genshin_sayu": "sayu, genshin impact, ninja, tanuki, anemo, sleepy",
-    "genshin_shenhe": "shenhe, genshin impact, white hair, long dress, cryo, exorcist",
-    "genshin_sucrose": "sucrose, genshin impact, alchemist, green hair, glasses, anemo",
-    "genshin_venti_f": "venti, female, genshin impact, anemo archon, bard, green outfit",
-    "genshin_xiangling": "xiangling, genshin impact, chef, brown hair, panda, pyro",
-    "genshin_xinyan": "xinyan, genshin impact, rockstar, dark skin, red hair, pyro, lute",
-    "genshin_yaemiko": "yae miko, genshin impact, fox ears, pink hair, miko, electro",
-    "genshin_yanfei": "yanfei, genshin impact, legal advisor, white hair, deer horns, pyro",
-    "genshin_yoimiya": "yoimiya, genshin impact, fireworks, blonde hair, kimono, pyro",
-    "genshin_yelan": "yelan, genshin impact, blue hair, black bodysuit, hydro, secret agent",
-    "genshin_zhongli_f": "zhongli, female, genshin impact, geo archon, elegant, brown hair, long coat",
-    "genshin_furina": "furina, genshin impact, hydro archon, twin tails, white hair, elegant dress, dramatic",
-    "genshin_navia": "navia, genshin impact, blonde hair, yellow dress, umbrella, elegant",
-    "genshin_chevreuse": "chevreuse, genshin impact, red hair, military uniform, eyepatch, musket",
-    "genshin_clorinde": "clorinde, genshin impact, purple hair, fencer, elegant hat, duelist",
-    "genshin_ar_traveler_f": "aether, female, genshin impact, blonde hair, traveler outfit, sword",
-    "genshin_lumine": "lumine, genshin impact, blonde hair, traveler outfit, sword",
-    "genshin_signora": "signora, genshin impact, fatui harbinger, elegant mask, white hair, cryo",
-    "genshin_arlecchino": "arlecchino, genshin impact, fatui harbinger, black outfit, twin tails, pyro",
-    "genshin_snezhnaya_fatui_harbinger": "snezhnaya fatui harbinger, female, genshin impact, mask, uniform",
-
-
-    # Honkai Star Rail
-    "hsr_kafka": "kafka, purple wavy hair, cold expression, honkai star rail",
-    "hsr_fu_xuan": "fu xuan, pink hair, honkai star rail, diviner, short hair, glasses",
-    "hsr_sparkle": "sparkle, honkai star rail, pink hair, elegant dress, theatrical",
-    "hsr_acheron": "acheron, honkai star rail, purple hair, long coat, samurai",
-    "hsr_march_7th": "march 7th, honkai star rail, pink hair, camera, ice powers, archer",
-    "hsr_himeko": "himeko, honkai star rail, red hair, red coat, coffee, train conductor",
-    "hsr_bronya": "bronya rand, honkai star rail, silver hair, elegant uniform, queen, spear",
-    "hsr_seele": "seele, honkai star rail, blue hair, scythe, butterfly, quantum",
-    "hsr_jingliu": "jingliu, honkai star rail, white hair, blindfold, sword, ice",
-    "hsr_stelle": "stelle, honkai star rail, female trailblazer, brown hair, baseball bat",
-    "hsr_herta": "herta, honkai star rail, doll, purple hair, genius, space station",
-    "hsr_silver_wolf": "silver wolf, honkai star rail, hacker, blue hair, short hair, cyber punk",
-    "hsr_tingyun": "tingyun, honkai star rail, fox ears, kimono, fan, lightning",
-    "hsr_asta": "asta, honkai star rail, red hair, space station, rich girl",
-    "hsr_clara": "clara, honkai star rail, child, robot, pink hair, shy",
-    "hsr_peia": "peia, honkai star rail, foxian, healer, long hair", # Placeholder, adjust if specific design available
-    "hsr_sushang": "sushang, honkai star rail, sword, knight, chicken, red hair",
-    "hsr_natasha": "natasha, honkai star rail, doctor, blonde hair, medical coat",
-    "hsr_hook": "hook, honkai star rail, child, red hair, big hat, destruction",
-    "hsr_pela": "pela, honkai star rail, glasses, detective, blue hair, short hair",
-    "hsr_qingque": "qingque, honkai star rail, mahjong, green hair, lazy",
-    "hsr_yukong": "yukong, honkai star rail, foxian, pilot, mature, elegant",
-    "hsr_guinaifen": "guinaifen, honkai star rail, streamer, fire performer, pink hair",
-    "hsr_huohuo": "huohuo, honkai star rail, green hair, fox girl, exorcist, ghost",
-    "hsr_xueyi": "xueyi, honkai star rail, puppet, pink hair, executioner, mask",
-    "hsr_hanabi": "hanabi, honkai star rail, pink hair, elegant dress, theatrical", # Sparkle
-    "hsr_robin": "robin, honkai star rail, idol, blonde hair, singer, elegant dress",
-    "hsr_aventurine_f": "aventurine, female, honkai star rail, blonde hair, gambler, suit", # Female Aventurine
-
-    # NieR Automata
-    "nier_2b": "2B",
-
-    # Spy x Family
-    "spyxfamily_yor_forger": "Йор Форджер",
-
-    # Akame ga Kill
-    "akamegakill_esdeath": "Есдес",
-
-    # Azur Lane
-    "azurlane_formidable": "Formidable",
-
-    # Fate Series
-    "fate_castoria": "Кастория",
-    "fate_saber": "Сейбер",
-    "fate_astolfo": "Астольфо",
-
-    # Resident Evil
-    "residentevil_lady_dimitrescu": "Леди Димитреску",
-
-    # Street Fighter
-    "streetfighter_chun_li": "Чун Ли",
-    "streetfighter_cammy": "Кэмми",
-    "streetfighter_balrog_f": "Балрог (женская версия)",
-    "streetfighter_juri": "Джури",
-    "streetfighter_menat": "Менат",
-    "streetfighter_laura": "Лаура",
-    "streetfighter_poison": "Пойсон",
-    "streetfighter_maki": "Маки",
-    "streetfighter_rose": "Роуз",
-    "streetfighter_r_mika": "Р. Мика",
-    "streetfighter_ibuki": "Ибуки",
-    "streetfighter_karin": "Карин",
-    "streetfighter_ed": "Эд",
-    "streetfighter_fang": "Фалькон",
-    "streetfighter_e_honda_f": "Иви",
-
-    # Atomic Heart
-    "atomicheart_twins": "Близняшки",
-
-    # Bleach - НОВЫЕ ПЕРСОНАЖИ
-    "bleach_renji_f": "Ренджи Абарай (F)",
-    "bleach_rukia_kuchiki": "Рукия Кучики",
-    "bleach_orihime_inoue": "Орихиме Иноуэ",
-    "bleach_yoruichi_shihoin": "Йоруичи Шихоин",
-    "bleach_rangiku_matsumoto": "Рангику Мацумото",
-    "bleach_nemu_kurotsuchi": "Нему Куроцучи",
-    "bleach_nelliel_tu_odelschwanck": "Неллиэль Ту Одельшванк",
-    "bleach_tier_harribel": "Тиа Харрибел",
-    "bleach_retsu_unohana": "Ретсу Унохана",
-    "bleach_soi_fon": "Сой Фон",
-    "bleach_hiyori_sarugaki": "Хиёри Саругаки",
-    "bleach_lisa_yadomaru": "Лиза Ядомару",
-    "bleach_mashiro_kuna": "Маширо Куна",
-    "bleach_nanao_ise": "Нанао Исе",
-    "bleach_isane_kotetsu": "Исане Котецу",
-    "bleach_momo_hinamori": "Момо Хинамири",
-    "bleach_candice_catnipp": "Кэндис Катнипп",
-    "bleach_bambietta_basterbine": "Бамбиетта Бастербайн",
-    "bleach_giselle_gewelle": "Гизель Жевелль",
-    "bleach_meninas_mcallon": "Менинас МакАллон",
-    "bleach_liltotto_lamperd": "Лилттото Ламперд",
-
-    # Danmachi
-    "danmachi_hestia": "Гестия",
-    "danmachi_freya": "Фрея",
-
-    # Повесть о конце света (Record of Ragnarok)
-    "ragnarok_aphrodite": "Афродита",
-
-    # Naruto
-    "naruto_hinata": "Хината",
-    "naruto_tsunade": "Цунаде",
-
-    # Overlord
-    "overlord_albedo": "Альбедо",
-    "overlord_shalltear": "Шалтир",
-
-    # Безумный азарт (Kakegurui)
-    "kakegurui_yumeko": "Юмеко Джабами",
-    "kakegurui_kirari": "Кирари Момобами",
-    "kakegurui_mary": "Мэри Саотомэ",
-
-    # Магическая битва (Jujutsu Kaisen)
-    "jujutsukaisen_mei_mei": "Мэй Мэй",
-
-    # Герой Щита (The Rising of the Shield Hero)
-    "shieldhero_mirelia_melromarc": "Мирелия К. Мелромарк",
-    "shieldhero_malty_melromarc": "Малти С. Мелромарк",
-    
-    # Helltaker
-    "helltaker_lucifer": "Люцифер",
-
-    # Zenless Zone Zero
-    "zzz_ellen_joe": "Эллен Джо",
-    "zzz_koleda": "Коледа",
-    "zzz_lycaon": "Ликаон (F)", # Female Lycaon
-    "zzz_nicole": "Николь",
-    "zzz_anby": "Энби",
-    "zzz_nekomiya": "Нэкомия",
-    "zzz_aisha": "Айша",
-    "zzz_haruka": "Харука",
-    "zzz_corin": "Корин",
-    "zzz_grace": "Грейс",
-    "zzz_hoshimi": "Хосими",
-    "zzz_rory": "Рори",
-    "zzz_bonnie": "Бонни",
-    "zzz_elize": "Элиза",
-    "zzz_fubuki": "Фубуки",
-    "zzz_sana": "Сана",
-    "zzz_yuki": "Юки",
-    
-    # Pokémon (персонажи-люди)
-    "pokemon_jessie": "Джесси",
-    "pokemon_lusamine": "Лусамине",
-
-    # League of Legends
-    "lol_qiyana": "Киана",
-    "lol_aurora": "Аврора",
-    "lol_katarina": "Катарина",
-    "lol_akali": "Акали",
-    "lol_irelia": "Ирелия",
-    "lol_caitlyn": "Кейтлин",
-    "lol_briar": "Брайер",
-    "lol_kaisa": "Кай'Са",
-    "lol_evelynn": "Эвелинн",
-    "lol_ahri": "Ари",
-    "lol_belveth": "Бел'Вет",
-    "lol_fiora": "Фиора",
-    "lol_gwen": "Гвен",
-    "lol_zoe": "Зои",
-    "lol_missfortune": "Мисс Фортуна",
-    "lol_neeko": "Нико",
-    "lol_samira": "Самира",
-    "lol_sona": "Сона",
-    "lol_elise": "Элиза",
-
-    # My Little Pony
-    "mlp_twilight_sparkle": "Сумеречная Искорка",
-    "mlp_applejack": "Эпплджек",
-    "mlp_rainbow_dash": "Радуга Дэш",
-    "mlp_rarity": "Рарити",
-    "mlp_fluttershy": "Флаттершай",
-    "mlp_pinkie_pie": "Пинки Пай",
-    "mlp_spike": "Спайк",
-    "mlp_princess_celestia": "Принцесса Селестия",
-    "mlp_princess_luna": "Принцесса Луна",
-    "mlp_princess_cadence": "Принцесса Каденс",
-    "mlp_discord": "Дискорд",
-    "mlp_apple_bloom": "Эппл Блум",
-    "mlp_scootaloo": "Скуталу",
-    "mlp_sweetie_belle": "Крошка Бель",
-
-    # Dislyte
-    "dislyte_li_ling_f": "Ли Лин (F)", # Female Li Ling
-    "dislyte_sally": "Салли",
-    "dislyte_clara": "Клара",
-    "dislyte_gabrielle": "Габриэль",
-    "dislyte_chloe": "Хлоя",
-    "dislyte_odette": "Одетта",
-    "dislyte_meredith": "Мередит",
-    "dislyte_jiang_man": "Цзян Мань",
-    "dislyte_eira": "Эйра",
-    "dislyte_drew": "Дрю",
-    "dislyte_pritzker_f": "Притцкер (F)", # Female Pritzker
-    "dislyte_fatima": "Фатима",
-    "dislyte_brewster_f": "Брюстер (F)", # Female Brewster
-    "dislyte_yun_chuan_f": "Юнь Чуань (F)", # Female Yun Chuan
-    "dislyte_hyde_f": "Хайд (F)", # Female Hyde
-    "dislyte_leora": "Леора",
-    "dislyte_tevor_f": "Тевор (F)", # Female Tevor
-    "dislyte_zora": "Зора",
-    "dislyte_embla": "Эмбла",
-    "dislyte_ophilia": "Офелия",
-    "dislyte_ahmed_f": "Ахмед (F)", # Female Ahmed
-    "dislyte_everett_f": "Эверетт (F)", # Female Everett
-    "dislyte_ollie_f": "Олли (F)", # Female Ollie
-    "dislyte_jin_hee": "Джин Хи",
-    "dislyte_ifrit_f": "Ифрит (F)", # Female Ifrit
-    "dislyte_sienna": "Сиенна",
-    "dislyte_valeria": "Валерия",
-    "dislyte_ashley": "Эшли",
-    "dislyte_triki_f": "Трики (F)", # Female Triki
-    "dislyte_narmer_f": "Нармер (F)", # Female Narmer
-    "dislyte_tye": "Тай",
-    "dislyte_biondina": "Биондина",
-    "dislyte_dhalia": "Далия",
-    "dislyte_elaine": "Элейн",
-    "dislyte_cecilia": "Сесилия",
-    "dislyte_intisar": "Интисар",
-    "dislyte_kaylee": "Кейли",
-    "dislyte_layla": "Лейла",
-    "dislyte_lynn": "Линн",
-    "dislyte_melanie": "Мелани",
-    "dislyte_mona": "Мона",
-    "dislyte_nicole": "Николь",
-    "dislyte_q": "Кью",
-    "dislyte_ren_si": "Жэнь Си",
-    "dislyte_stewart_f": "Стюарт (F)", # Female Stewart
-    "dislyte_tang_xuan_f": "Тан Сюань (F)", # Female Tang Xuan
-    "dislyte_unaky": "Унаки",
-    "dislyte_victoria": "Виктория",
-    "dislyte_xiao_yin": "Сяо Инь",
-    "dislyte_ye_suhua": "Е Сухуа",
-    "dislyte_zhong_nan": "Чжун Нань",
-    "dislyte_anadora": "Анадора",
-    "dislyte_bernice": "Бернис",
-    "dislyte_brynn": "Бринн",
-    "dislyte_catherine": "Катерина",
-    "dislyte_chang_pu": "Чан Пу",
-    "dislyte_eugene_f": "Юджин (F)",
-    "dislyte_freddy_f": "Фредди (F)",
-    "dislyte_hall_f": "Холл (F)",
-    "dislyte_helena": "Хелена",
-    "dislyte_jacob_f": "Джейкоб (F)",
-    "dislyte_jeanne": "Жанна",
-    "dislyte_li_ao_f": "Ли Ао (F)",
-    "dislyte_lu_yi_f": "Лу И (F)",
-    "dislyte_mark_f": "Марк (F)",
-    "dislyte_olivia": "Оливия",
-    "dislyte_sander_f": "Сандер (F)",
-    "dislyte_stella": "Стелла",
-    "dislyte_alice": "Алиса",
-    "dislyte_arcana": "Аркана",
-    "dislyte_aurelius_f": "Аурелиус (F)",
-    "dislyte_bette": "Бетте",
-    "dislyte_bonnie": "Бонни",
-    "dislyte_celine": "Селин",
-    "dislyte_corbin_f": "Корбин (F)",
+    "dislyte_li_ling_f": "li ling, female, dislyte",
+    "dislyte_sally": "sally, dislyte",
+    "dislyte_clara": "clara, dislyte",
+    "dislyte_gabrielle": "gabrielle, dislyte",
+    "dislyte_chloe": "chloe, dislyte",
+    "dislyte_odette": "odette, dislyte",
+    "dislyte_meredith": "meredith, dislyte",
+    "dislyte_jiang_man": "jiang man, dislyte",
+    "dislyte_eira": "eira, dislyte",
+    "dislyte_drew": "drew, dislyte",
+    "dislyte_pritzker_f": "pritzker, female, dislyte",
+    "dislyte_fatima": "fatima, dislyte",
+    "dislyte_brewster_f": "brewster, female, dislyte",
+    "dislyte_yun_chuan_f": "yun chuan, female, dislyte",
+    "dislyte_hyde_f": "hyde, female, dislyte",
+    "dislyte_leora": "leora, dislyte",
+    "dislyte_tevor_f": "tevor, female, dislyte",
+    "dislyte_zora": "zora, dislyte",
+    "dislyte_embla": "embla, dislyte",
+    "dislyte_ophilia": "ophilia, dislyte",
+    "dislyte_ahmed_f": "ahmed, female, dislyte",
+    "dislyte_everett_f": "everett, female, dislyte",
+    "dislyte_ollie_f": "ollie, female, dislyte",
+    "dislyte_jin_hee": "jin hee, dislyte",
+    "dislyte_ifrit_f": "ifrit, female, dislyte",
+    "dislyte_sienna": "sienna, dislyte",
+    "dislyte_valeria": "valeria, dislyte",
+    "dislyte_ashley": "ashley, dislyte",
+    "dislyte_triki_f": "triki, female, dislyte",
+    "dislyte_narmer_f": "narmer, female, dislyte",
+    "dislyte_tye": "tye, dislyte",
+    "dislyte_biondina": "biondina, dislyte",
+    "dislyte_dhalia": "dhalia, dislyte",
+    "dislyte_elaine": "elaine, dislyte",
+    "dislyte_cecilia": "cecilia, dislyte",
+    "dislyte_intisar": "intisar, dislyte",
+    "dislyte_kaylee": "kaylee, dislyte",
+    "dislyte_layla": "layla, dislyte",
+    "dislyte_lynn": "lynn, dislyte",
+    "dislyte_melanie": "melanie, dislyte",
+    "dislyte_mona": "mona, dislyte",
+    "dislyte_nicole": "nicole, dislyte",
+    "dislyte_q": "q, dislyte",
+    "dislyte_ren_si": "ren si, dislyte",
+    "dislyte_stewart_f": "stewart, female, dislyte",
+    "dislyte_tang_xuan_f": "tang xuan, female, dislyte",
+    "dislyte_unaky": "unaky, dislyte",
+    "dislyte_victoria": "victoria, dislyte",
+    "dislyte_xiao_yin": "xiao yin, dislyte",
+    "dislyte_ye_suhua": "ye suhua, dislyte",
+    "dislyte_zhong_nan": "zhong nan, dislyte",
+    "dislyte_anadora": "anadora, dislyte",
+    "dislyte_bernice": "bernice, dislyte",
+    "dislyte_brynn": "brynn, dislyte",
+    "dislyte_catherine": "catherine, dislyte",
+    "dislyte_chang_pu": "chang pu, dislyte",
+    "dislyte_eugene_f": "eugene, female, dislyte",
+    "dislyte_freddy_f": "freddy, female, dislyte",
+    "dislyte_hall_f": "hall, female, dislyte",
+    "dislyte_helena": "helena, dislyte",
+    "dislyte_jacob_f": "jacob, female, dislyte",
+    "dislyte_jeanne": "jeanne, dislyte",
+    "dislyte_li_ao_f": "li ao, female, dislyte",
+    "dislyte_lu_yi_f": "lu yi, female, dislyte",
+    "dislyte_mark_f": "mark, female, dislyte",
+    "dislyte_olivia": "olivia, dislyte",
+    "dislyte_sander_f": "sander, female, dislyte",
+    "dislyte_stella": "stella, dislyte",
+    "dislyte_alice": "alice, dislyte",
+    "dislyte_arcana": "arcana, dislyte",
+    "dislyte_aurelius_f": "aurelius, female, dislyte",
+    "dislyte_bette": "bette, dislyte",
+    "dislyte_bonnie": "bonnie, dislyte",
+    "dislyte_celine": "celine, dislyte",
+    "dislyte_corbin_f": "corbin, female, dislyte",
 }
 
 # --- Функции для создания клавиатур ---
@@ -1466,11 +1238,7 @@ def build_prompt(tags):
 
     # Группировка по категориям
     for tag in unique:
-        if tag in CHARACTER_EXTRA:
-            priority["character"].append(TAG_PROMPTS.get(tag, tag)) # Use TAG_PROMPTS as it contains CHARACTER_EXTRA
-        elif tag.startswith("furry_"):
-            priority["furry"].append(TAG_PROMPTS.get(tag, tag))
-        elif tag in TAG_PROMPTS:
+        if tag in TAG_PROMPTS: # Проверяем, что тег существует в TAG_PROMPTS
             key = tag_category(tag)
             if key:
                 priority[key].append(TAG_PROMPTS[tag])
