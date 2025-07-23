@@ -45,9 +45,9 @@ TAGS = {
         "prolapsed_uterus": "Выпавшая матка",
         "prolapsed_anus": "Выпавший анус",
         "two_dildos_one_hole": "Два дилдо в одно отверстие",
-        "dilated_nipples": "Расширенные соски", # NEW
-        "anus_spreader_ring": "Расширительное кольцо в анусе", # NEW
-        "vagina_spreader_ring": "Расширительное кольцо в вагине" # NEW
+        "dilated_nipples": "Расширенные соски",
+        "anus_spreader_ring": "Расширительное кольцо в анусе",
+        "vagina_spreader_ring": "Расширительное кольцо в вагине"
     },
     "toys": {
         "dildo": "Дилдо",
@@ -56,8 +56,8 @@ TAGS = {
         "anal_beads": "Анальные шарики",
         "anal_plug": "Анальная пробка",
         "long_dildo_path": "Дилдо сквозь все тело",
-        "urethral_dildo": "Дилдо в уретре", # NEW
-        "two_dildos_anus_vagina": "Дилдо в анусе и вагине" # NEW (renamed for clarity)
+        "urethral_dildo": "Дилдо в уретре",
+        "two_dildos_anus_vagina": "Дилдо в анусе и вагине"
     },
     "poses": {
         "doggy": "На четвереньках",
@@ -73,15 +73,12 @@ TAGS = {
         "back_facing": "Вид сзади",
         "top_down_view": "Вид сверху",
         "bottom_up_view": "Вид снизу",
-        "hands_spreading_vagina": "Руки раздвигают влагалище"
+        "hands_spreading_vagina": "Руки раздвигают влагалище",
+        "lotus_pose": "Поза лотоса", # NEW
+        "scissors_pose": "Поза ножницы (две девушки)" # NEW
     },
     "clothes": {
-        "stockings_white": "Белые чулки", # MODIFIED
-        "stockings_black": "Черные чулки", # MODIFIED
-        "stockings_red": "Красные чулки", # MODIFIED
-        "stockings_pink": "Розовые чулки", # MODIFIED
-        "stockings_gold": "Золотые чулки", # MODIFIED
-        "stockings_fishnet": "Чулки сеточкой",
+        "stockings": "Чулки", # Subcategory trigger
         "bikini_tan_lines": "Линии от загара в бикини",
         "shibari": "Шибари",
         "cow_costume": "Костюм коровы"
@@ -113,36 +110,15 @@ TAGS = {
         "furry_sylveon": "Фури сильвеон",
         "furry_fox": "Фури лисица",
         "furry_bunny": "Фури кролик",
-        "furry_wolf": "Фури волчица"
-    },
-    "head": {
-        "ahegao": "Ахегао",
-        "pain_face": "Лицо в боли",
-        "ecstasy_face": "Лицо в экстазе",
-        "gold_lipstick": "Золотая помада"
-    },
-    "fetish": {
-        "nipple_piercing": "Пирсинг сосков",
-        "clitoral_piercing": "Пирсинг клитора",
-        "foot_fetish": "Футфетиш",
-        "footjob": "Футджоб",
-        "mouth_nipples": "Вместо сосков рты",
-        "nipple_hole": "Отверстие в сосках", # NEW
-        "anus_piercing": "Пирсинг ануса", # NEW
-        "vagina_piercing": "Пирсинг вагины", # NEW
-        "gag": "Кляп", # NEW
-        "blindfold": "Повязка на глаза" # NEW
-    },
-    "pokemon": {
-        "reshiram": "Реширам",
-        "mew": "Мю",
-        "mewtwo": "Мюту",
-        "gardevoir": "Гардевуар",
-        "umbreon": "Эмбреон",
-        "lugia": "Лугия",
-        "shadow_lugia": "Шадоу Лугия",
-        "lopunny": "Лопанни",
-        "goodra": "Гудра"
+        "furry_wolf": "Фури волчица",
+        "furry_bear": "Фури медведь", # NEW
+        "furry_bird": "Фури птица", # NEW
+        "furry_mouse": "Фури мышь", # NEW
+        "furry_deer": "Фури олень", # NEW
+        "furry_tiger": "Фури тигр", # NEW
+        "furry_lion": "Фури лев", # NEW
+        "furry_snake": "Фури змея", # NEW
+        "furry_lizard": "Фури ящерица" # NEW
     },
     "characters": {
         # Демоны старшей школы
@@ -347,10 +323,6 @@ TAGS = {
         "zzz_sana": "Сана",
         "zzz_yuki": "Юки",
         
-        # Pokémon (персонажи-люди)
-        "pokemon_jessie": "Джесси",
-        "pokemon_lusamine": "Лусамине",
-
         # League of Legends
         "lol_qiyana": "Киана",
         "lol_aurora": "Аврора",
@@ -464,6 +436,19 @@ TAGS = {
         "dislyte_bonnie": "Бонни",
         "dislyte_celine": "Селин",
         "dislyte_corbin_f": "Корбин (F)",
+    },
+    "pokemon": { # Перенесено из characters
+        "reshiram": "Реширам",
+        "mew": "Мю",
+        "mewtwo": "Мюту",
+        "gardevoir": "Гардевуар",
+        "umbreon": "Эмбреон",
+        "lugia": "Лугия",
+        "shadow_lugia": "Шадоу Лугия",
+        "lopunny": "Лопанни",
+        "goodra": "Гудра",
+        "pokemon_jessie": "Джесси", # Moved from characters
+        "pokemon_lusamine": "Лусамине", # Moved from characters
     }
 }
 
@@ -480,7 +465,7 @@ CHARACTER_CATEGORIES = {
     "residentevil": "🎮 Resident Evil",
     "streetfighter": "🎮 Street Fighter",
     "atomicheart": "🎮 Atomic Heart",
-    "bleach": "📺 Bleach", # НОВАЯ КАТЕГОРИЯ
+    "bleach": "📺 Bleach",
     "danmachi": "📺 Danmachi",
     "ragnarok": "📺 Повесть о конце света",
     "naruto": "📺 Naruto",
@@ -490,7 +475,6 @@ CHARACTER_CATEGORIES = {
     "shieldhero": "📺 Герой Щита",
     "helltaker": "🎮 Helltaker",
     "zzz": "🎮 Zenless Zone Zero",
-    "pokemon_chars": "📺 Pokémon (персонажи)",
     "lol": "🎮 League of Legends",
     "mlp": "📺 My Little Pony",
     "dislyte": "🎮 Dislyte"
@@ -701,7 +685,7 @@ CHARACTER_EXTRA = {
     "zzz_sana": "sana, zenless zone zero, cyborg, blue hair, futuristic outfit",
     "zzz_yuki": "yuki, zenless zone zero, school uniform, black hair, shy",
         
-    # Pokémon (персонажи-люди)
+    # Pokémon (персонажи-люди) - Moved to "pokemon" category
     "pokemon_jessie": "jessie, pokemon, team rocket, red hair, long hair, ponytail",
     "pokemon_lusamine": "lusamine, pokemon, aether foundation, blonde hair, long hair, dress",
 
@@ -764,7 +748,7 @@ CHARACTER_EXTRA = {
     "dislyte_embla": "embla, dislyte, raven, black wings, dark outfit, mysterious",
     "dislyte_ophilia": "ophilia, dislyte, fairy, green hair, light dress, nature",
     "dislyte_ahmed_f": "ahmed, female, dislyte, desert prince, traditional outfit, elegant",
-    "dislyte_everett_f": "everett, female, dislyte, dark hair, casual outfit, confident",
+    "dislyte_everett_f": "everett, female, dislyte, casual outfit, confident",
     "dislyte_ollie_f": "ollie, female, dislyte, short hair, sporty outfit, cheerful",
     "dislyte_jin_hee": "jin hee, dislyte, korean traditional dress, elegant, long hair",
     "dislyte_ifrit_f": "ifrit, female, dislyte, fiery hair, demonic, powerful",
@@ -820,6 +804,34 @@ CHARACTER_EXTRA = {
     "dislyte_corbin_f": "corbin, female, dislyte, mercenary, combat gear, tough",
 }
 
+# Категории для персонажей (для вкладок)
+CHARACTER_CATEGORIES = {
+    "dxd": "📺 Демоны старшей школы",
+    "genshin": "🎮 Genshin Impact",
+    "hsr": "🎮 Honkai Star Rail",
+    "nier": "🎮 NieR Automata",
+    "spyxfamily": "📺 Spy x Family",
+    "akamegakill": "📺 Akame ga Kill",
+    "azurlane": "🎮 Azur Lane",
+    "fate": "📺 Fate Series",
+    "residentevil": "🎮 Resident Evil",
+    "streetfighter": "🎮 Street Fighter",
+    "atomicheart": "🎮 Atomic Heart",
+    "bleach": "📺 Bleach",
+    "danmachi": "📺 Danmachi",
+    "ragnarok": "📺 Повесть о конце света",
+    "naruto": "📺 Naruto",
+    "overlord": "📺 Overlord",
+    "kakegurui": "📺 Безумный азарт",
+    "jujutsukaisen": "📺 Магическая битва",
+    "shieldhero": "📺 Герой Щита",
+    "helltaker": "🎮 Helltaker",
+    "zzz": "🎮 Zenless Zone Zero",
+    "lol": "🎮 League of Legends",
+    "mlp": "📺 My Little Pony",
+    "dislyte": "🎮 Dislyte"
+}
+
 # --- Промпты для модели ---
 TAG_PROMPTS = {
     **CHARACTER_EXTRA, # Включаем промпты персонажей
@@ -830,21 +842,24 @@ TAG_PROMPTS = {
     "dilated_vagina": "dilated vagina, vagina stretched, open pussy, internal view of vagina, vagina gaping, spread pussy, labia spread, realistic, detailed, high focus",
     "prolapsed_uterus": "prolapsed uterus, uterus exposed, visible uterus",
     "prolapsed_anus": "prolapsed anus, anus exposed, visible anus",
-    "two_dildos_one_hole": "two dildos inserted, two dildos into one orifice",
+    "two_dildos_one_hole": "two dildos, one hole, multiple dildos in one orifice, dildos inserted into same hole", # Corrected
     "dildo": "dildo inserted",
     "huge_dildo": "huge dildo",
-    "horse_dildo": "horse dildo",
+    "horse_dildo": "horse dildo, belly bulge, stomach distended", # Added belly bulge
     "anal_beads": "anal beads inserted",
     "anal_plug": "anal plug",
     "long_dildo_path": (
-        "dildo inserted into anus, pushing visibly through intestines with clear belly bulge, "
-        "exiting from mouth, seamless and continuous dildo, consistent texture, realistic rubber"
+        "dildo inserted into anus, dildo visibly pushing through intestines, belly bulge, stomach distended, "
+        "dildo exiting from mouth, seamless and continuous dildo, consistent texture, realistic rubber" # Improved
     ),
-    "urethral_dildo": "urethral dildo, dildo in urethra, dildo inserted into urethra", # NEW
-    "two_dildos_anus_vagina": "one dildo inserted into anus, one dildo inserted into vagina", # NEW and specific
+    "urethral_dildo": "urethral dildo, dildo in urethra, dildo inserted into urethra",
+    "two_dildos_anus_vagina": "one dildo inserted into anus, one dildo inserted into vagina",
+    "horse_sex": "horse sex, mare, horse cock, equine, intercourse with horse", # NEW
     "doggy": "doggy style, on all fours, hands on floor",
     "squat": "squatting pose, hands behind head",
     "lying": "lying down",
+    "lotus_pose": "lotus pose, legs crossed, sitting position", # NEW
+    "scissors_pose": "scissors pose, two girls, legs intertwined, scissoring", # NEW
     "hor_split": "horizontal split, legs stretched fully to sides, pelvis on floor, inner thighs visible",
     "ver_split": "vertical split, holding own raised leg",
     "on_back_legs_behind_head": "on back, legs behind head",
@@ -855,12 +870,16 @@ TAG_PROMPTS = {
     "top_down_view": "shot from above, top-down view",
     "bottom_up_view": "shot from below, bottom-up view",
     "hands_spreading_vagina": "hands spreading vagina",
-    "stockings_white": "white stockings only", # MODIFIED
-    "stockings_black": "black stockings only", # MODIFIED
-    "stockings_red": "red stockings only", # MODIFIED
-    "stockings_pink": "pink stockings only", # MODIFIED
-    "stockings_gold": "gold stockings only", # MODIFIED
-    "stockings_fishnet": "fishnet stockings",
+    "stockings_white": "white stockings only",
+    "stockings_black": "black stockings only",
+    "stockings_red": "red stockings only",
+    "stockings_pink": "pink stockings only",
+    "stockings_gold": "gold stockings only",
+    "stockings_fishnet_white": "white fishnet stockings", # Modified for subcategory
+    "stockings_fishnet_black": "black fishnet stockings", # Modified for subcategory
+    "stockings_fishnet_red": "red fishnet stockings", # Modified for subcategory
+    "stockings_fishnet_pink": "pink fishnet stockings", # Modified for subcategory
+    "stockings_fishnet_gold": "gold fishnet stockings", # Modified for subcategory
     "bikini_tan_lines": "bikini tan lines",
     "shibari": "shibari ropes",
     "cow_costume": "cow costume, cow ears, cow horns, cow tail, wearing stockings only",
@@ -887,6 +906,14 @@ TAG_PROMPTS = {
     "furry_fox": "furry fox girl, fox costume",
     "furry_bunny": "furry bunny girl, bunny costume",
     "furry_wolf": "furry wolf girl, wolf costume",
+    "furry_bear": "furry bear girl, bear ears, bear tail", # NEW
+    "furry_bird": "furry bird girl, bird wings, bird feathers", # NEW
+    "furry_mouse": "furry mouse girl, mouse ears, mouse tail", # NEW
+    "furry_deer": "furry deer girl, deer antlers, deer ears, deer tail", # NEW
+    "furry_tiger": "furry tiger girl, tiger stripes, tiger ears, tiger tail", # NEW
+    "furry_lion": "furry lion girl, lion mane, lion ears, lion tail", # NEW
+    "furry_snake": "furry snake girl, snake scales, snake tail, snake eyes", # NEW
+    "furry_lizard": "furry lizard girl, lizard scales, lizard tail", # NEW
     "ahegao": "ahegao face",
     "pain_face": "face in pain",
     "ecstasy_face": "ecstasy face",
@@ -896,14 +923,14 @@ TAG_PROMPTS = {
     "foot_fetish": "foot fetish",
     "footjob": "footjob",
     "mouth_nipples": "mouths instead of nipples",
-    "nipple_hole": "nipple hole, hole in nipple", # NEW
-    "anus_piercing": "anus piercing", # NEW
-    "vagina_piercing": "vagina piercing", # NEW
-    "gag": "gag, mouth gag", # NEW
-    "blindfold": "blindfold", # NEW
-    "dilated_nipples": "dilated nipples, stretched nipple holes, open nipple holes", # NEW
-    "anus_spreader_ring": "anus spreader ring, ring holding anus open, anal ring, anus gaping ring", # NEW
-    "vagina_spreader_ring": "vagina spreader ring, ring holding vagina open, vaginal ring, vagina gaping ring", # NEW
+    "nipple_hole": "nipple hole, hole in nipple",
+    "anus_piercing": "anus piercing",
+    "vagina_piercing": "vagina piercing",
+    "gag": "gag, mouth gag",
+    "blindfold": "blindfold",
+    "dilated_nipples": "dilated nipples, stretched nipple holes, open nipple holes",
+    "anus_spreader_ring": "anus spreader ring, ring holding anus open, anal ring, anus gaping ring",
+    "vagina_spreader_ring": "vagina spreader ring, ring holding vagina open, vaginal ring, vagina gaping ring",
     "reshiram": "reshiram, pokemon",
     "mew": "mew, pokemon",
     "mewtwo": "mewtwo, pokemon",
@@ -912,7 +939,37 @@ TAG_PROMPTS = {
     "lugia": "lugia, pokemon",
     "shadow_lugia": "shadow lugia, pokemon",
     "lopunny": "lopunny, pokemon",
-    "goodra": "goodra, pokemon"
+    "goodra": "goodra, pokemon",
+    "pokemon_jessie": "jessie, pokemon, team rocket, red hair, long hair, ponytail", # Moved
+    "pokemon_lusamine": "lusamine, pokemon, aether foundation, blonde hair, long hair, dress", # Moved
+}
+
+# Категории для персонажей (для вкладок)
+CHARACTER_CATEGORIES = {
+    "dxd": "📺 Демоны старшей школы",
+    "genshin": "🎮 Genshin Impact",
+    "hsr": "🎮 Honkai Star Rail",
+    "nier": "🎮 NieR Automata",
+    "spyxfamily": "📺 Spy x Family",
+    "akamegakill": "📺 Akame ga Kill",
+    "azurlane": "🎮 Azur Lane",
+    "fate": "📺 Fate Series",
+    "residentevil": "🎮 Resident Evil",
+    "streetfighter": "🎮 Street Fighter",
+    "atomicheart": "🎮 Atomic Heart",
+    "bleach": "📺 Bleach",
+    "danmachi": "📺 Danmachi",
+    "ragnarok": "📺 Повесть о конце света",
+    "naruto": "📺 Naruto",
+    "overlord": "📺 Overlord",
+    "kakegurui": "📺 Безумный азарт",
+    "jujutsukaisen": "📺 Магическая битва",
+    "shieldhero": "📺 Герой Щита",
+    "helltaker": "🎮 Helltaker",
+    "zzz": "🎮 Zenless Zone Zero",
+    "lol": "🎮 League of Legends",
+    "mlp": "📺 My Little Pony",
+    "dislyte": "🎮 Dislyte"
 }
 
 # --- Функции для создания клавиатур ---
@@ -920,7 +977,7 @@ def main_menu():
     """Создает главное меню бота."""
     kb = types.InlineKeyboardMarkup()
     kb.add(types.InlineKeyboardButton("🧩 Выбрать теги", callback_data="choose_tags"))
-    kb.add(types.InlineKeyboardButton("⚙️ Настройки", callback_data="settings")) # Новая кнопка для настроек
+    kb.add(types.InlineKeyboardButton("⚙️ Настройки", callback_data="settings"))
     kb.add(types.InlineKeyboardButton("🎨 Генерировать", callback_data="generate"))
     return kb
 
@@ -940,6 +997,26 @@ def character_subcategory_menu(selected_tags):
     kb.add(types.InlineKeyboardButton("⬅ Назад", callback_data="back_to_cat"))
     return kb
 
+def stockings_type_menu(selected_tags):
+    """Создает меню выбора типа чулок."""
+    kb = types.InlineKeyboardMarkup(row_width=2)
+    kb.add(types.InlineKeyboardButton("Обычные чулки", callback_data="stockings_type_normal"))
+    kb.add(types.InlineKeyboardButton("Чулки в сеточку", callback_data="stockings_type_fishnet"))
+    kb.add(types.InlineKeyboardButton("⬅ Назад", callback_data="back_to_cat"))
+    return kb
+
+def stockings_color_menu(stockings_type, selected_tags):
+    """Создает меню выбора цвета чулок."""
+    kb = types.InlineKeyboardMarkup(row_width=2)
+    colors = {"white": "Белые", "black": "Черные", "red": "Красные", "pink": "Розовые", "gold": "Золотые"}
+    for color_key, color_name in colors.items():
+        tag_key = f"stockings_{stockings_type}_{color_key}"
+        label = f"✅ {color_name}" if tag_key in selected_tags else color_name
+        kb.add(types.InlineKeyboardButton(label, callback_data=f"tag_clothes_{tag_key}"))
+    
+    kb.add(types.InlineKeyboardButton("⬅ Назад", callback_data="back_to_stockings_type"))
+    return kb
+
 def tag_menu(category, selected_tags, char_subcategory=None):
     """Создает меню выбора тегов внутри определенной категории."""
     kb = types.InlineKeyboardMarkup(row_width=2)
@@ -951,10 +1028,21 @@ def tag_menu(category, selected_tags, char_subcategory=None):
             # Префикс подкатегории должен соответствовать началу ключа тега
             if tag_key.startswith(char_subcategory + "_"):
                 tags_to_display[tag_key] = tag_name
+    elif category == "clothes" and "stockings" in TAGS[category]: # Handle stockings subcategory
+        # If stockings is a subcategory, we don't display it here directly
+        for tag_key, tag_name in TAGS[category].items():
+            if tag_key != "stockings": # Exclude the stockings subcategory trigger
+                tags_to_display[tag_key] = tag_name
+        # Add a button for stockings subcategory
+        kb.add(types.InlineKeyboardButton("Чулки", callback_data="stockings_type_select"))
     else:
         tags_to_display = TAGS[category]
 
     for tag_key, tag_name in tags_to_display.items():
+        # Skip stockings related tags if we are in the main clothes menu
+        if category == "clothes" and (tag_key.startswith("stockings_") and tag_key != "stockings"):
+            continue
+
         label = f"✅ {tag_name}" if tag_key in selected_tags else tag_name
         kb.add(types.InlineKeyboardButton(label, callback_data=f"tag_{category}_{tag_key}"))
     
@@ -980,7 +1068,7 @@ def settings_menu(current_num_images):
 def start(msg):
     """Обработчик команды /start."""
     cid = msg.chat.id
-    user_settings[cid] = {"tags": [], "last_cat": None, "last_char_sub": None, "num_images": 1} # Добавлено num_images
+    user_settings[cid] = {"tags": [], "last_cat": None, "last_char_sub": None, "stockings_type": None, "num_images": 1} # Добавлено stockings_type
     bot.send_message(cid, "Привет Шеф!", reply_markup=main_menu())
 
 @bot.callback_query_handler(func=lambda call: True)
@@ -989,7 +1077,7 @@ def callback(call):
     cid = call.message.chat.id
     message_id = call.message.message_id
     if cid not in user_settings:
-        user_settings[cid] = {"tags": [], "last_cat": None, "last_char_sub": None, "num_images": 1}
+        user_settings[cid] = {"tags": [], "last_cat": None, "last_char_sub": None, "stockings_type": None, "num_images": 1}
 
     data = call.data
 
@@ -1002,12 +1090,24 @@ def callback(call):
         selected = user_settings[cid]["tags"]
         
         if cat == "characters":
-            # Сбрасываем last_char_sub при входе в основную категорию персонажей
             user_settings[cid]["last_char_sub"] = None 
             bot.edit_message_text("Выбери подкатегорию персонажей:", cid, message_id, reply_markup=character_subcategory_menu(selected))
+        elif cat == "clothes":
+            bot.edit_message_text("Категория: Одежда", cid, message_id, reply_markup=tag_menu(cat, selected))
         else:
             category_display_name = CATEGORY_NAMES.get(cat, cat)
             bot.edit_message_text(f"Категория: {category_display_name}", cid, message_id, reply_markup=tag_menu(cat, selected))
+
+    elif data == "stockings_type_select":
+        bot.edit_message_text("Выбери тип чулок:", cid, message_id, reply_markup=stockings_type_menu(user_settings[cid]["tags"]))
+
+    elif data.startswith("stockings_type_"):
+        stockings_type = data[len("stockings_type_"):]
+        user_settings[cid]["stockings_type"] = stockings_type
+        bot.edit_message_text("Выбери цвет чулок:", cid, message_id, reply_markup=stockings_color_menu(stockings_type, user_settings[cid]["tags"]))
+
+    elif data == "back_to_stockings_type":
+        bot.edit_message_text("Выбери тип чулок:", cid, message_id, reply_markup=stockings_type_menu(user_settings[cid]["tags"]))
 
     elif data.startswith("char_sub_"):
         char_sub = data[9:]
@@ -1019,6 +1119,23 @@ def callback(call):
     elif data.startswith("tag_"):
         _, cat, tag = data.split("_", 2)
         tags = user_settings[cid]["tags"]
+
+        # Special handling for stockings to remove conflicting tags
+        if tag.startswith("stockings_"):
+            # Remove any existing stockings tags before adding the new one
+            tags_to_remove = [t for t in tags if t.startswith("stockings_")]
+            for t_rem in tags_to_remove:
+                tags.remove(t_rem)
+            
+            if tag not in tags: # Add the new stockings tag
+                tags.append(tag)
+            
+            # Update the menu for stockings color selection
+            stockings_type = user_settings[cid]["stockings_type"]
+            bot.edit_message_reply_markup(cid, message_id, reply_markup=stockings_color_menu(stockings_type, tags))
+            return # Exit to prevent re-rendering the main tag menu
+
+        # General tag handling
         if tag in tags:
             tags.remove(tag)
         else:
@@ -1031,15 +1148,14 @@ def callback(call):
         bot.edit_message_text("Теги сохранены.", cid, message_id, reply_markup=main_menu())
 
     elif data == "back_to_cat":
-        # Если возвращаемся из подкатегории персонажей, то сначала в меню подкатегорий
         if user_settings[cid].get("last_cat") == "characters" and user_settings[cid].get("last_char_sub"):
-            user_settings[cid]["last_char_sub"] = None # Сбрасываем подкатегорию при возврате
+            user_settings[cid]["last_char_sub"] = None
             bot.edit_message_text("Выбери подкатегорию персонажей:", cid, message_id, reply_markup=character_subcategory_menu(user_settings[cid]["tags"]))
         else:
             bot.edit_message_text("Выбери категорию:", cid, message_id, reply_markup=category_menu())
     
     elif data == "back_to_char_sub":
-        user_settings[cid]["last_char_sub"] = None # Сбрасываем подкатегорию при возврате
+        user_settings[cid]["last_char_sub"] = None
         bot.edit_message_text("Выбери подкатегорию персонажей:", cid, message_id, reply_markup=character_subcategory_menu(user_settings[cid]["tags"]))
 
     elif data == "settings":
@@ -1068,7 +1184,7 @@ def callback(call):
         
         user_settings[cid]["last_prompt_tags"] = tags.copy()
 
-        bot.send_message(cid, "Принято Шеф, приступаю!") # Сообщение перед генерацией
+        bot.send_message(cid, "Принято Шеф, приступаю!")
 
         generated_urls = replicate_generate(positive_prompt, negative_prompt, num_images)
         if generated_urls:
@@ -1095,11 +1211,11 @@ def callback(call):
             bot.send_message(cid, "Нет сохранённых тегов с предыдущей генерации. Сначала сделай генерацию.")
 
     elif data == "start":
-        user_settings[cid] = {"tags": [], "last_cat": None, "last_char_sub": None, "num_images": 1}
+        user_settings[cid] = {"tags": [], "last_cat": None, "last_char_sub": None, "stockings_type": None, "num_images": 1}
         bot.send_message(cid, "Настройки сброшены. Начнем заново!", reply_markup=main_menu())
     
     elif data == "ignore":
-        bot.answer_callback_query(call.id) # Просто игнорируем нажатие на текст-кнопку
+        bot.answer_callback_query(call.id)
 
 # --- Функция для определения категории тега ---
 def tag_category(tag):
@@ -1120,11 +1236,9 @@ def tag_category(tag):
                 return "fetish"
             if cat == "head":
                 return "face"
-            if cat == "pokemon":
+            if cat == "pokemon": # Pokemon category now includes characters
                 return "pokemon"
             
-            # Для персонажей определяем категорию "character"
-            # Проверяем, начинается ли тег с какого-либо ключа из CHARACTER_CATEGORIES
             for char_cat_key in CHARACTER_CATEGORIES.keys():
                 if tag.startswith(char_cat_key + "_"):
                     return "character"
@@ -1162,7 +1276,6 @@ def build_prompt(tags):
         "vagina not visible, anus not visible, penis not visible, bad proportions, "
         "all clothes, all clothing"
     )
-    # Присоединяем части кортежа base_negative в одну строку
     base_negative = "".join(base_negative)
 
 
@@ -1177,19 +1290,36 @@ def build_prompt(tags):
     if "furry_cow" in unique:
         unique.discard("cow_costume") 
 
+    # Handle multiple characters
+    character_tags_count = 0
+    for tag in unique:
+        for char_cat_key in CHARACTER_CATEGORIES.keys():
+            if tag.startswith(char_cat_key + "_"):
+                character_tags_count += 1
+                break
+    
+    if character_tags_count > 1:
+        base.insert(0, f"{character_tags_count}girls")
+    elif character_tags_count == 1:
+        base.insert(0, "1girl")
+    elif not any(tag_category(t) in ["furry", "pokemon"] for t in unique): # Add 1girl if no specific character or furry/pokemon
+         base.insert(0, "1girl")
+
     # Группировка по категориям
     for tag in unique:
         if tag in CHARACTER_EXTRA:
-            priority["character"].append(TAG_PROMPTS.get(tag, tag)) # Use TAG_PROMPTS as it contains CHARACTER_EXTRA
+            priority["character"].append(TAG_PROMPTS.get(tag, tag))
         elif tag.startswith("furry_"):
             priority["furry"].append(TAG_PROMPTS.get(tag, tag))
+        elif tag.startswith("pokemon_") or tag in ["reshiram", "mew", "mewtwo", "gardevoir", "umbreon", "lugia", "shadow_lugia", "lopunny", "goodra"]:
+            priority["pokemon"].append(TAG_PROMPTS.get(tag, tag))
         elif tag in TAG_PROMPTS:
             key = tag_category(tag)
             if key:
                 priority[key].append(TAG_PROMPTS[tag])
 
     prompt_parts = base[:]
-    # Порядок добавления важен: персонажи, фури, покемоны, тело, позы, отверстия, игрушки, одежда, фетиши, лицо
+    # Порядок добавления важен: количество девушек, персонажи, фури, покемоны, тело, позы, отверстия, игрушки, одежда, фетиши, лицо
     for section in ["character", "furry", "pokemon", "body", "pose", "holes", "toys", "clothes", "fetish", "face"]:
         prompt_parts.extend(priority[section])
 
@@ -1252,7 +1382,7 @@ def replicate_generate(positive_prompt, negative_prompt, num_images=1):
             if data["status"] == "succeeded":
                 if isinstance(data["output"], list) and data["output"]:
                     urls.append(data["output"][0])
-                    break # Выходим из внутреннего цикла после успешной генерации
+                    break
                 else:
                     print("Получен пустой или некорректный 'output' от Replicate.")
                     return None
@@ -1260,11 +1390,11 @@ def replicate_generate(positive_prompt, negative_prompt, num_images=1):
                 print(f"Предсказание не удалось: {data.get('error', 'Сообщение об ошибке не предоставлено')}")
                 print(f"Request JSON: {json_data}")
                 return None
-        else: # Если цикл завершился без break
+        else:
             print("Время ожидания предсказания истекло для одного изображения.")
-            return None # Возвращаем None, если хотя бы одно изображение не сгенерировалось
+            return None
 
-    return urls # Возвращаем список URL-ов всех сгенерированных изображений
+    return urls
 
 # --- Настройка вебхука Flask ---
 @app.route("/", methods=["POST"])
@@ -1273,11 +1403,9 @@ def webhook():
     json_str = request.stream.read().decode("utf-8")
     update = telebot.types.Update.de_json(json_str)
     
-    # Автоматическая отправка /start при первом запуске (если это не колбэк)
-    # Проверяем, что это новое сообщение и пользователь еще не в user_settings
     if update.message and update.message.chat.id not in user_settings:
         bot.send_message(update.message.chat.id, "Привет Шеф!", reply_markup=main_menu())
-        user_settings[update.message.chat.id] = {"tags": [], "last_cat": None, "last_char_sub": None, "num_images": 1}
+        user_settings[update.message.chat.id] = {"tags": [], "last_cat": None, "last_char_sub": None, "stockings_type": None, "num_images": 1}
 
     bot.process_new_updates([update])
     return "ok", 200
