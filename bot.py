@@ -11,6 +11,19 @@ REPLICATE_TOKEN = os.getenv("REPLICATE_API_TOKEN")
 WEBHOOK_URL = os.getenv("WEBHOOK_URL")
 PORT = int(os.environ.get("PORT", 5000))
 
+# --- Проверка наличия переменных окружения ---
+# Если какая-либо из этих переменных отсутствует, бот не сможет работать.
+# Выводим сообщение и завершаем работу, чтобы увидеть проблему в логах.
+if not API_TOKEN:
+    print("Ошибка: Переменная окружения TELEGRAM_TOKEN не установлена.")
+    exit(1)
+if not REPLICATE_TOKEN:
+    print("Ошибка: Переменная окружения REPLICATE_API_TOKEN не установлена.")
+    exit(1)
+if not WEBHOOK_URL:
+    print("Ошибка: Переменная окружения WEBHOOK_URL не установлена.")
+    exit(1)
+
 # ID новой модели Replicate, которую вы используете
 REPLICATE_MODEL = "80441e2c32a55f2fcf9b77fa0a74c6c86ad7deac51eed722b9faedb253265cb4"
 
@@ -509,7 +522,7 @@ CHARACTER_CATEGORIES = {
     "residentevil": "🎮 Resident Evil",
     "streetfighter": "🎮 Street Fighter",
     "atomicheart": "🎮 Atomic Heart",
-    "bleach": "📺 Bleach", # НОВАЯ КАТЕГОРИЯ
+    "bleach": "📺 Bleach",
     "danmachi": "📺 Danmachi",
     "ragnarok": "📺 Повесть о конце света",
     "naruto": "📺 Naruto",
@@ -519,140 +532,53 @@ CHARACTER_CATEGORIES = {
     "shieldhero": "📺 Герой Щита",
     "helltaker": "🎮 Helltaker",
     "zzz": "🎮 Zenless Zone Zero",
-    "pokemon_chars": "📺 Pokémon (персонажи)",
+    "pokemon_chars": "📺 Pokémon (персонажи)", # Переименовал, чтобы избежать путаницы с тегом "pokemon"
     "lol": "🎮 League of Legends",
     "mlp": "📺 My Little Pony",
     "dislyte": "🎮 Dislyte"
 }
 
 # --- Промпты для модели ---
-TAG_PROMPTS = { # Переименовано для ясности, чтобы не путать с CHARACTER_EXTRA, который является частью TAG_PROMPTS
-    # Теги из TAGS
-    "vagina": "vagina",
-    "anus": "anus",
-    "both": "vagina, anus",
-    "dilated_anus": "dilated anus",
-    "dilated_vagina": "dilated vagina",
-    "prolapsed_uterus": "prolapsed uterus",
-    "prolapsed_anus": "prolapsed anus",
-    "two_dildos_one_hole": "two dildos one hole",
-    "dilated_nipples": "dilated nipples",
-    "nipple_hole": "nipple hole",
-    "anus_spreader_ring": "anus spreader ring",
-    "vagina_spreader_ring": "vagina spreader ring",
-
-    "dildo": "dildo",
-    "huge_dildo": "huge dildo",
-    "horse_dildo": "horse dildo",
-    "anal_beads": "anal beads",
-    "anal_plug": "anal plug",
-    "long_dildo_path": "long dildo path",
-    "urethral_dildo": "urethral dildo",
+TAG_PROMPTS = {
+    # Теги из TAGS (их много, оставляю как есть)
+    "vagina": "vagina", "anus": "anus", "both": "vagina, anus", "dilated_anus": "dilated anus",
+    "dilated_vagina": "dilated vagina", "prolapsed_uterus": "prolapsed uterus", "prolapsed_anus": "prolapsed anus",
+    "two_dildos_one_hole": "two dildos one hole", "dilated_nipples": "dilated nipples", "nipple_hole": "nipple hole",
+    "anus_spreader_ring": "anus spreader ring", "vagina_spreader_ring": "vagina spreader ring",
+    "dildo": "dildo", "huge_dildo": "huge dildo", "horse_dildo": "horse dildo", "anal_beads": "anal beads",
+    "anal_plug": "anal plug", "long_dildo_path": "long dildo path", "urethral_dildo": "urethral dildo",
     "two_dildos_anus_vagina": "two dildos anus vagina",
-
-    "doggy": "doggy style",
-    "standing": "standing",
-    "squat": "squatting",
-    "lying": "lying",
-    "hor_split": "horizontal split",
-    "ver_split": "vertical split",
-    "on_back_legs_behind_head": "on back legs behind head",
-    "on_side_leg_up": "on side leg up",
-    "suspended": "suspended",
-    "front_facing": "front facing",
-    "back_facing": "back facing",
-    "top_down_view": "top down view",
-    "bottom_up_view": "bottom up view",
-    "hands_spreading_vagina": "hands spreading vagina",
-    "lotus_pose": "lotus pose",
-    "scissors_pose": "scissors pose, two girls",
-    "inverted_extreme_bridge": "inverted extreme bridge, shoulders stand with inversion",
-    "leaning_forward_wall": "leaning forward wall",
-    "standing_vertical_split_supported": "standing vertical split with support",
-    "boat_pose_double_split_up": "boat pose, double split up",
-    "deep_sumo_squat": "deep sumo squat",
-    "standing_horizontal_split_balanced": "standing horizontal split balanced",
-    "classic_bridge": "classic bridge",
-    "sitting_horizontal_split_supported": "sitting horizontal split supported",
-    "prone_frog_stretch": "prone frog stretch",
-    "standing_deep_forward_bend": "standing deep forward bend, hands support",
-    "forward_bow_forearms_clasped": "forward bow forearms clasped",
-    "top_down_voluminous_bow": "top down voluminous bow",
-    "inverted_leg_over_shoulder": "inverted leg over shoulder",
-    "casual_seated_open_knees": "casual seated open knees",
-
-    "stockings_white": "white stockings",
-    "stockings_black": "black stockings",
-    "stockings_red": "red stockings",
-    "stockings_pink": "pink stockings",
-    "stockings_gold": "gold stockings",
-    "stockings_fishnet": "fishnet stockings",
-    "bikini_tan_lines": "bikini tan lines",
-    "shibari": "shibari",
-    "cow_costume": "cow costume",
-
-    "big_breasts": "big breasts",
-    "small_breasts": "small breasts",
-    "body_fit": "fit body",
-    "body_fat": "fat body",
-    "body_muscular": "muscular body",
-    "age_loli": "loli",
-    "age_milf": "milf",
-    "age_21": "21 year old",
-    "cum": "covered in cum",
-    "belly_bloat": "belly bloat",
-    "succubus_tattoo": "succubus tattoo",
-
-    "futanari": "futanari",
-    "femboy": "femboy", # Убедимся, что это здесь
-    "ethnicity_asian": "asian ethnicity",
-    "ethnicity_european": "european ethnicity",
-
-    "furry_cow": "furry cow",
-    "furry_cat": "furry cat",
-    "furry_dog": "furry dog",
-    "furry_dragon": "furry dragon",
-    "furry_sylveon": "furry sylveon",
-    "furry_fox": "furry fox",
-    "furry_bunny": "furry bunny",
-    "furry_wolf": "furry wolf",
-    "furry_bear": "furry bear",
-    "furry_bird": "furry bird",
-    "furry_mouse": "furry mouse",
-    "furry_deer": "furry deer",
-    "furry_tiger": "furry tiger",
-    "furry_lion": "furry lion",
-    "furry_snake": "furry snake",
-    "furry_lizard": "furry lizard",
-
-    "ahegao": "ahegao",
-    "pain_face": "pain face",
-    "ecstasy_face": "ecstasy face",
-    "gold_lipstick": "gold lipstick",
-
-    "nipple_piercing": "nipple piercing",
-    "clitoral_piercing": "clitoral piercing",
-    "foot_fetish": "foot fetish",
-    "footjob": "footjob",
-    "mouth_nipples": "mouth nipples",
-    "nipple_hole": "nipple hole",
-    "anus_piercing": "anus piercing",
-    "vagina_piercing": "vagina piercing",
-    "gag": "gag",
-    "blindfold": "blindfold",
-    "horse_sex": "horse sex",
-
-    "reshiram": "reshiram pokemon",
-    "mew": "mew pokemon",
-    "mewtwo": "mewtwo pokemon",
-    "gardevoir": "gardevoir pokemon",
-    "umbreon": "umbreon pokemon",
-    "lugia": "lugia pokemon",
-    "shadow_lugia": "shadow lugia pokemon",
-    "lopunny": "lopunny pokemon",
-    "goodra": "goodra pokemon",
-
-    # Демоны старшей школы
+    "doggy": "doggy style", "standing": "standing", "squat": "squatting", "lying": "lying",
+    "hor_split": "horizontal split", "ver_split": "vertical split", "on_back_legs_behind_head": "on back legs behind head",
+    "on_side_leg_up": "on side leg up", "suspended": "suspended", "front_facing": "front facing",
+    "back_facing": "back facing", "top_down_view": "top down view", "bottom_up_view": "bottom up view",
+    "hands_spreading_vagina": "hands spreading vagina", "lotus_pose": "lotus pose", "scissors_pose": "scissors pose, two girls",
+    "inverted_extreme_bridge": "inverted extreme bridge, shoulders stand with inversion", "leaning_forward_wall": "leaning forward wall",
+    "standing_vertical_split_supported": "standing vertical split with support", "boat_pose_double_split_up": "boat pose, double split up",
+    "deep_sumo_squat": "deep sumo squat", "standing_horizontal_split_balanced": "standing horizontal split balanced",
+    "classic_bridge": "classic bridge", "sitting_horizontal_split_supported": "sitting horizontal split supported",
+    "prone_frog_stretch": "prone frog stretch", "standing_deep_forward_bend": "standing deep forward bend, hands support",
+    "forward_bow_forearms_clasped": "forward bow forearms clasped", "top_down_voluminous_bow": "top down voluminous bow",
+    "inverted_leg_over_shoulder": "inverted leg over shoulder", "casual_seated_open_knees": "casual seated open knees",
+    "stockings_white": "white stockings", "stockings_black": "black stockings", "stockings_red": "red stockings",
+    "stockings_pink": "pink stockings", "stockings_gold": "gold stockings", "stockings_fishnet": "fishnet stockings",
+    "bikini_tan_lines": "bikini tan lines", "shibari": "shibari", "cow_costume": "cow costume",
+    "big_breasts": "big breasts", "small_breasts": "small breasts", "body_fit": "fit body", "body_fat": "fat body",
+    "body_muscular": "muscular body", "age_loli": "loli", "age_milf": "milf", "age_21": "21 year old",
+    "cum": "covered in cum", "belly_bloat": "belly bloat", "succubus_tattoo": "succubus tattoo",
+    "futanari": "futanari", "femboy": "femboy", "ethnicity_asian": "asian ethnicity", "ethnicity_european": "european ethnicity",
+    "furry_cow": "furry cow", "furry_cat": "furry cat", "furry_dog": "furry dog", "furry_dragon": "furry dragon",
+    "furry_sylveon": "furry sylveon", "furry_fox": "furry fox", "furry_bunny": "furry bunny", "furry_wolf": "furry wolf",
+    "furry_bear": "furry bear", "furry_bird": "furry bird", "furry_mouse": "furry mouse", "furry_deer": "furry deer",
+    "furry_tiger": "furry tiger", "furry_lion": "furry lion", "furry_snake": "furry snake", "furry_lizard": "furry lizard",
+    "ahegao": "ahegao", "pain_face": "pain face", "ecstasy_face": "ecstasy face", "gold_lipstick": "gold lipstick",
+    "nipple_piercing": "nipple piercing", "clitoral_piercing": "clitoral piercing", "foot_fetish": "foot fetish",
+    "footjob": "footjob", "mouth_nipples": "mouth nipples", "nipple_hole": "nipple hole", "anus_piercing": "anus piercing",
+    "vagina_piercing": "vagina piercing", "gag": "gag", "blindfold": "blindfold", "horse_sex": "horse sex",
+    "reshiram": "reshiram pokemon", "mew": "mew pokemon", "mewtwo": "mewtwo pokemon", "gardevoir": "gardevoir pokemon",
+    "umbreon": "umbreon pokemon", "lugia": "lugia pokemon", "shadow_lugia": "shadow lugia pokemon",
+    "lopunny": "lopunny pokemon", "goodra": "goodra pokemon",
+    # Персонажи (полностью)
     "dxd_rias": "rias gremory, red long hair, blue eyes, pale skin, large breasts, highschool dxd",
     "dxd_akeno": "akeno himejima, long black hair, purple eyes, large breasts, highschool dxd",
     "dxd_xenovia_quarta": "xenovia quarta, highschool dxd, blue hair, short hair, sword, holy sword, devil wings, nun uniform",
@@ -664,8 +590,6 @@ TAG_PROMPTS = { # Переименовано для ясности, чтобы �
     "dxd_rossweisse": "rossweisse, highschool dxd, valkyrie, long silver hair, glasses, mature, large breasts",
     "dxd_yasaka": "yasaka, highschool dxd, kitsune, nine tails, fox ears, kimono, mature woman",
     "dxd_grayfia_lucifuge": "grayfia lucifuge, highschool dxd, maid outfit, long silver hair, red eyes, ice magic, sexy maid",
-    
-    # Genshin Impact
     "genshin_eula": "eula, light blue hair, fair skin, genshin impact",
     "genshin_mona": "mona, genshin impact, black hair, leotard, golden headdress",
     "genshin_klee": "klee, genshin impact, blonde hair, red dress, explosive",
@@ -711,9 +635,6 @@ TAG_PROMPTS = { # Переименовано для ясности, чтобы �
     "genshin_signora": "signora, genshin impact, fatui harbinger, elegant mask, white hair, cryo",
     "genshin_arlecchino": "arlecchino, genshin impact, fatui harbinger, black outfit, twin tails, pyro",
     "genshin_snezhnaya_fatui_harbinger": "snezhnaya fatui harbinger, female, genshin impact, mask, uniform",
-
-
-    # Honkai Star Rail
     "hsr_kafka": "kafka, purple wavy hair, cold expression, honkai star rail",
     "hsr_fu_xuan": "fu xuan, pink hair, honkai star rail, diviner, short hair, glasses",
     "hsr_sparkle": "sparkle, honkai star rail, pink hair, elegant dress, theatrical",
@@ -729,7 +650,7 @@ TAG_PROMPTS = { # Переименовано для ясности, чтобы �
     "hsr_tingyun": "tingyun, honkai star rail, fox ears, kimono, fan, lightning",
     "hsr_asta": "asta, honkai star rail, red hair, space station, rich girl",
     "hsr_clara": "clara, honkai star rail, child, robot, pink hair, shy",
-    "hsr_peia": "peia, honkai star rail, foxian, healer, long hair", # Placeholder, adjust if specific design available
+    "hsr_peia": "peia, honkai star rail, foxian, healer, long hair",
     "hsr_sushang": "sushang, honkai star rail, sword, knight, chicken, red hair",
     "hsr_natasha": "natasha, honkai star rail, doctor, blonde hair, medical coat",
     "hsr_hook": "hook, honkai star rail, child, red hair, big hat, destruction",
@@ -739,247 +660,84 @@ TAG_PROMPTS = { # Переименовано для ясности, чтобы �
     "hsr_guinaifen": "guinaifen, honkai star rail, streamer, fire performer, pink hair",
     "hsr_huohuo": "huohuo, honkai star rail, green hair, fox girl, exorcist, ghost",
     "hsr_xueyi": "xueyi, honkai star rail, puppet, pink hair, executioner, mask",
-    "hsr_hanabi": "hanabi, honkai star rail, pink hair, elegant dress, theatrical", # Sparkle
+    "hsr_hanabi": "hanabi, honkai star rail, pink hair, elegant dress, theatrical",
     "hsr_robin": "robin, honkai star rail, idol, blonde hair, singer, elegant dress",
-    "hsr_aventurine_f": "aventurine, female, honkai star rail, blonde hair, gambler, suit", # Female Aventurine
-
-    # NieR Automata
-    "nier_2b": "2B",
-
-    # Spy x Family
-    "spyxfamily_yor_forger": "yor forger",
-
-    # Akame ga Kill
-    "akamegakill_esdeath": "esdeath",
-
-    # Azur Lane
-    "azurlane_formidable": "formidable",
-
-    # Fate Series
-    "fate_castoria": "castoria",
-    "fate_saber": "saber, fate series",
-    "fate_astolfo": "astolfo",
-
-    # Resident Evil
-    "residentevil_lady_dimitrescu": "lady dimitrescu",
-
-    # Street Fighter
-    "streetfighter_chun_li": "chun li",
-    "streetfighter_cammy": "cammy white",
-    "streetfighter_balrog_f": "balrog, female",
-    "streetfighter_juri": "juri han",
-    "streetfighter_menat": "menat",
-    "streetfighter_laura": "laura matsuda",
-    "streetfighter_poison": "poison, street fighter",
-    "streetfighter_maki": "maki, street fighter",
-    "streetfighter_rose": "rose, street fighter",
-    "streetfighter_r_mika": "r. mika",
-    "streetfighter_ibuki": "ibuki, street fighter",
-    "streetfighter_karin": "karin kanzuki",
-    "streetfighter_ed": "ed, street fighter",
-    "streetfighter_fang": "f.a.n.g, street fighter",
-    "streetfighter_e_honda_f": "e. honda, female",
-
-    # Atomic Heart
-    "atomicheart_twins": "atomic heart twins",
-
-    # Bleach - НОВЫЕ ПЕРСОНАЖИ
-    "bleach_renji_f": "renji abarai, female",
-    "bleach_rukia_kuchiki": "rukia kuchiki",
-    "bleach_orihime_inoue": "orihime inoue",
-    "bleach_yoruichi_shihoin": "yoruichi shihoin",
-    "bleach_rangiku_matsumoto": "rangiku matsumoto",
-    "bleach_nemu_kurotsuchi": "nemu kurotsuchi",
-    "bleach_nelliel_tu_odelschwanck": "nelliel tu odelschwanck",
-    "bleach_tier_harribel": "tier harribel",
-    "bleach_retsu_unohana": "retsu unohana",
-    "bleach_soi_fon": "soi fon",
-    "bleach_hiyori_sarugaki": "hiyori sarugaki",
-    "bleach_lisa_yadomaru": "lisa yadomaru",
-    "bleach_mashiro_kuna": "mashiro kuna",
-    "bleach_nanao_ise": "nanao ise",
-    "bleach_isane_kotetsu": "isane kotetsu",
-    "bleach_momo_hinamori": "momo hinamori",
-    "bleach_candice_catnipp": "candice catnipp",
-    "bleach_bambietta_basterbine": "bambietta basterbine",
-    "bleach_giselle_gewelle": "giselle gewelle",
-    "bleach_meninas_mcallon": "meninas mcallon",
-    "bleach_liltotto_lamperd": "liltotto lamperd",
-
-    # Danmachi
-    "danmachi_hestia": "hestia, danmachi",
-    "danmachi_freya": "freya, danmachi",
-
-    # Повесть о конце света (Record of Ragnarok)
-    "ragnarok_aphrodite": "aphrodite, record of ragnarok",
-
-    # Naruto
-    "naruto_hinata": "hinata hyuga",
-    "naruto_tsunade": "tsunade",
-
-    # Overlord
-    "overlord_albedo": "albedo, overlord",
-    "overlord_shalltear": "shalltear bloodfallen",
-
-    # Безумный азарт (Kakegurui)
-    "kakegurui_yumeko": "yumeko jabami",
-    "kakegurui_kirari": "kirari momobami",
-    "kakegurui_mary": "mary saotome",
-
-    # Магическая битва (Jujutsu Kaisen)
-    "jujutsukaisen_mei_mei": "mei mei, jujutsu kaisen",
-
-    # Герой Щита (The Rising of the Shield Hero)
-    "shieldhero_mirelia_melromarc": "mirelia q melromarc",
-    "shieldhero_malty_melromarc": "malty s melromarc",
-    
-    # Helltaker
-    "helltaker_lucifer": "lucifer, helltaker",
-
-    # Zenless Zone Zero
-    "zzz_ellen_joe": "ellen joe",
-    "zzz_koleda": "koleda, zenless zone zero",
-    "zzz_lycaon": "lycaon, female, zenless zone zero",
-    "zzz_nicole": "nicole, zenless zone zero",
-    "zzz_anby": "anby, zenless zone zero",
-    "zzz_nekomiya": "nekomiya, zenless zone zero",
-    "zzz_aisha": "aisha, zenless zone zero",
-    "zzz_haruka": "haruka, zenless zone zero",
-    "zzz_corin": "corin, zenless zone zero",
-    "zzz_grace": "grace, zenless zone zero",
-    "zzz_hoshimi": "hoshimi, zenless zone zero",
-    "zzz_rory": "rory, zenless zone zero",
-    "zzz_bonnie": "bonnie, zenless zone zero",
-    "zzz_elize": "elize, zenless zone zero",
-    "zzz_fubuki": "fubuki, zenless zone zero",
-    "zzz_sana": "sana, zenless zone zero",
-    "zzz_yuki": "yuki, zenless zone zero",
-    
-    # Pokémon (персонажи-люди)
-    "pokemon_jessie": "jessie, pokemon",
-    "pokemon_lusamine": "lusamine, pokemon",
-
-    # League of Legends
-    "lol_qiyana": "qiyana",
-    "lol_aurora": "aurora, league of legends",
-    "lol_katarina": "katarina",
-    "lol_akali": "akali",
-    "lol_irelia": "irelia",
-    "lol_caitlyn": "caitlyn",
-    "lol_briar": "briar, league of legends",
-    "lol_kaisa": "kai'sa",
-    "lol_evelynn": "evelynn",
-    "lol_ahri": "ahri",
-    "lol_belveth": "bel'veth",
-    "lol_fiora": "fiora",
-    "lol_gwen": "gwen",
-    "lol_zoe": "zoe",
-    "lol_missfortune": "miss fortune",
-    "lol_neeko": "neeko",
-    "lol_samira": "samira",
-    "lol_sona": "sona",
-    "lol_elise": "elise",
-
-    # My Little Pony
-    "mlp_twilight_sparkle": "twilight sparkle, my little pony",
-    "mlp_applejack": "applejack, my little pony",
-    "mlp_rainbow_dash": "rainbow dash, my little pony",
-    "mlp_rarity": "rarity, my little pony",
-    "mlp_fluttershy": "fluttershy, my little pony",
-    "mlp_pinkie_pie": "pinkie pie, my little pony",
-    "mlp_spike": "spike, my little pony",
-    "mlp_princess_celestia": "princess celestia, my little pony",
-    "mlp_princess_luna": "princess luna, my little pony",
-    "mlp_princess_cadence": "princess cadence, my little pony",
-    "mlp_discord": "discord, my little pony",
-    "mlp_apple_bloom": "apple bloom, my little pony",
-    "mlp_scootaloo": "scootaloo, my little pony",
-    "mlp_sweetie_belle": "sweetie belle, my little pony",
-
-    # Dislyte
-    "dislyte_li_ling_f": "li ling, female, dislyte",
-    "dislyte_sally": "sally, dislyte",
-    "dislyte_clara": "clara, dislyte",
-    "dislyte_gabrielle": "gabrielle, dislyte",
-    "dislyte_chloe": "chloe, dislyte",
-    "dislyte_odette": "odette, dislyte",
-    "dislyte_meredith": "meredith, dislyte",
-    "dislyte_jiang_man": "jiang man, dislyte",
-    "dislyte_eira": "eira, dislyte",
-    "dislyte_drew": "drew, dislyte",
-    "dislyte_pritzker_f": "pritzker, female, dislyte",
-    "dislyte_fatima": "fatima, dislyte",
-    "dislyte_brewster_f": "brewster, female, dislyte",
-    "dislyte_yun_chuan_f": "yun chuan, female, dislyte",
-    "dislyte_hyde_f": "hyde, female, dislyte",
-    "dislyte_leora": "leora, dislyte",
-    "dislyte_tevor_f": "tevor, female, dislyte",
-    "dislyte_zora": "zora, dislyte",
-    "dislyte_embla": "embla, dislyte",
-    "dislyte_ophilia": "ophilia, dislyte",
-    "dislyte_ahmed_f": "ahmed, female, dislyte",
-    "dislyte_everett_f": "everett, female, dislyte",
-    "dislyte_ollie_f": "ollie, female, dislyte",
-    "dislyte_jin_hee": "jin hee, dislyte",
-    "dislyte_ifrit_f": "ifrit, female, dislyte",
-    "dislyte_sienna": "sienna, dislyte",
-    "dislyte_valeria": "valeria, dislyte",
-    "dislyte_ashley": "ashley, dislyte",
-    "dislyte_triki_f": "triki, female, dislyte",
-    "dislyte_narmer_f": "narmer, female, dislyte",
-    "dislyte_tye": "tye, dislyte",
-    "dislyte_biondina": "biondina, dislyte",
-    "dislyte_dhalia": "dhalia, dislyte",
-    "dislyte_elaine": "elaine, dislyte",
-    "dislyte_cecilia": "cecilia, dislyte",
-    "dislyte_intisar": "intisar, dislyte",
-    "dislyte_kaylee": "kaylee, dislyte",
-    "dislyte_layla": "layla, dislyte",
-    "dislyte_lynn": "lynn, dislyte",
-    "dislyte_melanie": "melanie, dislyte",
-    "dislyte_mona": "mona, dislyte",
-    "dislyte_nicole": "nicole, dislyte",
-    "dislyte_q": "q, dislyte",
-    "dislyte_ren_si": "ren si, dislyte",
-    "dislyte_stewart_f": "stewart, female, dislyte",
-    "dislyte_tang_xuan_f": "tang xuan, female, dislyte",
-    "dislyte_unaky": "unaky, dislyte",
-    "dislyte_victoria": "victoria, dislyte",
-    "dislyte_xiao_yin": "xiao yin, dislyte",
-    "dislyte_ye_suhua": "ye suhua, dislyte",
-    "dislyte_zhong_nan": "zhong nan, dislyte",
-    "dislyte_anadora": "anadora, dislyte",
-    "dislyte_bernice": "bernice, dislyte",
-    "dislyte_brynn": "brynn, dislyte",
-    "dislyte_catherine": "catherine, dislyte",
-    "dislyte_chang_pu": "chang pu, dislyte",
-    "dislyte_eugene_f": "eugene, female, dislyte",
-    "dislyte_freddy_f": "freddy, female, dislyte",
-    "dislyte_hall_f": "hall, female, dislyte",
-    "dislyte_helena": "helena, dislyte",
-    "dislyte_jacob_f": "jacob, female, dislyte",
-    "dislyte_jeanne": "jeanne, dislyte",
-    "dislyte_li_ao_f": "li ao, female, dislyte",
-    "dislyte_lu_yi_f": "lu yi, female, dislyte",
-    "dislyte_mark_f": "mark, female, dislyte",
-    "dislyte_olivia": "olivia, dislyte",
-    "dislyte_sander_f": "sander, female, dislyte",
-    "dislyte_stella": "stella, dislyte",
-    "dislyte_alice": "alice, dislyte",
-    "dislyte_arcana": "arcana, dislyte",
-    "dislyte_aurelius_f": "aurelius, female, dislyte",
-    "dislyte_bette": "bette, dislyte",
-    "dislyte_bonnie": "bonnie, dislyte",
-    "dislyte_celine": "celine, dislyte",
-    "dislyte_corbin_f": "corbin, female, dislyte",
+    "hsr_aventurine_f": "aventurine, female, honkai star rail, blonde hair, gambler, suit",
+    "nier_2b": "2B", "spyxfamily_yor_forger": "yor forger", "akamegakill_esdeath": "esdeath",
+    "azurlane_formidable": "formidable", "fate_castoria": "castoria", "fate_saber": "saber, fate series",
+    "fate_astolfo": "astolfo", "residentevil_lady_dimitrescu": "lady dimitrescu", "streetfighter_chun_li": "chun li",
+    "streetfighter_cammy": "cammy white", "streetfighter_balrog_f": "balrog, female", "streetfighter_juri": "juri han",
+    "streetfighter_menat": "menat", "streetfighter_laura": "laura matsuda", "streetfighter_poison": "poison, street fighter",
+    "streetfighter_maki": "maki, street fighter", "streetfighter_rose": "rose, street fighter", "streetfighter_r_mika": "r. mika",
+    "streetfighter_ibuki": "ibuki, street fighter", "streetfighter_karin": "karin kanzuki", "streetfighter_ed": "ed, street fighter",
+    "streetfighter_fang": "f.a.n.g, street fighter", "streetfighter_e_honda_f": "e. honda, female",
+    "atomicheart_twins": "atomic heart twins", "bleach_renji_f": "renji abarai, female", "bleach_rukia_kuchiki": "rukia kuchiki",
+    "bleach_orihime_inoue": "orihime inoue", "bleach_yoruichi_shihoin": "yoruichi shihoin", "bleach_rangiku_matsumoto": "rangiku matsumoto",
+    "bleach_nemu_kurotsuchi": "nemu kurotsuchi", "bleach_nelliel_tu_odelschwanck": "nelliel tu odelschwanck",
+    "bleach_tier_harribel": "tier harribel", "bleach_retsu_unohana": "retsu unohana", "bleach_soi_fon": "soi fon",
+    "bleach_hiyori_sarugaki": "hiyori sarugaki", "bleach_lisa_yadomaru": "lisa yadomaru", "bleach_mashiro_kuna": "mashiro kuna",
+    "bleach_nanao_ise": "nanao ise", "bleach_isane_kotetsu": "isane kotetsu", "bleach_momo_hinamori": "momo hinamori",
+    "bleach_candice_catnipp": "candice catnipp", "bleach_bambietta_basterbine": "bambietta basterbine",
+    "bleach_giselle_gewelle": "giselle gewelle", "bleach_meninas_mcallon": "meninas mcallon", "bleach_liltotto_lamperd": "liltotto lamperd",
+    "danmachi_hestia": "hestia, danmachi", "danmachi_freya": "freya, danmachi", "ragnarok_aphrodite": "aphrodite, record of ragnarok",
+    "naruto_hinata": "hinata hyuga", "naruto_tsunade": "tsunade", "overlord_albedo": "albedo, overlord",
+    "overlord_shalltear": "shalltear bloodfallen", "kakegurui_yumeko": "yumeko jabami", "kakegurui_kirari": "kirari momobami",
+    "kakegurui_mary": "mary saotome", "jujutsukaisen_mei_mei": "mei mei, jujutsu kaisen", "shieldhero_mirelia_melromarc": "mirelia q melromarc",
+    "shieldhero_malty_melromarc": "malty s melromarc", "helltaker_lucifer": "lucifer, helltaker",
+    "zzz_ellen_joe": "ellen joe", "zzz_koleda": "koleda, zenless zone zero", "zzz_lycaon": "lycaon, female, zenless zone zero",
+    "zzz_nicole": "nicole, zenless zone zero", "zzz_anby": "anby, zenless zone zero", "zzz_nekomiya": "nekomiya, zenless zone zero",
+    "zzz_aisha": "aisha, zenless zone zero", "zzz_haruka": "haruka, zenless zone zero", "zzz_corin": "corin, zenless zone zero",
+    "zzz_grace": "grace, zenless zone zero", "zzz_hoshimi": "hoshimi, zenless zone zero", "zzz_rory": "rory, zenless zone zero",
+    "zzz_bonnie": "bonnie, zenless zone zero", "zzz_elize": "elize, zenless zone zero", "zzz_fubuki": "fubuki, zenless zone zero",
+    "zzz_sana": "sana, zenless zone zero", "zzz_yuki": "yuki, zenless zone zero",
+    "pokemon_jessie": "jessie, pokemon", "pokemon_lusamine": "lusamine, pokemon",
+    "lol_qiyana": "qiyana", "lol_aurora": "aurora, league of legends", "lol_katarina": "katarina",
+    "lol_akali": "akali", "lol_irelia": "irelia", "lol_caitlyn": "caitlyn", "lol_briar": "briar, league of legends",
+    "lol_kaisa": "kai'sa", "lol_evelynn": "evelynn", "lol_ahri": "ahri", "lol_belveth": "bel'veth",
+    "lol_fiora": "fiora", "lol_gwen": "gwen", "lol_zoe": "zoe", "lol_missfortune": "miss fortune",
+    "lol_neeko": "neeko", "lol_samira": "samira", "lol_sona": "sona", "lol_elise": "elise",
+    "mlp_twilight_sparkle": "twilight sparkle, my little pony", "mlp_applejack": "applejack, my little pony",
+    "mlp_rainbow_dash": "rainbow dash, my little pony", "mlp_rarity": "rarity, my little pony",
+    "mlp_fluttershy": "fluttershy, my little pony", "mlp_pinkie_pie": "pinkie pie, my little pony",
+    "mlp_spike": "spike, my little pony", "mlp_princess_celestia": "princess celestia, my little pony",
+    "mlp_princess_luna": "princess luna, my little pony", "mlp_princess_cadence": "princess cadence, my little pony",
+    "mlp_discord": "discord, my little pony", "mlp_apple_bloom": "apple bloom, my little pony",
+    "mlp_scootaloo": "scootaloo, my little pony", "mlp_sweetie_belle": "sweetie belle, my little pony",
+    "dislyte_li_ling_f": "li ling, female, dislyte", "dislyte_sally": "sally, dislyte", "dislyte_clara": "clara, dislyte",
+    "dislyte_gabrielle": "gabrielle, dislyte", "dislyte_chloe": "chloe, dislyte", "dislyte_odette": "odette, dislyte",
+    "dislyte_meredith": "meredith, dislyte", "dislyte_jiang_man": "jiang man, dislyte", "dislyte_eira": "eira, dislyte",
+    "dislyte_drew": "drew, dislyte", "dislyte_pritzker_f": "pritzker, female, dislyte", "dislyte_fatima": "fatima, dislyte",
+    "dislyte_brewster_f": "brewster, female, dislyte", "dislyte_yun_chuan_f": "yun chuan, female, dislyte",
+    "dislyte_hyde_f": "hyde, female, dislyte", "dislyte_leora": "leora, dislyte", "dislyte_tevor_f": "tevor, female, dislyte",
+    "dislyte_zora": "zora, dislyte", "dislyte_embla": "embla, dislyte", "dislyte_ophilia": "ophilia, dislyte",
+    "dislyte_ahmed_f": "ahmed, female, dislyte", "dislyte_everett_f": "everett, female, dislyte", "dislyte_ollie_f": "ollie, female, dislyte",
+    "dislyte_jin_hee": "jin hee, dislyte", "dislyte_ifrit_f": "ifrit, female, dislyte", "dislyte_sienna": "sienna, dislyte",
+    "dislyte_valeria": "valeria, dislyte", "dislyte_ashley": "ashley, dislyte", "dislyte_triki_f": "triki, female, dislyte",
+    "dislyte_narmer_f": "narmer, female, dislyte", "dislyte_tye": "tye, dislyte", "dislyte_biondina": "biondina, dislyte",
+    "dislyte_dhalia": "dhalia, dislyte", "dislyte_elaine": "elaine, dislyte", "dislyte_cecilia": "cecilia, dislyte",
+    "dislyte_intisar": "intisar, dislyte", "dislyte_kaylee": "kaylee, dislyte", "dislyte_layla": "layla, dislyte",
+    "dislyte_lynn": "lynn, dislyte", "dislyte_melanie": "melanie, dislyte", "dislyte_mona": "mona, dislyte",
+    "dislyte_nicole": "nicole, dislyte", "dislyte_q": "q, dislyte", "dislyte_ren_si": "ren si, dislyte",
+    "dislyte_stewart_f": "stewart, female, dislyte", "dislyte_tang_xuan_f": "tang xuan, female, dislyte",
+    "dislyte_unaky": "unaky, dislyte", "dislyte_victoria": "victoria, dislyte", "dislyte_xiao_yin": "xiao yin, dislyte",
+    "dislyte_ye_suhua": "ye suhua, dislyte", "dislyte_zhong_nan": "zhong nan, dislyte", "dislyte_anadora": "anadora, dislyte",
+    "dislyte_bernice": "bernice, dislyte", "dislyte_brynn": "brynn, dislyte", "dislyte_catherine": "catherine, dislyte",
+    "dislyte_chang_pu": "chang pu, dislyte", "dislyte_eugene_f": "eugene, female, dislyte", "dislyte_freddy_f": "freddy, female, dislyte",
+    "dislyte_hall_f": "hall, female, dislyte", "dislyte_helena": "helena, dislyte", "dislyte_jacob_f": "jacob, female, dislyte",
+    "dislyte_jeanne": "jeanne, dislyte", "dislyte_li_ao_f": "li ao, female, dislyte", "dislyte_lu_yi_f": "lu yi, female, dislyte",
+    "dislyte_mark_f": "mark, female, dislyte", "dislyte_olivia": "olivia, dislyte", "dislyte_sander_f": "sander, female, dislyte",
+    "dislyte_stella": "stella, dislyte", "dislyte_alice": "alice, dislyte", "dislyte_arcana": "arcana, dislyte",
+    "dislyte_aurelius_f": "aurelius, female, dislyte", "dislyte_bette": "bette, dislyte", "dislyte_bonnie": "bonnie, dislyte",
+    "dislyte_celine": "celine, dislyte", "dislyte_corbin_f": "corbin, female, dislyte",
 }
+
 
 # --- Функции для создания клавиатур ---
 def main_menu():
     """Создает главное меню бота."""
     kb = types.InlineKeyboardMarkup()
     kb.add(types.InlineKeyboardButton("🧩 Выбрать теги", callback_data="choose_tags"))
-    kb.add(types.InlineKeyboardButton("⚙️ Настройки", callback_data="settings")) # Новая кнопка для настроек
+    kb.add(types.InlineKeyboardButton("⚙️ Настройки", callback_data="settings"))
     kb.add(types.InlineKeyboardButton("🎨 Генерировать", callback_data="generate"))
     return kb
 
@@ -1008,7 +766,9 @@ def tag_menu(category, selected_tags, char_subcategory=None):
         # Фильтруем теги персонажей по выбранной подкатегории
         for tag_key, tag_name in TAGS[category].items():
             # Префикс подкатегории должен соответствовать началу ключа тега
-            if tag_key.startswith(char_subcategory + "_"):
+            # Учитываем, что "pokemon_chars" в категории CHAR_CATEGORIES, но теги начинаются с "pokemon_"
+            prefix_for_matching = char_subcategory.replace('_chars', '')
+            if tag_key.startswith(prefix_for_matching + "_"):
                 tags_to_display[tag_key] = tag_name
     else:
         tags_to_display = TAGS[category]
@@ -1039,7 +799,7 @@ def settings_menu(current_num_images):
 def start(msg):
     """Обработчик команды /start."""
     cid = msg.chat.id
-    user_settings[cid] = {"tags": [], "last_cat": None, "last_char_sub": None, "num_images": 1} # Добавлено num_images
+    user_settings[cid] = {"tags": [], "last_cat": None, "last_char_sub": None, "num_images": 1}
     bot.send_message(cid, "Привет Шеф!", reply_markup=main_menu())
 
 @bot.callback_query_handler(func=lambda call: True)
@@ -1061,7 +821,6 @@ def callback(call):
         selected = user_settings[cid]["tags"]
         
         if cat == "characters":
-            # Сбрасываем last_char_sub при входе в основную категорию персонажей
             user_settings[cid]["last_char_sub"] = None 
             bot.edit_message_text("Выбери подкатегорию персонажей:", cid, message_id, reply_markup=character_subcategory_menu(selected))
         else:
@@ -1090,15 +849,14 @@ def callback(call):
         bot.edit_message_text("Теги сохранены.", cid, message_id, reply_markup=main_menu())
 
     elif data == "back_to_cat":
-        # Если возвращаемся из подкатегории персонажей, то сначала в меню подкатегорий
         if user_settings[cid].get("last_cat") == "characters" and user_settings[cid].get("last_char_sub"):
-            user_settings[cid]["last_char_sub"] = None # Сбрасываем подкатегорию при возврате
+            user_settings[cid]["last_char_sub"] = None 
             bot.edit_message_text("Выбери подкатегорию персонажей:", cid, message_id, reply_markup=character_subcategory_menu(user_settings[cid]["tags"]))
         else:
             bot.edit_message_text("Выбери категорию:", cid, message_id, reply_markup=category_menu())
     
     elif data == "back_to_char_sub":
-        user_settings[cid]["last_char_sub"] = None # Сбрасываем подкатегорию при возврате
+        user_settings[cid]["last_char_sub"] = None 
         bot.edit_message_text("Выбери подкатегорию персонажей:", cid, message_id, reply_markup=character_subcategory_menu(user_settings[cid]["tags"]))
 
     elif data == "settings":
@@ -1127,7 +885,7 @@ def callback(call):
         
         user_settings[cid]["last_prompt_tags"] = tags.copy()
 
-        bot.send_message(cid, "Принято Шеф, приступаю!") # Сообщение перед генерацией
+        bot.send_message(cid, "Принято Шеф, приступаю!")
 
         generated_urls = replicate_generate(positive_prompt, negative_prompt, num_images)
         if generated_urls:
@@ -1158,17 +916,16 @@ def callback(call):
         bot.send_message(cid, "Настройки сброшены. Начнем заново!", reply_markup=main_menu())
     
     elif data == "ignore":
-        bot.answer_callback_query(call.id) # Просто игнорируем нажатие на текст-кнопку
+        bot.answer_callback_query(call.id)
 
 # --- Функция для определения категории тега ---
 def tag_category(tag):
     """Определяет категорию, к которой относится тег."""
     for cat, items in TAGS.items():
         if tag in items:
-            # Для "femboy" и "futanari" и других тегов из "ethnos" теперь будет возвращаться "ethnos"
             if cat == "ethnos":
-                return "ethnos" 
-            if cat in ["body"]: # "body" уже обрабатывается
+                return "ethnos"
+            if cat == "body":
                 return "body"
             if cat == "poses":
                 return "pose"
@@ -1182,13 +939,15 @@ def tag_category(tag):
                 return "fetish"
             if cat == "head":
                 return "face"
+            # Тег "pokemon" (как "reshiram") относится к категории "pokemon"
             if cat == "pokemon":
                 return "pokemon"
             
-            # Для персонажей определяем категорию "character"
-            # Проверяем, начинается ли тег с какого-либо ключа из CHARACTER_CATEGORIES
+            # Для тегов персонажей, проверяем по префиксу
             for char_cat_key in CHARACTER_CATEGORIES.keys():
-                if tag.startswith(char_cat_key + "_"):
+                # Например, для "pokemon_chars" -> префикс будет "pokemon_"
+                actual_prefix = char_cat_key.replace('_chars', '') 
+                if tag.startswith(actual_prefix + "_") and char_cat_key == "characters": # 'characters' - это общая категория для персонажей
                     return "character"
     return None
 
@@ -1213,11 +972,12 @@ def build_prompt(tags):
         "clothes": [],
         "fetish": [],
         "face": [],
-        "ethnos": [], # Добавил категорию "ethnos" для корректной обработки "femboy"
+        "ethnos": [],
         "pokemon": []
     }
     
-    base_negative = (
+    # Инициализация негативного промпта из кортежа
+    base_negative_parts = (
         "lowres, bad anatomy, bad hands, bad face, deformed, disfigured, poorly drawn, "
         "missing limbs, extra limbs, fused fingers, jpeg artifacts, signature, watermark",
         "blurry, cropped, worst quality, low quality, text, error, mutated, censored, "
@@ -1225,9 +985,7 @@ def build_prompt(tags):
         "vagina not visible, anus not visible, penis not visible, bad proportions, "
         "all clothes, all clothing"
     )
-    # Присоединяем части кортежа base_negative в одну строку
-    base_negative = "".join(base_negative)
-
+    base_negative = ", ".join(base_negative_parts) # Объединяем части в одну строку через запятую и пробел
 
     # Уникальные теги и спец. обработка конфликтов
     unique = set(tags)
@@ -1236,25 +994,42 @@ def build_prompt(tags):
     if "big_breasts" in unique and "small_breasts" in unique:
         unique.remove("small_breasts") 
     
-    # Костюм коровы уже включён в furry_cow
+    # Если выбрана "furry_cow", убираем "cow_costume"
     if "furry_cow" in unique:
         unique.discard("cow_costume") 
 
     # Группировка по категориям
     for tag in unique:
-        if tag in TAG_PROMPTS: # Проверяем, что тег существует в TAG_PROMPTS
+        if tag in TAG_PROMPTS:
             key = tag_category(tag)
             if key:
                 priority[key].append(TAG_PROMPTS[tag])
+            else:
+                # Это сообщение поможет выявить теги, которые есть в TAG_PROMPTS, но не категоризированы
+                print(f"Внимание: Тег '{tag}' найден в TAG_PROMPTS, но не имеет определенной категории в tag_category. Он не будет добавлен в промпт.")
+
 
     prompt_parts = base[:]
-    # Порядок добавления важен: персонажи, фури, покемоны, тело, этнос (для фембоя), позы, отверстия, игрушки, одежда, фетиши, лицо
-    for section in ["character", "furry", "pokemon", "body", "ethnos", "pose", "holes", "toys", "clothes", "fetish", "face"]: # Изменил порядок, чтобы "ethnos" был
+    # Порядок добавления важен
+    for section in ["character", "furry", "pokemon", "body", "ethnos", "pose", "holes", "toys", "clothes", "fetish", "face"]:
         prompt_parts.extend(priority[section])
 
     # Танлайны убирают купальник из негативного промпта
     if "bikini_tan_lines" in unique:
-        base_negative += ", bikini"
+        if "bikini" in base_negative: # Проверяем, чтобы избежать дублирования
+            base_negative = base_negative.replace(", bikini", "")
+        else: # Если вдруг его там не было, просто добавляем. Это маловерно, но для надежности.
+            base_negative += ", bikini" # Хотя тут логика может быть обратной: если есть танлайны, то бикини НЕ должно быть.
+                                        # Если "bikini" уже есть в base_negative, то его надо удалить.
+                                        # Если "bikini_tan_lines" выбран, то "bikini" *не* должно быть в негативном промпте.
+            base_negative = base_negative.replace(", bikini", "") # Убираем "bikini" из негативного промпта
+                                                                # Предполагается, что "bikini" всегда в негативном промпте
+                                                                # и его нужно убрать, если есть танлайны.
+    # Коррекция: Если bikini_tan_lines, то 'bikini' не должен быть в негативном промпте.
+    # Поэтому, если bikini_tan_lines выбран, мы явно удаляем 'bikini' из негативного промпта.
+    if "bikini_tan_lines" in unique:
+        base_negative = base_negative.replace("bikini", "").replace(", ,", ",").strip(", ")
+
 
     return {
         "positive_prompt": ", ".join(prompt_parts),
@@ -1268,7 +1043,7 @@ def replicate_generate(positive_prompt, negative_prompt, num_images=1):
     используя оптимальные настройки для достижения максимальной точности.
     """
     urls = []
-    for _ in range(num_images):
+    for i in range(num_images): # Цикл для генерации нескольких изображений
         url = "https://api.replicate.com/v1/predictions"
         headers = {
             "Authorization": f"Token {REPLICATE_TOKEN}",
@@ -1291,34 +1066,98 @@ def replicate_generate(positive_prompt, negative_prompt, num_images=1):
             }
         }
 
-        # Отправка запроса на создание предсказания
-        r = requests.post(url, headers=headers, json=json_data)
-        if r.status_code != 201:
-            print(f"Ошибка при отправке предсказания: {r.status_code} - {r.text}")
+        try:
+            r = requests.post(url, headers=headers, json=json_data)
+            r.raise_for_status() # Вызывает HTTPError для ошибок 4xx/5xx
+            if r.status_code != 201:
+                print(f"Ошибка при отправке предсказания (не 201): {r.status_code} - {r.text}")
+                print(f"Request JSON: {json_data}")
+                return None
+        except requests.exceptions.RequestException as e:
+            print(f"Ошибка HTTP-запроса при отправке предсказания (изображение {i+1}): {e}")
             print(f"Request JSON: {json_data}")
             return None
 
         status_url = r.json()["urls"]["get"]
 
         # Ожидание завершения генерации (до 3 минут)
-        for i in range(90):
+        for attempt in range(90): # Максимум 90 попыток * 2 секунды = 3 минуты
             time.sleep(2)
-            r = requests.get(status_url, headers=headers)
-            if r.status_code != 200:
-                print(f"Ошибка при получении статуса предсказания: {r.status_code} - {r.text}")
-                return None
+            try:
+                r = requests.get(status_url, headers=headers)
+                r.raise_for_status()
+            except requests.exceptions.RequestException as e:
+                print(f"Ошибка HTTP-запроса при получении статуса предсказания (изображение {i+1}, попытка {attempt+1}): {e}")
+                continue # Попробуем еще раз получить статус
+            
             data = r.json()
             if data["status"] == "succeeded":
                 if isinstance(data["output"], list) and data["output"]:
                     urls.append(data["output"][0])
-                    break # Выходим из внутреннего цикла после успешной генерации
+                    break
                 else:
-                    print("Получен пустой или некорректный 'output' от Replicate.")
+                    print(f"Получен пустой или некорректный 'output' от Replicate для изображения {i+1}.")
                     return None
             elif data["status"] == "failed":
-                print(f"Предсказание не удалось: {data.get('error', 'Сообщение об ошибке не предоставлено')}")
+                print(f"Предсказание не удалось для изображения {i+1}: {data.get('error', 'Сообщение об ошибке не предоставлено')}")
                 print(f"Request JSON: {json_data}")
                 return None
-        else: # Если цикл завершился без break
-            print("Время ожидания предсказания истекло для одного изображения.")
-            return None # Возвращаем None, если хотя
+            # Для статусов like 'starting', 'processing' продолжаем цикл
+
+        else: # Если цикл завершился без break (истекло время ожидания)
+            print(f"Время ожидания предсказания истекло для изображения {i+1}.")
+            return None
+
+    return urls # Возвращаем список URL-ов всех сгенерированных изображений
+
+# --- Настройка вебхука Flask ---
+@app.route("/", methods=["POST"])
+def webhook():
+    """Обрабатывает входящие обновления от Telegram."""
+    try:
+        json_str = request.stream.read().decode("utf-8")
+        update = telebot.types.Update.de_json(json_str)
+        
+        # Инициализация настроек пользователя, если их нет
+        if update.message and update.message.chat.id not in user_settings:
+            user_settings[update.message.chat.id] = {"tags": [], "last_cat": None, "last_char_sub": None, "num_images": 1}
+
+        bot.process_new_updates([update])
+        return "ok", 200
+    except Exception as e:
+        print(f"Ошибка в обработчике вебхука: {e}")
+        return f"Error: {e}", 500
+
+@app.route("/", methods=["GET"])
+def home():
+    """Простой маршрут для проверки работы приложения."""
+    return "бот работает", 200
+
+# --- Запуск бота ---
+if __name__ == "__main__":
+    # Логирование на этапе запуска для лучшей диагностики
+    try:
+        print("Попытка удалить старый вебхук...")
+        bot.remove_webhook()
+        print("Вебхук успешно удален (или его не было).")
+    except Exception as e:
+        # Эта ошибка не критична, если вебхука просто не было
+        print(f"Ошибка при удалении вебхука: {e}")
+
+    try:
+        print(f"Попытка установить новый вебхук на URL: {WEBHOOK_URL}")
+        bot.set_webhook(url=WEBHOOK_URL)
+        print("Вебхук успешно установлен.")
+    except Exception as e:
+        print(f"Критическая ошибка при установке вебхука. Бот не сможет получать обновления: {e}")
+        # Если вебхук не установлен, бот не будет работать. Выходим.
+        exit(1)
+
+    try:
+        print(f"Запуск Flask приложения на порту {PORT}...")
+        app.run(host="0.0.0.0", port=PORT)
+        print("Flask приложение запущено.")
+    except Exception as e:
+        print(f"Критическая ошибка при запуске Flask приложения: {e}")
+        # Фатальная ошибка, завершаем работу.
+        exit(1)
