@@ -5,225 +5,225 @@ from flask import Flask, request
 import telebot
 from telebot import types
 
-# --- Глобальные переменные и конфигурация ---
+# --- Глобальні змінні та конфігурація ---
 API_TOKEN = os.getenv("TELEGRAM_TOKEN")
 REPLICATE_TOKEN = os.getenv("REPLICATE_API_TOKEN")
 WEBHOOK_URL = os.getenv("WEBHOOK_URL")
 PORT = int(os.environ.get("PORT", 5000))
 
-# ID новой модели Replicate, которую вы используете
-REPLICATE_MODEL = "80441e2c32a55f2fcf9b77fa0a74c6c86ad7deac51eed722b9faedb253265cb1" # Убедился, что это строка
+# ID нової моделі Replicate, яку ви використовуєте
+REPLICATE_MODEL = "80441e2c32a55f2fcf9b77fa0a74c6c86ad7deac51eed722b9faedb253265cb1" # Упевнився, що це строка
 
-# Инициализация бота и Flask приложения
+# Ініціалізація бота та Flask-додатка
 bot = telebot.TeleBot(API_TOKEN)
 app = Flask(__name__)
-user_settings = {} # Словарь для хранения настроек пользователей, включая выбранные теги
+user_settings = {} # Словник для зберігання налаштувань користувачів, включаючи вибрані теги
 
-# --- Категории для меню ---
+# --- Категорії для меню ---
 CATEGORY_NAMES = {
-    "holes": "🕳️ Отверстия",
-    "toys": "🧸 Игрушки",
-    "poses": "🧘 Позы",
-    "clothes": "👗 Одежда",
-    "body": "💪 Тело",
-    "ethnos": "🌍 Этнос",
-    "furry": "🐾 Фури",
-    "characters": "🦸 Персонажи",
+    "holes": "🕳️ Отвір",
+    "toys": "🧸 Іграшки",
+    "poses": "🧘 Пози",
+    "clothes": "👗 Одяг",
+    "body": "💪 Тіло",
+    "ethnos": "🌍 Етнос",
+    "furry": "🐾 Фурі",
+    "characters": "🦸 Персонажі",
     "head": "🤯 Голова",
-    "fetish": "🔗 Фетиши",
-    "pokemon": "⚡ Покемоны"
+    "fetish": "🔗 Фетиші",
+    "pokemon": "⚡ Покемони"
 }
 
-# --- Теги с новыми добавлениями ---
+# --- Теги з новими доповненнями ---
 TAGS = {
     "holes": {
-        "vagina": "Вагина",
+        "vagina": "Вагіна",
         "anus": "Анус",
-        "both": "Вагина и анус",
-        "dilated_anus": "Расширенный анус",
-        "dilated_vagina": "Расширенная киска",
-        "prolapsed_uterus": "Выпавшая матка",
-        "prolapsed_anus": "Выпавший анус",
-        "dilated_nipples": "Расширенные соски",
-        "anus_spreader_ring": "Расширительное кольцо в анусе",
-        "vagina_spreader_ring": "Расширительное кольцо в вагине"
+        "both": "Вагіна та анус",
+        "dilated_anus": "Розширений анус",
+        "dilated_vagina": "Розширена кицька",
+        "prolapsed_uterus": "Випала матка",
+        "prolapsed_anus": "Випав анус",
+        "dilated_nipples": "Розширені соски",
+        "anus_spreader_ring": "Розширювальне кільце в анусі",
+        "vagina_spreader_ring": "Розширювальне кільце у вагіні"
     },
     "toys": {
-        "dildo": "Дилдо",
-        "huge_dildo": "Большое дилдо",
-        "horse_dildo": "Конский дилдо",
-        "anal_beads": "Анальные шарики",
-        "anal_plug": "Анальная пробка",
-        "long_dildo_path": "Дилдо сквозь все тело",
-        "urethral_dildo": "Дилдо в уретре",
-        "two_dildos_anus_vagina": "Два дилдо в анусе и вагине",
-        "two_dildos_one_hole": "Два дилдо в одно отверстие",
+        "dildo": "Ділдо",
+        "huge_dildo": "Велике ділдо",
+        "horse_dildo": "Кінське ділдо",
+        "anal_beads": "Анальні кульки",
+        "anal_plug": "Анальна пробка",
+        "long_dildo_path": "Ділдо крізь все тіло",
+        "urethral_dildo": "Ділдо в уретрі",
+        "two_dildos_anus_vagina": "Два ділдо в анусі та вагіні",
+        "two_dildos_one_hole": "Два ділдо в один отвір",
     },
     "poses": {
-        "doggy": "На четвереньках",
-        "standing": "Стоя",
-        "squat": "Приседание",
-        "lying": "Лежа",
-        "hor_split": "Горизонтальный шпагат",
-        "ver_split": "Вертикальный шпагат",
-        "on_back_legs_behind_head": "На спине ноги за головой",
-        "on_side_leg_up": "На боку нога вверх",
-        "suspended": "Подвешена",
-        "front_facing": "Вид спереди",
-        "back_facing": "Вид сзади",
-        "top_down_view": "Вид сверху",
-        "bottom_up_view": "Вид снизу",
-        "hands_spreading_vagina": "Руки раздвигают влагалище",
+        "doggy": "Навколішки",
+        "standing": "Стоячи",
+        "squat": "Присідання",
+        "lying": "Лежачи",
+        "hor_split": "Горизонтальний шпагат",
+        "ver_split": "Вертикальний шпагат",
+        "on_back_legs_behind_head": "На спині ноги за головою",
+        "on_side_leg_up": "На боці нога вгору",
+        "suspended": "Підвішена",
+        "front_facing": "Вид спереду",
+        "back_facing": "Вид ззаду",
+        "top_down_view": "Вид зверху",
+        "bottom_up_view": "Вид знизу",
+        "hands_spreading_vagina": "Руки розсувають піхву",
         "lotus_pose": "Поза лотоса",
-        "scissors_pose": "Поза ножницы (две девушки)",
-        "inverted_extreme_bridge": "Экстремальный мост/стойка на плечах с инверсией",
-        "leaning_forward_wall": "Наклон вперёд у стены",
-        "standing_vertical_split_supported": "Вертикальный шпагат стоя с поддержкой",
-        "boat_pose_double_split_up": "Поза лодки / двойной шпагат вверх",
-        "deep_sumo_squat": "Глубокий присед (сумо-поза)",
-        "standing_horizontal_split_balanced": "Горизонтальный шпагат стоя с балансом",
-        "classic_bridge": "Мостик",
-        "sitting_horizontal_split_supported": "Горизонтальный шпагат сидя с опорой",
-        # Новые позы
-        "prone_frog_stretch": "Пролёт вперёд, плечевой растяг",
-        "standing_deep_forward_bend": "Стоячий глубокий прогиб с опорой на руки",
-        "forward_bow_forearms_clasped": "Наклон со сведёнными предплечьями",
-        "top_down_voluminous_bow": "Объёмный поклон сверху (вид сверху)",
-        "inverted_leg_over_shoulder": "Перевёрнутый сгиб с коленом над плечом",
-        "casual_seated_open_knees": "Лёгкая поза сидя, колени разведены",
+        "scissors_pose": "Поза ножиці (дві дівчини)",
+        "inverted_extreme_bridge": "Екстремальний міст/стійка на плечах з інверсією",
+        "leaning_forward_wall": "Нахил вперед біля стіни",
+        "standing_vertical_split_supported": "Вертикальний шпагат стоячи з підтримкою",
+        "boat_pose_double_split_up": "Поза човна / подвійний шпагат вгору",
+        "deep_sumo_squat": "Глибокий присід (сумо-поза)",
+        "standing_horizontal_split_balanced": "Горизонтальний шпагат стоячи з балансом",
+        "classic_bridge": "Місток",
+        "sitting_horizontal_split_supported": "Горизонтальний шпагат сидячи з опорою",
+        # Нові пози
+        "prone_frog_stretch": "Проліт вперед, плечовий розтяг",
+        "standing_deep_forward_bend": "Стоячий глибокий прогин з опорою на руки",
+        "forward_bow_forearms_clasped": "Нахил зі зведеними передпліччями",
+        "top_down_voluminous_bow": "Об'ємний уклін зверху (вид зверху)",
+        "inverted_leg_over_shoulder": "Перевернутий згин з коліном над плечем",
+        "casual_seated_open_knees": "Легка поза сидячи, коліна розведені",
     },
     "clothes": {
-        "stockings": "Чулки", # Subcategory trigger
-        "bikini_tan_lines": "Линии от загара в бикини",
-        "shibari": "Шибари",
-        "cow_costume": "Костюм коровы"
+        "stockings": "Панчохи", # Subcategory trigger
+        "bikini_tan_lines": "Лінії від засмаги в бікіні",
+        "shibari": "Шибарі",
+        "cow_costume": "Костюм корови"
     },
     "body": {
-        "big_breasts": "Большая грудь",
-        "small_breasts": "Маленькая грудь",
-        "body_fit": "Подтянутое тело",
-        "body_fat": "Пышное тело",
-        "body_muscular": "Мускулистое тело",
-        "age_loli": "Лоли",
-        "age_milf": "Милфа",
-        "age_21": "21 год",
-        "cum": "Вся в сперме",
-        "belly_bloat": "Вздутие живота (похоже на беременность)",
-        "succubus_tattoo": "Татуировка суккуба"
+        "big_breasts": "Велика грудь",
+        "small_breasts": "Маленька грудь",
+        "body_fit": "Підтягнуте тіло",
+        "body_fat": "Пишне тіло",
+        "body_muscular": "Мускулисте тіло",
+        "age_loli": "Лолі",
+        "age_milf": "Мілфа",
+        "age_21": "21 рік",
+        "cum": "Вся в спермі",
+        "belly_bloat": "Здуття живота (схоже на вагітність)",
+        "succubus_tattoo": "Татуювання суккуба"
     },
     "ethnos": {
-        "futanari": "Футанари",
+        "futanari": "Футанарі",
         "femboy": "Фембой",
-        "ethnicity_asian": "Азиатка",
-        "ethnicity_european": "Европейка"
+        "ethnicity_asian": "Азіатка",
+        "ethnicity_european": "Європейка"
     },
     "furry": {
-        "furry_cow": "Фури корова",
-        "furry_cat": "Фури кошка",
-        "furry_dog": "Фури собака",
-        "furry_dragon": "Фури дракон",
-        "furry_sylveon": "Фури сильвеон",
-        "furry_fox": "Фури лисица",
-        "furry_bunny": "Фури кролик",
-        "furry_wolf": "Фури волчица",
-        "furry_bear": "Фури медведь",
-        "furry_bird": "Фури птица",
-        "furry_mouse": "Фури мышь",
-        "furry_deer": "Фури олень",
-        "furry_tiger": "Фури тигр",
-        "furry_lion": "Фури лев",
-        "furry_snake": "Фури змея",
-        "furry_lizard": "Фури ящерица"
+        "furry_cow": "Фурі корова",
+        "furry_cat": "Фурі кішка",
+        "furry_dog": "Фурі собака",
+        "furry_dragon": "Фурі дракон",
+        "furry_sylveon": "Фурі сильвеон",
+        "furry_fox": "Фурі лисиця",
+        "furry_bunny": "Фурі кролик",
+        "furry_wolf": "Фурі вовчиця",
+        "furry_bear": "Фурі ведмідь",
+        "furry_bird": "Фурі птах",
+        "furry_mouse": "Фурі миша",
+        "furry_deer": "Фурі олень",
+        "furry_tiger": "Фурі тигр",
+        "furry_lion": "Фурі лев",
+        "furry_snake": "Фурі змія",
+        "furry_lizard": "Фурі ящірка"
     },
     "characters": {
-        # Демоны старшей школы
-        "dxd_rias": "Риас Грегори",
-        "dxd_akeno": "Акено Химеджима",
-        "dxd_xenovia_quarta": "Ксеновия Кварта",
-        "dxd_serafall_leviathan": "Серафалл Левиафан",
-        "dxd_asia_argento": "Азия Ардженто",
-        "dxd_koneko_toujou": "Конеко Тодзё",
-        "dxd_shidou_irina": "Шидо Ирина",
-        "dxd_gasper_vladi": "Гаспер Влади",
+        # Демони старшої школи
+        "dxd_rias": "Ріас Грегорі",
+        "dxd_akeno": "Акено Хімеджима",
+        "dxd_xenovia_quarta": "Ксеновія Кварта",
+        "dxd_serafall_leviathan": "Серафалл Левіафан",
+        "dxd_asia_argento": "Азія Ардженто",
+        "dxd_koneko_toujou": "Конеко Тодзьо",
+        "dxd_shidou_irina": "Шідо Ірина",
+        "dxd_gasper_vladi": "Гаспер Владі",
         "dxd_rossweisse": "Россвайссе",
         "dxd_yasaka": "Ясака",
-        "dxd_grayfia_lucifuge": "Грейфия Люцифуг",
+        "dxd_grayfia_lucifuge": "Грейфія Люцифуг",
         
         # Genshin Impact
         "genshin_eula": "Еола",
         "genshin_mona": "Мона",
-        "genshin_klee": "Кли",
+        "genshin_klee": "Клі",
         "genshin_raiden_shogun": "Райден",
         "genshin_paimon": "Паймон",
-        "genshin_amber": "Эмбер",
+        "genshin_amber": "Ембер",
         "genshin_barbara": "Барбара",
-        "genshin_beidou": "Бэй Доу",
-        "genshin_collei": "Коллеи",
-        "genshin_dehya": "Дэхья",
-        "genshin_diluc_f": "Дилюк (F)",
-        "genshin_diona": "Диона",
-        "genshin_fischl": "Фишль",
+        "genshin_beidou": "Бей Доу",
+        "genshin_collei": "Коллеї",
+        "genshin_dehya": "Дехья",
+        "genshin_diluc_f": "Ділюк (F)",
+        "genshin_diona": "Діона",
+        "genshin_fischl": "Фішль",
         "genshin_ganyu": "Гань Юй",
         "genshin_hutao": "Ху Тао",
         "genshin_jean": "Джинн",
         "genshin_kazuha_f": "Кадзуха (F)",
-        "genshin_keqing": "Кэ Цин",
-        "genshin_kuki_shinobu": "Куки Синобу",
-        "genshin_lisa": "Лиза",
-        "genshin_nahida": "Нахида",
-        "genshin_ningguang": "Нин Гуан",
-        "genshin_noelle": "Ноэлль",
-        "genshin_rosaria": "Розария",
-        "genshin_sara": "Кудзё Сара",
+        "genshin_keqing": "Ке Цін",
+        "genshin_kuki_shinobu": "Кукі Сінобу",
+        "genshin_lisa": "Ліза",
+        "genshin_nahida": "Нахіда",
+        "genshin_ningguang": "Нін Гуан",
+        "genshin_noelle": "Ноель",
+        "genshin_rosaria": "Розарія",
+        "genshin_sara": "Кудзьо Сара",
         "genshin_sayu": "Саю",
-        "genshin_shenhe": "Шэнь Хэ",
+        "genshin_shenhe": "Шень Хе",
         "genshin_sucrose": "Сахароза",
-        "genshin_venti_f": "Венти (F)",
-        "genshin_xiangling": "Сян Лин",
-        "genshin_xinyan": "Синь Янь",
-        "genshin_yaemiko": "Яэ Мико",
-        "genshin_yanfei": "Янь Фэй",
-        "genshin_yoimiya": "Ёимия",
-        "genshin_yelan": "Е Лань",
-        "genshin_zhongli_f": "Чжун Ли (F)",
-        "genshin_furina": "Фурина",
-        "genshin_navia": "Навия",
-        "genshin_chevreuse": "Шеврёз",
-        "genshin_clorinde": "Клоринда",
-        "genshin_ar_traveler_f": "Аether (F)",
-        "genshin_lumine": "Люмин",
-        "genshin_signora": "Синьора",
-        "genshin_arlecchino": "Арлекино",
-        "genshin_snezhnaya_fatui_harbinger": "Предвестник Фатуи",
+        "genshin_venti_f": "Венті (F)",
+        "genshin_xiangling": "Сян Лін",
+        "genshin_xinyan": "Сінь Янь",
+        "genshin_yaemiko": "Яе Міко",
+        "genshin_yanfei": "Янь Фей",
+        "genshin_yoimiya": "Йоімія",
+        "genshin_yelan": "Є Лань",
+        "genshin_zhongli_f": "Чжун Лі (F)",
+        "genshin_furina": "Фуріна",
+        "genshin_navia": "Навіа",
+        "genshin_chevreuse": "Шеврьоз",
+        "genshin_clorinde": "Клорінда",
+        "genshin_ar_traveler_f": "Етер (F)",
+        "genshin_lumine": "Люмін",
+        "genshin_signora": "Сіньора",
+        "genshin_arlecchino": "Арлекіно",
+        "genshin_snezhnaya_fatui_harbinger": "Провісник Фатуї",
 
         # Honkai Star Rail
         "hsr_kafka": "Кафка",
         "hsr_fu_xuan": "Фу Сюань",
-        "hsr_sparkle": "Искорка",
+        "hsr_sparkle": "Іскорка",
         "hsr_acheron": "Геоцина",
-        "hsr_march_7th": "Март 7",
-        "hsr_himeko": "Химеко",
+        "hsr_march_7th": "Березень 7",
+        "hsr_himeko": "Хімеко",
         "hsr_bronya": "Броня",
         "hsr_seele": "Зеле",
-        "hsr_jingliu": "Цзинлю",
+        "hsr_jingliu": "Цзінлю",
         "hsr_stelle": "Стелла (F)",
         "hsr_herta": "Герта",
-        "hsr_silver_wolf": "Серебряный Волк",
-        "hsr_tingyun": "Тинъюнь",
+        "hsr_silver_wolf": "Срібний Вовк",
+        "hsr_tingyun": "Тін'юнь",
         "hsr_asta": "Аста",
         "hsr_clara": "Клара",
-        "hsr_peia": "Пэйя",
+        "hsr_peia": "Пейя",
         "hsr_sushang": "Сушан",
         "hsr_natasha": "Наташа",
         "hsr_hook": "Хук",
         "hsr_pela": "Пела",
-        "hsr_qingque": "Цинцюэ",
+        "hsr_qingque": "Цінцюе",
         "hsr_yukong": "Юйкун",
-        "hsr_guinaifen": "Гуйнайфэнь",
+        "hsr_guinaifen": "Гуйнайфень",
         "hsr_huohuo": "Хохо",
-        "hsr_xueyi": "Сюэи",
+        "hsr_xueyi": "Сюеї",
         "hsr_hanabi": "Ханами",
-        "hsr_robin": "Робин",
+        "hsr_robin": "Робін",
         "hsr_aventurine_f": "Авантюрин (F)",
 
         # NieR Automata
@@ -239,256 +239,256 @@ TAGS = {
         "azurlane_formidable": "Formidable",
 
         # Fate Series
-        "fate_castoria": "Кастория",
+        "fate_castoria": "Касторія",
         "fate_saber": "Сейбер",
         "fate_astolfo": "Астольфо",
 
         # Resident Evil
-        "residentevil_lady_dimitrescu": "Леди Димитреску",
+        "residentevil_lady_dimitrescu": "Леді Дімітреску",
 
         # Street Fighter
-        "streetfighter_chun_li": "Чун Ли",
-        "streetfighter_cammy": "Кэмми",
-        "streetfighter_balrog_f": "Балрог (женская версия)",
-        "streetfighter_juri": "Джури",
+        "streetfighter_chun_li": "Чун Лі",
+        "streetfighter_cammy": "Кеммі",
+        "streetfighter_balrog_f": "Балрог (жіноча версія)",
+        "streetfighter_juri": "Джурі",
         "streetfighter_menat": "Менат",
         "streetfighter_laura": "Лаура",
         "streetfighter_poison": "Пойсон",
-        "streetfighter_maki": "Маки",
+        "streetfighter_maki": "Макі",
         "streetfighter_rose": "Роуз",
-        "streetfighter_r_mika": "Р. Мика",
-        "streetfighter_ibuki": "Ибуки",
-        "streetfighter_karin": "Карин",
-        "streetfighter_ed": "Эд",
+        "streetfighter_r_mika": "Р. Міка",
+        "streetfighter_ibuki": "Ібукі",
+        "streetfighter_karin": "Карін",
+        "streetfighter_ed": "Ед",
         "streetfighter_fang": "Фалькон",
-        "streetfighter_e_honda_f": "Иви",
+        "streetfighter_e_honda_f": "Іві",
 
         # Atomic Heart
-        "atomicheart_twins": "Близняшки",
+        "atomicheart_twins": "Близнючки",
 
-        # Bleach - НОВЫЕ ПЕРСОНАЖИ
-        "bleach_renji_f": "Ренджи Абарай (F)",
-        "bleach_rukia_kuchiki": "Рукия Кучики",
-        "bleach_orihime_inoue": "Орихиме Иноуэ",
-        "bleach_yoruichi_shihoin": "Йоруичи Шихоин",
-        "bleach_rangiku_matsumoto": "Рангику Мацумото",
-        "bleach_nemu_kurotsuchi": "Нему Куроцучи",
-        "bleach_nelliel_tu_odelschwanck": "Неллиэль Ту Одельшванк",
-        "bleach_tier_harribel": "Тиа Харрибел",
+        # Bleach - НОВІ ПЕРСОНАЖІ
+        "bleach_renji_f": "Ренджі Абарай (F)",
+        "bleach_rukia_kuchiki": "Рукія Кучікі",
+        "bleach_orihime_inoue": "Оріхіме Іноуе",
+        "bleach_yoruichi_shihoin": "Йоруічі Шіхоін",
+        "bleach_rangiku_matsumoto": "Рангіку Мацумото",
+        "bleach_nemu_kurotsuchi": "Нему Куроцучі",
+        "bleach_nelliel_tu_odelschwanck": "Нелліель Ту Одельшванк",
+        "bleach_tier_harribel": "Тіа Харрібел",
         "bleach_retsu_unohana": "Ретсу Унохана",
         "bleach_soi_fon": "Сой Фон",
-        "bleach_hiyori_sarugaki": "Хиёри Саругаки",
-        "bleach_lisa_yadomaru": "Лиза Ядомару",
+        "bleach_hiyori_sarugaki": "Хіорі Саругакі",
+        "bleach_lisa_yadomaru": "Ліза Ядомару",
         "bleach_mashiro_kuna": "Маширо Куна",
-        "bleach_nanao_ise": "Нанао Исе",
-        "bleach_isane_kotetsu": "Исане Котецу",
-        "bleach_momo_hinamori": "Момо Хинамири",
-        "bleach_candice_catnipp": "Кэндис Катнипп",
-        "bleach_bambietta_basterbine": "Бамбиетта Бастербайн",
-        "bleach_giselle_gewelle": "Гизель Жевелль",
-        "bleach_meninas_mcallon": "Менинас МакАллон",
-        "bleach_liltotto_lamperd": "Лилттото Ламперд",
+        "bleach_nanao_ise": "Нанао Ісе",
+        "bleach_isane_kotetsu": "Ісане Котецу",
+        "bleach_momo_hinamori": "Момо Хінамірі",
+        "bleach_candice_catnipp": "Кендіс Кетніпп",
+        "bleach_bambietta_basterbine": "Бамбіетта Бастербайн",
+        "bleach_giselle_gewelle": "Гізель Жевелль",
+        "bleach_meninas_mcallon": "Менінас МакАллон",
+        "bleach_liltotto_lamperd": "Лілттото Ламперд",
 
         # Danmachi
-        "danmachi_hestia": "Гестия",
+        "danmachi_hestia": "Гестія",
         "danmachi_freya": "Фрея",
 
-        # Повесть о конце света (Record of Ragnarok)
-        "ragnarok_aphrodite": "Афродита",
+        # Повість про кінець світу (Record of Ragnarok)
+        "ragnarok_aphrodite": "Афродіта",
 
         # Naruto
-        "naruto_hinata": "Хината",
+        "naruto_hinata": "Хіната",
         "naruto_tsunade": "Цунаде",
 
         # Overlord
         "overlord_albedo": "Альбедо",
-        "overlord_shalltear": "Шалтир",
+        "overlord_shalltear": "Шалтір",
 
-        # Безумный азарт (Kakegurui)
-        "kakegurui_yumeko": "Юмеко Джабами",
-        "kakegurui_kirari": "Кирари Момобами",
-        "kakegurui_mary": "Мэри Саотомэ",
+        # Божевільний азарт (Kakegurui)
+        "kakegurui_yumeko": "Юмеко Джабамі",
+        "kakegurui_kirari": "Кірарі Момобамі",
+        "kakegurui_mary": "Мері Саотомє",
 
-        # Магическая битва (Jujutsu Kaisen)
-        "jujutsukaisen_mei_mei": "Мэй Мэй",
+        # Магічна битва (Jujutsu Kaisen)
+        "jujutsukaisen_mei_mei": "Мей Мей",
 
         # Герой Щита (The Rising of the Shield Hero)
-        "shieldhero_mirelia_melromarc": "Мирелия К. Мелромарк",
-        "shieldhero_malty_melromarc": "Малти С. Мелромарк",
+        "shieldhero_mirelia_melromarc": "Мірелія К. Мелромарк",
+        "shieldhero_malty_melromarc": "Малті С. Мелромарк",
         
         # Helltaker
         "helltaker_lucifer": "Люцифер",
 
         # Zenless Zone Zero
-        "zzz_ellen_joe": "Эллен Джо",
+        "zzz_ellen_joe": "Еллен Джо",
         "zzz_koleda": "Коледа",
-        "zzz_lycaon": "Ликаон (F)",
-        "zzz_nicole": "Николь",
-        "zzz_anby": "Энби",
-        "zzz_nekomiya": "Нэкомия",
+        "zzz_lycaon": "Лікаон (F)",
+        "zzz_nicole": "Ніколь",
+        "zzz_anby": "Енбі",
+        "zzz_nekomiya": "Некомія",
         "zzz_aisha": "Айша",
         "zzz_haruka": "Харука",
-        "zzz_corin": "Корин",
+        "zzz_corin": "Корін",
         "zzz_grace": "Грейс",
-        "zzz_hoshimi": "Хосими",
-        "zzz_rory": "Рори",
-        "zzz_bonnie": "Бонни",
-        "zzz_elize": "Элиза",
-        "zzz_fubuki": "Фубуки",
+        "zzz_hoshimi": "Хошимі",
+        "zzz_rory": "Рорі",
+        "zzz_bonnie": "Бонні",
+        "zzz_elize": "Еліза",
+        "zzz_fubuki": "Фубукі",
         "zzz_sana": "Сана",
-        "zzz_yuki": "Юки",
+        "zzz_yuki": "Юкі",
         
         # League of Legends
-        "lol_qiyana": "Киана",
+        "lol_qiyana": "Кіана",
         "lol_aurora": "Аврора",
-        "lol_katarina": "Катарина",
-        "lol_akali": "Акали",
-        "lol_irelia": "Ирелия",
-        "lol_caitlyn": "Кейтлин",
-        "lol_briar": "Брайер",
+        "lol_katarina": "Катаріна",
+        "lol_akali": "Акалі",
+        "lol_irelia": "Ірелія",
+        "lol_caitlyn": "Кейтлін",
+        "lol_briar": "Брайєр",
         "lol_kaisa": "Кай'Са",
-        "lol_evelynn": "Эвелинн",
-        "lol_ahri": "Ари",
+        "lol_evelynn": "Евелінн",
+        "lol_ahri": "Арі",
         "lol_belveth": "Бел'Вет",
-        "lol_fiora": "Фиора",
+        "lol_fiora": "Фіора",
         "lol_gwen": "Гвен",
-        "lol_zoe": "Зои",
-        "lol_missfortune": "Мисс Фортуна",
-        "lol_neeko": "Нико",
-        "lol_samira": "Самира",
+        "lol_zoe": "Зої",
+        "lol_missfortune": "Міс Фортуна",
+        "lol_neeko": "Ніко",
+        "lol_samira": "Саміра",
         "lol_sona": "Сона",
-        "lol_elise": "Элиза",
+        "lol_elise": "Еліза",
 
         # My Little Pony
-        "mlp_twilight_sparkle": "Сумеречная Искорка",
-        "mlp_applejack": "Эпплджек",
-        "mlp_rainbow_dash": "Радуга Дэш",
-        "mlp_rarity": "Рарити",
+        "mlp_twilight_sparkle": "Сутінкова Іскорка",
+        "mlp_applejack": "Епплджек",
+        "mlp_rainbow_dash": "Веселка Деш",
+        "mlp_rarity": "Раріті",
         "mlp_fluttershy": "Флаттершай",
-        "mlp_pinkie_pie": "Пинки Пай",
+        "mlp_pinkie_pie": "Пінкі Пай",
         "mlp_spike": "Спайк",
-        "mlp_princess_celestia": "Принцесса Селестия",
-        "mlp_princess_luna": "Принцесса Луна",
-        "mlp_princess_cadence": "Принцесса Каденс",
-        "mlp_discord": "Дискорд",
-        "mlp_apple_bloom": "Эппл Блум",
+        "mlp_princess_celestia": "Принцеса Селестія",
+        "mlp_princess_luna": "Принцеса Луна",
+        "mlp_princess_cadence": "Принцеса Каденс",
+        "mlp_discord": "Діскорд",
+        "mlp_apple_bloom": "Еппл Блум",
         "mlp_scootaloo": "Скуталу",
-        "mlp_sweetie_belle": "Крошка Бель",
+        "mlp_sweetie_belle": "Крихітка Бель",
 
         # Dislyte
-        "dislyte_li_ling_f": "Ли Лин (F)",
-        "dislyte_sally": "Салли",
+        "dislyte_li_ling_f": "Лі Лін (F)",
+        "dislyte_sally": "Саллі",
         "dislyte_clara": "Клара",
-        "dislyte_gabrielle": "Габриэль",
+        "dislyte_gabrielle": "Габріель",
         "dislyte_chloe": "Хлоя",
         "dislyte_odette": "Одетта",
-        "dislyte_meredith": "Мередит",
+        "dislyte_meredith": "Мередіт",
         "dislyte_jiang_man": "Цзян Мань",
-        "dislyte_eira": "Эйра",
+        "dislyte_eira": "Ейра",
         "dislyte_drew": "Дрю",
-        "dislyte_pritzker_f": "Притцкер (F)",
-        "dislyte_fatima": "Фатима",
+        "dislyte_pritzker_f": "Прітцкер (F)",
+        "dislyte_fatima": "Фатіма",
         "dislyte_brewster_f": "Брюстер (F)",
         "dislyte_yun_chuan_f": "Юнь Чуань (F)",
         "dislyte_hyde_f": "Хайд (F)",
         "dislyte_leora": "Леора",
         "dislyte_tevor_f": "Тевор (F)",
         "dislyte_zora": "Зора",
-        "dislyte_embla": "Эмбла",
-        "dislyte_ophilia": "Офелия",
+        "dislyte_embla": "Ембла",
+        "dislyte_ophilia": "Офелія",
         "dislyte_ahmed_f": "Ахмед (F)",
-        "dislyte_everett_f": "Эверетт (F)",
-        "dislyte_ollie_f": "Олли (F)",
-        "dislyte_jin_hee": "Джин Хи",
-        "dislyte_ifrit_f": "Ифрит (F)",
-        "dislyte_sienna": "Сиенна",
-        "dislyte_valeria": "Валерия",
-        "dislyte_ashley": "Эшли",
-        "dislyte_triki_f": "Трики (F)",
+        "dislyte_everett_f": "Еверетт (F)",
+        "dislyte_ollie_f": "Оллі (F)",
+        "dislyte_jin_hee": "Джин Хі",
+        "dislyte_ifrit_f": "Іфріт (F)",
+        "dislyte_sienna": "Сіенна",
+        "dislyte_valeria": "Валерія",
+        "dislyte_ashley": "Ешлі",
+        "dislyte_triki_f": "Трікі (F)",
         "dislyte_narmer_f": "Нармер (F)",
         "dislyte_tye": "Тай",
-        "dislyte_biondina": "Биондина",
-        "dislyte_dhalia": "Далия",
-        "dislyte_elaine": "Элейн",
-        "dislyte_cecilia": "Сесилия",
-        "dislyte_intisar": "Интисар",
-        "dislyte_kaylee": "Кейли",
+        "dislyte_biondina": "Біондіна",
+        "dislyte_dhalia": "Далія",
+        "dislyte_elaine": "Елейн",
+        "dislyte_cecilia": "Сесілія",
+        "dislyte_intisar": "Інтісар",
+        "dislyte_kaylee": "Кейлі",
         "dislyte_layla": "Лейла",
-        "dislyte_lynn": "Линн",
-        "dislyte_melanie": "Мелани",
+        "dislyte_lynn": "Лінн",
+        "dislyte_melanie": "Мелані",
         "dislyte_mona": "Мона",
-        "dislyte_nicole": "Николь",
+        "dislyte_nicole": "Ніколь",
         "dislyte_q": "Кью",
-        "dislyte_ren_si": "Жэнь Си",
+        "dislyte_ren_si": "Жень Сі",
         "dislyte_stewart_f": "Стюарт (F)",
         "dislyte_tang_xuan_f": "Тан Сюань (F)",
-        "dislyte_unaky": "Унаки",
-        "dislyte_victoria": "Виктория",
-        "dislyte_xiao_yin": "Сяо Инь",
-        "dislyte_ye_suhua": "Е Сухуа",
+        "dislyte_unaky": "Унакі",
+        "dislyte_victoria": "Вікторія",
+        "dislyte_xiao_yin": "Сяо Інь",
+        "dislyte_ye_suhua": "Є Сухуа",
         "dislyte_zhong_nan": "Чжун Нань",
         "dislyte_anadora": "Анадора",
-        "dislyte_bernice": "Бернис",
-        "dislyte_brynn": "Бринн",
+        "dislyte_bernice": "Берніс",
+        "dislyte_brynn": "Брінн",
         "dislyte_catherine": "Катерина",
         "dislyte_chang_pu": "Чан Пу",
         "dislyte_eugene_f": "Юджин (F)",
-        "dislyte_freddy_f": "Фредди (F)",
+        "dislyte_freddy_f": "Фредді (F)",
         "dislyte_hall_f": "Холл (F)",
         "dislyte_helena": "Хелена",
         "dislyte_jacob_f": "Джейкоб (F)",
         "dislyte_jeanne": "Жанна",
-        "dislyte_li_ao_f": "Ли Ао (F)",
-        "dislyte_lu_yi_f": "Лу И (F)",
+        "dislyte_li_ao_f": "Лі Ао (F)",
+        "dislyte_lu_yi_f": "Лу І (F)",
         "dislyte_mark_f": "Марк (F)",
-        "dislyte_olivia": "Оливия",
+        "dislyte_olivia": "Олівія",
         "dislyte_sander_f": "Сандер (F)",
         "dislyte_stella": "Стелла",
-        "dislyte_alice": "Алиса",
+        "dislyte_alice": "Аліса",
         "dislyte_arcana": "Аркана",
-        "dislyte_aurelius_f": "Аурелиус (F)",
+        "dislyte_aurelius_f": "Ауреліус (F)",
         "dislyte_bette": "Бетте",
-        "dislyte_bonnie": "Бонни",
-        "dislyte_celine": "Селин",
-        "dislyte_corbin_f": "Корбин (F)",
+        "dislyte_bonnie": "Бонні",
+        "dislyte_celine": "Селін",
+        "dislyte_corbin_f": "Корбін (F)",
     },
     "head": {
         "ahegao": "Ахегао",
-        "pain_face": "Лицо в боли",
-        "ecstasy_face": "Лицо в экстазе",
-        "gold_lipstick": "Золотая помада"
+        "pain_face": "Лице в болі",
+        "ecstasy_face": "Лице в екстазі",
+        "gold_lipstick": "Золота помада"
     },
     "fetish": {
-        "nipple_piercing": "Пирсинг сосков",
-        "clitoral_piercing": "Пирсинг клитора",
+        "nipple_piercing": "Пірсинг сосків",
+        "clitoral_piercing": "Пірсинг клітора",
         "foot_fetish": "Фетиш стоп",
         "footjob": "Футджоб",
-        "mouth_nipples": "Рты вместо сосков",
-        "nipple_hole": "Отверстие в соске",
-        "anus_piercing": "Пирсинг ануса",
-        "vagina_piercing": "Пирсинг вагины",
+        "mouth_nipples": "Роти замість сосків",
+        "nipple_hole": "Отвір в соску",
+        "anus_piercing": "Пірсинг ануса",
+        "vagina_piercing": "Пірсинг вагіни",
         "gag": "Кляп",
-        "blindfold": "Повязка на глаза",
-        "horse_sex": "Секс с конем"
+        "blindfold": "Пов'язка на очі",
+        "horse_sex": "Секс з конем"
     },
     "pokemon": {
         "reshiram": "Реширам",
         "mew": "Мю",
         "mewtwo": "Мюту",
         "gardevoir": "Гардевуар",
-        "umbreon": "Эмбреон",
-        "lugia": "Лугия",
-        "shadow_lugia": "Шадоу Лугия",
-        "lopunny": "Лопанни",
+        "umbreon": "Ембреон",
+        "lugia": "Лугія",
+        "shadow_lugia": "Шадоу Лугія",
+        "lopunny": "Лопанні",
         "goodra": "Гудра",
-        "pokemon_jessie": "Джесси",
-        "pokemon_lusamine": "Лусамине",
+        "pokemon_jessie": "Джессі",
+        "pokemon_lusamine": "Лусаміне",
     }
 }
 
-# Категории для персонажей (для вкладок)
+# Категорії для персонажів (для вкладок)
 CHARACTER_CATEGORIES = {
-    "dxd": "📺 Демоны старшей школы",
+    "dxd": "📺 Демони старшої школи",
     "genshin": "🎮 Genshin Impact",
     "hsr": "🎮 Honkai Star Rail",
     "nier": "🎮 NieR Automata",
@@ -501,11 +501,11 @@ CHARACTER_CATEGORIES = {
     "atomicheart": "🎮 Atomic Heart",
     "bleach": "📺 Bleach",
     "danmachi": "📺 Danmachi",
-    "ragnarok": "📺 Повесть о конце света",
+    "ragnarok": "📺 Повість про кінець світу",
     "naruto": "📺 Naruto",
     "overlord": "📺 Overlord",
-    "kakegurui": "📺 Безумный азарт",
-    "jujutsukaisen": "📺 Магическая битва",
+    "kakegurui": "📺 Божевільний азарт",
+    "jujutsukaisen": "📺 Магічна битва",
     "shieldhero": "📺 Герой Щита",
     "helltaker": "🎮 Helltaker",
     "zzz": "🎮 Zenless Zone Zero",
@@ -514,7 +514,7 @@ CHARACTER_CATEGORIES = {
     "dislyte": "🎮 Dislyte"
 }
 
-# --- Промпты для персонажей (если они требуют специфичных описаний, отличных от их имен) ---
+# --- Промпти для персонажів (якщо вони вимагають специфічних описів, відмінних від їхніх імен) ---
 CHARACTER_PROMPTS = {
     "dxd_rias": "Rias Gremory, long red hair, large breasts, demon, school uniform, cleavage",
     "dxd_akeno": "Akeno Himejima, black hair, large breasts, demon, school uniform, glasses",
@@ -757,94 +757,61 @@ CHARACTER_PROMPTS = {
     "dislyte_ollie_f": "Ollie (female), Dislyte, female version of Ollie, playful, skater",
     "dislyte_jin_hee": "Jin Hee, Dislyte, martial artist, red and black outfit",
     "dislyte_ifrit_f": "Ifrit (female), Dislyte, female version of Ifrit, fire demon, powerful",
-    "dislyte_sienna": "Сиенна",
-    "dislyte_valeria": "Валерия",
-    "dislyte_ashley": "Эшли",
-    "dislyte_triki_f": "Трики (F)",
+    "dislyte_sienna": "Сіенна",
+    "dislyte_valeria": "Валерія",
+    "dislyte_ashley": "Ешлі",
+    "dislyte_triki_f": "Трікі (F)",
     "dislyte_narmer_f": "Нармер (F)",
     "dislyte_tye": "Тай",
-    "dislyte_biondina": "Биондина",
-    "dislyte_dhalia": "Далия",
-    "dislyte_elaine": "Элейн",
-    "dislyte_cecilia": "Сесилия",
-    "dislyte_intisar": "Интисар",
-    "dislyte_kaylee": "Кейли",
+    "dislyte_biondina": "Біондіна",
+    "dislyte_dhalia": "Далія",
+    "dislyte_elaine": "Елейн",
+    "dislyte_cecilia": "Сесілія",
+    "dislyte_intisar": "Інтісар",
+    "dislyte_kaylee": "Кейлі",
     "dislyte_layla": "Лейла",
-    "dislyte_lynn": "Линн",
-    "dislyte_melanie": "Мелани",
+    "dislyte_lynn": "Лінн",
+    "dislyte_melanie": "Мелані",
     "dislyte_mona": "Мона",
-    "dislyte_nicole": "Николь",
+    "dislyte_nicole": "Ніколь",
     "dislyte_q": "Кью",
-    "dislyte_ren_si": "Жэнь Си",
+    "dislyte_ren_si": "Жень Сі",
     "dislyte_stewart_f": "Стюарт (F)",
     "dislyte_tang_xuan_f": "Тан Сюань (F)",
-    "dislyte_unaky": "Унаки",
-    "dislyte_victoria": "Виктория",
-    "dislyte_xiao_yin": "Сяо Инь",
-    "dislyte_ye_suhua": "Е Сухуа",
+    "dislyte_unaky": "Унакі",
+    "dislyte_victoria": "Вікторія",
+    "dislyte_xiao_yin": "Сяо Інь",
+    "dislyte_ye_suhua": "Є Сухуа",
     "dislyte_zhong_nan": "Чжун Нань",
     "dislyte_anadora": "Анадора",
-    "dislyte_bernice": "Бернис",
-    "dislyte_brynn": "Бринн",
+    "dislyte_bernice": "Берніс",
+    "dislyte_brynn": "Брінн",
     "dislyte_catherine": "Катерина",
     "dislyte_chang_pu": "Чан Пу",
     "dislyte_eugene_f": "Юджин (F)",
-    "dislyte_freddy_f": "Фредди (F)",
+    "dislyte_freddy_f": "Фредді (F)",
     "dislyte_hall_f": "Холл (F)",
     "dislyte_helena": "Хелена",
     "dislyte_jacob_f": "Джейкоб (F)",
     "dislyte_jeanne": "Жанна",
-    "dislyte_li_ao_f": "Ли Ао (F)",
-    "dislyte_lu_yi_f": "Лу И (F)",
+    "dislyte_li_ao_f": "Лі Ао (F)",
+    "dislyte_lu_yi_f": "Лу І (F)",
     "dislyte_mark_f": "Марк (F)",
-    "dislyte_olivia": "Оливия",
+    "dislyte_olivia": "Олівія",
     "dislyte_sander_f": "Сандер (F)",
     "dislyte_stella": "Стелла",
-    "dislyte_alice": "Алиса",
+    "dislyte_alice": "Аліса",
     "dislyte_arcana": "Аркана",
-    "dislyte_aurelius_f": "Аурелиус (F)",
+    "dislyte_aurelius_f": "Ауреліус (F)",
     "dislyte_bette": "Бетте",
-    "dislyte_bonnie": "Бонни",
-    "dislyte_celine": "Селин",
-    "dislyte_corbin_f": "Корбин (F)",
-    }, # <-- Здесь был лишний отступ
-    "head": {
-        "ahegao": "Ахегао",
-        "pain_face": "Лицо в боли",
-        "ecstasy_face": "Лицо в экстазе",
-        "gold_lipstick": "Золотая помада"
-    },
-    "fetish": {
-        "nipple_piercing": "Пирсинг сосков",
-        "clitoral_piercing": "Пирсинг клитора",
-        "foot_fetish": "Фетиш стоп",
-        "footjob": "Футджоб",
-        "mouth_nipples": "Рты вместо сосков",
-        "nipple_hole": "Отверстие в соске",
-        "anus_piercing": "Пирсинг ануса",
-        "vagina_piercing": "Пирсинг вагины",
-        "gag": "Кляп",
-        "blindfold": "Повязка на глаза",
-        "horse_sex": "Секс с конем"
-    },
-    "pokemon": {
-        "reshiram": "Реширам",
-        "mew": "Мю",
-        "mewtwo": "Мюту",
-        "gardevoir": "Гардевуар",
-        "umbreon": "Эмбреон",
-        "lugia": "Лугия",
-        "shadow_lugia": "Шадоу Лугия",
-        "lopunny": "Лопанни",
-        "goodra": "Гудра",
-        "pokemon_jessie": "Джесси",
-        "pokemon_lusamine": "Лусамине",
-    }
+    "dislyte_bonnie": "Бонні",
+    "dislyte_celine": "Селін",
+    "dislyte_corbin_f": "Корбін (F)",
 }
 
-# --- Промпты для модели ---
+# --- Промпти для моделі ---
 TAG_PROMPTS = {
-    **CHARACTER_PROMPTS, # Включаем промпты персонажей
+    **CHARACTER_PROMPTS, # Включаємо промпти персонажів
     "vagina": "spread pussy",
     "anus": "spread anus",
     "both": "spread pussy and anus",
@@ -963,7 +930,7 @@ TAG_PROMPTS = {
     "goodra": "goodra, pokemon",
     "pokemon_jessie": "jessie, pokemon, team rocket, red hair, long hair, ponytail",
     "pokemon_lusamine": "lusamine, pokemon, aether foundation, blonde hair, long hair, dress",
-    # Новые промпты для поз
+    # Нові промпти для поз
     "prone_frog_stretch": "prone frog stretch, chest to floor, hips wide open, splayed thighs, exposed genitals, deep groin stretch, extreme flexibility, inviting pose",
     "standing_deep_forward_bend": "standing deep forward bend, legs wide apart, hands on floor, head dropped between legs, exposed crotch, emphasizing butt, flexible pose",
     "forward_bow_forearms_clasped": "standing deep forward bow, feet close, forearms clasped in front of crotch, hips lifted high, arched back, emphasizing buttocks, submissive pose",
@@ -973,18 +940,18 @@ TAG_PROMPTS = {
 }
 
 
-# --- Функции для создания клавиатур ---
+# --- Функції для створення клавіатур ---
 
 def main_menu():
-    """Создает главное меню бота."""
+    """Створює головне меню бота."""
     kb = types.InlineKeyboardMarkup()
-    kb.add(types.InlineKeyboardButton("🧩 Выбрать теги", callback_data="choose_tags"))
-    kb.add(types.InlineKeyboardButton("⚙️ Настройки", callback_data="settings"))
-    kb.add(types.InlineKeyboardButton("🎨 Генерировать", callback_data="generate"))
+    kb.add(types.InlineKeyboardButton("🧩 Вибрати теги", callback_data="choose_tags"))
+    kb.add(types.InlineKeyboardButton("⚙️ Налаштування", callback_data="settings"))
+    kb.add(types.InlineKeyboardButton("🎨 Генерувати", callback_data="generate"))
     return kb
 
 def tag_selection_keyboard(category, uid):
-    """Создает клавиатуру для выбора тегов в категории."""
+    """Створює клавіатуру для вибору тегів у категорії."""
     kb = types.InlineKeyboardMarkup(row_width=2)
     current_tags = user_settings.get(uid, {}).get("tags", [])
     
@@ -996,19 +963,19 @@ def tag_selection_keyboard(category, uid):
 
     for tag_key, tag_name_ru in sorted_tags:
         if category == "clothes" and tag_key == "stockings":
-            # Специальная кнопка для выбора типа чулок
-            kb.add(types.InlineKeyboardButton("Чулки", callback_data="stockings_type_select"))
+            # Спеціальна кнопка для вибору типу панчох
+            kb.add(types.InlineKeyboardButton("Панчохи", callback_data="stockings_type_select"))
         else:
             selected = tag_key in current_tags
             prefix = "✅ " if selected else ""
             kb.add(types.InlineKeyboardButton(f"{prefix}{tag_name_ru}", callback_data=f"tag|{tag_key}"))
 
-    kb.add(types.InlineKeyboardButton("⬅️ Назад к категориям", callback_data="choose_tags"))
-    kb.add(types.InlineKeyboardButton("🏠 Главное меню", callback_data="main_menu"))
+    kb.add(types.InlineKeyboardButton("⬅️ Назад до категорій", callback_data="choose_tags"))
+    kb.add(types.InlineKeyboardButton("🏠 Головне меню", callback_data="main_menu"))
     return kb
 
 def category_menu_keyboard():
-    """Создает меню выбора категорий тегов."""
+    """Створює меню вибору категорій тегів."""
     kb = types.InlineKeyboardMarkup(row_width=2)
     for key, name in CATEGORY_NAMES.items():
         kb.add(types.InlineKeyboardButton(name, callback_data=f"category|{key}"))
@@ -1016,13 +983,13 @@ def category_menu_keyboard():
     return kb
 
 def character_subcategory_menu_keyboard(uid):
-    """Создает меню выбора подкатегорий персонажей."""
+    """Створює меню вибору підкатегорій персонажів."""
     kb = types.InlineKeyboardMarkup(row_width=2)
     
-    # Сортируем подкатегории по русскоязычному названию
+    # Сортуємо підкатегорії за українською назвою
     sorted_char_categories = sorted(CHARACTER_CATEGORIES.items(), key=lambda item: item[1])
 
-    # Определяем, какая подкатегория выбрана, чтобы пометить её
+    # Визначаємо, яка підкатегорія вибрана, щоб позначити її
     selected_char_sub_prefix = None
     for tag_key in user_settings.get(uid, {}).get("tags", []):
         for char_prefix in CHARACTER_CATEGORIES.keys():
@@ -1035,27 +1002,27 @@ def character_subcategory_menu_keyboard(uid):
     for key, name in sorted_char_categories:
         label = f"✅ {name}" if selected_char_sub_prefix == key else name
         kb.add(types.InlineKeyboardButton(label, callback_data=f"char_sub|{key}"))
-    kb.add(types.InlineKeyboardButton("⬅️ Назад к категориям", callback_data="choose_tags"))
+    kb.add(types.InlineKeyboardButton("⬅️ Назад до категорій", callback_data="choose_tags"))
     return kb
 
 def stockings_type_menu_keyboard(uid):
-    """Создает меню выбора типа чулок."""
+    """Створює меню вибору типу панчох."""
     kb = types.InlineKeyboardMarkup(row_width=2)
-    types_map = {"normal": "Обычные", "fishnet": "В сеточку"}
+    types_map = {"normal": "Звичайні", "fishnet": "У сіточку"}
     current_tags = user_settings.get(uid, {}).get("tags", [])
 
     for type_key, type_name in types_map.items():
-        # Check if any stockings of this type are selected
+        # Перевіряємо, чи вибрані панчохи цього типу
         selected = any(f"stockings_{type_key}_{color}" in current_tags for color in ["white", "black", "red", "pink", "gold"])
         label = f"✅ {type_name}" if selected else type_name
         kb.add(types.InlineKeyboardButton(label, callback_data=f"stockings_type|{type_key}"))
-    kb.add(types.InlineKeyboardButton("⬅️ Назад к категории 'Одежда'", callback_data="category|clothes"))
+    kb.add(types.InlineKeyboardButton("⬅️ Назад до категорії 'Одяг'", callback_data="category|clothes"))
     return kb
 
 def stockings_color_menu_keyboard(stockings_type, uid):
-    """Создает меню выбора цвета чулок."""
+    """Створює меню вибору кольору панчох."""
     kb = types.InlineKeyboardMarkup(row_width=2)
-    colors = {"white": "Белые", "black": "Черные", "red": "Красные", "pink": "Розовые", "gold": "Золотые"}
+    colors = {"white": "Білі", "black": "Чорні", "red": "Червоні", "pink": "Рожеві", "gold": "Золоті"}
     current_tags = user_settings.get(uid, {}).get("tags", [])
 
     for color_key, color_name in colors.items():
@@ -1063,13 +1030,13 @@ def stockings_color_menu_keyboard(stockings_type, uid):
         label = f"✅ {color_name}" if tag_key in current_tags else color_name
         kb.add(types.InlineKeyboardButton(label, callback_data=f"tag|{tag_key}"))
     
-    kb.add(types.InlineKeyboardButton("⬅️ Назад к типам чулок", callback_data="stockings_type_select"))
+    kb.add(types.InlineKeyboardButton("⬅️ Назад до типів панчох", callback_data="stockings_type_select"))
     return kb
 
 def settings_menu_keyboard(current_num_images):
-    """Создает меню настроек."""
+    """Створює меню налаштувань."""
     kb = types.InlineKeyboardMarkup(row_width=2)
-    kb.add(types.InlineKeyboardButton(f"Количество изображений: {current_num_images}", callback_data="ignore"))
+    kb.add(types.InlineKeyboardButton(f"Кількість зображень: {current_num_images}", callback_data="ignore"))
     kb.add(types.InlineKeyboardButton("1", callback_data="set_num_images|1"))
     kb.add(types.InlineKeyboardButton("2", callback_data="set_num_images|2"))
     kb.add(types.InlineKeyboardButton("3", callback_data="set_num_images|3"))
@@ -1077,76 +1044,76 @@ def settings_menu_keyboard(current_num_images):
     kb.add(types.InlineKeyboardButton("⬅️ Назад", callback_data="main_menu"))
     return kb
 
-# --- Обработчики сообщений и колбэков ---
+# --- Обробники повідомлень та колбеків ---
 
 @bot.message_handler(commands=["start"])
 def start_command_handler(msg):
-    """Обработчик команды /start."""
+    """Обробник команди /start."""
     uid = msg.chat.id
     user_settings[uid] = {"tags": [], "current_category": None, "current_char_subcategory": None, "current_stockings_type": None, "num_images": 1}
-    bot.send_message(uid, "Привет, Шеф! Я готов к работе. Что будем генерировать?", reply_markup=main_menu())
+    bot.send_message(uid, "Привіт, Шефе! Я готовий до роботи. Що будемо генерувати?", reply_markup=main_menu())
 
 @bot.callback_query_handler(func=lambda call: True)
 def callback_handler(call):
-    """Обработчик всех кнопок колбэка."""
+    """Обробник усіх кнопок колбеку."""
     uid = call.message.chat.id
     message_id = call.message.message_id
     data = call.data
 
-    # Инициализация настроек пользователя, если их нет
+    # Ініціалізація налаштувань користувача, якщо їх немає
     user_settings.setdefault(uid, {"tags": [], "current_category": None, "current_char_subcategory": None, "current_stockings_type": None, "num_images": 1})
 
     if data == "main_menu":
-        bot.edit_message_text("Главное меню:", uid, message_id, reply_markup=main_menu())
+        bot.edit_message_text("Головне меню:", uid, message_id, reply_markup=main_menu())
         user_settings[uid]["current_category"] = None
         user_settings[uid]["current_char_subcategory"] = None
         user_settings[uid]["current_stockings_type"] = None
     elif data == "choose_tags":
-        bot.edit_message_text("Выбери категорию тегов:", uid, message_id, reply_markup=category_menu_keyboard())
+        bot.edit_message_text("Обери категорію тегів:", uid, message_id, reply_markup=category_menu_keyboard())
     elif data.startswith("category|"):
         category = data.split("|")[1]
         user_settings[uid]["current_category"] = category
-        user_settings[uid]["current_char_subcategory"] = None # Сбрасываем подкатегорию персонажей
-        user_settings[uid]["current_stockings_type"] = None # Сбрасываем тип чулок
+        user_settings[uid]["current_char_subcategory"] = None # Скидаємо підкатегорію персонажів
+        user_settings[uid]["current_stockings_type"] = None # Скидаємо тип панчох
 
         if category == "characters":
-            bot.edit_message_text("Выбери подкатегорию персонажей:", uid, message_id, reply_markup=character_subcategory_menu_keyboard(uid))
+            bot.edit_message_text("Обери підкатегорію персонажів:", uid, message_id, reply_markup=character_subcategory_menu_keyboard(uid))
         elif category == "clothes":
-            bot.edit_message_text("Выбери тип чулок:", uid, message_id, reply_markup=stockings_type_menu_keyboard(uid))
+            bot.edit_message_text("Обери тип панчох:", uid, message_id, reply_markup=stockings_type_menu_keyboard(uid))
         else:
-            bot.edit_message_text(f"Категория: {CATEGORY_NAMES.get(category, category)}", uid, message_id, reply_markup=tag_selection_keyboard(category, uid))
+            bot.edit_message_text(f"Категорія: {CATEGORY_NAMES.get(category, category)}", uid, message_id, reply_markup=tag_selection_keyboard(category, uid))
     elif data.startswith("char_sub|"):
         char_sub = data.split("|")[1]
         user_settings[uid]["current_char_subcategory"] = char_sub
         
-        # Фильтруем теги, чтобы показывать только теги из этой подкатегории
-        # и сортируем их по русскоязычному названию
+        # Фільтруємо теги, щоб показувати тільки теги з цієї підкатегорії
+        # та сортуємо їх за українською назвою
         filtered_tags = {k: v for k, v in TAGS["characters"].items() if k.startswith(char_sub + "_")}
         
         kb = types.InlineKeyboardMarkup(row_width=2)
         current_tags = user_settings.get(uid, {}).get("tags", [])
         
-        # Сначала добавляем теги выбранной подкатегории персонажей
+        # Спочатку додаємо теги вибраної підкатегорії персонажів
         for tag_key, tag_name_ru in sorted(filtered_tags.items(), key=lambda item: item[1]):
             selected = tag_key in current_tags
             prefix = "✅ " if selected else ""
             kb.add(types.InlineKeyboardButton(f"{prefix}{tag_name_ru}", callback_data=f"tag|{tag_key}"))
         
-        kb.add(types.InlineKeyboardButton("⬅️ К подкатегориям", callback_data="category|characters"))
-        kb.add(types.InlineKeyboardButton("🏠 Главное меню", callback_data="main_menu"))
-        bot.edit_message_text(f"Подкатегория: {CHARACTER_CATEGORIES.get(char_sub, char_sub)}", uid, message_id, reply_markup=kb)
+        kb.add(types.InlineKeyboardButton("⬅️ До підкатегорій", callback_data="category|characters"))
+        kb.add(types.InlineKeyboardButton("🏠 Головне меню", callback_data="main_menu"))
+        bot.edit_message_text(f"Підкатегорія: {CHARACTER_CATEGORIES.get(char_sub, char_sub)}", uid, message_id, reply_markup=kb)
     elif data == "stockings_type_select":
-        bot.edit_message_text("Выбери тип чулок:", uid, message_id, reply_markup=stockings_type_menu_keyboard(uid))
+        bot.edit_message_text("Обери тип панчох:", uid, message_id, reply_markup=stockings_type_menu_keyboard(uid))
     elif data.startswith("stockings_type|"):
         st_type = data.split("|")[1]
         user_settings[uid]["current_stockings_type"] = st_type
-        bot.edit_message_text("Выбери цвет чулок:", uid, message_id, reply_markup=stockings_color_menu_keyboard(st_type, uid))
+        bot.edit_message_text("Обери колір панчох:", uid, message_id, reply_markup=stockings_color_menu_keyboard(st_type, uid))
     elif data.startswith("tag|"):
         tag_key = data.split("|")[1]
         current_tags = user_settings[uid]["tags"]
 
         if tag_key.startswith("stockings_"):
-            # Удаляем все _другие_ теги чулок перед добавлением/удалением текущего
+            # Видаляємо всі _інші_ теги панчох перед додаванням/видаленням поточного
             current_tags[:] = [t for t in current_tags if not t.startswith("stockings_") or t == tag_key]
             
             if tag_key in current_tags:
@@ -1157,42 +1124,42 @@ def callback_handler(call):
             stockings_type = user_settings[uid].get("current_stockings_type")
             if stockings_type:
                 bot.edit_message_reply_markup(chat_id=uid, message_id=message_id, reply_markup=stockings_color_menu_keyboard(stockings_type, uid))
-            else: # Fallback to stockings type select if type is somehow lost
+            else: # Fallback до вибору типу панчох, якщо тип чомусь загубився
                 bot.edit_message_reply_markup(chat_id=uid, message_id=message_id, reply_markup=stockings_type_menu_keyboard(uid))
-        else: # Для обычных тегов
+        else: # Для звичайних тегів
             if tag_key in current_tags:
                 current_tags.remove(tag_key)
             else:
                 current_tags.append(tag_key)
             
-            # Обновляем клавиатуру, показывая выбранные/невыбранные теги
+            # Оновлюємо клавіатуру, показуючи вибрані/невибрані теги
             current_cat = user_settings[uid].get("current_category")
             current_char_sub = user_settings[uid].get("current_char_subcategory")
 
             if current_cat == "characters" and current_char_sub:
-                # Пересоздаем клавиатуру для подкатегории персонажей
+                # Перестворюємо клавіатуру для підкатегорії персонажів
                 filtered_tags = {k: v for k, v in TAGS["characters"].items() if k.startswith(current_char_sub + "_")}
                 kb = types.InlineKeyboardMarkup(row_width=2)
                 for tk, tn in sorted(filtered_tags.items(), key=lambda item: item[1]):
                     selected = tk in current_tags
                     prefix = "✅ " if selected else ""
                     kb.add(types.InlineKeyboardButton(f"{prefix}{tn}", callback_data=f"tag|{tk}"))
-                kb.add(types.InlineKeyboardButton("⬅️ К подкатегориям", callback_data="category|characters"))
-                kb.add(types.InlineKeyboardButton("🏠 Главное меню", callback_data="main_menu"))
+                kb.add(types.InlineKeyboardButton("⬅️ До підкатегорій", callback_data="category|characters"))
+                kb.add(types.InlineKeyboardButton("🏠 Головне меню", callback_data="main_menu"))
                 bot.edit_message_reply_markup(chat_id=uid, message_id=message_id, reply_markup=kb)
             elif current_cat and current_cat != "characters" and current_cat != "clothes":
-                 # Обновляем для обычной категории (кроме персонажей и одежды, т.к. они имеют подменю)
+                 # Оновлюємо для звичайної категорії (крім персонажів та одягу, оскільки вони мають підменю)
                 bot.edit_message_reply_markup(chat_id=uid, message_id=message_id, reply_markup=tag_selection_keyboard(current_cat, uid))
             elif current_cat == "clothes" and not user_settings[uid].get("current_stockings_type"):
-                # Если вдруг мы в одежде, но не в чулках, то возвращаемся к меню одежды
+                # Якщо раптом ми в одязі, але не в панчохах, то повертаємося до меню одягу
                 bot.edit_message_reply_markup(chat_id=uid, message_id=message_id, reply_markup=tag_selection_keyboard("clothes", uid))
 
 
     elif data == "done_tags":
         selected_tags = user_settings.get(uid, {}).get("tags", [])
         if not selected_tags:
-            bot.send_message(uid, "Вы не выбрали ни одного тега.")
-            bot.edit_message_text("Главное меню:", uid, message_id, reply_markup=main_menu())
+            bot.send_message(uid, "Ви не вибрали жодного тегу.")
+            bot.edit_message_text("Головне меню:", uid, message_id, reply_markup=main_menu())
             return
         
         display_tags = []
@@ -1207,8 +1174,8 @@ def callback_handler(call):
             if not found and tag_key.startswith("stockings_"):
                 parts = tag_key.split('_')
                 if len(parts) == 3: 
-                    sock_type_name = "Обычные чулки" if parts[1] == "normal" else "Чулки в сеточку"
-                    color_name = {"white": "Белые", "black": "Черные", "red": "Красные", "pink": "Розовые", "gold": "Золотые"}.get(parts[2], parts[2])
+                    sock_type_name = "Звичайні панчохи" if parts[1] == "normal" else "Панчохи в сіточку"
+                    color_name = {"white": "Білі", "black": "Чорні", "red": "Червоні", "pink": "Рожеві", "gold": "Золоті"}.get(parts[2], parts[2])
                     display_tags.append(f"{sock_type_name} {color_name}")
                 else:
                     display_tags.append(tag_key) 
@@ -1217,15 +1184,15 @@ def callback_handler(call):
                 display_tags.append(tag_key) 
         
         tag_list = "\n".join(f"• {tag}" for tag in display_tags)
-        bot.edit_message_text(f"Вы выбрали:\n\n{tag_list}\n\nТеперь можно сгенерировать изображение.", uid, message_id, reply_markup=types.InlineKeyboardMarkup([
-            [types.InlineKeyboardButton("🎨 Генерировать", callback_data="generate")],
-            [types.InlineKeyboardButton("⬅️ Изменить теги", callback_data="choose_tags")],
-            [types.InlineKeyboardButton("🏠 Главное меню", callback_data="main_menu")]
+        bot.edit_message_text(f"Ви вибрали:\n\n{tag_list}\n\nТепер можна згенерувати зображення.", uid, message_id, reply_markup=types.InlineKeyboardMarkup([
+            [types.InlineKeyboardButton("🎨 Генерувати", callback_data="generate")],
+            [types.InlineKeyboardButton("⬅️ Змінити теги", callback_data="choose_tags")],
+            [types.InlineKeyboardButton("🏠 Головне меню", callback_data="main_menu")]
         ]))
     elif data == "generate":
         selected_tags = user_settings.get(uid, {}).get("tags", [])
         if not selected_tags:
-            bot.send_message(uid, "Сначала выбери теги!")
+            bot.send_message(uid, "Спочатку обери теги!")
             return
 
         user_settings[uid]["last_prompt_tags"] = selected_tags.copy()
@@ -1235,7 +1202,7 @@ def callback_handler(call):
         negative_prompt = prompt_info["negative_prompt"]
         num_images = user_settings[uid].get("num_images", 1)
 
-        bot.edit_message_text("Принято Шеф, приступаю к генерации! Это может занять до минуты...", uid, message_id)
+        bot.edit_message_text("Прийнято Шефе, приступаю до генерації! Це може зайняти до хвилини...", uid, message_id)
 
         try:
             generated_urls = replicate_generate(positive_prompt, negative_prompt, num_images)
@@ -1246,35 +1213,35 @@ def callback_handler(call):
                 
                 kb = types.InlineKeyboardMarkup()
                 kb.add(
-                    types.InlineKeyboardButton("🔁 Начать заново", callback_data="start_new_session"),
-                    types.InlineKeyboardButton("🎨 Новый запрос", callback_data="choose_tags"),
-                    types.InlineKeyboardButton("➡️ Продолжить с этими", callback_data="generate")
+                    types.InlineKeyboardButton("🔁 Розпочати заново", callback_data="start_new_session"),
+                    types.InlineKeyboardButton("🎨 Новий запит", callback_data="choose_tags"),
+                    types.InlineKeyboardButton("➡️ Продовжити з цими", callback_data="generate")
                 )
                 bot.send_media_group(uid, media_group)
                 bot.send_message(uid, "✅ Готово!", reply_markup=kb)
             else:
-                bot.send_message(uid, "❌ Ошибка генерации. Пожалуйста, попробуйте еще раз.")
+                bot.send_message(uid, "❌ Помилка генерації. Будь ласка, спробуйте ще раз.")
         except Exception as e:
-            print(f"Ошибка генерации: {e}")
-            bot.send_message(uid, f"Произошла ошибка во время генерации. Пожалуйста, попробуйте еще раз. Ошибка: {e}")
+            print(f"Помилка генерації: {e}")
+            bot.send_message(uid, f"Виникла помилка під час генерації. Будь ласка, спробуйте ще раз. Помилка: {e}")
 
     elif data == "settings":
         current_num_images = user_settings[uid].get("num_images", 1)
-        bot.edit_message_text(f"Настройки генерации:", uid, message_id, reply_markup=settings_menu_keyboard(current_num_images))
+        bot.edit_message_text(f"Налаштування генерації:", uid, message_id, reply_markup=settings_menu_keyboard(current_num_images))
     elif data.startswith("set_num_images|"):
         num = int(data.split("|")[-1])
         user_settings[uid]["num_images"] = num
         current_num_images = user_settings[uid].get("num_images", 1)
-        bot.edit_message_text(f"Настройки генерации: количество изображений установлено на {num}.", uid, message_id, reply_markup=settings_menu_keyboard(current_num_images))
+        bot.edit_message_text(f"Налаштування генерації: кількість зображень встановлено на {num}.", uid, message_id, reply_markup=settings_menu_keyboard(current_num_images))
     elif data == "start_new_session":
         start_command_handler(call.message)
     elif data == "ignore":
         bot.answer_callback_query(call.id)
 
 
-# --- Функция для определения категории тега ---
+# --- Функція для визначення категорії тега ---
 def tag_category(tag):
-    """Определяет категорию, к которой относится тег."""
+    """Визначає категорію, до якої належить тег."""
     for cat, items in TAGS.items():
         if tag in items:
             return cat 
@@ -1286,11 +1253,11 @@ def tag_category(tag):
     return None
 
 
-# --- Оптимизированная функция для построения промпта ---
+# --- Оптимізована функція для побудови промпта ---
 def build_prompt(tags):
     """
-    Строит промпт для модели Replicate на основе выбранных тегов,
-    используя оптимальные настройки для достижения максимальной точности.
+    Будує промпт для моделі Replicate на основі вибраних тегів,
+    використовуючи оптимальні налаштування для досягнення максимальної точності.
     """
     base = [
         "masterpiece", "best quality", "ultra detailed", "anime style", "highly detailed",
@@ -1331,7 +1298,7 @@ def build_prompt(tags):
         unique_tags.discard("cow_costume") 
 
     character_tags_count = 0
-    # Проверяем количество выбранных персонажей
+    # Перевіряємо кількість вибраних персонажів
     for tag in unique_tags:
         if tag_category(tag) == "characters" and tag in CHARACTER_PROMPTS:
             character_tags_count += 1
@@ -1340,7 +1307,7 @@ def build_prompt(tags):
         base.insert(0, f"{character_tags_count}girls")
     elif character_tags_count == 1:
         base.insert(0, "1girl")
-    # Добавляем "1girl" только если нет персонажей, фури, покемонов и не выбран "femboy"
+    # Додаємо "1girl" тільки якщо немає персонажів, фурі, покемонів і не вибрано "femboy"
     elif not any(tag_category(t) in ["characters", "furry", "pokemon"] for t in unique_tags) and "femboy" not in unique_tags:
          base.insert(0, "1girl")
 
@@ -1368,10 +1335,10 @@ def build_prompt(tags):
                 print(f"Warning: Tag '{tag}' found in selected_tags but no prompt defined for it and not found as a direct key in TAGS.")
 
 
-    # --- Логика для "two_dildos_one_hole" ---
+    # --- Логіка для "two_dildos_one_hole" ---
     if "two_dildos_one_hole" in unique_tags:
-        # Убедимся, что общий промпт "two dildos, one hole..." добавлен только один раз
-        if TAG_PROMPTS["two_dildos_one_hole"] not in priority["toys"]: # Используем прямо TAG_PROMPTS
+        # Переконуємося, що загальний промпт "two dildos, one hole..." додано лише один раз
+        if TAG_PROMPTS["two_dildos_one_hole"] not in priority["toys"]: # Використовуємо прямо TAG_PROMPTS
             priority["toys"].append(TAG_PROMPTS["two_dildos_one_hole"])
 
         hole_specific_prompts = []
@@ -1406,7 +1373,7 @@ def build_prompt(tags):
         "negative_prompt": negative_prompt_str
     } 
 
-# --- Функция для генерации изображения через Replicate ---
+# --- Функція для генерації зображення через Replicate ---
 class Model: 
     def predict(self, prompt, negative_prompt, num_images):
         return replicate_generate(prompt, negative_prompt, num_images)
@@ -1415,8 +1382,8 @@ model = Model()
 
 def replicate_generate(positive_prompt, negative_prompt, num_images=1):
     """
-    Отправляет запрос на генерацию изображения в Replicate API,
-    используя оптимальные настройки для достижения максимальной точности.
+    Відправляє запит на генерацію зображення в Replicate API,
+    використовуючи оптимальні налаштування для досягнення максимальної точності.
     """
     urls = []
     for _ in range(num_images):
@@ -1442,10 +1409,10 @@ def replicate_generate(positive_prompt, negative_prompt, num_images=1):
             }
         }
 
-        # Отправка запроса на создание предсказания
+        # Відправка запиту на створення передбачення
         try:
             r = requests.post(url, headers=headers, json=json_data)
-            r.raise_for_status() # Вызовет исключение для статусов 4xx/5xx
+            r.raise_for_status() # Викличе виняток для статусів 4xx/5xx
         except requests.exceptions.RequestException as e:
             print(f"Error sending prediction request: {e}")
             print(f"Request JSON: {json_data}")
@@ -1481,14 +1448,14 @@ def replicate_generate(positive_prompt, negative_prompt, num_images=1):
     return urls
 
 
-# --- Настройка Flask webhook ---
+# --- Налаштування Flask webhook ---
 @app.route("/", methods=["POST"])
 def webhook():
-    """Обрабатывает входящие обновления от Telegram."""
+    """Обробляє вхідні оновлення від Telegram."""
     json_str = request.stream.read().decode("utf-8")
     update = telebot.types.Update.de_json(json_str)
     
-    # Инициализируем user_settings для нового пользователя, если он отсутствует
+    # Ініціалізуємо user_settings для нового користувача, якщо його немає
     if update.message and update.message.chat.id not in user_settings:
         user_settings[update.message.chat.id] = {"tags": [], "current_category": None, "current_char_subcategory": None, "current_stockings_type": None, "num_images": 1}
 
@@ -1497,8 +1464,8 @@ def webhook():
 
 @app.route("/", methods=["GET"])
 def home():
-    """Простой маршрут для проверки работы приложения."""
-    return "бот работает", 200
+    """Простий маршрут для перевірки роботи додатка."""
+    return "бот працює", 200
 
 # --- Запуск бота ---
 if __name__ == "__main__":
