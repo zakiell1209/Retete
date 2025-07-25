@@ -367,7 +367,13 @@ TAGS = {
         "casual_seated_open_knees_feet_on_floor": "Лёгкая поза сидя, колени разведены"
     },
     "clothes": {
-        "stockings": "Чулки",
+        "stockings": "Обычные чулки", # Общий тег для чулок
+        "stockings_fishnet": "Чулки сеточкой",
+        "stockings_black": "Чулки: Черные",
+        "stockings_white": "Чулки: Белые",
+        "stockings_pink": "Чулки: Розовые",
+        "stockings_red": "Чулки: Красные",
+        "stockings_gold": "Чулки: Золотые",
         "bikini_tan_lines": "Линии от загара в бикини",
         "shibari": "Шибари",
         "cow_costume": "Костюм коровы"
@@ -741,7 +747,13 @@ TAG_PROMPTS = {
     "top_down_voluminous_bow_arms_rhombus": "top-down view, deep bow, arms forming rhombus/heart below torso, foreshortened perspective, shoulders drawn forward, hands joined under body, rounded volume of gluteal-pelvic area, spherical shape, legs together, soft knees",
     "inverted_leg_over_shoulder_supine": "inverted leg over shoulder, lying on back, supine inverted leg fold, hips lifted, legs bent, legs brought back over head, one thigh crosses face line, other abducted to side, twisted inversion, strong lumbar bend, compressed abdomen, one arm embracing thigh/shin from above, other supporting position from side or on floor, head and neck on floor, chin closer to chest, combination of yoga plow, twist, acrobatic contortion",
     "casual_seated_open_knees_feet_on_floor": "casual seated pose, sitting on buttocks, knees bent and spread, feet on floor, heels closer to pelvis or slightly forward, back slightly tilted back or straight, torso slightly forward, hands resting on thighs/knees or holding clothing edges, neutral balance support, head looking forward at viewer",
-    "stockings": "stockings",
+    "stockings": "stockings", # Общий промпт для чулок
+    "stockings_fishnet": "fishnet stockings",
+    "stockings_black": "black stockings",
+    "stockings_white": "white stockings",
+    "stockings_pink": "pink stockings",
+    "stockings_red": "red stockings",
+    "stockings_gold": "gold stockings",
     "bikini_tan_lines": "bikini tan lines",
     "shibari": "shibari ropes",
     "cow_costume": "cow costume, cow ears, cow horns, cow tail, wearing stockings only",
@@ -844,7 +856,7 @@ def tag_menu(category, selected_tags, char_subcategory=None):
             # и специальная обработка для pokemon_chars
             if char_subcategory == "pokemon_chars" and tag_key.startswith("pokemon_"):
                 tags_to_display[tag_key] = tag_name
-            elif tag_key.startswith(char_subcategory + "_"):
+            elif tag_key.startswith(char_sub + "_"):
                 tags_to_display[tag_key] = tag_name
     else:
         tags_to_display = TAGS[category]
@@ -1043,7 +1055,7 @@ def build_prompt(tags):
 
     priority = {
         "character": [],
-        "furry": [], # Убедимся, что категория furry есть в priority
+        "furry": [], 
         "body": [],
         "pose": [],
         "holes": [],
@@ -1073,18 +1085,20 @@ def build_prompt(tags):
         unique.remove("small_breasts") 
     
     # Костюм коровы уже включён в furry_cow, если выбрана furry_cow
-    # ИСПРАВЛЕНИЕ: cow_costume должен удаляться, если есть furry_cow,
-    # т.к. furry_cow уже содержит "cow costume" в своем промпте.
     if "furry_cow" in unique:
         unique.discard("cow_costume") 
 
-    # Обработка тега "stockings" (убираем конкретные цвета, если выбран общий)
-    if "stockings" in unique:
-        for stocking_type in ["stockings_white", "stockings_black", "stockings_red", "stockings_pink", "stockings_gold", "stockings_fishnet"]:
-            unique.discard(stocking_type)
-        # Промпт "stockings" будет добавлен из TAG_PROMPTS
-    # else: Если "stockings" не выбран, но выбраны конкретные чулки, они останутся,
-    # так как теперь их промпты в TAG_PROMPTS.
+    # Обработка тега "stockings" и его цветов
+    # Если выбраны конкретные чулки, убираем общий тег "stockings", чтобы избежать дублирования
+    specific_stocking_chosen = False
+    for stocking_type in ["stockings_fishnet", "stockings_black", "stockings_white", "stockings_pink", "stockings_red", "stockings_gold"]:
+        if stocking_type in unique:
+            specific_stocking_chosen = True
+            break
+    
+    if specific_stocking_chosen and "stockings" in unique:
+        unique.discard("stockings")
+
 
     # Обработка тега "femboy"
     if "femboy" in unique:
