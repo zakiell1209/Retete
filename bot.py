@@ -1001,6 +1001,10 @@ def tag_category(tag):
     """Определяет категорию, к которой относится тег."""
     for cat, items in TAGS.items():
         if tag in items:
+            # ИСПРАВЛЕНИЕ: Добавляем явную обработку для категории "furry"
+            if cat == "furry":
+                return "furry"
+            # Остальная логика остаётся как была
             if cat in ["body", "ethnos"]:
                 return "body"
             if cat == "poses":
@@ -1015,12 +1019,14 @@ def tag_category(tag):
                 return "fetish"
             if cat == "head":
                 return "face"
+            
+            # Для покемонов (существ, не персонажей-людей)
             if cat == "pokemon" and not tag.startswith("pokemon_"):
                 return "pokemon"
             
-            # Для персонажей определяем категорию "character"
+            # Для всех остальных персонажей (включая персонажей покемонов, таких как Джесси)
             for char_cat_key in CHARACTER_CATEGORIES.keys():
-                if tag.startswith(char_cat_key + "_") or tag.startswith("pokemon_"):
+                if tag.startswith(char_cat_key + "_"):
                     return "character"
     return None
 
@@ -1037,7 +1043,7 @@ def build_prompt(tags):
 
     priority = {
         "character": [],
-        "furry": [],
+        "furry": [], # Убедимся, что категория furry есть в priority
         "body": [],
         "pose": [],
         "holes": [],
@@ -1067,6 +1073,8 @@ def build_prompt(tags):
         unique.remove("small_breasts") 
     
     # Костюм коровы уже включён в furry_cow, если выбрана furry_cow
+    # ИСПРАВЛЕНИЕ: cow_costume должен удаляться, если есть furry_cow,
+    # т.к. furry_cow уже содержит "cow costume" в своем промпте.
     if "furry_cow" in unique:
         unique.discard("cow_costume") 
 
