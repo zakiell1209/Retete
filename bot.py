@@ -685,8 +685,8 @@ TAG_PROMPTS = {
     "squat": "squatting pose, hands behind head",
     "standing": "standing",
     "lying": "lying down",
-    "hor_split": "seated horizontal split, arms support", # Промпт возвращен к старому
-    "ver_split": "standing vertical split, one leg on floor, other leg stretched vertically up, almost touching head, both hands supporting raised leg, ankle grip, straightened back, tensed core muscles, open pelvis, emphasizes extreme stretch", # Промпт возвращен к старому
+    "hor_split": "seated horizontal split, arms support",
+    "ver_split": "standing vertical split, one leg on floor, other leg stretched vertically up, almost touching head, both hands supporting raised leg, ankle grip, straightened back, tensed core muscles, open pelvis, emphasizes extreme stretch",
     "on_back_legs_behind_head": "on back, legs behind head",
     "on_side_leg_up": "on side with leg raised",
     "suspended": "suspended",
@@ -695,10 +695,10 @@ TAG_PROMPTS = {
     "top_down_view": "shot from above, top-down view",
     "bottom_up_view": "shot from below, bottom-up view",
     "extreme_acrobatic_inverted_bridge": "extreme acrobatic, deep inversion, bridge, shoulder stand, hand support, head on floor, hair spread, shoulders on surface, hands bent at elbows in front of face, palms on floor, extremely arched back, raised buttocks, buttocks at head level, facing viewer, legs spread wide, acute angle, knees slightly bent, feet touching floor, toes pointed, center of gravity between shoulders and feet, emphasizes buttocks, back curve, thigh anatomy, acrobatic flexibility",
-    "leaning_forward_wall_butt_out": "leaning forward, hands on wall, partially undressed, head tilted, head turned back to viewer, looking over shoulder, raised shoulders, straight back, parallel to floor, slight arch, buttocks pushed back, emphasized by pose, jeans pulled down to knees, legs spread shoulder-width apart, knees half-bent, relaxed, stable", # Промпт возвращен к старому
+    "leaning_forward_wall_butt_out": "leaning forward, hands on wall, partially undressed, head tilted, head turned back to viewer, looking over shoulder, raised shoulders, straight back, parallel to floor, slight arch, buttocks pushed back, emphasized by pose, jeans pulled down to knees, legs spread shoulder-width apart, knees half-bent, relaxed, stable",
     "classic_bridge_arching_up": "classic bridge, supported on palms and feet, body arched upwards, full back arch, stomach facing up, head tilted back, neck stretched, fingers and toes pointed forward",
-    "prone_frog_stretch_arms_extended": "prone frog stretch, arms extended, chest on floor, buttocks up", # Промпт возвращен к старому
-    "top_down_voluminous_bow_arms_rhombus": "top-down view, voluminous bow, arms rhombus, chest on floor, buttocks up, knees bent, feet on floor", # Промпт возвращен к старому
+    "prone_frog_stretch_arms_extended": "prone frog stretch, arms extended, chest on floor, buttocks up",
+    "top_down_voluminous_bow_arms_rhombus": "top-down view, voluminous bow, arms rhombus, chest on floor, buttocks up, knees bent, feet on floor",
     "stockings": "stockings",
     "stockings_fishnet": "fishnet stockings",
     "stockings_black": "black stockings",
@@ -712,8 +712,8 @@ TAG_PROMPTS = {
     "big_breasts": "big breasts",
     "small_breasts": "small breasts",
     "body_fit": "fit body",
-    "body_fat": "chubby, plump, slightly overweight, soft body, curvy, fleshy", # Промпт обновлен для "небольшого избыточного веса"
-    "age_loli": "klee (genshin impact), very young girl, child-like features, playful, energetic, cute, short dress", # Промпт обновлен для "Кли из геншин импакт"
+    "body_fat": "chubby, plump, slightly overweight, soft body, curvy, fleshy",
+    "age_loli": "klee (genshin impact), very young girl, child-like features, playful, energetic, cute, short dress",
     "age_milf": "milf",
     "age_21": "21 year old",
     "cum": "cum covered",
@@ -738,8 +738,8 @@ TAG_PROMPTS = {
     "furry_snake": "furry snake girl, snake costume",
     "furry_lizard": "furry lizard girl, lizard costume",
     "ahegao": "ahegao face",
-    "pain_face": "pain expression, grimace, suffering face", # Промпт обновлен
-    "ecstasy_face": "ecstasy expression, orgasmic face, flushed cheeks", # Промпт обновлен
+    "pain_face": "pain expression, grimace, suffering face",
+    "ecstasy_face": "ecstasy expression, orgasmic face, flushed cheeks",
     "gold_lipstick": "gold lipstick",
     "nipple_piercing": "nipple piercing",
     "clitoral_piercing": "clitoral piercing",
