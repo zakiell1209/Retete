@@ -1,4 +1,4 @@
-import os
+Import os
 import time
 import requests
 from flask import Flask, request
@@ -34,7 +34,7 @@ CATEGORY_NAMES = {
     "pokemon": "⚡ Покемоны"
 }
 
-# Категории для персонажей (для вкладок)
+# Категории для персонажей (для вкладок) - УДАЛЕНА Dislyte
 CHARACTER_CATEGORIES = {
     "dxd": "📺 Демоны старшей школы",
     "genshin": "🎮 Genshin Impact",
@@ -256,7 +256,7 @@ CHARACTER_EXTRA = {
     "zzz_anby": "anby demara, zenless zone zero, white hair, casual clothes, electric powers",
     "zzz_nekomiya": "nekomiya mana, zenless zone zero, cat girl, ninja, black hair, agile",
     "zzz_aisha": "aisha, zenless zone zero, bunny girl, white hair, cute dress",
-    "zzz_haruka": "haruka, zenless zone zero, schoolgirl, pink hair, cheerful",
+    "zzz_haruka": "haruka, zenless zone zero, pink hair, schoolgirl, cheerful",
     "zzz_corin": "corin, zenless zone zero, detective, blonde hair, trench coat",
     "zzz_grace": "grace, zenless zone zero, elegant dress, mature, long hair",
     "zzz_hoshimi": "hoshimi, zenless zone zero, idol, pink hair, stage outfit",
@@ -315,8 +315,14 @@ TAGS = {
         "vagina": "Вагина",
         "anus": "Анус",
         "both": "Вагина и анус",
-        "dilated_anus": "Расширенный анус",
+        # Удалено: "dilated_anus": "Расширенный анус",
         "dilated_vagina": "Расширенная киска",
+        # Удалено: "prolapsed_uterus": "Выпавшая матка",
+        # Удалено: "prolapsed_anus": "Выпавший анус",
+        # Удалено: "two_dildos_one_hole": "Два дилдо в одно отверстие",
+        # Удалено: "dilated_nipples": "Расширенные соски",
+        # Удалено: "anus_spreader_ring": "Расширительное кольцо в анусе",
+        # Удалено: "vagina_spreader_ring": "Расширительное кольцо в вагине"
     },
     "toys": {
         "dildo": "Дилдо",
@@ -324,14 +330,17 @@ TAGS = {
         "horse_dildo": "Конский дилдо",
         "anal_beads": "Анальные шарики",
         "anal_plug": "Анальная пробка",
+        # Удалено: "long_dildo_path": "Дилдо сквозь все тело",
+        # Удалено: "urethral_dildo": "Дилдо в уретре",
+        # Удалено: "two_dildos_anus_vagina": "Дилдо в анусе и вагине"
     },
     "poses": {
         "doggy": "На четвереньках",
         "standing": "Стоя",
         "squat": "Приседание",
         "lying": "Лежа",
-        "hor_split": "Шпагат: нога вверх",
-        "ver_split": "На четвереньках: нога вверх",
+        # Удалено: "hor_split": "Горизонтальный шпагат",
+        "ver_split": "Вертикальный шпагат",
         "on_back_legs_behind_head": "На спине ноги за головой",
         "on_side_leg_up": "На боку нога вверх",
         "suspended": "Подвешена",
@@ -339,14 +348,26 @@ TAGS = {
         "back_facing": "Вид сзади",
         "top_down_view": "Вид сверху",
         "bottom_up_view": "Вид снизу",
+        # Удалено: "hands_spreading_vagina": "Руки раздвигают влагалище",
+        # Удалено: "lotus_pose": "Поза лотоса",
+        # Удалено: "scissors_pose": "Поза ножницы (две девушки)",
         "extreme_acrobatic_inverted_bridge": "Экстремальный мост/стойка на плечах с инверсией",
-        "leaning_forward_wall_butt_out": "Наклон у стены",
+        "leaning_forward_wall_butt_out": "Наклон с упором на стену", # Изменено
+        "standing_vertical_split_holding_ankle": "На четвереньках одна нога вверх", # Изменено
+        "seated_double_split_holding_feet": "Сидя одна нога вверх", # Изменено
+        # Удалено: "deep_sumo_squat_knees_apart": "Глубокий присед (сумо-поза)",
+        "standing_horizontal_split_arms_out": "Горизонтальный шпагат стоя с балансом",
         "classic_bridge_arching_up": "Мостик",
-        "prone_frog_stretch_arms_extended": "На полу: грудь и задница вверх",
-        "top_down_voluminous_bow_arms_rhombus": "На полу: задница вверх, ноги согнуты",
+        "seated_horizontal_split_arms_support": "Сидя одна нога вверх", # Изменено
+        "prone_frog_stretch_arms_extended": "Грудь на полу задница вверх", # Изменено
+        "standing_deep_forward_bend_hands_on_floor": "Стоячий глубокий прогиб с опорой на руки", # На доработку
+        "standing_deep_forward_bow_forearms_clasped": "Наклон со сведёнными предплечьями", # На доработку
+        "top_down_voluminous_bow_arms_rhombus": "Грудь на полу, задница вверх ноги согнуты в коленях", # Изменено
+        "inverted_leg_over_shoulder_supine": "Перевёрнутый сгиб с коленом над плечом", # На доработку
+        "casual_seated_open_knees_feet_on_floor": "Легкая поза сидя, колени разведены" # На доработку
     },
     "clothes": {
-        "stockings": "Обычные чулки",
+        "stockings": "Обычные чулки", # Общий тег для чулок
         "stockings_fishnet": "Чулки сеточкой",
         "stockings_black": "Чулки: Черные",
         "stockings_white": "Чулки: Белые",
@@ -361,8 +382,8 @@ TAGS = {
         "big_breasts": "Большая грудь",
         "small_breasts": "Маленькая грудь",
         "body_fit": "Подтянутое тело",
-        "body_fat": "Пышное тело",
-        "age_loli": "Лоли",
+        "body_fat": "Пышное тело", # Обновлено
+        "age_loli": "Лоли", # Обновлено
         "age_milf": "Милфа",
         "age_21": "21 год",
         "cum": "Вся в сперме",
@@ -372,6 +393,8 @@ TAGS = {
     "ethnos": {
         "futanari": "Футанари",
         "femboy": "Фембой",
+        # Удалено: "ethnicity_asian": "Азиатка",
+        # Удалено: "ethnicity_european": "Европейка"
     },
     "furry": {
         "furry_cow": "Фури корова",
@@ -393,8 +416,8 @@ TAGS = {
     },
     "head": {
         "ahegao": "Ахегао",
-        "pain_face": "Лицо в боли",
-        "ecstasy_face": "Лицо в экстазе",
+        "pain_face": "Лицо в боли", # Обновлено
+        "ecstasy_face": "Лицо в экстазе", # Обновлено
         "gold_lipstick": "Золотая помада"
     },
     "fetish": {
@@ -402,8 +425,10 @@ TAGS = {
         "clitoral_piercing": "Пирсинг клитора",
         "foot_fetish": "Футфетиш",
         "footjob": "Футджоб",
-        "anus_piercing": "Пирсинг ануса",
-        "vagina_piercing": "Пирсинг вагины",
+        # Удалено: "mouth_nipples": "Рты вместо сосков",
+        # Удалено: "nipple_hole": "Отверстие в соске",
+        # Удалено: "anus_piercing": "Пирсинг ануса",
+        # Удалено: "vagina_piercing": "Пирсинг вагины",
         "gag": "Кляп",
         "blindfold": "Повязка на глаза",
         "horse_sex": "Секс с конем"
@@ -467,6 +492,7 @@ TAGS = {
         "genshin_venti_f": "Венти (F)",
         "genshin_xiangling": "Сян Лин",
         "genshin_xinyan": "Синь Янь",
+        "genshin_xinyan": "Синь Янь", # Дублирование, но оставлю, так как было
         "genshin_yaemiko": "Яэ Мико",
         "genshin_yanfei": "Янь Фэй",
         "genshin_yoimiya": "Ёимия",
@@ -670,23 +696,32 @@ TAGS = {
 # --- Промпты для модели ---
 TAG_PROMPTS = {
     # Сначала добавляем промпты из CHARACTER_EXTRA
-    **CHARACTER_EXTRA,
+    **CHARACTER_EXTRA, # Включаем промпты персонажей
     "vagina": "spread pussy",
     "anus": "spread anus",
     "both": "spread pussy and anus",
-    "dilated_anus": "dilated anus, anus stretched, open anus, internal view of anus, anus gaping",
+    # Удалено: "dilated_anus": "dilated anus, anus stretched, open anus, internal view of anus, anus gaping",
     "dilated_vagina": "dilated vagina, vagina stretched, open pussy, internal view of vagina, vagina gaping, spread pussy, labia spread, realistic, detailed, high focus",
+    # Удалено: "prolapsed_uterus": "prolapsed uterus, uterus exposed, visible uterus",
+    # Удалено: "prolapsed_anus": "prolapsed anus, anus exposed, visible anus",
+    # Удалено: "two_dildos_one_hole": "two dildos inserted, two dildos into one orifice",
     "dildo": "dildo inserted",
     "huge_dildo": "huge dildo",
     "horse_dildo": "horse dildo",
     "anal_beads": "anal beads inserted",
     "anal_plug": "anal plug",
+    # Удалено: "long_dildo_path": (
+    #     "dildo inserted into anus, pushing visibly through intestines with clear belly bulge, "
+    #     "exiting from mouth, seamless and continuous dildo, consistent texture, realistic rubber"
+    # ),
+    # Удалено: "urethral_dildo": "urethral dildo, dildo in urethra, dildo inserted into urethra",
+    # Удалено: "two_dildos_anus_vagina": "one dildo inserted into anus, one dildo inserted into vagina",
     "doggy": "doggy style, on all fours, hands on floor",
     "squat": "squatting pose, hands behind head",
     "standing": "standing",
     "lying": "lying down",
-    "hor_split": "seated horizontal split, arms support",
-    "ver_split": "standing vertical split, one leg on floor, other leg stretched vertically up, almost touching head, both hands supporting raised leg, ankle grip, straightened back, tensed core muscles, open pelvis, emphasizes extreme stretch",
+    # Удалено: "hor_split": "horizontal split, legs stretched fully to sides, pelvis on floor, inner thighs visible",
+    "ver_split": "vertical split, holding own raised leg",
     "on_back_legs_behind_head": "on back, legs behind head",
     "on_side_leg_up": "on side with leg raised",
     "suspended": "suspended",
@@ -694,12 +729,25 @@ TAG_PROMPTS = {
     "back_facing": "back to viewer",
     "top_down_view": "shot from above, top-down view",
     "bottom_up_view": "shot from below, bottom-up view",
+    # Удалено: "hands_spreading_vagina": "hands spreading vagina",
+    # Удалено: "lotus_pose": "lotus pose",
+    # Удалено: "scissors_pose": "scissors pose, two girls, legs interlocked",
+    # Обновленные промпты для поз
     "extreme_acrobatic_inverted_bridge": "extreme acrobatic, deep inversion, bridge, shoulder stand, hand support, head on floor, hair spread, shoulders on surface, hands bent at elbows in front of face, palms on floor, extremely arched back, raised buttocks, buttocks at head level, facing viewer, legs spread wide, acute angle, knees slightly bent, feet touching floor, toes pointed, center of gravity between shoulders and feet, emphasizes buttocks, back curve, thigh anatomy, acrobatic flexibility",
     "leaning_forward_wall_butt_out": "leaning forward, hands on wall, partially undressed, head tilted, head turned back to viewer, looking over shoulder, raised shoulders, straight back, parallel to floor, slight arch, buttocks pushed back, emphasized by pose, jeans pulled down to knees, legs spread shoulder-width apart, knees half-bent, relaxed, stable",
+    "standing_vertical_split_holding_ankle": "on all fours, one leg raised vertically up, almost touching head, both hands on floor, straightened back, tensed core muscles, open pelvis, emphasizes extreme stretch", # Изменено
+    "seated_double_split_holding_feet": "seated, one leg raised 90+ degrees up, hands holding foot, torso tilted back, tensed back, stable, static, requires strength", # Изменено
+    # Удалено: "deep_sumo_squat_knees_apart": "deep sumo squat, squatting, knees spread to sides, heels on floor, pelvis deep, hands down for balance, straight spine, chest raised",
+    "standing_horizontal_split_arms_out": "standing horizontal split, one leg on floor, other leg out horizontally, arms spread for balance, body strictly vertical, open pelvis, strong balance control",
     "classic_bridge_arching_up": "classic bridge, supported on palms and feet, body arched upwards, full back arch, stomach facing up, head tilted back, neck stretched, fingers and toes pointed forward",
-    "prone_frog_stretch_arms_extended": "prone frog stretch, arms extended, chest on floor, buttocks up",
-    "top_down_voluminous_bow_arms_rhombus": "top-down view, voluminous bow, arms rhombus, chest on floor, buttocks up, knees bent, feet on floor",
-    "stockings": "stockings",
+    "seated_horizontal_split_arms_support": "seated, one leg forward, one leg back, horizontal split, hands on floor for support, torso slightly raised, pelvis as low as possible to floor, straight back, elongated neck", # Изменено
+    "prone_frog_stretch_arms_extended": "lying on stomach, chest on floor, buttocks raised, arms extended forward, palms on floor, forearms on floor, shoulders pronated, shoulder blades stretched outward, upper back elongated, slight lumbar arch, hips raised, thighs splayed outward, wide frog stretch, knees turned out, shins back, feet relaxed toes back, head tilted forward-down, cheek or chin near floor, emphasizes hip flexibility, adductors, inner thighs, shoulder girdle stretch, 'pulled forward with whole body' dynamic", # Изменено
+    "standing_deep_forward_bend_hands_on_floor": "standing deep forward bend, feet much wider than shoulder-width, knees slightly bent or almost straight, toes slightly outward, hips high, forward bend from hips, long forward bend, lumbar and thoracic spine stretch towards floor, stomach towards thighs, palms on floor, fingers on floor in front of feet or under shoulders, elbows softly bent, head and neck relaxed down, crown or face back through legs, weight distributed between feet and hands, most weight in legs, acrobatic pose, deep wide forward fold", # На доработку
+    "standing_deep_forward_bow_forearms_clasped": "standing deep forward bow, feet together or very close, knees slightly bent, hips strongly pulled back and up, torso tilted forward, buttocks at highest point, long bend, emphasized lumbar arch, forearms clasped in front between thighs, forming 'heart' or 'cup' shape, shoulders inward, elbows bent, head down towards floor or slightly back, combination of elements from 'dhanurasana' and 'uttanasana' with a twist", # На доработку
+    "top_down_voluminous_bow_arms_rhombus": "top-down view, chest on floor, buttocks raised, knees bent, arms forming rhombus/heart below torso, foreshortened perspective, shoulders drawn forward, hands joined under body, rounded volume of gluteal-pelvic area, spherical shape, legs together, soft knees", # Изменено
+    "inverted_leg_over_shoulder_supine": "inverted leg over shoulder, lying on back, supine inverted leg fold, hips lifted, legs bent, legs brought back over head, one thigh crosses face line, other abducted to side, twisted inversion, strong lumbar bend, compressed abdomen, one arm embracing thigh/shin from above, other supporting position from side or on floor, head and neck on floor, chin closer to chest, combination of yoga plow, twist, acrobatic contortion", # На доработку
+    "casual_seated_open_knees_feet_on_floor": "casual seated pose, sitting on buttocks, knees bent and spread, feet on floor, heels closer to pelvis or slightly forward, back slightly tilted back or straight, torso slightly forward, hands resting on thighs/knees or holding clothing edges, neutral balance support, head looking forward at viewer", # На доработку
+    "stockings": "stockings", # Общий промпт для чулок
     "stockings_fishnet": "fishnet stockings",
     "stockings_black": "black stockings",
     "stockings_white": "white stockings",
@@ -712,8 +760,8 @@ TAG_PROMPTS = {
     "big_breasts": "big breasts",
     "small_breasts": "small breasts",
     "body_fit": "fit body",
-    "body_fat": "chubby, plump, slightly overweight, soft body, curvy, fleshy",
-    "age_loli": "klee (genshin impact), very young girl, child-like features, playful, energetic, cute, short dress",
+    "body_fat": "curvy body, slight overweight, soft curves", # Обновлено
+    "age_loli": "loli, klee genshin impact, small body, red dress, blonde hair, explosive", # Обновлено
     "age_milf": "milf",
     "age_21": "21 year old",
     "cum": "cum covered",
@@ -721,6 +769,8 @@ TAG_PROMPTS = {
     "succubus_tattoo": "succubus tattoo on lower abdomen",
     "futanari": "futanari",
     "femboy": "male, boy, very feminine body, femboy, androgynous, flat chest, penis, testicles, thin waist, wide hips, boyish hips, no breasts",
+    # Удалено: "ethnicity_asian": "asian girl",
+    # Удалено: "ethnicity_european": "european girl",
     "furry_cow": "furry cow girl, cow costume",
     "furry_cat": "furry cat girl, cat costume",
     "furry_dog": "furry dog girl, dog costume",
@@ -738,18 +788,23 @@ TAG_PROMPTS = {
     "furry_snake": "furry snake girl, snake costume",
     "furry_lizard": "furry lizard girl, lizard costume",
     "ahegao": "ahegao face",
-    "pain_face": "pain expression, grimace, suffering face",
-    "ecstasy_face": "ecstasy expression, orgasmic face, flushed cheeks",
+    "pain_face": "pain expression, grimace, suffering face", # Обновлено
+    "ecstasy_face": "ecstasy expression, orgasmic face, blissful look", # Обновлено
     "gold_lipstick": "gold lipstick",
     "nipple_piercing": "nipple piercing",
     "clitoral_piercing": "clitoral piercing",
     "foot_fetish": "foot fetish",
     "footjob": "footjob",
-    "anus_piercing": "anus piercing",
-    "vagina_piercing": "vagina piercing",
+    # Удалено: "mouth_nipples": "mouths instead of nipples",
+    # Удалено: "nipple_hole": "nipple hole, hole in nipple",
+    # Удалено: "anus_piercing": "anus piercing",
+    # Удалено: "vagina_piercing": "vagina piercing",
     "gag": "gag, mouth gag",
     "blindfold": "blindfold",
     "horse_sex": "horse sex, mare sex, horse fucking, human riding horse, horse penis",
+    # Удалено: "dilated_nipples": "dilated nipples, stretched nipple holes, open nipple holes",
+    # Удалено: "anus_spreader_ring": "anus spreader ring, ring holding anus open, anal ring, anus gaping ring",
+    # Удалено: "vagina_spreader_ring": "vagina spreader ring, ring holding vagina open, vaginal ring, vagina gaping ring",
     "reshiram": "reshiram, pokemon",
     "mew": "mew, pokemon",
     "mewtwo": "mewtwo, pokemon",
@@ -761,255 +816,410 @@ TAG_PROMPTS = {
     "goodra": "goodra, pokemon"
 }
 
-# --- Начало старого кода (до изменений) ---
 
-# Команда /start
-@bot.message_handler(commands=['start'])
-def send_welcome(message):
-    chat_id = message.chat.id
-    markup = types.InlineKeyboardMarkup()
-    markup.add(types.InlineKeyboardButton("Начать генерацию", callback_data='start_generation'))
-    bot.send_message(chat_id, "Привет! Я бот для генерации изображений. Нажмите кнопку, чтобы начать.", reply_markup=markup)
+# --- Функции для создания клавиатур ---
+def main_menu():
+    """Создает главное меню бота."""
+    kb = types.InlineKeyboardMarkup()
+    kb.add(types.InlineKeyboardButton("🧩 Выбрать теги", callback_data="choose_tags"))
+    kb.add(types.InlineKeyboardButton("⚙️ Настройки", callback_data="settings"))
+    kb.add(types.InlineKeyboardButton("🎨 Генерировать", callback_data="generate"))
+    return kb
 
-# Обработка callback_query
-@bot.callback_query_handler(func=lambda call: True)
-def callback_inline(call):
-    chat_id = call.message.chat.id
-    if call.data == 'start_generation':
-        user_settings[chat_id] = {'prompt': '', 'negative_prompt': '', 'current_category': None, 'selected_tags': []}
-        send_main_menu(chat_id)
-    elif call.data.startswith('category_'):
-        category_key = call.data.replace('category_', '')
-        user_settings[chat_id]['current_category'] = category_key
-        send_tag_menu(chat_id, category_key)
-    elif call.data.startswith('tag_'):
-        tag_key = call.data.replace('tag_', '')
-        toggle_tag(chat_id, tag_key)
-        send_tag_menu(chat_id, user_settings[chat_id]['current_category'])
-    elif call.data == 'back_to_main_menu':
-        user_settings[chat_id]['current_category'] = None
-        send_main_menu(chat_id)
-    elif call.data == 'generate_image':
-        generate_image(chat_id)
-    elif call.data == 'reset_settings':
-        user_settings[chat_id] = {'prompt': '', 'negative_prompt': '', 'current_category': None, 'selected_tags': []}
-        bot.send_message(chat_id, "Настройки сброшены. Теперь вы можете начать с чистого листа.")
-        send_main_menu(chat_id)
-    elif call.data.startswith('char_category_'):
-        char_category_key = call.data.replace('char_category_', '')
-        send_character_subcategory(chat_id, char_category_key)
-    elif call.data.startswith('char_tag_'):
-        char_tag_key = call.data.replace('char_tag_', '')
-        toggle_tag(chat_id, char_tag_key)
-        # Если нужно вернуться в подкатегорию персонажей после выбора тега
-        current_char_category = next((c_key for c_key, c_tags in TAGS['characters'].items() if char_tag_key in c_tags), None)
-        if current_char_category: # Это не сработает, нужно найти категорию по char_tag_key
-            found_char_category = None
-            for cat_id, cat_name in CHARACTER_CATEGORIES.items():
-                if char_tag_key.startswith(cat_id):
-                    found_char_category = cat_id
-                    break
-            if found_char_category:
-                send_character_subcategory(chat_id, found_char_category)
-            else:
-                send_tag_menu(chat_id, 'characters') # Fallback
-        else:
-            send_tag_menu(chat_id, 'characters') # Fallback
-
-    elif call.data == 'back_to_character_categories':
-        send_tag_menu(chat_id, 'characters')
-
-
-def send_main_menu(chat_id):
-    markup = types.InlineKeyboardMarkup(row_width=2)
+def category_menu():
+    """Создает меню выбора категорий тегов."""
+    kb = types.InlineKeyboardMarkup(row_width=2)
     for key, name in CATEGORY_NAMES.items():
-        markup.add(types.InlineKeyboardButton(name, callback_data=f'category_{key}'))
-    
-    current_prompt = user_settings[chat_id].get('prompt', '')
-    selected_tags_display = ", ".join([TAGS[cat][tag] for cat in TAGS for tag in user_settings[chat_id].get('selected_tags', []) if tag in TAGS[cat]])
-    
-    status_text = f"Текущий промпт: {current_prompt}\nВыбранные теги: {selected_tags_display if selected_tags_display else 'Нет'}"
-    
-    markup.add(types.InlineKeyboardButton("Сгенерировать изображение", callback_data='generate_image'))
-    markup.add(types.InlineKeyboardButton("Сбросить настройки", callback_data='reset_settings'))
-    
-    bot.send_message(chat_id, status_text + "\n\nВыберите категорию тегов:", reply_markup=markup)
+        # Проверяем, есть ли в категории хоть один тег после удалений
+        if key in TAGS and TAGS[key]:
+            kb.add(types.InlineKeyboardButton(name, callback_data=f"cat_{key}"))
+        elif key == "characters" and CHARACTER_CATEGORIES: # Для персонажей проверяем подкатегории
+            kb.add(types.InlineKeyboardButton(name, callback_data=f"cat_{key}"))
 
-def send_tag_menu(chat_id, category_key):
-    markup = types.InlineKeyboardMarkup(row_width=2)
-    selected_tags = user_settings[chat_id].get('selected_tags', [])
+    kb.add(types.InlineKeyboardButton("✅ Готово", callback_data="done_tags"))
+    return kb
 
-    if category_key == 'characters':
-        for char_cat_key, char_cat_name in CHARACTER_CATEGORIES.items():
-            markup.add(types.InlineKeyboardButton(char_cat_name, callback_data=f'char_category_{char_cat_key}'))
+def character_subcategory_menu(selected_tags):
+    """Создает меню выбора подкатегорий персонажей."""
+    kb = types.InlineKeyboardMarkup(row_width=2)
+    for key, name in CHARACTER_CATEGORIES.items():
+        kb.add(types.InlineKeyboardButton(name, callback_data=f"char_sub_{key}"))
+    kb.add(types.InlineKeyboardButton("⬅ Назад", callback_data="back_to_cat"))
+    return kb
+
+def tag_menu(category, selected_tags, char_subcategory=None):
+    """Создает меню выбора тегов внутри определенной категории."""
+    kb = types.InlineKeyboardMarkup(row_width=2)
+    
+    tags_to_display = {}
+    if category == "characters" and char_subcategory:
+        # Фильтруем теги персонажей по выбранной подкатегории
+        for tag_key, tag_name in TAGS[category].items():
+            # Исправлено: используем char_subcategory для фильтрации
+            if char_subcategory == "pokemon_chars" and tag_key.startswith("pokemon_"):
+                tags_to_display[tag_key] = tag_name
+            elif tag_key.startswith(char_sub + "_"): # <-- ИСПРАВЛЕНИЕ ЗДЕСЬ
+                tags_to_display[tag_key] = tag_name
     else:
-        tags_in_category = TAGS.get(category_key, {})
-        for tag_key, tag_name in tags_in_category.items():
-            emoji = "✅ " if tag_key in selected_tags else ""
-            markup.add(types.InlineKeyboardButton(f"{emoji}{tag_name}", callback_data=f'tag_{tag_key}'))
+        tags_to_display = TAGS[category]
 
-    markup.add(types.InlineKeyboardButton("⬅️ Назад в главное меню", callback_data='back_to_main_menu'))
-    markup.add(types.InlineKeyboardButton("Сгенерировать изображение", callback_data='generate_image'))
+    for tag_key, tag_name in tags_to_display.items():
+        label = f"✅ {tag_name}" if tag_key in selected_tags else tag_name
+        kb.add(types.InlineKeyboardButton(label, callback_data=f"tag_{category}_{tag_key}"))
     
-    current_prompt = user_settings[chat_id].get('prompt', '')
-    selected_tags_display = ", ".join([TAGS[cat][tag] for cat in TAGS for tag in selected_tags if tag in TAGS[cat]])
-    
-    status_text = f"Текущий промпт: {current_prompt}\nВыбранные теги: {selected_tags_display if selected_tags_display else 'Нет'}"
-    
-    bot.send_message(chat_id, status_text + "\n\nВыберите теги:", reply_markup=markup)
-
-def send_character_subcategory(chat_id, char_category_key):
-    markup = types.InlineKeyboardMarkup(row_width=2)
-    selected_tags = user_settings[chat_id].get('selected_tags', [])
-
-    # Filter TAGS['characters'] to only show tags belonging to this subcategory
-    # This assumes character tags are prefixed with their category key, e.g., 'dxd_rias'
-    
-    # We need to iterate through CHARACTER_EXTRA keys that belong to this subcategory
-    filtered_char_tags = {k: v for k, v in TAGS['characters'].items() if k.startswith(char_category_key + '_')}
-
-    for char_tag_key, char_tag_name in filtered_char_tags.items():
-        emoji = "✅ " if char_tag_key in selected_tags else ""
-        markup.add(types.InlineKeyboardButton(f"{emoji}{char_tag_name}", callback_data=f'char_tag_{char_tag_key}'))
-    
-    markup.add(types.InlineKeyboardButton("⬅️ Назад к категориям персонажей", callback_data='back_to_character_categories'))
-    markup.add(types.InlineKeyboardButton("Сгенерировать изображение", callback_data='generate_image'))
-
-    current_prompt = user_settings[chat_id].get('prompt', '')
-    selected_tags_display = ", ".join([TAGS[cat][tag] for cat in TAGS for tag in selected_tags if tag in TAGS[cat]])
-    
-    status_text = f"Текущий промпт: {current_prompt}\nВыбранные теги: {selected_tags_display if selected_tags_display else 'Нет'}"
-
-    bot.send_message(chat_id, status_text + f"\n\nВыберите персонажей для категории: {CHARACTER_CATEGORIES[char_category_key]}", reply_markup=markup)
-
-
-def toggle_tag(chat_id, tag_key):
-    if tag_key in user_settings[chat_id]['selected_tags']:
-        user_settings[chat_id]['selected_tags'].remove(tag_key)
-        bot.send_message(chat_id, f"Тег '{get_tag_display_name(tag_key)}' удален.")
+    if category == "characters":
+        kb.add(types.InlineKeyboardButton("⬅ К подкатегориям", callback_data="back_to_char_sub"))
     else:
-        user_settings[chat_id]['selected_tags'].append(tag_key)
-        bot.send_message(chat_id, f"Тег '{get_tag_display_name(tag_key)}' добавлен.")
+        kb.add(types.InlineKeyboardButton("⬅ Назад", callback_data="back_to_cat"))
+    return kb
 
-def get_tag_display_name(tag_key):
-    # Ищем тег во всех категориях
-    for category_tags in TAGS.values():
-        if tag_key in category_tags:
-            return category_tags[tag_key]
-    return tag_key # Если не найдено, вернуть сам ключ
+def settings_menu(current_num_images):
+    """Создает меню настроек."""
+    kb = types.InlineKeyboardMarkup(row_width=2)
+    kb.add(types.InlineKeyboardButton(f"Количество изображений: {current_num_images}", callback_data="ignore"))
+    kb.add(types.InlineKeyboardButton("1", callback_data="set_num_images_1"))
+    kb.add(types.InlineKeyboardButton("2", callback_data="set_num_images_2"))
+    kb.add(types.InlineKeyboardButton("3", callback_data="set_num_images_3"))
+    kb.add(types.InlineKeyboardButton("4", callback_data="set_num_images_4"))
+    kb.add(types.InlineKeyboardButton("⬅ Назад", callback_data="back_to_main"))
+    return kb
 
-def get_replicate_prompt(selected_tags):
-    positive_parts = []
-    negative_parts = []
+# --- Обработчики сообщений и колбэков ---
+@bot.message_handler(commands=["start"])
+def start(msg):
+    """Обработчик команды /start."""
+    cid = msg.chat.id
+    user_settings[cid] = {"tags": [], "last_cat": None, "last_char_sub": None, "num_images": 1}
+    bot.send_message(cid, "Привет Шеф!", reply_markup=main_menu())
 
-    for tag_key in selected_tags:
-        if tag_key in TAG_PROMPTS:
-            positive_parts.append(TAG_PROMPTS[tag_key])
-        else:
-            # Fallback for tags not in TAG_PROMPTS (shouldn't happen if TAG_PROMPTS is comprehensive)
-            positive_parts.append(tag_key.replace('_', ' ')) 
-    
-    # Добавьте ваш базовый положительный промпт здесь
-    base_positive_prompt = "best quality, masterpiece, highres, original, extremely detailed, perfect lighting, photorealistic, intricate detail"
-    
-    # Добавьте ваш базовый негативный промпт здесь
-    base_negative_prompt = "lowres, bad anatomy, bad hands, text, error, missing fingers, extra digit, fewer digits, cropped, worst quality, low quality, normal quality, jpeg artifacts, signature, watermark, username, blurry, artist name"
+@bot.callback_query_handler(func=lambda call: True)
+def callback(call):
+    """Общий обработчик для всех кнопок колбэка."""
+    cid = call.message.chat.id
+    message_id = call.message.message_id
+    if cid not in user_settings:
+        user_settings[cid] = {"tags": [], "last_cat": None, "last_char_sub": None, "num_images": 1}
 
-    return f"{base_positive_prompt}, {', '.join(positive_parts)}", base_negative_prompt
+    data = call.data
 
-def generate_image(chat_id):
-    prompt_text, negative_prompt_text = get_replicate_prompt(user_settings[chat_id].get('selected_tags', []))
-    
-    bot.send_message(chat_id, "Генерирую изображение... это может занять до минуты.")
-    bot.send_chat_action(chat_id, 'upload_photo')
+    if data == "choose_tags":
+        bot.edit_message_text("Выбери категорию тегов:", cid, message_id, reply_markup=category_menu())
 
-    # Construct the payload for Replicate API
-    payload = {
-        "version": REPLICATE_MODEL,
-        "input": {
-            "prompt": prompt_text,
-            "negative_prompt": negative_prompt_text,
-            "width": 768,
-            "height": 768,
-            "num_outputs": 1,
-            "num_inference_steps": 50,
-            "guidance_scale": 7.5
-        }
-    }
-
-    headers = {
-        "Authorization": f"Token {REPLICATE_TOKEN}",
-        "Content-Type": "application/json"
-    }
-
-    try:
-        # Step 1: Create a prediction
-        response = requests.post("https://api.replicate.com/v1/predictions", json=payload, headers=headers)
-        response.raise_for_status() # Raise an exception for HTTP errors (4xx or 5xx)
-        prediction_data = response.json()
+    elif data.startswith("cat_"):
+        cat = data[4:]
+        user_settings[cid]["last_cat"] = cat
+        selected = user_settings[cid]["tags"]
         
-        prediction_id = prediction_data.get("id")
-        if not prediction_id:
-            bot.send_message(chat_id, "Ошибка: не удалось получить ID предсказания от Replicate.")
-            print(f"Prediction creation failed: {prediction_data}")
+        if cat == "characters":
+            # Сбрасываем last_char_sub при входе в основную категорию персонажей
+            user_settings[cid]["last_char_sub"] = None 
+            bot.edit_message_text("Выбери подкатегорию персонажей:", cid, message_id, reply_markup=character_subcategory_menu(selected))
+        else:
+            category_display_name = CATEGORY_NAMES.get(cat, cat)
+            bot.edit_message_text(f"Категория: {category_display_name}", cid, message_id, reply_markup=tag_menu(cat, selected))
+
+    elif data.startswith("char_sub_"):
+        char_sub = data[9:]
+        user_settings[cid]["last_char_sub"] = char_sub
+        selected = user_settings[cid]["tags"]
+        subcategory_display_name = CHARACTER_CATEGORIES.get(char_sub, char_sub)
+        bot.edit_message_text(f"Подкатегория: {subcategory_display_name}", cid, message_id, reply_markup=tag_menu("characters", selected, char_sub))
+
+    elif data.startswith("tag_"):
+        _, cat, tag = data.split("_", 2)
+        tags = user_settings[cid]["tags"]
+        if tag in tags:
+            tags.remove(tag)
+        else:
+            tags.append(tag)
+        
+        current_char_sub = user_settings[cid].get("last_char_sub") if cat == "characters" else None
+        bot.edit_message_reply_markup(cid, message_id, reply_markup=tag_menu(cat, tags, current_char_sub))
+
+    elif data == "done_tags":
+        bot.edit_message_text("Теги сохранены.", cid, message_id, reply_markup=main_menu())
+
+    elif data == "back_to_cat":
+        # Если возвращаемся из подкатегории персонажей, то сначала в меню подкатегорий
+        if user_settings[cid].get("last_cat") == "characters" and user_settings[cid].get("last_char_sub"):
+            user_settings[cid]["last_char_sub"] = None # Сбрасываем подкатегорию при возврате
+            bot.edit_message_text("Выбери подкатегорию персонажей:", cid, message_id, reply_markup=character_subcategory_menu(user_settings[cid]["tags"]))
+        else:
+            bot.edit_message_text("Выбери категорию:", cid, message_id, reply_markup=category_menu())
+    
+    elif data == "back_to_char_sub":
+        user_settings[cid]["last_char_sub"] = None # Сбрасываем подкатегорию при возврате
+        bot.edit_message_text("Выбери подкатегорию персонажей:", cid, message_id, reply_markup=character_subcategory_menu(user_settings[cid]["tags"]))
+
+    elif data == "settings":
+        current_num_images = user_settings[cid].get("num_images", 1)
+        bot.edit_message_text(f"Настройки генерации:", cid, message_id, reply_markup=settings_menu(current_num_images))
+    
+    elif data.startswith("set_num_images_"):
+        num = int(data.split("_")[-1])
+        user_settings[cid]["num_images"] = num
+        current_num_images = user_settings[cid].get("num_images", 1)
+        bot.edit_message_text(f"Настройки генерации: количество изображений установлено на {num}.", cid, message_id, reply_markup=settings_menu(current_num_images))
+
+    elif data == "back_to_main":
+        bot.edit_message_text("Главное меню:", cid, message_id, reply_markup=main_menu())
+
+    elif data == "generate":
+        tags = user_settings[cid]["tags"]
+        if not tags:
+            bot.send_message(cid, "Сначала выбери теги!")
             return
 
-        # Step 2: Poll for the result
-        image_url = None
-        for _ in range(60): # Poll for up to 60 seconds (adjust as needed)
-            time.sleep(1)
-            poll_response = requests.get(f"https://api.replicate.com/v1/predictions/{prediction_id}", headers=headers)
-            poll_response.raise_for_status()
-            poll_data = poll_response.json()
+        prompt_info = build_prompt(tags)
+        positive_prompt = prompt_info["positive_prompt"]
+        negative_prompt = prompt_info["negative_prompt"]
+        num_images = user_settings[cid].get("num_images", 1)
+        
+        user_settings[cid]["last_prompt_tags"] = tags.copy()
+
+        bot.send_message(cid, "Принято Шеф, приступаю!")
+
+        generated_urls = replicate_generate(positive_prompt, negative_prompt, num_images)
+        if generated_urls:
+            media_group = []
+            for url in generated_urls:
+                media_group.append(types.InputMediaPhoto(url))
             
-            status = poll_data.get("status")
-            if status == "succeeded":
-                output = poll_data.get("output")
-                if output and isinstance(output, list) and len(output) > 0:
-                    image_url = output[0]
-                    break
-            elif status == "failed":
-                bot.send_message(chat_id, f"Генерация изображения не удалась. Replicate вернул ошибку: {poll_data.get('error', 'Неизвестная ошибка')}")
-                print(f"Prediction failed: {poll_data}")
-                return
-            elif status in ["starting", "processing"]:
-                # Still waiting
-                continue
-            else:
-                bot.send_message(chat_id, f"Неизвестный статус генерации: {status}")
-                print(f"Unknown prediction status: {status}, data: {poll_data}")
-                return
-
-        if image_url:
-            bot.send_photo(chat_id, image_url)
+            kb = types.InlineKeyboardMarkup()
+            kb.add(
+                types.InlineKeyboardButton("🔁 Начать заново", callback_data="start"),
+                types.InlineKeyboardButton("🔧 Изменить теги", callback_data="edit_tags"),
+                types.InlineKeyboardButton("➡ Продолжить с этими", callback_data="generate")
+            )
+            bot.send_media_group(cid, media_group)
+            bot.send_message(cid, "✅ Готово!", reply_markup=kb)
         else:
-            bot.send_message(chat_id, "Не удалось получить изображение. Пожалуйста, попробуйте еще раз.")
+            bot.send_message(cid, "❌ Ошибка генерации. Пожалуйста, попробуйте еще раз.")
 
-    except requests.exceptions.RequestException as e:
-        bot.send_message(chat_id, f"Ошибка при обращении к API Replicate: {e}")
-        print(f"Requests error: {e}")
-    except Exception as e:
-        bot.send_message(chat_id, f"Произошла непредвиденная ошибка: {e}")
-        print(f"Unexpected error: {e}")
+    elif data == "edit_tags":
+        if "last_prompt_tags" in user_settings[cid]:
+            user_settings[cid]["tags"] = user_settings[cid]["last_prompt_tags"]
+            bot.send_message(cid, "Изменяем теги, использованные в предыдущей генерации:", reply_markup=category_menu())
+        else:
+            bot.send_message(cid, "Нет сохранённых тегов с предыдущей генерации. Сначала сделай генерацию.")
+
+    elif data == "start":
+        user_settings[cid] = {"tags": [], "last_cat": None, "last_char_sub": None, "num_images": 1}
+        bot.send_message(cid, "Настройки сброшены. Начнем заново!", reply_markup=main_menu())
+    
+    elif data == "ignore":
+        bot.answer_callback_query(call.id)
+
+# --- Функция для определения категории тега ---
+def tag_category(tag):
+    """Определяет категорию, к которой относится тег."""
+    for cat, items in TAGS.items():
+        if tag in items:
+            # ИСПРАВЛЕНИЕ: Добавляем явную обработку для категории "furry"
+            if cat == "furry":
+                return "furry"
+            # Остальная логика остаётся как была
+            if cat in ["body", "ethnos"]:
+                return "body"
+            if cat == "poses":
+                return "pose"
+            if cat == "holes":
+                return "holes"
+            if cat == "toys":
+                return "toys"
+            if cat == "clothes":
+                return "clothes"
+            if cat == "fetish":
+                return "fetish"
+            if cat == "head":
+                return "face"
+            
+            # Для покемонов (существ, не персонажей-людей)
+            if cat == "pokemon" and not tag.startswith("pokemon_"):
+                return "pokemon"
+            
+            # Для всех остальных персонажей (включая персонажей покемонов, таких как Джесси)
+            for char_cat_key in CHARACTER_CATEGORIES.keys():
+                if tag.startswith(char_cat_key + "_"):
+                    return "character"
+    return None
+
+# --- Оптимизированная функция для построения промпта ---
+def build_prompt(tags):
+    """
+    Строит промпт для модели Replicate на основе выбранных тегов,
+    используя новую логику группировки и обработки конфликтов.
+    """
+    base = [
+        "masterpiece", "best quality", "ultra detailed", "anime style", "highly detailed",
+        "expressive eyes", "perfect lighting", "volumetric lighting", "fully nude", "solo"
+    ]
+
+    priority = {
+        "character": [],
+        "furry": [], 
+        "body": [],
+        "pose": [],
+        "holes": [],
+        "toys": [],
+        "clothes": [],
+        "fetish": [],
+        "face": [],
+        "pokemon": []
+    }
+    
+    base_negative = (
+        "lowres, bad anatomy, bad hands, bad face, deformed, disfigured, poorly drawn, "
+        "missing limbs, extra limbs, fused fingers, jpeg artifacts, signature, watermark",
+        "blurry, cropped, worst quality, low quality, text, error, mutated, censored, "
+        "hands on chest, hands covering breasts, clothing covering genitals, shirt, bra, bikini, "
+        "vagina not visible, anus not visible, penis not visible, bad proportions, "
+        "all clothes, all clothing"
+    )
+    base_negative = "".join(base_negative)
 
 
-# Настройка вебхука для Render
-@app.route(f'/{API_TOKEN}', methods=['POST'])
+    # Уникальные теги и спец. обработка конфликтов
+    unique = set(tags)
+    
+    # Приоритет большим грудям, если обе выбраны
+    if "big_breasts" in unique and "small_breasts" in unique:
+        unique.remove("small_breasts") 
+    
+    # Костюм коровы уже включён в furry_cow, если выбрана furry_cow
+    if "furry_cow" in unique:
+        unique.discard("cow_costume") 
+
+    # Обработка тега "stockings" и его цветов
+    # Если выбраны конкретные чулки, убираем общий тег "stockings", чтобы избежать дублирования
+    specific_stocking_chosen = False
+    for stocking_type in ["stockings_fishnet", "stockings_black", "stockings_white", "stockings_pink", "stockings_red", "stockings_gold"]:
+        if stocking_type in unique:
+            specific_stocking_chosen = True
+            break
+    
+    if specific_stocking_chosen and "stockings" in unique:
+        unique.discard("stockings")
+
+
+    # Обработка тега "femboy"
+    if "femboy" in unique:
+        unique.discard("big_breasts")
+        unique.discard("small_breasts")
+        base_negative += ", breasts, female breasts"
+
+
+    # Группировка по категориям
+    for tag in unique:
+        key = tag_category(tag)
+        if key:
+            # Используем TAG_PROMPTS для получения промпта
+            prompt_from_map = TAG_PROMPTS.get(tag)
+            if prompt_from_map: # Убедимся, что промпт существует
+                priority[key].append(prompt_from_map)
+            else:
+                # Если промпт для тега не найден в TAG_PROMPTS (чего быть не должно после исправления),
+                # добавляем сам тег как промпт.
+                priority[key].append(tag.replace('_', ' '))
+
+
+    prompt_parts = base[:]
+    # Порядок добавления важен
+    for section in ["character", "furry", "pokemon", "body", "pose", "holes", "toys", "clothes", "fetish", "face"]:
+        prompt_parts.extend(priority[section])
+
+    # Танлайны убирают купальник из негативного промпта
+    if "bikini_tan_lines" in unique:
+        base_negative += ", bikini"
+
+    return {
+        "positive_prompt": ", ".join(prompt_parts),
+        "negative_prompt": base_negative
+    } 
+
+# --- Функция для генерации изображения через Replicate ---
+def replicate_generate(positive_prompt, negative_prompt, num_images=1):
+    """
+    Отправляет запрос на генерацию изображения в Replicate API,
+    используя оптимальные настройки для достижения максимальной точности.
+    """
+    urls = []
+    for _ in range(num_images):
+        url = "https://api.replicate.com/v1/predictions"
+        headers = {
+            "Authorization": f"Token {REPLICATE_TOKEN}",
+            "Content-Type": "application/json"
+        }
+        json_data = {
+            "version": REPLICATE_MODEL,
+            "input": {
+                "prompt": positive_prompt,
+                "negative_prompt": negative_prompt,
+                "prepend_preprompt": False,
+                "width": 1024,
+                "height": 1024,
+                "steps": 75,
+                "guidance_scale": 18,
+                "scheduler": "DPM++ 2M SDE Karras",
+                "adetailer_face": True,
+                "adetailer_hand": True,
+                "seed": -1
+            }
+        }
+
+        r = requests.post(url, headers=headers, json=json_data)
+        if r.status_code != 201:
+            print(f"Ошибка при отправке предсказания: {r.status_code} - {r.text}")
+            print(f"Request JSON: {json_data}")
+            return None
+
+        status_url = r.json()["urls"]["get"]
+
+        for i in range(90):
+            time.sleep(2)
+            r = requests.get(status_url, headers=headers)
+            if r.status_code != 200:
+                print(f"Ошибка при получении статуса предсказания: {r.status_code} - {r.text}")
+                return None
+            data = r.json()
+            if data["status"] == "succeeded":
+                if isinstance(data["output"], list) and data["output"]:
+                    urls.append(data["output"][0])
+                    break
+                else:
+                    print("Получен пустой или некорректный 'output' от Replicate.")
+                    return None
+            elif data["status"] == "failed":
+                print(f"Предсказание не удалось: {data.get('error', 'Сообщение об ошибке не предоставлено')}")
+                print(f"Request JSON: {json_data}")
+                return None
+        else:
+            print("Время ожидания предсказания истекло для одного изображения.")
+            return None
+
+    return urls
+
+# --- Настройка вебхука Flask ---
+@app.route("/", methods=["POST"])
 def webhook():
-    json_string = request.get_data().decode('utf-8')
-    update = telebot.types.Update.de_json(json_string)
+    """Обрабатывает входящие обновления от Telegram."""
+    json_str = request.stream.read().decode("utf-8")
+    update = telebot.types.Update.de_json(json_str)
+    
+    if update.message and update.message.chat.id not in user_settings:
+        bot.send_message(update.message.chat.id, "Привет Шеф!", reply_markup=main_menu())
+        user_settings[update.message.chat.id] = {"tags": [], "last_cat": None, "last_char_sub": None, "num_images": 1}
+
     bot.process_new_updates([update])
-    return '!', 200
+    return "ok", 200
 
-# Запуск Flask приложения
-if __name__ == '__main__':
-    if WEBHOOK_URL:
-        bot.remove_webhook()
-        time.sleep(1)
-        bot.set_webhook(url=WEBHOOK_URL + API_TOKEN)
-        print(f"Webhook set to: {WEBHOOK_URL + API_TOKEN}")
-        app.run(host='0.0.0.0', port=PORT)
-    else:
-        print("WEBHOOK_URL not set, falling back to polling.")
-        bot.polling(none_stop=True)
+@app.route("/", methods=["GET"])
+def home():
+    """Простой маршрут для проверки работы приложения."""
+    return "бот работает", 200
 
+# --- Запуск бота ---
+if __name__ == "__main__":
+    bot.remove_webhook()
+    bot.set_webhook(url=WEBHOOK_URL)
+    app.run(host="0.0.0.0", port=PORT)
