@@ -26,7 +26,7 @@ CATEGORY_NAMES = {
     "poses": "🧘 Позы",
     "clothes": "👗 Одежда",
     "body": "💪 Тело",
-    "ethnos": "🌍 Этнос", # Ethnos оставлен, но Азиатка/Европейка удалены.
+    "ethnos": "🌍 Этнос",
     "furry": "🐾 Фури",
     "characters": "🦸 Персонажи",
     "head": "🤯 Голова",
@@ -34,7 +34,7 @@ CATEGORY_NAMES = {
     "pokemon": "⚡ Покемоны"
 }
 
-# Категории для персонажей (для вкладок) - УДАЛЕНА Dislyte
+# Категории для персонажей (для вкладок)
 CHARACTER_CATEGORIES = {
     "dxd": "📺 Демоны старшей школы",
     "genshin": "🎮 Genshin Impact",
@@ -256,7 +256,7 @@ CHARACTER_EXTRA = {
     "zzz_anby": "anby demara, zenless zone zero, white hair, casual clothes, electric powers",
     "zzz_nekomiya": "nekomiya mana, zenless zone zero, cat girl, ninja, black hair, agile",
     "zzz_aisha": "aisha, zenless zone zero, bunny girl, white hair, cute dress",
-    "zzz_haruka": "haruka, zenless zone zero, pink hair, schoolgirl, cheerful",
+    "zzz_haruka": "haruka, zenless zone zero, schoolgirl, pink hair, cheerful",
     "zzz_corin": "corin, zenless zone zero, detective, blonde hair, trench coat",
     "zzz_grace": "grace, zenless zone zero, elegant dress, mature, long hair",
     "zzz_hoshimi": "hoshimi, zenless zone zero, idol, pink hair, stage outfit",
@@ -330,8 +330,8 @@ TAGS = {
         "standing": "Стоя",
         "squat": "Приседание",
         "lying": "Лежа",
-        "hor_split": "Шпагат: нога вверх", # Переименовано
-        "ver_split": "На четвереньках: нога вверх", # Переименовано
+        "hor_split": "Шпагат: нога вверх",
+        "ver_split": "На четвереньках: нога вверх",
         "on_back_legs_behind_head": "На спине ноги за головой",
         "on_side_leg_up": "На боку нога вверх",
         "suspended": "Подвешена",
@@ -340,10 +340,10 @@ TAGS = {
         "top_down_view": "Вид сверху",
         "bottom_up_view": "Вид снизу",
         "extreme_acrobatic_inverted_bridge": "Экстремальный мост/стойка на плечах с инверсией",
-        "leaning_forward_wall_butt_out": "Наклон у стены", # Переименовано
+        "leaning_forward_wall_butt_out": "Наклон у стены",
         "classic_bridge_arching_up": "Мостик",
-        "prone_frog_stretch_arms_extended": "На полу: грудь и задница вверх", # Переименовано
-        "top_down_voluminous_bow_arms_rhombus": "На полу: задница вверх, ноги согнуты", # Переименовано
+        "prone_frog_stretch_arms_extended": "На полу: грудь и задница вверх",
+        "top_down_voluminous_bow_arms_rhombus": "На полу: задница вверх, ноги согнуты",
     },
     "clothes": {
         "stockings": "Обычные чулки",
@@ -361,8 +361,8 @@ TAGS = {
         "big_breasts": "Большая грудь",
         "small_breasts": "Маленькая грудь",
         "body_fit": "Подтянутое тело",
-        "body_fat": "Пышное тело", # Обновлен промпт
-        "age_loli": "Лоли", # Обновлен промпт
+        "body_fat": "Пышное тело",
+        "age_loli": "Лоли",
         "age_milf": "Милфа",
         "age_21": "21 год",
         "cum": "Вся в сперме",
@@ -393,8 +393,8 @@ TAGS = {
     },
     "head": {
         "ahegao": "Ахегао",
-        "pain_face": "Лицо в боли", # Обновлен промпт
-        "ecstasy_face": "Лицо в экстазе", # Обновлен промпт
+        "pain_face": "Лицо в боли",
+        "ecstasy_face": "Лицо в экстазе",
         "gold_lipstick": "Золотая помада"
     },
     "fetish": {
@@ -466,7 +466,6 @@ TAGS = {
         "genshin_sucrose": "Сахароза",
         "genshin_venti_f": "Венти (F)",
         "genshin_xiangling": "Сян Лин",
-        "genshin_xinyan": "Синь Янь",
         "genshin_xinyan": "Синь Янь",
         "genshin_yaemiko": "Яэ Мико",
         "genshin_yanfei": "Янь Фэй",
@@ -761,3 +760,256 @@ TAG_PROMPTS = {
     "lopunny": "lopunny, pokemon",
     "goodra": "goodra, pokemon"
 }
+
+# --- Начало старого кода (до изменений) ---
+
+# Команда /start
+@bot.message_handler(commands=['start'])
+def send_welcome(message):
+    chat_id = message.chat.id
+    markup = types.InlineKeyboardMarkup()
+    markup.add(types.InlineKeyboardButton("Начать генерацию", callback_data='start_generation'))
+    bot.send_message(chat_id, "Привет! Я бот для генерации изображений. Нажмите кнопку, чтобы начать.", reply_markup=markup)
+
+# Обработка callback_query
+@bot.callback_query_handler(func=lambda call: True)
+def callback_inline(call):
+    chat_id = call.message.chat.id
+    if call.data == 'start_generation':
+        user_settings[chat_id] = {'prompt': '', 'negative_prompt': '', 'current_category': None, 'selected_tags': []}
+        send_main_menu(chat_id)
+    elif call.data.startswith('category_'):
+        category_key = call.data.replace('category_', '')
+        user_settings[chat_id]['current_category'] = category_key
+        send_tag_menu(chat_id, category_key)
+    elif call.data.startswith('tag_'):
+        tag_key = call.data.replace('tag_', '')
+        toggle_tag(chat_id, tag_key)
+        send_tag_menu(chat_id, user_settings[chat_id]['current_category'])
+    elif call.data == 'back_to_main_menu':
+        user_settings[chat_id]['current_category'] = None
+        send_main_menu(chat_id)
+    elif call.data == 'generate_image':
+        generate_image(chat_id)
+    elif call.data == 'reset_settings':
+        user_settings[chat_id] = {'prompt': '', 'negative_prompt': '', 'current_category': None, 'selected_tags': []}
+        bot.send_message(chat_id, "Настройки сброшены. Теперь вы можете начать с чистого листа.")
+        send_main_menu(chat_id)
+    elif call.data.startswith('char_category_'):
+        char_category_key = call.data.replace('char_category_', '')
+        send_character_subcategory(chat_id, char_category_key)
+    elif call.data.startswith('char_tag_'):
+        char_tag_key = call.data.replace('char_tag_', '')
+        toggle_tag(chat_id, char_tag_key)
+        # Если нужно вернуться в подкатегорию персонажей после выбора тега
+        current_char_category = next((c_key for c_key, c_tags in TAGS['characters'].items() if char_tag_key in c_tags), None)
+        if current_char_category: # Это не сработает, нужно найти категорию по char_tag_key
+            found_char_category = None
+            for cat_id, cat_name in CHARACTER_CATEGORIES.items():
+                if char_tag_key.startswith(cat_id):
+                    found_char_category = cat_id
+                    break
+            if found_char_category:
+                send_character_subcategory(chat_id, found_char_category)
+            else:
+                send_tag_menu(chat_id, 'characters') # Fallback
+        else:
+            send_tag_menu(chat_id, 'characters') # Fallback
+
+    elif call.data == 'back_to_character_categories':
+        send_tag_menu(chat_id, 'characters')
+
+
+def send_main_menu(chat_id):
+    markup = types.InlineKeyboardMarkup(row_width=2)
+    for key, name in CATEGORY_NAMES.items():
+        markup.add(types.InlineKeyboardButton(name, callback_data=f'category_{key}'))
+    
+    current_prompt = user_settings[chat_id].get('prompt', '')
+    selected_tags_display = ", ".join([TAGS[cat][tag] for cat in TAGS for tag in user_settings[chat_id].get('selected_tags', []) if tag in TAGS[cat]])
+    
+    status_text = f"Текущий промпт: {current_prompt}\nВыбранные теги: {selected_tags_display if selected_tags_display else 'Нет'}"
+    
+    markup.add(types.InlineKeyboardButton("Сгенерировать изображение", callback_data='generate_image'))
+    markup.add(types.InlineKeyboardButton("Сбросить настройки", callback_data='reset_settings'))
+    
+    bot.send_message(chat_id, status_text + "\n\nВыберите категорию тегов:", reply_markup=markup)
+
+def send_tag_menu(chat_id, category_key):
+    markup = types.InlineKeyboardMarkup(row_width=2)
+    selected_tags = user_settings[chat_id].get('selected_tags', [])
+
+    if category_key == 'characters':
+        for char_cat_key, char_cat_name in CHARACTER_CATEGORIES.items():
+            markup.add(types.InlineKeyboardButton(char_cat_name, callback_data=f'char_category_{char_cat_key}'))
+    else:
+        tags_in_category = TAGS.get(category_key, {})
+        for tag_key, tag_name in tags_in_category.items():
+            emoji = "✅ " if tag_key in selected_tags else ""
+            markup.add(types.InlineKeyboardButton(f"{emoji}{tag_name}", callback_data=f'tag_{tag_key}'))
+
+    markup.add(types.InlineKeyboardButton("⬅️ Назад в главное меню", callback_data='back_to_main_menu'))
+    markup.add(types.InlineKeyboardButton("Сгенерировать изображение", callback_data='generate_image'))
+    
+    current_prompt = user_settings[chat_id].get('prompt', '')
+    selected_tags_display = ", ".join([TAGS[cat][tag] for cat in TAGS for tag in selected_tags if tag in TAGS[cat]])
+    
+    status_text = f"Текущий промпт: {current_prompt}\nВыбранные теги: {selected_tags_display if selected_tags_display else 'Нет'}"
+    
+    bot.send_message(chat_id, status_text + "\n\nВыберите теги:", reply_markup=markup)
+
+def send_character_subcategory(chat_id, char_category_key):
+    markup = types.InlineKeyboardMarkup(row_width=2)
+    selected_tags = user_settings[chat_id].get('selected_tags', [])
+
+    # Filter TAGS['characters'] to only show tags belonging to this subcategory
+    # This assumes character tags are prefixed with their category key, e.g., 'dxd_rias'
+    
+    # We need to iterate through CHARACTER_EXTRA keys that belong to this subcategory
+    filtered_char_tags = {k: v for k, v in TAGS['characters'].items() if k.startswith(char_category_key + '_')}
+
+    for char_tag_key, char_tag_name in filtered_char_tags.items():
+        emoji = "✅ " if char_tag_key in selected_tags else ""
+        markup.add(types.InlineKeyboardButton(f"{emoji}{char_tag_name}", callback_data=f'char_tag_{char_tag_key}'))
+    
+    markup.add(types.InlineKeyboardButton("⬅️ Назад к категориям персонажей", callback_data='back_to_character_categories'))
+    markup.add(types.InlineKeyboardButton("Сгенерировать изображение", callback_data='generate_image'))
+
+    current_prompt = user_settings[chat_id].get('prompt', '')
+    selected_tags_display = ", ".join([TAGS[cat][tag] for cat in TAGS for tag in selected_tags if tag in TAGS[cat]])
+    
+    status_text = f"Текущий промпт: {current_prompt}\nВыбранные теги: {selected_tags_display if selected_tags_display else 'Нет'}"
+
+    bot.send_message(chat_id, status_text + f"\n\nВыберите персонажей для категории: {CHARACTER_CATEGORIES[char_category_key]}", reply_markup=markup)
+
+
+def toggle_tag(chat_id, tag_key):
+    if tag_key in user_settings[chat_id]['selected_tags']:
+        user_settings[chat_id]['selected_tags'].remove(tag_key)
+        bot.send_message(chat_id, f"Тег '{get_tag_display_name(tag_key)}' удален.")
+    else:
+        user_settings[chat_id]['selected_tags'].append(tag_key)
+        bot.send_message(chat_id, f"Тег '{get_tag_display_name(tag_key)}' добавлен.")
+
+def get_tag_display_name(tag_key):
+    # Ищем тег во всех категориях
+    for category_tags in TAGS.values():
+        if tag_key in category_tags:
+            return category_tags[tag_key]
+    return tag_key # Если не найдено, вернуть сам ключ
+
+def get_replicate_prompt(selected_tags):
+    positive_parts = []
+    negative_parts = []
+
+    for tag_key in selected_tags:
+        if tag_key in TAG_PROMPTS:
+            positive_parts.append(TAG_PROMPTS[tag_key])
+        else:
+            # Fallback for tags not in TAG_PROMPTS (shouldn't happen if TAG_PROMPTS is comprehensive)
+            positive_parts.append(tag_key.replace('_', ' ')) 
+    
+    # Добавьте ваш базовый положительный промпт здесь
+    base_positive_prompt = "best quality, masterpiece, highres, original, extremely detailed, perfect lighting, photorealistic, intricate detail"
+    
+    # Добавьте ваш базовый негативный промпт здесь
+    base_negative_prompt = "lowres, bad anatomy, bad hands, text, error, missing fingers, extra digit, fewer digits, cropped, worst quality, low quality, normal quality, jpeg artifacts, signature, watermark, username, blurry, artist name"
+
+    return f"{base_positive_prompt}, {', '.join(positive_parts)}", base_negative_prompt
+
+def generate_image(chat_id):
+    prompt_text, negative_prompt_text = get_replicate_prompt(user_settings[chat_id].get('selected_tags', []))
+    
+    bot.send_message(chat_id, "Генерирую изображение... это может занять до минуты.")
+    bot.send_chat_action(chat_id, 'upload_photo')
+
+    # Construct the payload for Replicate API
+    payload = {
+        "version": REPLICATE_MODEL,
+        "input": {
+            "prompt": prompt_text,
+            "negative_prompt": negative_prompt_text,
+            "width": 768,
+            "height": 768,
+            "num_outputs": 1,
+            "num_inference_steps": 50,
+            "guidance_scale": 7.5
+        }
+    }
+
+    headers = {
+        "Authorization": f"Token {REPLICATE_TOKEN}",
+        "Content-Type": "application/json"
+    }
+
+    try:
+        # Step 1: Create a prediction
+        response = requests.post("https://api.replicate.com/v1/predictions", json=payload, headers=headers)
+        response.raise_for_status() # Raise an exception for HTTP errors (4xx or 5xx)
+        prediction_data = response.json()
+        
+        prediction_id = prediction_data.get("id")
+        if not prediction_id:
+            bot.send_message(chat_id, "Ошибка: не удалось получить ID предсказания от Replicate.")
+            print(f"Prediction creation failed: {prediction_data}")
+            return
+
+        # Step 2: Poll for the result
+        image_url = None
+        for _ in range(60): # Poll for up to 60 seconds (adjust as needed)
+            time.sleep(1)
+            poll_response = requests.get(f"https://api.replicate.com/v1/predictions/{prediction_id}", headers=headers)
+            poll_response.raise_for_status()
+            poll_data = poll_response.json()
+            
+            status = poll_data.get("status")
+            if status == "succeeded":
+                output = poll_data.get("output")
+                if output and isinstance(output, list) and len(output) > 0:
+                    image_url = output[0]
+                    break
+            elif status == "failed":
+                bot.send_message(chat_id, f"Генерация изображения не удалась. Replicate вернул ошибку: {poll_data.get('error', 'Неизвестная ошибка')}")
+                print(f"Prediction failed: {poll_data}")
+                return
+            elif status in ["starting", "processing"]:
+                # Still waiting
+                continue
+            else:
+                bot.send_message(chat_id, f"Неизвестный статус генерации: {status}")
+                print(f"Unknown prediction status: {status}, data: {poll_data}")
+                return
+
+        if image_url:
+            bot.send_photo(chat_id, image_url)
+        else:
+            bot.send_message(chat_id, "Не удалось получить изображение. Пожалуйста, попробуйте еще раз.")
+
+    except requests.exceptions.RequestException as e:
+        bot.send_message(chat_id, f"Ошибка при обращении к API Replicate: {e}")
+        print(f"Requests error: {e}")
+    except Exception as e:
+        bot.send_message(chat_id, f"Произошла непредвиденная ошибка: {e}")
+        print(f"Unexpected error: {e}")
+
+
+# Настройка вебхука для Render
+@app.route(f'/{API_TOKEN}', methods=['POST'])
+def webhook():
+    json_string = request.get_data().decode('utf-8')
+    update = telebot.types.Update.de_json(json_string)
+    bot.process_new_updates([update])
+    return '!', 200
+
+# Запуск Flask приложения
+if __name__ == '__main__':
+    if WEBHOOK_URL:
+        bot.remove_webhook()
+        time.sleep(1)
+        bot.set_webhook(url=WEBHOOK_URL + API_TOKEN)
+        print(f"Webhook set to: {WEBHOOK_URL + API_TOKEN}")
+        app.run(host='0.0.0.0', port=PORT)
+    else:
+        print("WEBHOOK_URL not set, falling back to polling.")
+        bot.polling(none_stop=True)
+
