@@ -1,5 +1,4 @@
 import os
-import timeimport os
 import time
 import requests
 from flask import Flask, request
