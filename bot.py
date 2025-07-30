@@ -34,7 +34,7 @@ CATEGORY_NAMES = {
     "pokemon": "⚡ Покемоны"
 }
 
-# Категории для персонажей (для вкладок) - УДАЛЕНА Dislyte
+# Категории для персонажей (для вкладок)
 CHARACTER_CATEGORIES = {
     "dxd": "📺 Демоны старшей школы",
     "genshin": "🎮 Genshin Impact",
@@ -223,7 +223,7 @@ CHARACTER_EXTRA = {
     "danmachi_freya": "freya, danmachi, long silver hair, purple eyes, elegant dress",
 
     # Повесть о конце света (Record of Ragnarok)
-    "ragnarok_aphrodite": "aphrodite, record of ragnarok, large breasts, blonde hair, revealing outfit",
+    "ragnarok_aphrodite": "aphrodite, record of ragnarok, large breasts, revealing outfit",
 
     # Naruto
     "naruto_hinata": "hinata hyuga, naruto, long dark blue hair, byakugan, shy, large breasts",
@@ -309,20 +309,13 @@ CHARACTER_EXTRA = {
     "mlp_sweetie_belle": "sweetie belle, my little pony, unicorn, white body, pink and purple mane, cutie mark crusader",
 }
 
-# --- Теги с новыми добавлениями ---
+# --- Теги с внесенными изменениями ---
 TAGS = {
     "holes": {
         "vagina": "Вагина",
         "anus": "Анус",
         "both": "Вагина и анус",
-        # Удалено: "dilated_anus": "Расширенный анус",
         "dilated_vagina": "Расширенная киска",
-        # Удалено: "prolapsed_uterus": "Выпавшая матка",
-        # Удалено: "prolapsed_anus": "Выпавший анус",
-        # Удалено: "two_dildos_one_hole": "Два дилдо в одно отверстие",
-        # Удалено: "dilated_nipples": "Расширенные соски",
-        # Удалено: "anus_spreader_ring": "Расширительное кольцо в анусе",
-        # Удалено: "vagina_spreader_ring": "Расширительное кольцо в вагине"
     },
     "toys": {
         "dildo": "Дилдо",
@@ -330,16 +323,12 @@ TAGS = {
         "horse_dildo": "Конский дилдо",
         "anal_beads": "Анальные шарики",
         "anal_plug": "Анальная пробка",
-        # Удалено: "long_dildo_path": "Дилдо сквозь все тело",
-        # Удалено: "urethral_dildo": "Дилдо в уретре",
-        # Удалено: "two_dildos_anus_vagina": "Дилдо в анусе и вагине"
     },
     "poses": {
         "doggy": "На четвереньках",
         "standing": "Стоя",
         "squat": "Приседание",
         "lying": "Лежа",
-        # Удалено: "hor_split": "Горизонтальный шпагат",
         "ver_split": "Вертикальный шпагат",
         "on_back_legs_behind_head": "На спине ноги за головой",
         "on_side_leg_up": "На боку нога вверх",
@@ -348,26 +337,19 @@ TAGS = {
         "back_facing": "Вид сзади",
         "top_down_view": "Вид сверху",
         "bottom_up_view": "Вид снизу",
-        # Удалено: "hands_spreading_vagina": "Руки раздвигают влагалище",
-        # Удалено: "lotus_pose": "Поза лотоса",
-        # Удалено: "scissors_pose": "Поза ножницы (две девушки)",
         "extreme_acrobatic_inverted_bridge": "Экстремальный мост/стойка на плечах с инверсией",
-        "leaning_forward_wall_butt_out": "Наклон с упором на стену", # Изменено
-        "standing_vertical_split_holding_ankle": "На четвереньках одна нога вверх", # Изменено
-        "seated_double_split_holding_feet": "Сидя одна нога вверх", # Изменено
-        # Удалено: "deep_sumo_squat_knees_apart": "Глубокий присед (сумо-поза)",
+        "leaning_forward_wall_butt_out": "Наклон с упором на стену", # Переименовано
+        "standing_vertical_split_holding_ankle": "На четвереньках одна нога вверх", # Переименовано
+        "seated_double_split_holding_feet": "Сидя одна нога вверх", # Переименовано
         "standing_horizontal_split_arms_out": "Горизонтальный шпагат стоя с балансом",
         "classic_bridge_arching_up": "Мостик",
-        "seated_horizontal_split_arms_support": "Сидя одна нога вверх", # Изменено
-        "prone_frog_stretch_arms_extended": "Грудь на полу задница вверх", # Изменено
-        "standing_deep_forward_bend_hands_on_floor": "Стоячий глубокий прогиб с опорой на руки", # На доработку
+        "seated_horizontal_split_arms_support": "Сидя одна нога вверх", # Переименовано
+        "prone_frog_stretch_arms_extended": "Грудь на полу задница вверх", # Переименовано
         "standing_deep_forward_bow_forearms_clasped": "Наклон со сведёнными предплечьями", # На доработку
-        "top_down_voluminous_bow_arms_rhombus": "Грудь на полу, задница вверх ноги согнуты в коленях", # Изменено
-        "inverted_leg_over_shoulder_supine": "Перевёрнутый сгиб с коленом над плечом", # На доработку
-        "casual_seated_open_knees_feet_on_floor": "Легкая поза сидя, колени разведены" # На доработку
+        "top_down_voluminous_bow_arms_rhombus": "Грудь на полу, задница вверх ноги согнуты в коленях", # Переименовано
     },
     "clothes": {
-        "stockings": "Обычные чулки", # Общий тег для чулок
+        "stockings": "Обычные чулки",
         "stockings_fishnet": "Чулки сеточкой",
         "stockings_black": "Чулки: Черные",
         "stockings_white": "Чулки: Белые",
@@ -382,8 +364,8 @@ TAGS = {
         "big_breasts": "Большая грудь",
         "small_breasts": "Маленькая грудь",
         "body_fit": "Подтянутое тело",
-        "body_fat": "Пышное тело", # Обновлено
-        "age_loli": "Лоли", # Обновлено
+        "body_fat": "Пышное тело",
+        "age_loli": "Лоли",
         "age_milf": "Милфа",
         "age_21": "21 год",
         "cum": "Вся в сперме",
@@ -393,8 +375,6 @@ TAGS = {
     "ethnos": {
         "futanari": "Футанари",
         "femboy": "Фембой",
-        # Удалено: "ethnicity_asian": "Азиатка",
-        # Удалено: "ethnicity_european": "Европейка"
     },
     "furry": {
         "furry_cow": "Фури корова",
@@ -416,8 +396,8 @@ TAGS = {
     },
     "head": {
         "ahegao": "Ахегао",
-        "pain_face": "Лицо в боли", # Обновлено
-        "ecstasy_face": "Лицо в экстазе", # Обновлено
+        "pain_face": "Лицо в боли",
+        "ecstasy_face": "Лицо в экстазе",
         "gold_lipstick": "Золотая помада"
     },
     "fetish": {
@@ -425,10 +405,6 @@ TAGS = {
         "clitoral_piercing": "Пирсинг клитора",
         "foot_fetish": "Футфетиш",
         "footjob": "Футджоб",
-        # Удалено: "mouth_nipples": "Рты вместо сосков",
-        # Удалено: "nipple_hole": "Отверстие в соске",
-        # Удалено: "anus_piercing": "Пирсинг ануса",
-        # Удалено: "vagina_piercing": "Пирсинг вагины",
         "gag": "Кляп",
         "blindfold": "Повязка на глаза",
         "horse_sex": "Секс с конем"
@@ -696,31 +672,20 @@ TAGS = {
 # --- Промпты для модели ---
 TAG_PROMPTS = {
     # Сначала добавляем промпты из CHARACTER_EXTRA
-    **CHARACTER_EXTRA, # Включаем промпты персонажей
+    **CHARACTER_EXTRA,
     "vagina": "spread pussy",
     "anus": "spread anus",
     "both": "spread pussy and anus",
-    # Удалено: "dilated_anus": "dilated anus, anus stretched, open anus, internal view of anus, anus gaping",
     "dilated_vagina": "dilated vagina, vagina stretched, open pussy, internal view of vagina, vagina gaping, spread pussy, labia spread, realistic, detailed, high focus",
-    # Удалено: "prolapsed_uterus": "prolapsed uterus, uterus exposed, visible uterus",
-    # Удалено: "prolapsed_anus": "prolapsed anus, anus exposed, visible anus",
-    # Удалено: "two_dildos_one_hole": "two dildos inserted, two dildos into one orifice",
     "dildo": "dildo inserted",
     "huge_dildo": "huge dildo",
     "horse_dildo": "horse dildo",
     "anal_beads": "anal beads inserted",
     "anal_plug": "anal plug",
-    # Удалено: "long_dildo_path": (
-    #     "dildo inserted into anus, pushing visibly through intestines with clear belly bulge, "
-    #     "exiting from mouth, seamless and continuous dildo, consistent texture, realistic rubber"
-    # ),
-    # Удалено: "urethral_dildo": "urethral dildo, dildo in urethra, dildo inserted into urethra",
-    # Удалено: "two_dildos_anus_vagina": "one dildo inserted into anus, one dildo inserted into vagina",
     "doggy": "doggy style, on all fours, hands on floor",
     "squat": "squatting pose, hands behind head",
     "standing": "standing",
     "lying": "lying down",
-    # Удалено: "hor_split": "horizontal split, legs stretched fully to sides, pelvis on floor, inner thighs visible",
     "ver_split": "vertical split, holding own raised leg",
     "on_back_legs_behind_head": "on back, legs behind head",
     "on_side_leg_up": "on side with leg raised",
@@ -729,25 +694,18 @@ TAG_PROMPTS = {
     "back_facing": "back to viewer",
     "top_down_view": "shot from above, top-down view",
     "bottom_up_view": "shot from below, bottom-up view",
-    # Удалено: "hands_spreading_vagina": "hands spreading vagina",
-    # Удалено: "lotus_pose": "lotus pose",
-    # Удалено: "scissors_pose": "scissors pose, two girls, legs interlocked",
     # Обновленные промпты для поз
     "extreme_acrobatic_inverted_bridge": "extreme acrobatic, deep inversion, bridge, shoulder stand, hand support, head on floor, hair spread, shoulders on surface, hands bent at elbows in front of face, palms on floor, extremely arched back, raised buttocks, buttocks at head level, facing viewer, legs spread wide, acute angle, knees slightly bent, feet touching floor, toes pointed, center of gravity between shoulders and feet, emphasizes buttocks, back curve, thigh anatomy, acrobatic flexibility",
     "leaning_forward_wall_butt_out": "leaning forward, hands on wall, partially undressed, head tilted, head turned back to viewer, looking over shoulder, raised shoulders, straight back, parallel to floor, slight arch, buttocks pushed back, emphasized by pose, jeans pulled down to knees, legs spread shoulder-width apart, knees half-bent, relaxed, stable",
-    "standing_vertical_split_holding_ankle": "on all fours, one leg raised vertically up, almost touching head, both hands on floor, straightened back, tensed core muscles, open pelvis, emphasizes extreme stretch", # Изменено
-    "seated_double_split_holding_feet": "seated, one leg raised 90+ degrees up, hands holding foot, torso tilted back, tensed back, stable, static, requires strength", # Изменено
-    # Удалено: "deep_sumo_squat_knees_apart": "deep sumo squat, squatting, knees spread to sides, heels on floor, pelvis deep, hands down for balance, straight spine, chest raised",
+    "standing_vertical_split_holding_ankle": "on all fours, one leg raised vertically up, almost touching head, both hands on floor, straightened back, tensed core muscles, open pelvis, emphasizes extreme stretch",
+    "seated_double_split_holding_feet": "seated, one leg raised 90+ degrees up, hands holding foot, torso tilted back, tensed back, stable, static, requires strength",
     "standing_horizontal_split_arms_out": "standing horizontal split, one leg on floor, other leg out horizontally, arms spread for balance, body strictly vertical, open pelvis, strong balance control",
     "classic_bridge_arching_up": "classic bridge, supported on palms and feet, body arched upwards, full back arch, stomach facing up, head tilted back, neck stretched, fingers and toes pointed forward",
-    "seated_horizontal_split_arms_support": "seated, one leg forward, one leg back, horizontal split, hands on floor for support, torso slightly raised, pelvis as low as possible to floor, straight back, elongated neck", # Изменено
-    "prone_frog_stretch_arms_extended": "lying on stomach, chest on floor, buttocks raised, arms extended forward, palms on floor, forearms on floor, shoulders pronated, shoulder blades stretched outward, upper back elongated, slight lumbar arch, hips raised, thighs splayed outward, wide frog stretch, knees turned out, shins back, feet relaxed toes back, head tilted forward-down, cheek or chin near floor, emphasizes hip flexibility, adductors, inner thighs, shoulder girdle stretch, 'pulled forward with whole body' dynamic", # Изменено
-    "standing_deep_forward_bend_hands_on_floor": "standing deep forward bend, feet much wider than shoulder-width, knees slightly bent or almost straight, toes slightly outward, hips high, forward bend from hips, long forward bend, lumbar and thoracic spine stretch towards floor, stomach towards thighs, palms on floor, fingers on floor in front of feet or under shoulders, elbows softly bent, head and neck relaxed down, crown or face back through legs, weight distributed between feet and hands, most weight in legs, acrobatic pose, deep wide forward fold", # На доработку
-    "standing_deep_forward_bow_forearms_clasped": "standing deep forward bow, feet together or very close, knees slightly bent, hips strongly pulled back and up, torso tilted forward, buttocks at highest point, long bend, emphasized lumbar arch, forearms clasped in front between thighs, forming 'heart' or 'cup' shape, shoulders inward, elbows bent, head down towards floor or slightly back, combination of elements from 'dhanurasana' and 'uttanasana' with a twist", # На доработку
-    "top_down_voluminous_bow_arms_rhombus": "top-down view, chest on floor, buttocks raised, knees bent, arms forming rhombus/heart below torso, foreshortened perspective, shoulders drawn forward, hands joined under body, rounded volume of gluteal-pelvic area, spherical shape, legs together, soft knees", # Изменено
-    "inverted_leg_over_shoulder_supine": "inverted leg over shoulder, lying on back, supine inverted leg fold, hips lifted, legs bent, legs brought back over head, one thigh crosses face line, other abducted to side, twisted inversion, strong lumbar bend, compressed abdomen, one arm embracing thigh/shin from above, other supporting position from side or on floor, head and neck on floor, chin closer to chest, combination of yoga plow, twist, acrobatic contortion", # На доработку
-    "casual_seated_open_knees_feet_on_floor": "casual seated pose, sitting on buttocks, knees bent and spread, feet on floor, heels closer to pelvis or slightly forward, back slightly tilted back or straight, torso slightly forward, hands resting on thighs/knees or holding clothing edges, neutral balance support, head looking forward at viewer", # На доработку
-    "stockings": "stockings", # Общий промпт для чулок
+    "seated_horizontal_split_arms_support": "seated, one leg forward, one leg back, horizontal split, hands on floor for support, torso slightly raised, pelvis as low as possible to floor, straight back, elongated neck",
+    "prone_frog_stretch_arms_extended": "lying on stomach, chest on floor, buttocks raised, arms extended forward, palms on floor, forearms on floor, shoulders pronated, shoulder blades stretched outward, upper back elongated, slight lumbar arch, hips raised, thighs splayed outward, wide frog stretch, knees turned out, shins back, feet relaxed toes back, head tilted forward-down, cheek or chin near floor, emphasizes hip flexibility, adductors, inner thighs, shoulder girdle stretch, 'pulled forward with whole body' dynamic",
+    "standing_deep_forward_bow_forearms_clasped": "standing deep forward bow, feet together or very close, knees slightly bent, hips strongly pulled back and up, torso tilted forward, buttocks at highest point, long bend, emphasized lumbar arch, forearms clasped in front between thighs, forming 'heart' or 'cup' shape, shoulders inward, elbows bent, head down towards floor or slightly back, combination of elements from 'dhanurasana' and 'uttanasana' with a twist",
+    "top_down_voluminous_bow_arms_rhombus": "top-down view, chest on floor, buttocks raised, knees bent, arms forming rhombus/heart below torso, foreshortened perspective, shoulders drawn forward, hands joined under body, rounded volume of gluteal-pelvic area, spherical shape, legs together, soft knees",
+    "stockings": "stockings",
     "stockings_fishnet": "fishnet stockings",
     "stockings_black": "black stockings",
     "stockings_white": "white stockings",
@@ -760,8 +718,10 @@ TAG_PROMPTS = {
     "big_breasts": "big breasts",
     "small_breasts": "small breasts",
     "body_fit": "fit body",
-    "body_fat": "curvy body, slight overweight, soft curves", # Обновлено
-    "age_loli": "loli, klee genshin impact, small body, red dress, blonde hair, explosive", # Обновлено
+    # Обновлено: "Пышное тело"
+    "body_fat": "chubby, slight overweight, soft body, soft curves",
+    # Обновлено: "Лоли"
+    "age_loli": "loli, childlike body, small frame, small chest, flat chest",
     "age_milf": "milf",
     "age_21": "21 year old",
     "cum": "cum covered",
@@ -769,8 +729,6 @@ TAG_PROMPTS = {
     "succubus_tattoo": "succubus tattoo on lower abdomen",
     "futanari": "futanari",
     "femboy": "male, boy, very feminine body, femboy, androgynous, flat chest, penis, testicles, thin waist, wide hips, boyish hips, no breasts",
-    # Удалено: "ethnicity_asian": "asian girl",
-    # Удалено: "ethnicity_european": "european girl",
     "furry_cow": "furry cow girl, cow costume",
     "furry_cat": "furry cat girl, cat costume",
     "furry_dog": "furry dog girl, dog costume",
@@ -788,23 +746,18 @@ TAG_PROMPTS = {
     "furry_snake": "furry snake girl, snake costume",
     "furry_lizard": "furry lizard girl, lizard costume",
     "ahegao": "ahegao face",
-    "pain_face": "pain expression, grimace, suffering face", # Обновлено
-    "ecstasy_face": "ecstasy expression, orgasmic face, blissful look", # Обновлено
+    # Обновлено: "Лицо в боли"
+    "pain_face": "pain expression, grimace, suffering face",
+    # Обновлено: "Лицо в экстазе"
+    "ecstasy_face": "ecstasy expression, orgasmic face, blissful look",
     "gold_lipstick": "gold lipstick",
     "nipple_piercing": "nipple piercing",
     "clitoral_piercing": "clitoral piercing",
     "foot_fetish": "foot fetish",
     "footjob": "footjob",
-    # Удалено: "mouth_nipples": "mouths instead of nipples",
-    # Удалено: "nipple_hole": "nipple hole, hole in nipple",
-    # Удалено: "anus_piercing": "anus piercing",
-    # Удалено: "vagina_piercing": "vagina piercing",
     "gag": "gag, mouth gag",
     "blindfold": "blindfold",
     "horse_sex": "horse sex, mare sex, horse fucking, human riding horse, horse penis",
-    # Удалено: "dilated_nipples": "dilated nipples, stretched nipple holes, open nipple holes",
-    # Удалено: "anus_spreader_ring": "anus spreader ring, ring holding anus open, anal ring, anus gaping ring",
-    # Удалено: "vagina_spreader_ring": "vagina spreader ring, ring holding vagina open, vaginal ring, vagina gaping ring",
     "reshiram": "reshiram, pokemon",
     "mew": "mew, pokemon",
     "mewtwo": "mewtwo, pokemon",
@@ -830,10 +783,9 @@ def category_menu():
     """Создает меню выбора категорий тегов."""
     kb = types.InlineKeyboardMarkup(row_width=2)
     for key, name in CATEGORY_NAMES.items():
-        # Проверяем, есть ли в категории хоть один тег после удалений
         if key in TAGS and TAGS[key]:
             kb.add(types.InlineKeyboardButton(name, callback_data=f"cat_{key}"))
-        elif key == "characters" and CHARACTER_CATEGORIES: # Для персонажей проверяем подкатегории
+        elif key == "characters" and CHARACTER_CATEGORIES:
             kb.add(types.InlineKeyboardButton(name, callback_data=f"cat_{key}"))
 
     kb.add(types.InlineKeyboardButton("✅ Готово", callback_data="done_tags"))
@@ -853,12 +805,9 @@ def tag_menu(category, selected_tags, char_subcategory=None):
     
     tags_to_display = {}
     if category == "characters" and char_subcategory:
-        # Фильтруем теги персонажей по выбранной подкатегории
         for tag_key, tag_name in TAGS[category].items():
-            # Исправлено: используем char_subcategory для фильтрации
-            if char_subcategory == "pokemon_chars" and tag_key.startswith("pokemon_"):
-                tags_to_display[tag_key] = tag_name
-            elif tag_key.startswith(char_sub + "_"): # <-- ИСПРАВЛЕНИЕ ЗДЕСЬ
+            # ИСПРАВЛЕНИЕ: Исправлена логика для отображения подкатегорий персонажей
+            if tag_key.startswith(char_subcategory + "_"):
                 tags_to_display[tag_key] = tag_name
     else:
         tags_to_display = TAGS[category]
@@ -911,7 +860,6 @@ def callback(call):
         selected = user_settings[cid]["tags"]
         
         if cat == "characters":
-            # Сбрасываем last_char_sub при входе в основную категорию персонажей
             user_settings[cid]["last_char_sub"] = None 
             bot.edit_message_text("Выбери подкатегорию персонажей:", cid, message_id, reply_markup=character_subcategory_menu(selected))
         else:
@@ -940,15 +888,14 @@ def callback(call):
         bot.edit_message_text("Теги сохранены.", cid, message_id, reply_markup=main_menu())
 
     elif data == "back_to_cat":
-        # Если возвращаемся из подкатегории персонажей, то сначала в меню подкатегорий
         if user_settings[cid].get("last_cat") == "characters" and user_settings[cid].get("last_char_sub"):
-            user_settings[cid]["last_char_sub"] = None # Сбрасываем подкатегорию при возврате
+            user_settings[cid]["last_char_sub"] = None
             bot.edit_message_text("Выбери подкатегорию персонажей:", cid, message_id, reply_markup=character_subcategory_menu(user_settings[cid]["tags"]))
         else:
             bot.edit_message_text("Выбери категорию:", cid, message_id, reply_markup=category_menu())
     
     elif data == "back_to_char_sub":
-        user_settings[cid]["last_char_sub"] = None # Сбрасываем подкатегорию при возврате
+        user_settings[cid]["last_char_sub"] = None
         bot.edit_message_text("Выбери подкатегорию персонажей:", cid, message_id, reply_markup=character_subcategory_menu(user_settings[cid]["tags"]))
 
     elif data == "settings":
@@ -1015,10 +962,8 @@ def tag_category(tag):
     """Определяет категорию, к которой относится тег."""
     for cat, items in TAGS.items():
         if tag in items:
-            # ИСПРАВЛЕНИЕ: Добавляем явную обработку для категории "furry"
             if cat == "furry":
                 return "furry"
-            # Остальная логика остаётся как была
             if cat in ["body", "ethnos"]:
                 return "body"
             if cat == "poses":
@@ -1034,11 +979,9 @@ def tag_category(tag):
             if cat == "head":
                 return "face"
             
-            # Для покемонов (существ, не персонажей-людей)
             if cat == "pokemon" and not tag.startswith("pokemon_"):
                 return "pokemon"
             
-            # Для всех остальных персонажей (включая персонажей покемонов, таких как Джесси)
             for char_cat_key in CHARACTER_CATEGORIES.keys():
                 if tag.startswith(char_cat_key + "_"):
                     return "character"
@@ -1079,19 +1022,14 @@ def build_prompt(tags):
     base_negative = "".join(base_negative)
 
 
-    # Уникальные теги и спец. обработка конфликтов
     unique = set(tags)
     
-    # Приоритет большим грудям, если обе выбраны
     if "big_breasts" in unique and "small_breasts" in unique:
         unique.remove("small_breasts") 
     
-    # Костюм коровы уже включён в furry_cow, если выбрана furry_cow
     if "furry_cow" in unique:
         unique.discard("cow_costume") 
 
-    # Обработка тега "stockings" и его цветов
-    # Если выбраны конкретные чулки, убираем общий тег "stockings", чтобы избежать дублирования
     specific_stocking_chosen = False
     for stocking_type in ["stockings_fishnet", "stockings_black", "stockings_white", "stockings_pink", "stockings_red", "stockings_gold"]:
         if stocking_type in unique:
@@ -1101,34 +1039,28 @@ def build_prompt(tags):
     if specific_stocking_chosen and "stockings" in unique:
         unique.discard("stockings")
 
-
-    # Обработка тега "femboy"
     if "femboy" in unique:
         unique.discard("big_breasts")
         unique.discard("small_breasts")
         base_negative += ", breasts, female breasts"
 
+    # Примечание: При выборе "furry" и "horse_sex", модель должна корректно
+    # сгенерировать фури-персонажа с конем, так как оба тега будут в промпте.
+    # Дополнительная логика не требуется.
 
-    # Группировка по категориям
     for tag in unique:
         key = tag_category(tag)
         if key:
-            # Используем TAG_PROMPTS для получения промпта
             prompt_from_map = TAG_PROMPTS.get(tag)
-            if prompt_from_map: # Убедимся, что промпт существует
+            if prompt_from_map:
                 priority[key].append(prompt_from_map)
             else:
-                # Если промпт для тега не найден в TAG_PROMPTS (чего быть не должно после исправления),
-                # добавляем сам тег как промпт.
                 priority[key].append(tag.replace('_', ' '))
 
-
     prompt_parts = base[:]
-    # Порядок добавления важен
     for section in ["character", "furry", "pokemon", "body", "pose", "holes", "toys", "clothes", "fetish", "face"]:
         prompt_parts.extend(priority[section])
 
-    # Танлайны убирают купальник из негативного промпта
     if "bikini_tan_lines" in unique:
         base_negative += ", bikini"
 
